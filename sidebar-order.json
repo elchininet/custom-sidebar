@@ -1,0 +1,111 @@
+{
+  "order": [
+    {
+      "new_item": true,
+      "item": "Google",
+      "href": "https://mrdoob.com/projects/chromeexperiments/google-gravity/",
+      "icon": "mdi:earth",
+      "target": "_blank",
+      "order": 0
+    },
+    {
+      "item": "overview",
+      "order": 1
+    },
+    {
+      "new_item": true,
+      "item": "Integrations",
+      "href": "/config/integrations",
+      "icon": "mdi:puzzle",
+      "order": 2
+    },
+    {
+      "new_item": true,
+      "item": "Entities",
+      "href": "/config/entities",
+      "icon": "mdi:hexagon-multiple",
+      "order": 3
+    },
+    {
+      "new_item": true,
+      "item": "Automations",
+      "href": "/config/automation/dashboard",
+      "icon": "mdi:robot",
+      "order": 4
+    },
+    {
+      "item": "terminal",
+      "order": 5
+    },
+    {
+      "item": "hacs",
+      "order": 6
+    },
+    {
+      "item": "config",
+      "bottom": true,
+      "order": 7
+    },
+    {
+      "new_item": true,
+      "item": "Server Controls",
+      "href": "/config/server_control",
+      "icon": "mdi:server",
+      "bottom": true,
+      "order": 8
+    },
+    {
+      "item": "logbook",
+      "bottom": true,
+      "order": 9
+    },
+    {
+      "new_item": true,
+      "item": "Logs",
+      "bottom": true,
+      "href": "/config/logs",
+      "icon": "mdi:math-log",
+      "order": 10
+    },
+    {
+      "item": "developer tools",
+      "bottom": true,
+      "order": 11
+    },
+    {
+      "item": "history",
+      "hide": true
+    },
+    {
+      "item": "snapshots",
+      "hide": true
+    },
+    {
+      "item": "backups",
+      "hide": true
+    },
+    {
+      "item": "map",
+      "hide": true
+    },
+    {
+      "item": "energy",
+      "hide": true
+    },
+    {
+      "item": "media browser",
+      "hide": true
+    }
+  ],
+  "exceptions": [
+    {
+      "user": [
+        "Jim Hawkins",
+        "Long John Silver"
+      ],
+      "base_order": false,
+      "order": []
+    }
+  ],
+  "id": "example_json (remove this from your config or replace with any other string)"
+}

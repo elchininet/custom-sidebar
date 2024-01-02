@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "outDir": "./dist/",
+      "module": "esnext",
+      "target": "ES5",
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "declaration": false,
+      "noImplicitAny": true,
+      "removeComments": true,
+      "baseUrl": "./src",
+      "paths": {
+        "@types": ["types"],
+        "@constants": ["constants"],
+        "@utilities": ["utilities"],
+        "@validators": ["validators"]
+      }
+    },
+    "include": ["src/**/*.ts", "package.json"],
+    "exclude": ["node_modules"]
+  }
