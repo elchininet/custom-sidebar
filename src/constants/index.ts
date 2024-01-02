@@ -8,7 +8,9 @@ export const UNDEFINED_TYPE = 'undefined';
 
 export enum ELEMENT {
     SIDEBAR = 'ha-sidebar',
-    PAPER_LISTBOX = 'paper-listbox'
+    PAPER_LISTBOX = 'paper-listbox',
+    HA_SVG_ICON = 'ha-svg-icon',
+    HA_ICON = 'ha-icon'
 }
 
 export enum SELECTOR {

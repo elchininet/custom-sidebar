@@ -1,5 +1,3 @@
-import { ElementProps } from 'home-assistant-query-selector';
-
 export interface User {
     name: string;
     is_admin: boolean;
@@ -73,8 +71,6 @@ export interface Config {
     order: ConfigOrder[];
     exceptions?: ConfigException[];
 }
-
-export type HAElement = Omit<ElementProps, 'children'>;
 
 export interface ElementHash {
     byTextContent: Record<string, Element>;
