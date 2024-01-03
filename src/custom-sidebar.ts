@@ -173,6 +173,8 @@ class CustomSidebar {
                 let orderIndex = 0;
                 let crossedBottom = false;
 
+                if (!order.length) return;
+
                 const orderWithItems: ConfigOrderWithItem[] = order.map((orderItem: ConfigOrder): ConfigOrderWithItem => {
                     const { item, new_item, exact } = orderItem;
                     const itemLowerCase = item.toLocaleLowerCase();
