@@ -4,28 +4,9 @@
 
 Custom [HACS] plugin that allows you to rearrange, hide, and add menu items to the sidebar in [Home Assistant].
 
-<table>
-  <tr>
-    <th width="25%">Default sidebar</th>
-    <th width="25%">Hide some items</th>
-    <th width="25%">Add new items</th>
-    <th width="25%">Reorder items</th>
-  </tr>
-  <tr>
-    <td>
-      <img src="https://raw.githubusercontent.com/elchininet/custom-sidebar/master/images/default-sidebar.png" alt="default sidebar" />
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/elchininet/custom-sidebar/master/images/hide-items.png" alt="hide items" />
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/elchininet/custom-sidebar/master/images/new-items.png" alt="new items" />
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/elchininet/custom-sidebar/master/images/reorder-items.png" alt="reorder items" />
-    </td>
-  </tr>
-</table>
+| Default sidebar | Hide some items | Add new items | Reorder items |
+| --------------- | --------------- | ------------- | ------------- |
+| ![default sidebar](/images/default-sidebar.png) | ![default sidebar](/images/hide-items.png) | ![default sidebar](/images/new-items.png) | ![default sidebar](/images/reorder-items.png) |
 
 This is a refactor of [custom-sidebar-v2] by @galloween, which is now archived. Inspired in the [original Custom Sidebar] plugin by @Villhellm (R.I.P.).
 
