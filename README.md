@@ -89,12 +89,11 @@ To configure the plugin you need to add a `sidebar-order.json` in your `<config 
 | href      | String  | false     | Specifies the `href` of the sidebar item |
 | target    | String  | false     | Specifies the [target property] of the sidebar item |
 | icon      | String  | false     | Specifies the icon of the sidebar item |
-| new_item  | Boolean | false     | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties**.
- |
+| new_item  | Boolean | false     | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
 
 Short example:
 
-```json
+```json5
 {
   "title": "My Home",
   "order": [
@@ -144,7 +143,7 @@ You can define user-specific order using exceptions feature. Exceptions can be u
 
 Short example:
 
-```json
+```json5
 {
   ...
   "exceptions": [
@@ -190,7 +189,7 @@ panel_iframe:
 
 Then you can modify them as the regular ones:
 
-```json
+```json5
 {
   "order": [
     { "item": "fridge" },
