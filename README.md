@@ -3,7 +3,7 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 [![HACS Action](https://github.com/elchininet/custom-sidebar/actions/workflows/hacs.yaml/badge.svg)](https://github.com/elchininet/custom-sidebar/actions/workflows/hacs.yaml)
 
-Custom [HACS] plugin that allows you to rearrange, hide, and add menu items to the sidebar in [Home Assistant].
+Custom [HACS] plugin that allows you to rearrange, hide, and add menu items to [Home Assistant]'s sidebar.
 
 | Default sidebar | Hide some items | Add new items | Reorder items |
 | --------------- | --------------- | ------------- | ------------- |
