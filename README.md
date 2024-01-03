@@ -27,7 +27,7 @@ Custom [HACS] plugin that allows you to rearrange, hide, and add menu items to t
   </tr>
 </table>
 
-This is a refactor of [custom-sidebar-v2] by @galloween, which is now archived. Inspired in the [original Custom Sidebar] plugin by @Villhellm (R.I.P).
+This is a refactor of [custom-sidebar-v2] by @galloween, which is now archived. Inspired in the [original Custom Sidebar] plugin by @Villhellm (R.I.P.).
 
 ## Installation
 
@@ -125,6 +125,7 @@ Short example:
 * All items in config.order should have unique `item` property
 * The items will be ordered according to their `order` property OR in the order of appearance
 * If you use the `order` property, make sure either all items (except hidden ones) have this property, or none of them (otherwise order may be messed up)
+* All the items placed in the bottom will be moved to the top by default. If you want to have some items in the bottom you need to add them to the `config.order` and specify their `bottom` property on `true`.
 * Any items present in the Sidebar, but not in `config.order`, will be shown **on the bottom** of the top part of the list
 * Notifications and user account are not part of the sidebar items; it will not be processed
 
@@ -204,7 +205,7 @@ Then you can modify them as the regular ones:
 
 ## Credits
 
-* [Villhellm](https://github.com/Villhellm/custom-sidebar) | Original creator of custom-sidebar (R.I.P).
+* [Villhellm](https://github.com/Villhellm/custom-sidebar) | Original creator of custom-sidebar (R.I.P.).
 * [galloween](https://github.com/galloween) | forked the `original custom-sidebar` and maintained it for a while
 
 [HACS]: https://hacs.xyz
