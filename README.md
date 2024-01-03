@@ -8,7 +8,7 @@ Custom [HACS] plugin that allows you to rearrange, hide, and add menu items to t
 | --------------- | --------------- | ------------- | ------------- |
 | ![default sidebar](/images/default-sidebar.png) | ![default sidebar](/images/hide-items.png) | ![default sidebar](/images/new-items.png) | ![default sidebar](/images/reorder-items.png) |
 
-This is a refactor of [custom-sidebar-v2] by @galloween, which is now archived. Inspired in the [original Custom Sidebar] plugin by @Villhellm (R.I.P.).
+This is a refactor of [custom-sidebar-v2] by @galloween, which unfortunatelly is now unmaintained and archived. In its beginning, @galloween's code was a refactor of the [original Custom Sidebar] plugin by @Villhellm (R.I.P.). This version refactored completely @galloween's code, using [home-assistant-query-selector] to make it less likely to break with future Home Assistant front-end updates.
 
 ## Installation
 
@@ -193,6 +193,7 @@ Then you can modify them as the regular ones:
 [Home Assistant]: https://www.home-assistant.io
 [custom-sidebar-v2]: https://github.com/galloween/custom-sidebar-v2
 [original Custom Sidebar]: https://github.com/Villhellm/custom-sidebar
+[home-assistant-query-selector]: https://github.com/elchininet/home-assistant-query-selector
 [extra_module_url]: https://www.home-assistant.io/integrations/frontend/#extra_module_url
 [browser_mod]: https://github.com/thomasloven/hass-browser_mod
 [custom-sidebar release]: https://github.com/elchininet/custom-sidebar/releases
