@@ -23,10 +23,6 @@ import {
     getFinalOrder
 } from '@utilities';
 
-logVersionToConsole();
-
-const configPromise = fetchConfig();
-
 class CustomSidebar {
 
     constructor() {
@@ -47,9 +43,11 @@ class CustomSidebar {
 
         selector.listen();
 
+        this._configPromise = fetchConfig();
         this._process();
     }
 
+    private _configPromise: Promise<Config>;
     private _homeAssistant: HAElement;
     private _partialPanelResolver: HAElement;
     private _sidebar: HAElement;
@@ -57,7 +55,7 @@ class CustomSidebar {
     private async _getOrder(): Promise<ConfigOrder[]> {
         const user = await this._getCurrentUser();
         const device = this._getCurrentDevice();
-        return configPromise
+        return this._configPromise
             .then((config: Config) => {
                 return getFinalOrder(
                     user,
@@ -70,7 +68,7 @@ class CustomSidebar {
 
     private _getElementWithConfig<P>(promise: Promise<P>): Promise<[Config, Awaited<P>]> {
         return Promise.all([
-            configPromise,
+            this._configPromise,
             promise
         ]);
     }
@@ -302,4 +300,7 @@ class CustomSidebar {
 
 }
 
-new CustomSidebar();
+if (!window.CustomSidebar) {
+    logVersionToConsole();
+    window.CustomSidebar = new CustomSidebar();
+}

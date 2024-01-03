@@ -71,3 +71,9 @@ export interface Config {
     order: ConfigOrder[];
     exceptions?: ConfigException[];
 }
+
+declare global {
+    interface Window {
+        CustomSidebar: {};
+    }
+}

@@ -53,10 +53,13 @@ You can install the plugin manually or through [HACS], not both. If you install 
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar.js
+    - /hacsfiles/custom-sidebar/custom-sidebar.js?v1.0.0
 ```
 
-10. Restart Home Assistant
+10. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
+12. Restart Home Assistant
+
+>Note
 
 ### Manual installation
 
@@ -67,10 +70,11 @@ frontend:
 ```yaml
 frontend:
   extra_module_url:
-    - /local/custom-sidebar.js
+    - /local/custom-sidebar.js?v1.0.0
 ```
 
-4. Restart Home Assistant
+4. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
+5. Restart Home Assistant
 
 ## Configuration
 
