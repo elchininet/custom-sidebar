@@ -205,9 +205,8 @@ class CustomSidebar {
                     return total;
                 }, 0);
 
-                orderWithItems.forEach((orderItem: ConfigOrderWithItem): void => {
-
-                    if (orderItem.bottom && !crossedBottom) {
+                const processBottom = () => {
+                    if (!crossedBottom) {
                         Array.from(items).forEach((element: HTMLElement) => {
                             if (!element.hasAttribute(ATTRIBUTE.PROCESSED)) {
                                 element.style.order = `${orderIndex}`;
@@ -217,6 +216,13 @@ class CustomSidebar {
                         (spacer as HTMLDivElement).style.order = `${orderIndex}`;
                         orderIndex ++;
                         crossedBottom = true;
+                    }
+                };
+
+                orderWithItems.forEach((orderItem: ConfigOrderWithItem): void => {
+
+                    if (orderItem.bottom) {
+                        processBottom();
                     }
 
                     if (orderItem.new_item) {
@@ -255,6 +261,8 @@ class CustomSidebar {
                     orderIndex++;
 
                 });
+
+                processBottom();
                 
             });
     }
