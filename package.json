@@ -9,7 +9,11 @@
   "private": false,
   "scripts": {
     "build": "rollup --config rollup.config.js --bundleConfigAsCjs",
-    "test:ts": "tsc --noEmit"
+    "test:ts": "tsc --noEmit",
+    "prepare": "yarn build",
+    "prepublishOnly": "yarn test:ts",
+    "version": "git add .",
+    "postversion": "git push && git push --tags"
   },
   "devDependencies": {
     "@rollup/plugin-json": "^6.1.0",
