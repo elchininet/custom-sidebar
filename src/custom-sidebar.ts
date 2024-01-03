@@ -9,8 +9,7 @@ import {
     ConfigNewItem,
     ConfigOrder,
     ConfigOrderWithItem,
-    HomeAssistant,
-    ElementHash
+    HomeAssistant
 } from '@types';
 import {
     ELEMENT,

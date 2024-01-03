@@ -164,10 +164,3 @@ export const getFinalOrder = (
     }
     return flatConfigOrder(order);
 };
-
-// export const addStyle = (elem: Element | ShadowRoot, css: string): void => {
-//     const style = document.createElement('style');
-//     style.setAttribute('id', NAMESPACE);
-//     elem.appendChild(style);
-//     style.innerHTML = css;
-// };
