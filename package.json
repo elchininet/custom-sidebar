@@ -8,7 +8,8 @@
   "license": "Apache-2.0",
   "private": false,
   "scripts": {
-    "build": "rollup --config rollup.config.js --bundleConfigAsCjs"
+    "build": "rollup --config rollup.config.js --bundleConfigAsCjs",
+    "test:ts": "tsc --noEmit"
   },
   "devDependencies": {
     "@rollup/plugin-json": "^6.1.0",
