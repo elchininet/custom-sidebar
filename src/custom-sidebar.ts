@@ -158,7 +158,7 @@ class CustomSidebar {
             ._getElementWithConfig(titleElementPromise)
             .then(([config, titleElement]): void => {
                 if (config.title) {
-                    titleElement.innerHTML = 'Fake title';
+                    titleElement.innerHTML = config.title;
                 }
             }); 
     }
