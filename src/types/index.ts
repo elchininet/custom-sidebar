@@ -20,6 +20,7 @@ export interface ConfigItem {
     hide?: boolean;
     exact?: boolean;
     href?: string;
+    target?: '_self' | '_blank';
     icon?: string;
     new_item?: never;
 }
@@ -29,7 +30,6 @@ export interface ConfigNewItem extends Omit<ConfigItem, 'new_item'> {
     item: string;
     href: string;
     icon: string;
-    target?: '_self' | '_blank';
 }
 
 export type ConfigOrder = ConfigItem | ConfigNewItem;
