@@ -71,8 +71,3 @@ export interface Config {
     order: ConfigOrder[];
     exceptions?: ConfigException[];
 }
-
-export interface ElementHash {
-    byTextContent: Record<string, Element>;
-    byPanelName: Record<string, Element>;
-}
