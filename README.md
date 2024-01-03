@@ -106,12 +106,12 @@ Short example:
 
 #### Notes
 
-* All items in config.order should have unique `item` property
+* All items in `config.order` should have unique `item` property
 * The items will be ordered according to their `order` property OR in the order of appearance
 * If you use the `order` property, make sure either all items (except hidden ones) have this property, or none of them (otherwise order may be messed up)
 * All the items placed in the bottom will be moved to the top by default. If you want to have some items in the bottom you need to add them to the `config.order` and specify their `bottom` property on `true`.
 * Any items present in the Sidebar, but not in `config.order`, will be shown **on the bottom** of the top part of the list
-* Notifications and user account are not part of the sidebar items; it will not be processed
+* Notifications and user account are not part of the sidebar items so they will not be processed byt this plugin
 
 ### Exceptions
 
@@ -153,7 +153,7 @@ Short example:
 Check out Home Assistant's native sidebar tools, maybe it will be enough for your needs.
 
 * You can use HA's `panel_custom` integration to add internal links to the sidebar. Take a look at [this tutorial](https://home-assistant-guide.com/2021/12/08/how-to-add-internal-links-to-the-home-assistant-sidebar). Official [docs](https://www.home-assistant.io/integrations/panel_custom).
-* You can use HA's `panel_iframe` integration to add external links. [See below](#combining-with-iframe-panel-to-show-external-content-inside-home-assitant). Official [docs](https://www.home-assistant.io/integrations/panel_iframe).
+* You can use HA's `panel_iframe` integration to add external links. [See below](#combine-with-iframe-panel-to-show-external-content-inside-home-assitant). Official [docs](https://www.home-assistant.io/integrations/panel_iframe).
 * You can click and hold the Home Assistant header on top of the sidebar and then it will allow you to add/remove and re-order some of the items (but not add new custom ones). This feature is also accessible from your profile settings (if you click on your username in the bottom left corner)
 
 ## Combine with Iframe Panel to show external content inside Home Assitant
@@ -187,7 +187,7 @@ Then you can modify them as the regular ones:
 
 ---
 
-## Credits
+## Credits and huge thanks to:
 
 * [Villhellm](https://github.com/Villhellm/custom-sidebar) | Original creator of custom-sidebar (R.I.P.).
 * [galloween](https://github.com/galloween) | forked the `original custom-sidebar` and maintained it for a while
