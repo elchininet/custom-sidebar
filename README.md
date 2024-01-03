@@ -47,6 +47,8 @@ frontend:
     - /local/custom-sidebar.js
 ```
 
+4. Restart Home Assistant
+
 ## Configuration
 
 To configure the plugin you need to add a `sidebar-order.json` in your `<config directory>/www/` directory. It could be easier if you copy the [example sidebar-order.json] file, delete the `id` parameter, and edit it to match your needs.
