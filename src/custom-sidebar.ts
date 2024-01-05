@@ -18,10 +18,10 @@ import {
 } from '@constants';
 import {
     logVersionToConsole,
-    fetchConfig,
     getPromisableElement,
     getFinalOrder
 } from '@utilities';
+import { fetchConfig } from '@fetchers/json';
 
 class CustomSidebar {
 

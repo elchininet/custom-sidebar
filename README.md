@@ -50,22 +50,32 @@ You can install the plugin manually or through [HACS], not both. If you install 
 8. Search for `custom-sidebar` and install it
 9. Add the url of the plugin as an [extra_module_url] in your `confgiguration.yaml` (unless you use [browser_mod]):
 
+#### If you want to use a `JSON` configuration
+
 ```yaml
 frontend:
   extra_module_url:
     - /hacsfiles/custom-sidebar/custom-sidebar.js?v1.0.0
 ```
 
+#### If you want to use a `YAML` configuration
+
+```yaml
+frontend:
+  extra_module_url:
+    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js?v1.0.0
+```
+
 10. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
 12. Restart Home Assistant
-
->Note
 
 ### Manual installation
 
 1. Download the latest [custom-sidebar release]
-2. Copy `custom-sidebar.js` into `<config directory>/www/`
+2. Copy `custom-sidebar.js` or `custom-sidebar-yaml.js` into `<config directory>/www/` (depending on the configuration format that you are going to use, `JSON` or `YAML`)
 3. Add the url of the plugin as an [extra_module_url] in your `confgiguration.yaml` (unless you use [browser_mod]):
+
+#### If you want to use a `JSON` configuration
 
 ```yaml
 frontend:
@@ -73,12 +83,22 @@ frontend:
     - /local/custom-sidebar.js?v1.0.0
 ```
 
+#### If you want to use a `YAML` configuration
+
+```yaml
+frontend:
+  extra_module_url:
+    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js?v1.0.0
+```
+
 4. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
 5. Restart Home Assistant
 
 ## Configuration
 
-To configure the plugin you need to add a `sidebar-order.json` in your `<config directory>/www/` directory. It could be easier if you copy the [example sidebar-order.json] file, delete the `id` parameter, and edit it to match your needs.
+Depending on the file that you have added to [extra_module_url], you will need to add your configuration in `JSON` or `YAML` format. If you used `custom-sidebar.js` you need to provide the configuration in `JSON` format. If you have used `custom-sidebar-yaml.js` you need to provide the configuration in `YAML` format.
+
+Add a file named `sidebar-order.json` or `sidebar-order.yaml` into your `<config directory>/www/` directory. It could be easier if you copy the [example sidebar-order.json] or the [example sidebar-order.yaml] file, delete the `id` parameter, and edit it to match your needs.
 
 ### Configuration options
 
@@ -91,18 +111,18 @@ To configure the plugin you need to add a `sidebar-order.json` in your `<config 
 
 | Property  | Type    | Required | Description |
 | --------- | ------- | -------- | ----------- |
-| item      | String  | true     | This is a string that will be used to match each sidebar item. It can be a substring such as `developer` instead of `Developer Tools`. It is case insensitive. |
+| item      | String  | true     | This is a string that will be used to match each sidebar item by its text or its `data-panel` property. It can be a substring such as `developer` instead of `Developer Tools`. It is case insensitive. |
 | name      | String  | false     | Changes the name of the sidebar item |
 | order     | Number  | false     | Sets the order number of the sidebar item |
 | bottom    | Boolean | false     | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
 | hide      | Boolean | false     | Setting this property to `true` will hide the sidebar item |
-| exact     | Boolean | false     | Specifies whether the `item` string match should be an exact match instead of a substring |
+| exact     | Boolean | false     | Specifies whether the `item` string match should be an exact match of the item text instead of a substring |
 | href      | String  | false     | Specifies the `href` of the sidebar item |
 | target    | String  | false     | Specifies the [target property] of the sidebar item |
 | icon      | String  | false     | Specifies the icon of the sidebar item |
 | new_item  | Boolean | false     | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
 
-Short example:
+Short example in `JSON` format:
 
 ```json5
 {
@@ -131,6 +151,26 @@ Short example:
  }
 ```
 
+Short example in `YAML` format:
+
+```yaml
+title: My Home
+order:
+  - new_item: true
+    item: Google
+    href: https://mrdoob.com/projects/chromeexperiments/google-gravity/
+    icon: mdi:earth
+    target: _blank
+    order: 1
+  - item: overview
+    order: 2
+  - new_item: true
+    item: Integrations
+    href: "/config/integrations"
+    icon: mdi:puzzle
+    order: 3
+```
+
 #### Notes
 
 * All items in `config.order` should have unique `item` property
@@ -153,7 +193,7 @@ You can define user-specific order using exceptions feature. Exceptions can be u
 | device     | String or String[] | false   | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
 | not_device | String or String[] | false   | Device(s) you wouldn't like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
 
-Short example:
+Short example in `JSON` format:
 
 ```json5
 {
@@ -167,6 +207,18 @@ Short example:
     }
   ]  
 }
+```
+
+Short example in `YAML` format:
+
+```yaml
+...
+exceptions:
+  - user:
+    - Jim Hawkins
+    - Long John Silver
+    order:
+      ...
 ```
 
 #### Notes
@@ -201,6 +253,8 @@ panel_iframe:
 
 Then you can modify them as the regular ones:
 
+#### In `JSON` format
+
 ```json5
 {
   "order": [
@@ -210,6 +264,16 @@ Then you can modify them as the regular ones:
     ...
   ]
 }
+```
+
+#### In `YAML` format
+
+```yaml
+order:
+  - item: fridge
+  - item: overview
+  - item: router
+  ...
 ```
 
 ---
@@ -228,6 +292,7 @@ Then you can modify them as the regular ones:
 [browser_mod]: https://github.com/thomasloven/hass-browser_mod
 [custom-sidebar release]: https://github.com/elchininet/custom-sidebar/releases
 [example sidebar-order.json]: https://raw.githubusercontent.com/elchininet/custom-sidebar/master/sidebar-order.json
+[example sidebar-order.yaml]: https://raw.githubusercontent.com/elchininet/custom-sidebar/master/sidebar-order.yaml
 [target property]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target
 [user-agent]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
 [Home Assistant's Iframe Panel feature]: https://www.home-assistant.io/integrations/panel_iframe/

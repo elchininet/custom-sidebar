@@ -14,7 +14,8 @@
         "@types": ["types"],
         "@constants": ["constants"],
         "@utilities": ["utilities"],
-        "@validators": ["validators"]
+        "@validators": ["validators"],
+        "@fetchers/*": ["fetchers/*"]
       }
     },
     "include": ["src/**/*.ts", "package.json"],
