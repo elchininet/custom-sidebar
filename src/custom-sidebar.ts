@@ -180,13 +180,17 @@ class CustomSidebar {
                         ? undefined
                         : Array.from(items).find((element: Element): boolean => {
                             const text = element.querySelector(SELECTOR.ITEM_TEXT).textContent.trim();
+                            const dataPanel = element.getAttribute(ATTRIBUTE.PANEL);
                             if (exact) {
-                                return text === item;
+                                return (
+                                    text === item ||
+                                    dataPanel === item
+                                );
                             }
-                            return (
-                                text.toLocaleLowerCase().includes(itemLowerCase) ||
-                                element.getAttribute(ATTRIBUTE.PANEL).toLocaleLowerCase() === itemLowerCase
-                            );
+                            if (dataPanel.toLocaleLowerCase() === itemLowerCase) {
+                                return true;
+                            }
+                            return text.toLocaleLowerCase().includes(itemLowerCase);
                         });
                     if (element) {
                         element.setAttribute(ATTRIBUTE.PROCESSED, 'true');

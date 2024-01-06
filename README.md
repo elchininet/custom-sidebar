@@ -111,12 +111,12 @@ Add a file named `sidebar-order.json` or `sidebar-order.yaml` into your `<config
 
 | Property  | Type    | Required | Description |
 | --------- | ------- | -------- | ----------- |
-| item      | String  | true     | This is a string that will be used to match each sidebar item by its text or its `data-panel` property. In the case of the item text, it can be a substring such as `developer` instead of `Developer Tools` and it is case insensitive. |
+| item      | String  | true     | This is a string that will be used to match each sidebar item by its text or its `data-panel` property. In the case of the item text, it can be a substring such as `developer` instead of `Developer Tools`. If the `exact` property is not set, it is case insensitive. |
 | name      | String  | false     | Changes the name of the sidebar item |
 | order     | Number  | false     | Sets the order number of the sidebar item |
 | bottom    | Boolean | false     | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
 | hide      | Boolean | false     | Setting this property to `true` will hide the sidebar item |
-| exact     | Boolean | false     | Specifies whether the `item` string match should be an exact match of the item text instead of a substring |
+| exact     | Boolean | false     | Specifies whether the `item` string match should be an exact match of the item text or an exact match of the `data-panel` attribute (case sensitive) |
 | href      | String  | false     | Specifies the `href` of the sidebar item |
 | target    | String  | false     | Specifies the [target property] of the sidebar item |
 | icon      | String  | false     | Specifies the icon of the sidebar item |
