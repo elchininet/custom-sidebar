@@ -32,7 +32,7 @@ Custom [HACS] plugin that allows you to rearrange, hide, and add menu items to [
   </tbody>
 </table>
 
-This is a refactor of [custom-sidebar-v2] by @galloween, which unfortunatelly is now unmaintained and archived. In its beginning, @galloween's code was a refactor of the [original Custom Sidebar] plugin by @Villhellm (R.I.P.). This version refactored completely @galloween's code, using [home-assistant-query-selector] to make it less likely to break with future Home Assistant front-end updates.
+This is a refactor of [custom-sidebar-v2] by @galloween, which unfortunatelly is now unmaintained and archived. In its beginning, @galloween's code was a refactor of the [original Custom Sidebar] plugin by @Villhellm (R.I.P.). This version refactored completely @galloween's code allowing to use `JSON` or `YAML` configurations, and using [home-assistant-query-selector] to make it less likely to break with future Home Assistant front-end updates.
 
 ## Installation
 
