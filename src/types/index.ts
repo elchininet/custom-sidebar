@@ -3,13 +3,24 @@ export interface User {
     is_admin: boolean;
 }
 
-export class HomeAssistant extends HTMLElement {
+export interface HomeAssistant extends HTMLElement {
 	hass: {
         user: User;
         config: {
             version: string;
         };
     };
+}
+
+export interface PartialPanelResolver extends HTMLElement {
+    __route: {
+        prefix: string,
+        path: string;
+    }
+}
+
+export interface PaperListBox extends HTMLElement {
+    _updateAttrForSelected: () => void;
 }
 
 export interface ConfigItem {

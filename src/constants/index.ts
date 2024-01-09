@@ -14,6 +14,7 @@ export enum ELEMENT {
 }
 
 export enum SELECTOR {
+    SCOPE = ':scope',
     TITLE = '.title',
     ITEM = 'a[role="option"]',
     SPACER = '.spacer',
@@ -22,8 +23,14 @@ export enum SELECTOR {
 
 export enum ATTRIBUTE {
     PANEL = 'data-panel',
+    ROLE = 'role',
     PROCESSED = 'data-processed',
     ARIA_SELECTED = 'aria-selected',
     ARIA_DISABLED = 'aria-disabled',
+    HREF = 'href',
     STYLE = 'style'
+}
+
+export enum EVENT {
+    MOUSEDOWN = 'mousedown'
 }

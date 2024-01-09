@@ -1,7 +1,8 @@
 import {
     HAQuerySelector,
     HAQuerySelectorEvent,
-    OnLovelacePanelLoadDetail,
+    OnListenDetail,
+    OnPanelLoadDetail,
     HAElement
 } from 'home-assistant-query-selector';
 import {
@@ -9,12 +10,15 @@ import {
     ConfigNewItem,
     ConfigOrder,
     ConfigOrderWithItem,
-    HomeAssistant
+    HomeAssistant,
+    PartialPanelResolver,
+    PaperListBox
 } from '@types';
 import {
     ELEMENT,
     SELECTOR,
-    ATTRIBUTE
+    ATTRIBUTE,
+    EVENT
 } from '@constants';
 import {
     logVersionToConsole,
@@ -30,10 +34,9 @@ class CustomSidebar {
         const selector = new HAQuerySelector();
 
         selector.addEventListener(
-            HAQuerySelectorEvent.ON_PANEL_LOAD,
-            (event: CustomEvent<OnLovelacePanelLoadDetail>) => {
+            HAQuerySelectorEvent.ON_LISTEN,
+            (event: CustomEvent<OnListenDetail>) => {
                 this._homeAssistant = event.detail.HOME_ASSISTANT;
-                this._partialPanelResolver = event.detail.PARTIAL_PANEL_RESOLVER;
                 this._sidebar = event.detail.HA_SIDEBAR;
             },
             {
@@ -41,16 +44,24 @@ class CustomSidebar {
             }
         );
 
+        selector.addEventListener(
+            HAQuerySelectorEvent.ON_PANEL_LOAD,
+            this._updateSidebarSelection.bind(this)
+        );        
+
         selector.listen();
 
+        this._sidebarScroll = 0;
+        this._itemTouchedBinded = this._itemTouched.bind(this);
         this._configPromise = fetchConfig();
         this._process();
     }
 
     private _configPromise: Promise<Config>;
     private _homeAssistant: HAElement;
-    private _partialPanelResolver: HAElement;
     private _sidebar: HAElement;
+    private _sidebarScroll: number;
+    private _itemTouchedBinded: (event: Event) => Promise<void>;
 
     private async _getOrder(): Promise<ConfigOrder[]> {
         const user = await this._getCurrentUser();
@@ -94,6 +105,7 @@ class CustomSidebar {
         const a = document.createElement('a');
         a.href = configItem.href;
         a.target = configItem.target || '';
+        a.setAttribute(ATTRIBUTE.ROLE, 'option');
         a.setAttribute(ATTRIBUTE.PANEL, name.toLowerCase().replace(/\s+/, '-'));
         if (configItem.hide) {
             a.style.display = 'none';
@@ -102,8 +114,8 @@ class CustomSidebar {
 
         a.innerHTML = `
             <paper-icon-item
-                role="option"
                 tabindex="0"
+                ${ATTRIBUTE.ROLE}="option"
                 ${ATTRIBUTE.ARIA_DISABLED}="false"
             >
                 <ha-icon
@@ -201,13 +213,6 @@ class CustomSidebar {
                     };
                 });
 
-                const unprocessedItemsTotal = Array.from(items).reduce((total: number, element: Element) => {
-                    if (!element.hasAttribute(ATTRIBUTE.PROCESSED)) {
-                        return total + 1;
-                    }
-                    return total;
-                }, 0);
-
                 const processBottom = () => {
                     if (!crossedBottom) {
                         Array.from(items).forEach((element: HTMLElement) => {
@@ -234,6 +239,8 @@ class CustomSidebar {
                         newItem.style.order = `${orderIndex}`;
                         paperListBox.appendChild(newItem);
 
+                        newItem.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
+
                     } else if (orderItem.element) {
 
                         const element = orderItem.element as HTMLAnchorElement;
@@ -259,6 +266,8 @@ class CustomSidebar {
                             element.target = orderItem.target;
                         }
 
+                        orderItem.element.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
+
                     }
 
                     orderIndex++;
@@ -270,36 +279,65 @@ class CustomSidebar {
             });
     }
 
-    private async _captureUrlChanges(): Promise<void> {
-        let path = location.pathname;
+    private async _itemTouched(event: Event): Promise<void> {
+        this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element
+            .then((paperListBox: PaperListBox): void => {
+                this._sidebarScroll = paperListBox.scrollTop;
+            });
+    }
+
+    private async _updateSidebarSelection(event: CustomEvent<OnPanelLoadDetail>): Promise<void> {
+
+        const { HA_SIDEBAR, PARTIAL_PANEL_RESOLVER } = event.detail;
+
         const className = 'iron-selected';
-        const links = await this._sidebar
-            .selector
-            .$
-            .query(`${ELEMENT.PAPER_LISTBOX} > ${SELECTOR.ITEM}`)
-            .all;
-        const partialPanelResolver = await this._partialPanelResolver.element;
-        const observer = new MutationObserver(() => {
-            if (path !== location.pathname) {
-                path = location.pathname;
-                Array.from(links).forEach((anchor: HTMLAnchorElement): void => {
-                    if (anchor.href.endsWith(path)) {
-                        anchor.classList.add(className);
-                        anchor.setAttribute(ATTRIBUTE.ARIA_SELECTED, 'true');
-                    } else {
-                        anchor.classList.remove(className);
-                        anchor.setAttribute(ATTRIBUTE.ARIA_SELECTED, 'false');
+        const panelResolver = await PARTIAL_PANEL_RESOLVER.element as PartialPanelResolver;
+        const pathName = panelResolver.__route?.path;
+        const paperListBox = await HA_SIDEBAR.selector.$.query(ELEMENT.PAPER_LISTBOX).element as PaperListBox;
+        const allLinks = paperListBox.querySelectorAll<HTMLAnchorElement>(`${SELECTOR.SCOPE} > ${SELECTOR.ITEM}`);
+        const activeLink = paperListBox.querySelector<HTMLAnchorElement>(
+            [
+                `${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}"]`,
+                `${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}/dashboard"]`
+            ].join(',')
+        );
+        const activeParentLink = activeLink
+            ? null
+            : Array.from(allLinks).reduce((link: HTMLAnchorElement | null, anchor: HTMLAnchorElement): HTMLAnchorElement | null => {
+                const href = anchor.getAttribute(ATTRIBUTE.HREF);
+                if (pathName.startsWith(href)) {
+                    if (
+                        !link ||
+                        href.length > link.getAttribute(ATTRIBUTE.HREF).length
+                    ) {
+                        link = anchor;
                     }
-                });
+                }
+                return link;
+            }, null);
+
+        if (pathName) {
+            Array.from(allLinks).forEach((anchor: HTMLAnchorElement): void => {
+                const isActive = (
+                    activeLink &&
+                    activeLink === anchor
+                ) ||
+                (
+                    !activeLink &&
+                    activeParentLink === anchor
+                );
+                anchor.classList.toggle(className, isActive);
+                anchor.setAttribute(ATTRIBUTE.ARIA_SELECTED, `${isActive}`);
+            });
+            if (paperListBox.scrollTop !== this._sidebarScroll) {
+                paperListBox.scrollTop = this._sidebarScroll;
             }
-        });
-        observer.observe(partialPanelResolver, { childList: true, subtree: true });
+        }
     }
 
     private _process(): void {
         this._setTitle();
         this._rearrange();
-        this._captureUrlChanges();
     }
 
 }
