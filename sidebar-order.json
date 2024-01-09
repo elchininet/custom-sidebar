@@ -29,7 +29,7 @@
     {
       "new_item": true,
       "item": "Automations",
-      "href": "/config/automation/dashboard",
+      "href": "/config/automation",
       "icon": "mdi:robot",
       "order": 4
     },
