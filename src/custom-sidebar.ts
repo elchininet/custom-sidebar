@@ -12,7 +12,8 @@ import {
     ConfigOrderWithItem,
     HomeAssistant,
     PartialPanelResolver,
-    PaperListBox
+    PaperListBox,
+    Match
 } from '@types';
 import {
     ELEMENT,
@@ -185,24 +186,36 @@ class CustomSidebar {
 
                 if (!order.length) return;
 
+                const itemsArray = Array.from(items);
+                const matched: Set<Element> = new Set();
+
                 const orderWithItems: ConfigOrderWithItem[] = order.map((orderItem: ConfigOrder): ConfigOrderWithItem => {
-                    const { item, new_item, exact } = orderItem;
+                    const { item, match, exact, new_item } = orderItem;
                     const itemLowerCase = item.toLocaleLowerCase();
                     const element = new_item
                         ? undefined
-                        : Array.from(items).find((element: Element): boolean => {
-                            const text = element.querySelector(SELECTOR.ITEM_TEXT).textContent.trim();
-                            const dataPanel = element.getAttribute(ATTRIBUTE.PANEL);
-                            if (exact) {
-                                return (
-                                    text === item ||
-                                    dataPanel === item
+                        : itemsArray.find((element: Element): boolean => {
+                            const text = match === Match.DATA_PANEL
+                                ? element.getAttribute(ATTRIBUTE.PANEL)
+                                : (
+                                    match === Match.HREF
+                                        ? element.getAttribute(ATTRIBUTE.HREF)
+                                        : element.querySelector(SELECTOR.ITEM_TEXT).textContent.trim()
                                 );
+                            
+                            const matchText = (
+                                (!!exact && item === text) ||
+                                (!exact && text.toLowerCase().includes(itemLowerCase))
+                            );
+                            if (matchText) {
+                                if (matched.has(element)) {
+                                    return false;
+                                } else {
+                                    matched.add(element);
+                                    return true;
+                                }
                             }
-                            if (dataPanel.toLocaleLowerCase() === itemLowerCase) {
-                                return true;
-                            }
-                            return text.toLocaleLowerCase().includes(itemLowerCase);
+                            return false;
                         });
                     if (element) {
                         element.setAttribute(ATTRIBUTE.PROCESSED, 'true');

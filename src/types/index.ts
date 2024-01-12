@@ -23,13 +23,20 @@ export interface PaperListBox extends HTMLElement {
     _updateAttrForSelected: () => void;
 }
 
+export enum Match {
+    TEXT = 'text',
+    DATA_PANEL = 'data-panel',
+    HREF = 'href'
+}
+
 export interface ConfigItem {
     item: string;
+    match?: `${Match}`;
+    exact?: boolean;
     name?: string;
     order?: number;
     bottom?: boolean;
     hide?: boolean;
-    exact?: boolean;
     href?: string;
     target?: '_self' | '_blank';
     icon?: string;
