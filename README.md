@@ -98,7 +98,7 @@ frontend:
 
 Depending on the file that you have added to [extra_module_url], you will need to add your configuration in `JSON` or `YAML` format. If you used `custom-sidebar.js` you need to provide the configuration in `JSON` format. If you have used `custom-sidebar-yaml.js` you need to provide the configuration in `YAML` format.
 
-Add a file named `sidebar-order.json` or `sidebar-order.yaml` into your `<config directory>/www/` directory. It could be easier if you copy the [example sidebar-order.json] or the [example sidebar-order.yaml] file, delete the `id` parameter, and edit it to match your needs.
+Add a file named `sidebar-config.json` or `sidebar-config.yaml` into your `<config directory>/www/` directory. It could be easier if you copy the [example sidebar-config.json] or the [example sidebar-config.yaml] file, delete the `id` parameter, and edit it to match your needs.
 
 ### Configuration options
 
@@ -109,14 +109,15 @@ Add a file named `sidebar-order.json` or `sidebar-order.yaml` into your `<config
 
 #### Item properties
 
-| Property  | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
-| item      | String  | true     | This is a string that will be used to match each sidebar item by its text or its `data-panel` attribute. In the case of the item text, it can be a substring such as `developer` instead of `Developer Tools`. If the `exact` property is not set, it is case insensitive. |
+| Property  | Type    | Required  | Description |
+| --------- | ------- | --------- | ----------- |
+| item      | String  | true      | This is a string that will be used to match each sidebar item by its text, its `data-panel` attribute or its `href`. If the `exact` property is not set, it is case insensitive and it can be a substring such as `developer` instead of `Developer Tools` or `KITCHEN` instead of `kitchen-lights`. |
+| match     | String  | false     | This property will define which string will be used to match the `item` property. It has three possible values "text" (default) to match the text content of the element, "data-panel" to match the `data-panel` attribute of the element, or "href", to match the `href` attribute of the element |
+| exact     | Boolean | false     | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`). |
 | name      | String  | false     | Changes the name of the sidebar item |
 | order     | Number  | false     | Sets the order number of the sidebar item |
 | bottom    | Boolean | false     | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
 | hide      | Boolean | false     | Setting this property to `true` will hide the sidebar item |
-| exact     | Boolean | false     | Specifies whether the `item` string match should be an exact match of the item text or an exact match of the `data-panel` attribute (case sensitive) |
 | href      | String  | false     | Specifies the `href` of the sidebar item |
 | target    | String  | false     | Specifies the [target property] of the sidebar item |
 | icon      | String  | false     | Specifies the icon of the sidebar item |
@@ -174,6 +175,7 @@ order:
 #### Notes
 
 * All items in `config.order` should have unique `item` property
+* Avoid an `item` property that could match multiple elements. If you find that an item property matches with multiple elements, try to use the `match` and `exact` properties to match the specific item that you want to match.
 * The items will be ordered according to their `order` property OR in the order of appearance
 * If you use the `order` property, make sure either all items (except hidden ones) have this property, or none of them (otherwise order may be messed up)
 * All the items placed in the bottom will be moved to the top by default. If you want to have some items in the bottom you need to add them to the `config.order` and specify their `bottom` property on `true`.
@@ -291,8 +293,8 @@ order:
 [extra_module_url]: https://www.home-assistant.io/integrations/frontend/#extra_module_url
 [browser_mod]: https://github.com/thomasloven/hass-browser_mod
 [custom-sidebar release]: https://github.com/elchininet/custom-sidebar/releases
-[example sidebar-order.json]: https://raw.githubusercontent.com/elchininet/custom-sidebar/master/sidebar-order.json
-[example sidebar-order.yaml]: https://raw.githubusercontent.com/elchininet/custom-sidebar/master/sidebar-order.yaml
+[example sidebar-config.json]: https://raw.githubusercontent.com/elchininet/custom-sidebar/master/sidebar-config.json
+[example sidebar-config.yaml]: https://raw.githubusercontent.com/elchininet/custom-sidebar/master/sidebar-config.yaml
 [target property]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target
 [user-agent]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
 [Home Assistant's Iframe Panel feature]: https://www.home-assistant.io/integrations/panel_iframe/

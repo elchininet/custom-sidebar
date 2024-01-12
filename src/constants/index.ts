@@ -1,5 +1,5 @@
 export const NAMESPACE = 'custom-sidebar';
-export const CONFIG_PATH = '/local/sidebar-order';
+export const CONFIG_PATH = '/local/sidebar-config';
 export const MAX_ATTEMPTS = 500;
 export const RETRY_DELAY = 50;
 
