@@ -2,7 +2,6 @@ import {
     HAQuerySelector,
     HAQuerySelectorEvent,
     OnListenDetail,
-    OnPanelLoadDetail,
     HAElement
 } from 'home-assistant-query-selector';
 import {
@@ -39,6 +38,7 @@ class CustomSidebar {
             (event: CustomEvent<OnListenDetail>) => {
                 this._homeAssistant = event.detail.HOME_ASSISTANT;
                 this._sidebar = event.detail.HA_SIDEBAR;
+                this._partialPanelResolver = event.detail.PARTIAL_PANEL_RESOLVER;
             },
             {
                 once: true
@@ -60,6 +60,7 @@ class CustomSidebar {
 
     private _configPromise: Promise<Config>;
     private _homeAssistant: HAElement;
+    private _partialPanelResolver: HAElement;
     private _sidebar: HAElement;
     private _sidebarScroll: number;
     private _itemTouchedBinded: (event: Event) => Promise<void>;
@@ -288,25 +289,25 @@ class CustomSidebar {
                 });
 
                 processBottom();
+
+                this._updateSidebarSelection();
                 
             });
     }
 
-    private async _itemTouched(event: Event): Promise<void> {
+    private async _itemTouched(): Promise<void> {
         this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element
             .then((paperListBox: PaperListBox): void => {
                 this._sidebarScroll = paperListBox.scrollTop;
             });
     }
 
-    private async _updateSidebarSelection(event: CustomEvent<OnPanelLoadDetail>): Promise<void> {
-
-        const { HA_SIDEBAR, PARTIAL_PANEL_RESOLVER } = event.detail;
+    private async _updateSidebarSelection(): Promise<void> {
 
         const className = 'iron-selected';
-        const panelResolver = await PARTIAL_PANEL_RESOLVER.element as PartialPanelResolver;
+        const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
         const pathName = panelResolver.__route?.path;
-        const paperListBox = await HA_SIDEBAR.selector.$.query(ELEMENT.PAPER_LISTBOX).element as PaperListBox;
+        const paperListBox = await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element as PaperListBox;
         const allLinks = paperListBox.querySelectorAll<HTMLAnchorElement>(`${SELECTOR.SCOPE} > ${SELECTOR.ITEM}`);
         const activeLink = paperListBox.querySelector<HTMLAnchorElement>(
             [
