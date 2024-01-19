@@ -174,13 +174,13 @@ order:
 
 #### Notes
 
-* All items in `config.order` should have unique `item` property
+* All items in `config.order` should have a unique `item` property
 * Avoid an `item` property that could match multiple elements. If you find that an item property matches with multiple elements, try to use the `match` and `exact` properties to match the specific item that you want to match.
 * The items will be ordered according to their `order` property OR in the order of appearance
 * If you use the `order` property, make sure either all items (except hidden ones) have this property, or none of them (otherwise order may be messed up)
 * All the items placed in the bottom will be moved to the top by default. If you want to have some items in the bottom you need to add them to the `config.order` and specify their `bottom` property on `true`.
 * Any items present in the Sidebar, but not in `config.order`, will be shown **on the bottom** of the top part of the list
-* Notifications and user account are not part of the sidebar items so they will not be processed byt this plugin
+* Notifications and user account are not part of the sidebar items so they will not be processed by this plugin
 
 ### Exceptions
 
