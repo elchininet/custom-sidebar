@@ -4,26 +4,33 @@ import {
     OnListenDetail,
     HAElement
 } from 'home-assistant-query-selector';
+import HomeAssistantJavaScriptTemplates from 'home-assistant-javascript-templates';
 import {
+    HomeAsssistantExtended,
     Config,
     ConfigNewItem,
     ConfigOrder,
     ConfigOrderWithItem,
-    HomeAssistant,
+    HassObject,
     PartialPanelResolver,
     PaperListBox,
-    Match
+    Match,
+    SuscriberEvent
 } from '@types';
 import {
     ELEMENT,
     SELECTOR,
     ATTRIBUTE,
-    EVENT
+    EVENT,
+    TEMPLATE_REG,
+    ENTITIES_REGEXP,
+    DOMAIN_REGEXP
 } from '@constants';
 import {
     logVersionToConsole,
     getPromisableElement,
-    getFinalOrder
+    getFinalOrder,
+    addStyle
 } from '@utilities';
 import { fetchConfig } from '@fetchers/json';
 
@@ -52,6 +59,8 @@ class CustomSidebar {
 
         selector.listen();
 
+        this._items = [];
+        this._entities = new Map<string, ConfigOrderWithItem[]>();
         this._sidebarScroll = 0;
         this._itemTouchedBinded = this._itemTouched.bind(this);
         this._configPromise = fetchConfig();
@@ -60,23 +69,41 @@ class CustomSidebar {
 
     private _configPromise: Promise<Config>;
     private _homeAssistant: HAElement;
+    private _ha: HomeAsssistantExtended;
     private _partialPanelResolver: HAElement;
     private _sidebar: HAElement;
     private _sidebarScroll: number;
+    private _renderer: HomeAssistantJavaScriptTemplates;
+    private _entities: Map<string, ConfigOrderWithItem[]>;
+    private _items: ConfigOrderWithItem[];
     private _itemTouchedBinded: (event: Event) => Promise<void>;
 
     private async _getOrder(): Promise<ConfigOrder[]> {
-        const user = await this._getCurrentUser();
+        const hass = await this._getHass();
         const device = this._getCurrentDevice();
         return this._configPromise
             .then((config: Config) => {
                 return getFinalOrder(
-                    user,
+                    hass.user.name.toLocaleLowerCase(),
                     device,
                     config.order,
                     config.exceptions
                 );
             });
+    }
+
+    private async _getHass(): Promise<HassObject> {
+        return getPromisableElement(
+            () => this._ha?.hass,
+            (hass: HassObject): boolean => !!(
+                hass &&
+                hass.areas &&
+                hass.devices &&
+                hass.entities &&
+                hass.states &&
+                hass.user
+            )
+        );
     }
 
     private _getElementWithConfig<P>(promise: Promise<P>): Promise<[Config, Awaited<P>]> {
@@ -86,24 +113,19 @@ class CustomSidebar {
         ]);
     }
 
-    private async _getCurrentUser(): Promise<string> {
-        return this._homeAssistant
-            .element.then(async (ha: HomeAssistant) => {
-                return getPromisableElement(
-                        () => ha?.hass?.user?.name?.toLowerCase(),
-                        (user: string): boolean => !!user
-                    )
-                    .then((user: string) => user || '');
-            });
-    }
-
     private _getCurrentDevice(): string {
         return navigator.userAgent.toLowerCase();
     }
 
     private _buildNewItem = (configItem: ConfigNewItem): HTMLAnchorElement => {
-        const name = configItem.name || configItem.item;
         
+        const name = configItem.name
+            ? this._renderText(configItem.name, configItem)?.toString()
+            : configItem.item;
+        const notification = configItem.notification
+            ? this._renderText(configItem.notification, configItem)?.toString()
+            : '';
+
         const a = document.createElement('a');
         a.href = configItem.href;
         a.target = configItem.target || '';
@@ -113,6 +135,10 @@ class CustomSidebar {
             a.style.display = 'none';
         }
         a.setAttribute(ATTRIBUTE.ARIA_SELECTED, 'false');
+
+        if (notification?.length) {
+            a.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, 'true');
+        }
 
         a.innerHTML = `
             <paper-icon-item
@@ -128,6 +154,9 @@ class CustomSidebar {
                 <span class="item-text">
                     ${ name }
                 </span>
+                <span class="notification-badge">
+                    ${ notification || '' }
+                </span>
             </paper-icon-item>
         `.trim();
 
@@ -138,6 +167,24 @@ class CustomSidebar {
         element
             .querySelector(SELECTOR.ITEM_TEXT)
             .textContent = name;
+    }
+
+    private _updateNotification(element: HTMLAnchorElement, notification: string): void {
+        let badge = element.querySelector(SELECTOR.NOTIFICATION_BADGE);
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.classList.add('notification-badge');
+            element
+                .querySelector(ELEMENT.PAPER_ICON_ITEM)
+                .appendChild(badge);
+        }
+        if (notification?.length) {
+            badge.innerHTML = notification;
+            element.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, 'true');
+        } else {
+            badge.innerHTML = '';
+            element.removeAttribute(ATTRIBUTE.WITH_NOTIFICATION);
+        }        
     }
 
     private _updateIcon(element: HTMLAnchorElement, icon: string): void {
@@ -174,6 +221,103 @@ class CustomSidebar {
             }); 
     }
 
+    private _renderText(template: string, configItem?: ConfigOrderWithItem): string {
+        if (TEMPLATE_REG.test(template)) {
+            const code = template.replace(TEMPLATE_REG, '$1');
+            if (configItem) {
+                ENTITIES_REGEXP.lastIndex = 0;
+                let matches: RegExpExecArray;
+                while ((matches = ENTITIES_REGEXP.exec(code)) !== null) {
+                    const matched = matches[1] || matches[2];
+                    if (this._entities.has(matched)) {
+                        this._entities
+                            .get(matched)
+                            .push(configItem);
+
+                    } else {
+                        this._entities
+                            .set(matched, [ configItem ]);
+                    }
+                }
+            }
+            return this._renderer.renderTemplate(code);
+        }
+        return template;
+    }
+
+    private _addSidebarStyles(): void {
+        this._sidebar.selector.$.element
+            .then((sideBarShadowRoot: ShadowRoot): void => {
+                addStyle(
+                    `
+                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE } {
+                        left: calc(var(--app-drawer-width, 248px) - 22px);
+                        transform: translateX(-100%);
+                        border-radius: 20px;
+                        padding: 0px 5px;
+                        text-wrap: nowrap;
+                        overflow: hidden;
+                        max-width: 80px;
+                        text-overflow: ellipsis;
+                    }
+                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_NOTIFICATION }] > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
+                        max-width: calc(100% - 86px);
+                    }
+                    `.trim(),
+                    sideBarShadowRoot
+                );
+            });
+    }
+
+    private async _watchForEntitiesChange() {
+        (await window.hassConnection).conn.subscribeMessage((e) => this._entityWatchCallback(e), {
+			type: 'subscribe_events',
+			event_type: 'state_changed'
+		});
+    }
+
+    private _entityWatchCallback(event: SuscriberEvent) {
+        if (this._entities.size) {
+            const entityId = event.data.entity_id;
+            const domain = entityId.replace(DOMAIN_REGEXP, '$1');
+            if (this._entities.has(entityId)) {
+                this._updateTemplates(
+                    this._entities.get(entityId)
+                );
+            }
+            if (this._entities.has(domain)) {
+                this._updateTemplates(
+                    this._entities.get(domain)
+                );
+            }
+        }
+    }
+
+    private _updateTemplates(configItems: ConfigOrderWithItem[]) {
+        configItems.forEach((configItem: ConfigOrderWithItem) => {
+            if (configItem.element) {
+                if (
+                    configItem.name &&
+                    TEMPLATE_REG.test(configItem.name)
+                ) {
+                    this._updateName(
+                        configItem.element,
+                        this._renderText(configItem.name)?.toString()
+                    );
+                }
+                if (
+                    configItem.notification &&
+                    TEMPLATE_REG.test(configItem.notification)
+                ) {
+                    this._updateNotification(
+                        configItem.element,
+                        this._renderText(configItem.notification)?.toString()
+                    );
+                }
+            }            
+        });
+    }
+
     private _rearrange(): void {
         Promise.all([
             this._getOrder(),
@@ -182,15 +326,18 @@ class CustomSidebar {
             this._sidebar.selector.$.query(`${ELEMENT.PAPER_LISTBOX} > ${SELECTOR.SPACER}`).element
         ])
             .then(([order, paperListBox, items, spacer]) => {
+
                 let orderIndex = 0;
                 let crossedBottom = false;
 
                 if (!order.length) return;
 
-                const itemsArray = Array.from(items);
+                this._renderer = new HomeAssistantJavaScriptTemplates(this._ha);
+
+                const itemsArray = Array.from(items) as HTMLAnchorElement[];
                 const matched: Set<Element> = new Set();
 
-                const orderWithItems: ConfigOrderWithItem[] = order.map((orderItem: ConfigOrder): ConfigOrderWithItem => {
+                this._items = order.map((orderItem: ConfigOrder): ConfigOrderWithItem => {
                     const { item, match, exact, new_item } = orderItem;
                     const itemLowerCase = item.toLocaleLowerCase();
                     const element = new_item
@@ -229,7 +376,7 @@ class CustomSidebar {
 
                 const processBottom = () => {
                     if (!crossedBottom) {
-                        Array.from(items).forEach((element: HTMLElement) => {
+                        itemsArray.forEach((element: HTMLElement) => {
                             if (!element.hasAttribute(ATTRIBUTE.PROCESSED)) {
                                 element.style.order = `${orderIndex}`;
                             }
@@ -241,7 +388,7 @@ class CustomSidebar {
                     }
                 };
 
-                orderWithItems.forEach((orderItem: ConfigOrderWithItem): void => {
+                this._items.forEach((orderItem: ConfigOrderWithItem): void => {
 
                     if (orderItem.bottom) {
                         processBottom();
@@ -255,6 +402,8 @@ class CustomSidebar {
 
                         newItem.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
 
+                        orderItem.element = newItem;
+
                     } else if (orderItem.element) {
 
                         const element = orderItem.element as HTMLAnchorElement;
@@ -265,7 +414,17 @@ class CustomSidebar {
                         }
 
                         if (orderItem.name) {
-                            this._updateName(element, orderItem.name);
+                            this._updateName(
+                                element,
+                                this._renderText(orderItem.name, orderItem)?.toString()
+                            );
+                        }
+
+                        if (orderItem.notification) {
+                            this._updateNotification(
+                                element,
+                                this._renderText(orderItem.notification, orderItem)?.toString()
+                            );
                         }
 
                         if (orderItem.icon) {
@@ -291,6 +450,7 @@ class CustomSidebar {
                 processBottom();
 
                 this._updateSidebarSelection();
+                this._watchForEntitiesChange();
                 
             });
     }
@@ -350,8 +510,13 @@ class CustomSidebar {
     }
 
     private _process(): void {
-        this._setTitle();
-        this._rearrange();
+        this._homeAssistant
+            .element
+            .then((ha: HomeAsssistantExtended) => {
+                this._ha = ha;
+                this._rearrange();
+            });
+        this._addSidebarStyles();
     }
 
 }

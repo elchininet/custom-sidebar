@@ -1,15 +1,13 @@
-export interface User {
-    name: string;
-    is_admin: boolean;
+import { HomeAssistant, Hass } from 'home-assistant-javascript-templates';
+
+export interface HassObject extends Hass {
+    config: {
+        version: string;
+    };
 }
 
-export interface HomeAssistant extends HTMLElement {
-	hass: {
-        user: User;
-        config: {
-            version: string;
-        };
-    };
+export interface HomeAsssistantExtended extends HomeAssistant {
+    hass: HassObject;
 }
 
 export interface PartialPanelResolver extends HTMLElement {
@@ -34,6 +32,7 @@ export interface ConfigItem {
     match?: `${Match}`;
     exact?: boolean;
     name?: string;
+    notification?: string;
     order?: number;
     bottom?: boolean;
     hide?: boolean;
@@ -51,7 +50,7 @@ export interface ConfigNewItem extends Omit<ConfigItem, 'new_item'> {
 }
 
 export type ConfigOrder = ConfigItem | ConfigNewItem;
-export type ConfigOrderWithItem = ConfigOrder & { element?: Element };
+export type ConfigOrderWithItem = ConfigOrder & { element?: HTMLAnchorElement };
 
 interface ConfigExceptionBase {
     order: ConfigOrder[];
@@ -90,8 +89,34 @@ export interface Config {
     exceptions?: ConfigException[];
 }
 
+export type SuscriberEvent = {
+    event_type: string;
+    data: {
+        entity_id: string;
+        old_state?: {
+            state: string;
+        };
+        new_state: {
+            state: string;
+        };
+    }
+};
+
+export type SuscriberCallback = (event: SuscriberEvent) => void;
+export type SuscriberOptions = {
+    type: string;
+    event_type: string;
+};
+
+export interface HassConnection {
+    conn: {
+        subscribeMessage: (callback: SuscriberCallback, options: SuscriberOptions) => void;
+    }
+}
+
 declare global {
     interface Window {
         CustomSidebar: {};
+        hassConnection: Promise<HassConnection>;
     }
 }

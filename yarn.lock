@@ -384,6 +384,11 @@ helpertypes@^0.0.19:
   resolved "https://registry.yarnpkg.com/helpertypes/-/helpertypes-0.0.19.tgz#6f8cb18e4e1fad73dc103b98e624ac85cb06a720"
   integrity sha512-J00e55zffgi3yVnUp0UdbMztNkr2PnizEkOe9URNohnrNhW5X0QpegkuLpOmFQInpi93Nb8MCjQRHAiCDF42NQ==
 
+home-assistant-javascript-templates@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/home-assistant-javascript-templates/-/home-assistant-javascript-templates-2.0.0.tgz#dba33769ce21cf049e99743ddf2cea8ba9d6926b"
+  integrity sha512-9uK8uf/uxVtjkhHoE3vAfT13wgtw2yUwn7vkg1lepKpVpfrj9eGpoK50+LJrZW4NMq6fujC/MzpDD8b2Ve0lFg==
+
 home-assistant-query-selector@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/home-assistant-query-selector/-/home-assistant-query-selector-4.2.0.tgz#009ef948f5b9079291a1bc0284c21efa39e82926"

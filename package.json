@@ -28,6 +28,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "home-assistant-javascript-templates": "^2.0.0",
     "home-assistant-query-selector": "^4.2.0",
     "js-yaml": "^4.1.0"
   }
