@@ -516,6 +516,7 @@ class CustomSidebar {
                 this._ha = ha;
                 this._rearrange();
             });
+        this._setTitle();
         this._addSidebarStyles();
     }
 
