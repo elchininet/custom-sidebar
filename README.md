@@ -109,19 +109,22 @@ Add a file named `sidebar-config.json` or `sidebar-config.yaml` into your `<conf
 
 #### Item properties
 
-| Property  | Type    | Required  | Description |
-| --------- | ------- | --------- | ----------- |
-| item      | String  | true      | This is a string that will be used to match each sidebar item by its text, its `data-panel` attribute or its `href`. If the `exact` property is not set, it is case insensitive and it can be a substring such as `developer` instead of `Developer Tools` or `KITCHEN` instead of `kitchen-lights`. |
-| match     | String  | false     | This property will define which string will be used to match the `item` property. It has three possible values "text" (default) to match the text content of the element, "data-panel" to match the `data-panel` attribute of the element, or "href", to match the `href` attribute of the element |
-| exact     | Boolean | false     | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`). |
-| name      | String  | false     | Changes the name of the sidebar item |
-| order     | Number  | false     | Sets the order number of the sidebar item |
-| bottom    | Boolean | false     | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
-| hide      | Boolean | false     | Setting this property to `true` will hide the sidebar item |
-| href      | String  | false     | Specifies the `href` of the sidebar item |
-| target    | String  | false     | Specifies the [target property] of the sidebar item |
-| icon      | String  | false     | Specifies the icon of the sidebar item |
-| new_item  | Boolean | false     | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
+| Property                  | Type    | Required  | Description |
+| ------------------------- | ------- | --------- | ----------- |
+| item                      | String  | true      | This is a string that will be used to match each sidebar item by its text, its `data-panel` attribute or its `href`. If the `exact` property is not set, it is case insensitive and it can be a substring such as `developer` instead of `Developer Tools` or `KITCHEN` instead of `kitchen-lights`. |
+| match                     | String  | false     | This property will define which string will be used to match the `item` property. It has three possible values "text" (default) to match the text content of the element, "data-panel" to match the `data-panel` attribute of the element, or "href", to match the `href` attribute of the element |
+| exact                     | Boolean | false     | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`). |
+| name<sup>\*</sup>         | String  | false     | Changes the name of the sidebar item |
+| notification<sup>\*</sup> | String  | false     | Add a notification badge to the sidebar item |
+| order                     | Number  | false     | Sets the order number of the sidebar item |
+| bottom                    | Boolean | false     | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc)         |
+| hide                      | Boolean | false     | Setting this property to `true` will hide the sidebar item |
+| href                      | String  | false     | Specifies the `href` of the sidebar item |
+| target                    | String  | false     | Specifies the [target property] of the sidebar item |
+| icon                      | String  | false     | Specifies the icon of the sidebar item |
+| new_item                  | Boolean | false     | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
+
+>\* These properties allow [JavaScript templates](#javascript-templates).
 
 Short example in `JSON` format:
 
@@ -229,6 +232,55 @@ exceptions:
 * You cannot use `device` and `not_device` at the same time, doing so will end in an error
 * Pay attention to `base_order` property. If it's set to `false` (default value), the main `config.order` will be ignored, leaving you with default sidebar modified only by the exception's orders
 
+## JavaScript templates
+
+Some properties, as `name` and `notification`, admit `JavaScript` templates. This templating system is not [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). It is basically a `JavaScript` code block in which you can use certain client-side objects, variables and methods. To set a property as a `JavaScript` template block, include the code between three square brackets `[[[ JavaScript code ]]]`. If you don‘t use the square brackets, the property will be interpreted as a regular string.
+
+The `JavaScript` code will be taken as something that you want to return, but if you have a more complex logic, you can create your own variables and return the desired result at the end.
+
+The entities and domains used in the templates will be stored so if the state of these entities change, it will update the templates used in the configuration.
+
+### JavaScript templates example
+
+The next example will add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed.
+
+It also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses.
+
+#### in `JSON` format:
+
+```json5
+{
+  "order": [
+    {
+      "item": "hacs",
+      "notification": "[[[ state_attr('sensor.hacs', 'repositories').length || '' ]]]"
+    },
+    {
+      "new_item": true,
+      "item": "info",
+      "name": "[[[ 'Info (' + state_attr('update.home_assistant_supervisor_update', 'latest_version') + ')' ]]]",
+      "href": "/config/info",
+      "icon": "mdi:information-outline"
+    }
+  ]
+}
+```
+
+#### in `YAML` format:
+
+```yaml
+order:
+  - item: hacs
+    notification: '[[[ state_attr("sensor.hacs", "repositories").length || '' ]]]'
+  - new_item: true
+    item: info
+    name: '[[[ "Info (" + state_attr("update.home_assistant_supervisor_update", "latest_version") + ")" ]]]'
+    href: '/config/info'
+    icon: mdi:information-outline
+```
+
+>Note: `Custom Sidebar` uses [Home Assistant Javascript Templates] for the templating system. To know all the objects, variables and methods available in the `JavaScript` templates, consult the [proper section](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#objects-and-methods-available-in-the-templates) in the repository.
+
 ## Home Assistant built-in sidebar configuration options
 
 Check out Home Assistant's native sidebar tools, maybe it will be enough for your needs.
@@ -297,4 +349,5 @@ order:
 [example sidebar-config.yaml]: https://raw.githubusercontent.com/elchininet/custom-sidebar/master/sidebar-config.yaml
 [target property]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target
 [user-agent]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
+[Home Assistant Javascript Templates]: https://github.com/elchininet/home-assistant-javascript-templates
 [Home Assistant's Iframe Panel feature]: https://www.home-assistant.io/integrations/panel_iframe/

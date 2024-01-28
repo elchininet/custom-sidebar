@@ -3,7 +3,8 @@ import {
     NAMESPACE,
     MAX_ATTEMPTS,
     RETRY_DELAY,
-    UNDEFINED_TYPE
+    UNDEFINED_TYPE,
+    CSS_CLEANER_REGEXP
 } from '@constants';
 import { version } from '../../package.json';
 
@@ -125,4 +126,19 @@ export const getFinalOrder = (
         return flatConfigOrder(exceptionsOrder);
     }
     return flatConfigOrder(order);
+};
+
+const getElementName = (elem: Element | ShadowRoot): string => {
+	if (elem instanceof ShadowRoot) {
+		return elem.host.localName;
+	}
+	return elem.localName;
+};
+
+export const addStyle = (css: string, elem: Element | ShadowRoot): void => {
+	const name = getElementName(elem);
+    const style = document.createElement('style');
+    style.setAttribute('id', `${NAMESPACE}_${name}`);
+    elem.appendChild(style);
+	style.innerHTML = css.replace(CSS_CLEANER_REGEXP, '$2');
 };
