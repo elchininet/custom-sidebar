@@ -15,7 +15,8 @@ import {
     PartialPanelResolver,
     PaperListBox,
     Match,
-    SuscriberEvent
+    SuscriberEvent,
+    RenderTextParams
 } from '@types';
 import {
     ELEMENT,
@@ -62,6 +63,7 @@ class CustomSidebar {
 
         this._items = [];
         this._entities = new Map<string, ConfigOrderWithItem[]>();
+        this._titleEntities = new Set<string>();
         this._sidebarScroll = 0;
         this._itemTouchedBinded = this._itemTouched.bind(this);
         this._configPromise = fetchConfig();
@@ -76,16 +78,16 @@ class CustomSidebar {
     private _sidebarScroll: number;
     private _renderer: HomeAssistantJavaScriptTemplates;
     private _entities: Map<string, ConfigOrderWithItem[]>;
+    private _titleEntities: Set<string>;
     private _items: ConfigOrderWithItem[];
     private _itemTouchedBinded: (event: Event) => Promise<void>;
 
     private async _getOrder(): Promise<ConfigOrder[]> {
-        const hass = await this._getHass();
         const device = this._getCurrentDevice();
         return this._configPromise
             .then((config: Config) => {
                 return getFinalOrder(
-                    hass.user.name.toLocaleLowerCase(),
+                    this._ha.hass.user.name.toLocaleLowerCase(),
                     device,
                     config.order,
                     config.exceptions
@@ -93,7 +95,7 @@ class CustomSidebar {
             });
     }
 
-    private async _getHass(): Promise<HassObject> {
+    private async _hasReady(): Promise<HassObject> {
         return getPromisableElement(
             () => this._ha?.hass,
             (hass: HassObject): boolean => !!(
@@ -121,10 +123,10 @@ class CustomSidebar {
     private _buildNewItem = (configItem: ConfigNewItem): HTMLAnchorElement => {
         
         const name = configItem.name
-            ? this._renderText(configItem.name, configItem)?.toString()
+            ? this._renderText(configItem.name, { configItem })?.toString()
             : configItem.item;
         const notification = configItem.notification
-            ? this._renderText(configItem.notification, configItem)?.toString()
+            ? this._renderText(configItem.notification, { configItem })?.toString()
             : '';
 
         const a = document.createElement('a');
@@ -230,27 +232,39 @@ class CustomSidebar {
             ._getElementWithConfig(titleElementPromise)
             .then(([config, titleElement]): void => {
                 if (config.title) {
-                    titleElement.innerHTML = config.title;
+                    titleElement.innerHTML = this._titleEntities.size
+                        ? this._renderText(config.title)
+                        : this._renderText(
+                            config.title,
+                            {
+                                title: true
+                            }
+                        );
                 }
             }); 
     }
 
-    private _renderText(template: string, configItem?: ConfigOrderWithItem): string {
+    private _renderText(template: string, params?: RenderTextParams): string {
         if (TEMPLATE_REG.test(template)) {
             const code = template.replace(TEMPLATE_REG, '$1');
-            if (configItem) {
+            if (params?.configItem || params?.title) {
                 ENTITIES_REGEXP.lastIndex = 0;
                 let matches: RegExpExecArray;
                 while ((matches = ENTITIES_REGEXP.exec(code)) !== null) {
                     const matched = matches[1] || matches[2];
-                    if (this._entities.has(matched)) {
-                        this._entities
-                            .get(matched)
-                            .push(configItem);
-
-                    } else {
-                        this._entities
-                            .set(matched, [ configItem ]);
+                    if (params?.configItem) {
+                        if (this._entities.has(matched)) {
+                            this._entities
+                                .get(matched)
+                                .push(params.configItem);
+    
+                        } else {
+                            this._entities
+                                .set(matched, [ params.configItem ]);
+                        }
+                    }
+                    if (params?.title) {
+                        this._titleEntities.add(matched);
                     }
                 }
             }
@@ -313,6 +327,12 @@ class CustomSidebar {
                     this._entities.get(domain)
                 );
             }
+            if (
+                this._titleEntities.has(entityId) ||
+                this._titleEntities.has(domain)
+            ) {
+                this._setTitle();
+            }
         }
     }
 
@@ -354,8 +374,6 @@ class CustomSidebar {
                 let crossedBottom = false;
 
                 if (!order.length) return;
-
-                this._renderer = new HomeAssistantJavaScriptTemplates(this._ha);
 
                 const itemsArray = Array.from(items) as HTMLAnchorElement[];
                 const matched: Set<Element> = new Set();
@@ -439,14 +457,24 @@ class CustomSidebar {
                         if (orderItem.name) {
                             this._updateName(
                                 element,
-                                this._renderText(orderItem.name, orderItem)?.toString()
+                                this._renderText(
+                                    orderItem.name,
+                                    {
+                                        configItem: orderItem
+                                    }
+                                )?.toString()
                             );
                         }
 
                         if (orderItem.notification) {
                             this._updateNotification(
                                 element,
-                                this._renderText(orderItem.notification, orderItem)?.toString()
+                                this._renderText(
+                                    orderItem.notification,
+                                    {
+                                        configItem: orderItem
+                                    }
+                                )?.toString()
                             );
                         }
 
@@ -533,13 +561,19 @@ class CustomSidebar {
     }
 
     private _process(): void {
+
         this._homeAssistant
             .element
             .then((ha: HomeAsssistantExtended) => {
                 this._ha = ha;
-                this._rearrange();
+                this._hasReady()
+                    .then(() => {
+                        this._renderer = new HomeAssistantJavaScriptTemplates(this._ha);
+                        this._setTitle();
+                        this._rearrange();
+                    });
             });
-        this._setTitle();
+        
         this._addSidebarStyles();
     }
 

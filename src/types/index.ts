@@ -114,6 +114,11 @@ export interface HassConnection {
     }
 }
 
+export interface RenderTextParams {
+    configItem?: ConfigOrderWithItem;
+    title?: boolean;
+}
+
 declare global {
     interface Window {
         CustomSidebar: {};

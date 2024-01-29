@@ -102,10 +102,10 @@ Add a file named `sidebar-config.json` or `sidebar-config.yaml` into your `<conf
 
 ### Configuration options
 
-| Property  | Type                               | Required | Description |
-| --------- | ---------------------------------- | -------- | ----------- |
-| order     | Array of [items](#item-properties) | true     | List of items to process |
-| title     | String                             | false    | Custom title to replace the `Home Assistant` title |
+| Property           | Type                               | Required | Description |
+| ------------------ | ---------------------------------- | -------- | ----------- |
+| order              | Array of [items](#item-properties) | true     | List of items to process |
+| title<sup>\*</sup> | String                             | false    | Custom title to replace the `Home Assistant` title |
 
 #### Item properties
 
@@ -124,7 +124,7 @@ Add a file named `sidebar-config.json` or `sidebar-config.yaml` into your `<conf
 | icon                      | String  | false     | Specifies the icon of the sidebar item |
 | new_item                  | Boolean | false     | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
 
->\* These properties allow [JavaScript templates](#javascript-templates).
+>\* These options and item properties allow [JavaScript templates](#javascript-templates).
 
 Short example in `JSON` format:
 
@@ -234,7 +234,7 @@ exceptions:
 
 ## JavaScript templates
 
-Some properties, as `name` and `notification`, admit `JavaScript` templates. This templating system is not [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). It is basically a `JavaScript` code block in which you can use certain client-side objects, variables and methods. To set a property as a `JavaScript` template block, include the code between three square brackets `[[[ JavaScript code ]]]`. If you don‘t use the square brackets, the property will be interpreted as a regular string.
+Some config options and item properties, as `title`, `name` and `notification`, admit `JavaScript` templates. This templating system is not [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). It is basically a `JavaScript` code block in which you can use certain client-side objects, variables and methods. To set a property as a `JavaScript` template block, include the code between three square brackets `[[[ JavaScript code ]]]`. If you don‘t use the square brackets, the property will be interpreted as a regular string.
 
 The `JavaScript` code will be taken as something that you want to return, but if you have a more complex logic, you can create your own variables and return the desired result at the end.
 
@@ -242,14 +242,13 @@ The entities and domains used in the templates will be stored so if the state of
 
 ### JavaScript templates example
 
-The next example will add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed.
-
-It also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses.
+The next example will set the title of the sidebar as "My Home" followed by the current time. It will also add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed. And it also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses.
 
 #### in `JSON` format:
 
 ```json5
 {
+  "title": "[[[ 'My Home ' + new Date(states('sensor.date_time_iso')).toLocaleTimeString().slice(0, 5) ]]]",
   "order": [
     {
       "item": "hacs",
@@ -269,6 +268,7 @@ It also creates a new item that redirects to the `Home Assistant` info page with
 #### in `YAML` format:
 
 ```yaml
+title: '[[[ "My Home " + new Date(states("sensor.date_time_iso")).toLocaleTimeString().slice(0, 5) ]]]'
 order:
   - item: hacs
     notification: '[[[ state_attr("sensor.hacs", "repositories").length || '' ]]]'
