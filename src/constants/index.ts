@@ -20,7 +20,13 @@ export enum SELECTOR {
     ITEM = 'a[role="option"]',
     SPACER = '.spacer',
     ITEM_TEXT = '.item-text',
-    NOTIFICATION_BADGE = '.notification-badge'
+    NOTIFICATION_BADGE = '.notification-badge',
+    NOTIFICATIONS_BADGE_COLLAPSED = '.notification-badge-collapsed'
+}
+
+export enum CLASS {
+    NOTIFICATIONS_BADGE = 'notification-badge',
+    NOTIFICATIONS_BADGE_COLLAPSED = 'notification-badge-collapsed'
 }
 
 export enum ATTRIBUTE {
