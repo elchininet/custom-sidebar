@@ -21,6 +21,7 @@ import {
     ELEMENT,
     SELECTOR,
     ATTRIBUTE,
+    CLASS,
     EVENT,
     TEMPLATE_REG,
     ENTITIES_REGEXP,
@@ -151,10 +152,13 @@ class CustomSidebar {
                     icon="${configItem.icon}"
                 >
                 </ha-icon>
+                <span class="${CLASS.NOTIFICATIONS_BADGE} ${CLASS.NOTIFICATIONS_BADGE_COLLAPSED}">
+                    ${ notification || '' }
+                </span>
                 <span class="item-text">
                     ${ name }
                 </span>
-                <span class="notification-badge">
+                <span class="${CLASS.NOTIFICATIONS_BADGE}">
                     ${ notification || '' }
                 </span>
             </paper-icon-item>
@@ -170,19 +174,29 @@ class CustomSidebar {
     }
 
     private _updateNotification(element: HTMLAnchorElement, notification: string): void {
-        let badge = element.querySelector(SELECTOR.NOTIFICATION_BADGE);
+        let badge = element.querySelector(`${SELECTOR.NOTIFICATION_BADGE}:not(${SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED})`);
+        let badgeCollapsed = element.querySelector(SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED);
         if (!badge) {
             badge = document.createElement('span');
-            badge.classList.add('notification-badge');
+            badge.classList.add(CLASS.NOTIFICATIONS_BADGE);
             element
                 .querySelector(ELEMENT.PAPER_ICON_ITEM)
                 .appendChild(badge);
         }
+        if (!badgeCollapsed) {
+            badgeCollapsed = document.createElement('span');
+            badgeCollapsed.classList.add(CLASS.NOTIFICATIONS_BADGE, CLASS.NOTIFICATIONS_BADGE_COLLAPSED);
+            element
+                .querySelector(ELEMENT.HA_ICON)
+                .after(badgeCollapsed);
+        }
         if (notification?.length) {
             badge.innerHTML = notification;
+            badgeCollapsed.innerHTML = notification;
             element.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, 'true');
         } else {
             badge.innerHTML = '';
+            badgeCollapsed.innerHTML = '';
             element.removeAttribute(ATTRIBUTE.WITH_NOTIFICATION);
         }        
     }
@@ -250,15 +264,24 @@ class CustomSidebar {
             .then((sideBarShadowRoot: ShadowRoot): void => {
                 addStyle(
                     `
-                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE } {
-                        left: calc(var(--app-drawer-width, 248px) - 22px);
-                        transform: translateX(-100%);
+                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
                         border-radius: 20px;
-                        padding: 0px 5px;
-                        text-wrap: nowrap;
-                        overflow: hidden;
+                        left: calc(var(--app-drawer-width, 248px) - 22px);
                         max-width: 80px;
+                        overflow: hidden;
+                        padding: 0px 5px;
+                        transform: translateX(-100%);
                         text-overflow: ellipsis;
+                        text-wrap: nowrap;   
+                    }
+                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
+                        bottom: 14px;
+                        font-size: 0.65em;
+                        left: 26px;
+                        position: absolute;  
+                    }
+                    :host([expanded]) ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
+                        opacity: 0;
                     }
                     ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_NOTIFICATION }] > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
                         max-width: calc(100% - 86px);
