@@ -17,11 +17,13 @@ jobs:
           node-version: '18'
           cache: 'yarn'
           registry-url: 'https://registry.npmjs.org'
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
-          path: |
-            ~/.cache
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: dependencies-v1-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: Install deps
         run: yarn install --frozen-lockfile
