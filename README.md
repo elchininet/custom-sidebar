@@ -88,7 +88,7 @@ frontend:
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js?v1.0.0
+    - /local/custom-sidebar-yaml.js?v1.0.0
 ```
 
 4. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
