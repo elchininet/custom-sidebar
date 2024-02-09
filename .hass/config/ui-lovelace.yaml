@@ -1,0 +1,7 @@
+title: Home
+views:
+  - theme: Backend-selected
+    title: Home
+    path: home
+    badges: []
+    cards: []
