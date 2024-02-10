@@ -82,9 +82,9 @@ test('Visit a URL that matches with multiple items should select the proper item
 
 test('Do not move the clicked item outside the viewport', async ({ page }) => {
 
-  await visitHome(page);
-
   await page.setViewportSize({ width: 1024, height: 500 });
+
+  await visitHome(page);
 
   await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).click();
 
