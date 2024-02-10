@@ -17,6 +17,7 @@
     "start:ha": "docker run --rm -d -p8123:8123 --shm-size=512m -v ${PWD}/.hass/config:/config homeassistant/home-assistant:${TAG:-$(cat .hass/config/.HA_VERSION)}",
     "stop:ha": "docker stop $(docker ps -a -q  --filter ancestor=homeassistant/home-assistant:${TAG:-$(cat .hass/config/.HA_VERSION)}) || true",
     "coverage:report": "nyc report --reporter=lcov --reporter=text-summary",
+    "reset:ha": "git add .hass/config/.HA_VERSION && git checkout .hass/config",
     "prepare": "yarn build",
     "prepublishOnly": "yarn test:ts",
     "version": "git add .",
@@ -40,7 +41,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "home-assistant-javascript-templates": "^3.0.0",
+    "home-assistant-javascript-templates": "^3.0.1",
     "home-assistant-query-selector": "^4.2.0",
     "js-yaml": "^4.1.0"
   }

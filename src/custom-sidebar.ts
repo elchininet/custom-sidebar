@@ -104,13 +104,10 @@ class CustomSidebar {
         const items = await getPromisableElement<NodeListOf<HTMLAnchorElement>>(
             () => paperListBox.querySelectorAll<HTMLAnchorElement>(`:scope > ${SELECTOR.ITEM}`),
             (elements: NodeListOf<HTMLAnchorElement>): boolean => {
-                if (elements.length) {
-                    return Array.from(elements).every((element: HTMLAnchorElement): boolean => {
-                        const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
-                        return text.length > 0;
-                    });
-                }
-                return false;
+                return Array.from(elements).every((element: HTMLAnchorElement): boolean => {
+                    const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
+                    return text.length > 0;
+                });
             }
         );
         return [paperListBox, items, spacer];
@@ -144,11 +141,9 @@ class CustomSidebar {
     private _buildNewItem = (configItem: ConfigNewItem): HTMLAnchorElement => {
         
         const name = configItem.name
-            ? this._renderText(configItem.name, { configItem })?.toString()
+            ? this._renderText(configItem.name, { configItem })
             : configItem.item;
-        const notification = configItem.notification
-            ? this._renderText(configItem.notification, { configItem })?.toString()
-            : '';
+        const notification = this._renderText(configItem.notification, { configItem });
 
         const a = document.createElement('a');
         a.href = configItem.href;
@@ -160,7 +155,7 @@ class CustomSidebar {
         }
         a.setAttribute(ATTRIBUTE.ARIA_SELECTED, 'false');
 
-        if (notification?.length) {
+        if (notification.length) {
             a.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, 'true');
         }
 
@@ -176,13 +171,13 @@ class CustomSidebar {
                 >
                 </ha-icon>
                 <span class="${CLASS.NOTIFICATIONS_BADGE} ${CLASS.NOTIFICATIONS_BADGE_COLLAPSED}">
-                    ${ notification || '' }
+                    ${ notification }
                 </span>
                 <span class="item-text">
                     ${ name }
                 </span>
                 <span class="${CLASS.NOTIFICATIONS_BADGE}">
-                    ${ notification || '' }
+                    ${ notification }
                 </span>
             </paper-icon-item>
         `.trim();
@@ -197,6 +192,7 @@ class CustomSidebar {
     }
 
     private _updateNotification(element: HTMLAnchorElement, notification: string): void {
+        console.log(element, notification);
         let badge = element.querySelector(`${SELECTOR.NOTIFICATION_BADGE}:not(${SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED})`);
         let badgeCollapsed = element.querySelector(SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED);
         if (!badge) {
@@ -213,7 +209,7 @@ class CustomSidebar {
                 .querySelector(`${ELEMENT.HA_SVG_ICON}, ${ELEMENT.HA_ICON}`)
                 .after(badgeCollapsed);
         }
-        if (notification?.length) {
+        if (notification.length) {
             badge.innerHTML = notification;
             badgeCollapsed.innerHTML = notification;
             element.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, 'true');
@@ -261,15 +257,15 @@ class CustomSidebar {
             }); 
     }
 
-    private _renderText(template: string, params?: RenderTextParams): string {
+    private _renderText(template: string | undefined, params?: RenderTextParams): string {
         if (TEMPLATE_REG.test(template)) {
             const code = template.replace(TEMPLATE_REG, '$1');
             if (params?.configItem || params?.title) {
                 ENTITIES_REGEXP.lastIndex = 0;
                 let matches: RegExpExecArray;
                 while ((matches = ENTITIES_REGEXP.exec(code)) !== null) {
-                    const matched = matches[1] || matches[2];
-                    if (params?.configItem) {
+                    const matched = matches[1] || matches[2] || matches[3];
+                    if (params.configItem) {
                         if (this._entities.has(matched)) {
                             this._entities
                                 .get(matched)
@@ -280,14 +276,36 @@ class CustomSidebar {
                                 .set(matched, [ params.configItem ]);
                         }
                     }
-                    if (params?.title) {
+                    if (params.title) {
                         this._titleEntities.add(matched);
                     }
                 }
             }
-            return this._renderer.renderTemplate(code);
+            const compiled = this._renderer.renderTemplate(code) as unknown;
+
+            if (
+                typeof compiled === 'string' ||
+                (
+                    typeof compiled === 'number' &&
+                    !Number.isNaN(compiled)
+                ) ||
+                typeof compiled === 'boolean' ||
+                typeof compiled === 'object'
+            ) {
+                if (typeof compiled === 'string') {
+                    return compiled.trim();
+                }
+                if (
+                    typeof compiled === 'number' ||
+                    typeof compiled === 'boolean'
+                ) {
+                    return compiled.toString();
+                }
+                return JSON.stringify(compiled);
+            }
+            return '';
         }
-        return template;
+        return template || '';
     }
 
     private _addSidebarStyles(): void {
@@ -331,7 +349,10 @@ class CustomSidebar {
     }
 
     private _entityWatchCallback(event: SuscriberEvent) {
-        if (this._entities.size) {
+        if (
+            this._entities.size ||
+            this._titleEntities.size
+        ) {
             const entityId = event.data.entity_id;
             const domain = entityId.replace(DOMAIN_REGEXP, '$1');
             if (this._entities.has(entityId)) {
@@ -362,7 +383,7 @@ class CustomSidebar {
                 ) {
                     this._updateName(
                         configItem.element,
-                        this._renderText(configItem.name)?.toString()
+                        this._renderText(configItem.name)
                     );
                 }
                 if (
@@ -371,7 +392,7 @@ class CustomSidebar {
                 ) {
                     this._updateNotification(
                         configItem.element,
-                        this._renderText(configItem.notification)?.toString()
+                        this._renderText(configItem.notification)
                     );
                 }
             }            
@@ -479,7 +500,7 @@ class CustomSidebar {
                                     {
                                         configItem: orderItem
                                     }
-                                )?.toString()
+                                )
                             );
                         }
 
@@ -491,7 +512,7 @@ class CustomSidebar {
                                     {
                                         configItem: orderItem
                                     }
-                                )?.toString()
+                                )
                             );
                         }
 
@@ -584,7 +605,8 @@ class CustomSidebar {
             .then((ha: HomeAsssistantExtended) => {
                 this._ha = ha;
                 this._hasReady()
-                    .then(() => {
+                    .then((dime) => {
+                        console.log('dime', dime);
                         this._renderer = new HomeAssistantJavaScriptTemplates(this._ha);
                         this._setTitle();
                         this._rearrange();

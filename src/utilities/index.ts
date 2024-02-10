@@ -75,6 +75,9 @@ export const getPromisableElement = <T>(
 				if (attempts < MAX_ATTEMPTS) {
 					setTimeout(select, RETRY_DELAY);
 				} else {
+                    // This is an edge case that should not happen
+                    // Very hard to reproduce so it cannot be covered
+                    // istanbul ignore next
 					resolve(element);
 				}
 			}

@@ -9,3 +9,4 @@ views:
         title: Entities
         entities:
           - entity: input_boolean.my_switch
+          - entity: input_select.fan_speed

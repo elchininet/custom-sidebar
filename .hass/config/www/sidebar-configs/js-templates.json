@@ -1,0 +1,17 @@
+{
+  "title": "[[[ 'Power: ' + states('input_boolean.my_switch') ]]]",
+  "order": [
+    {
+      "item": "energy",
+      "name": "[[[ const name = 'Energy '; const inputs = states.input_boolean; const mySwitch = inputs.my_switch; const mySwitchState = mySwitch.state; return `${name}(${mySwitchState})`; ]]]",
+      "notification": "[[[ +states('input_select.fan_speed') * 2 ]]]"
+    },
+    {
+      "new_item": true,
+      "item": "Fan",
+      "href": "/my_fan",
+      "icon": "mdi:fan-plus",
+      "notification": "[[[ states('input_select.fan_speed') ]]]"
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import { SELECTORS, CONFIG_FILES } from './constants';
-import { haRequest, fulfillJson } from './utilities';
+import { haConfigRequest, fulfillJson } from './utilities';
 
 test.beforeAll(async () => {
-  await haRequest(CONFIG_FILES.BASIC);
+  await haConfigRequest(CONFIG_FILES.BASIC);
 });
 
 const pageVisit = async (page: Page): Promise<void> => {

@@ -427,6 +427,42 @@
         "unique_id": "my_switch",
         "previous_unique_id": null,
         "unit_of_measurement": null
+      },
+      {
+        "aliases": [],
+        "area_id": null,
+        "capabilities": {
+          "options": [
+            "1",
+            "2",
+            "3"
+          ]
+        },
+        "config_entry_id": null,
+        "device_class": null,
+        "device_id": null,
+        "disabled_by": null,
+        "entity_category": null,
+        "entity_id": "input_select.fan_speed",
+        "hidden_by": null,
+        "icon": null,
+        "id": "7b30b6d57494663c4b7ce97ac3db4f39",
+        "has_entity_name": false,
+        "name": null,
+        "options": {
+          "conversation": {
+            "should_expose": false
+          }
+        },
+        "original_device_class": null,
+        "original_icon": "mdi:fan-plus",
+        "original_name": "Fan Speed",
+        "platform": "input_select",
+        "supported_features": 0,
+        "translation_key": null,
+        "unique_id": "fan_speed",
+        "previous_unique_id": null,
+        "unit_of_measurement": null
       }
     ],
     "deleted_entities": []

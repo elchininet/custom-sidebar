@@ -7,6 +7,7 @@ const getSidebarItemSelector = (panel: string): string => {
 }
 
 export const SELECTORS = {
+    TITLE: '.menu .title',
     HA_SIDEBAR: 'ha-sidebar',
     HUI_VIEW: 'hui-view',
     SIDEBAR_ITEMS: {
@@ -28,5 +29,6 @@ export const SELECTORS = {
 };
 
 export const CONFIG_FILES = {
-    BASIC: 'basic'
+    BASIC: 'basic',
+    JS_TEMPLATES: 'js-templates'
 };

@@ -11,25 +11,25 @@ const CONFIG_REPLACER = '%CONFIG%';
 const plugins = [
     nodeResolve(),
     json(),
-    ts({
-        browserslist: false
-    }),
-    terser({
-        output: {
-            comments: false
-        }
-    })
 ];
 
 export default [
     {
         plugins: [
+            ...plugins,
+            ts({
+                browserslist: false
+            }),
+            terser({
+                output: {
+                    comments: false
+                }
+            }),
             replace({
                 [CONFIG_REPLACER]: 'JSON',
                 preventAssignment: true,
                 delimiters: ['', '']
-            }),
-            ...plugins
+            })
         ],
         input: 'src/custom-sidebar.ts',
         output: {
@@ -39,6 +39,15 @@ export default [
     },
     {
         plugins: [
+            ...plugins,
+            ts({
+                browserslist: false
+            }),
+            terser({
+                output: {
+                    comments: false
+                }
+            }),
             replace({
                 [CONFIG_REPLACER]: 'YAML',
                 preventAssignment: true,
@@ -51,8 +60,7 @@ export default [
                         replacement: '@fetchers/yaml'
                     }
                 ]
-            }),
-            ...plugins
+            })
         ],
         input: 'src/custom-sidebar.ts',
         output: {
@@ -62,18 +70,25 @@ export default [
     },
     {
         plugins: [
+            ...plugins,
+            ts({
+                browserslist: false,
+                tsconfig: resolvedConfig => ({
+                    ...resolvedConfig,
+                    removeComments: false
+                })                
+            }),
             replace({
                 [CONFIG_REPLACER]: 'JSON',
                 preventAssignment: true,
                 delimiters: ['', '']
             }),
-            ...plugins,
             istanbul({
-                exclude: [
-                    'node_modules/**/*',
-                    'package.json'
-                ]
-            })
+				exclude: [
+					'node_modules/**/*',
+					'package.json'
+				]
+			})
         ],
         input: 'src/custom-sidebar.ts',
         output: {

@@ -20,6 +20,16 @@ input_boolean:
   my_switch:
     name: My Switch
 
+input_select:
+  fan_speed:
+    name: Fan Speed
+    initial: '1'
+    icon: mdi:fan-plus
+    options:
+      - '1'
+      - '2'
+      - '3'
+
 lovelace:
   mode: yaml
 
