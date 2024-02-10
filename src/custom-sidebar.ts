@@ -192,7 +192,6 @@ class CustomSidebar {
     }
 
     private _updateNotification(element: HTMLAnchorElement, notification: string): void {
-        console.log(element, notification);
         let badge = element.querySelector(`${SELECTOR.NOTIFICATION_BADGE}:not(${SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED})`);
         let badgeCollapsed = element.querySelector(SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED);
         if (!badge) {
@@ -555,7 +554,7 @@ class CustomSidebar {
 
         const className = 'iron-selected';
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
-        const pathName = panelResolver.__route?.path;
+        const pathName = panelResolver.__route.path;
         const paperListBox = await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element as PaperListBox;
         const allLinks = paperListBox.querySelectorAll<HTMLAnchorElement>(`${SELECTOR.SCOPE} > ${SELECTOR.ITEM}`);
         const activeLink = paperListBox.querySelector<HTMLAnchorElement>(
@@ -605,8 +604,7 @@ class CustomSidebar {
             .then((ha: HomeAsssistantExtended) => {
                 this._ha = ha;
                 this._hasReady()
-                    .then((dime) => {
-                        console.log('dime', dime);
+                    .then(() => {
                         this._renderer = new HomeAssistantJavaScriptTemplates(this._ha);
                         this._setTitle();
                         this._rearrange();

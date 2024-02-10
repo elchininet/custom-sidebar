@@ -72,12 +72,12 @@ export const getPromisableElement = <T>(
 				resolve(element);
 			} else {
 				attempts++;
+                // The else clause is an edge case that should not happen
+                // Very hard to reproduce so it cannot be covered
+                /* istanbul ignore else */
 				if (attempts < MAX_ATTEMPTS) {
 					setTimeout(select, RETRY_DELAY);
 				} else {
-                    // This is an edge case that should not happen
-                    // Very hard to reproduce so it cannot be covered
-                    // istanbul ignore next
 					resolve(element);
 				}
 			}
