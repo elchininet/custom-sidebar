@@ -45,6 +45,6 @@ export enum EVENT {
 }
 
 export const TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;
-export const ENTITIES_REGEXP = /(?:^|\W)(?:states|is_state|state_attr|is_state_attr|has_value)\s*\(\s*['"]\s*([a-z0-9_.]+)\s*['"]|(?:^|\W)states\s*\[\s*["']\s*([a-z0-9_.]+)\s*["']/g;
+export const ENTITIES_REGEXP = /(?:^|\W)(?:(?:states|is_state|state_attr|is_state_attr|has_value)\s*\(\s*['"]\s*([a-z0-9_.]+)\s*['"]|states\s*\[\s*["']\s*([a-z0-9_]+)\s*["']|states\.([a-z0-9_]+))/g;
 export const CSS_CLEANER_REGEXP = /(\s*)([\w-]+\s*:\s*[^;]+;?|\})(\s*)/g;
-export const DOMAIN_REGEXP = /^([a-z]+)[\w.]*$/;
+export const DOMAIN_REGEXP = /^([a-z_]+)[\w.]*$/;

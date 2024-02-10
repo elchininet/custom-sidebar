@@ -85,7 +85,7 @@ const validateConfigItem = (configItem: ConfigItem): boolean => {
             throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, "href" property should be a string`);
         }
         if (!configItem.icon) {
-            throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, if you set "new_item" as "true", "item" property is necessary`);
+            throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, if you set "new_item" as "true", "icon" property is necessary`);
         }
         if (typeof configItem.icon !== STRING_TYPE) {
             throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, "icon" property should be a string`);

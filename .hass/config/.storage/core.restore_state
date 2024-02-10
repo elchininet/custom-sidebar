@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "core.restore_state",
+  "data": [
+    {
+      "state": {
+        "entity_id": "person.test",
+        "state": "unknown",
+        "attributes": {
+          "editable": true,
+          "id": "test",
+          "user_id": "ec313e3c38fb4d60b44e0db03cdc1250",
+          "device_trackers": [],
+          "friendly_name": "Test"
+        },
+        "last_changed": "2023-11-24T11:20:52.297672+00:00",
+        "last_updated": "2023-11-24T11:20:53.391690+00:00",
+        "context": {
+          "id": "01HG0GZAWF0X2F1Q1EFCC0KVR3",
+          "parent_id": null,
+          "user_id": null
+        }
+      },
+      "extra_data": null,
+      "last_seen": "2023-11-24T11:21:32.159803+00:00"
+    },
+    {
+      "state": {
+        "entity_id": "timer.laundry",
+        "state": "idle",
+        "attributes": {
+          "duration": "0:01:00",
+          "editable": false
+        },
+        "last_changed": "2023-11-24T11:20:53.210152+00:00",
+        "last_updated": "2023-11-24T11:20:53.210152+00:00",
+        "context": {
+          "id": "01HG0GZAPTCH6WR38PRKMK51QP",
+          "parent_id": null,
+          "user_id": null
+        }
+      },
+      "extra_data": null,
+      "last_seen": "2023-11-24T11:21:32.159803+00:00"
+    },
+    {
+      "state": {
+        "entity_id": "tts.google_en_com",
+        "state": "unknown",
+        "attributes": {
+          "friendly_name": "Google en com"
+        },
+        "last_changed": "2023-11-24T11:20:53.307091+00:00",
+        "last_updated": "2023-11-24T11:20:53.307091+00:00",
+        "context": {
+          "id": "01HG0GZASV5XMF3YSR0BYSNFA0",
+          "parent_id": null,
+          "user_id": null
+        }
+      },
+      "extra_data": null,
+      "last_seen": "2023-11-24T11:21:32.159803+00:00"
+    }
+  ]
+}

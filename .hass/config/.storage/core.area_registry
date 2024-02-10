@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "minor_version": 3,
+  "key": "core.area_registry",
+  "data": {
+    "areas": [
+      {
+        "aliases": [],
+        "name": "Woonkamer",
+        "id": "woonkamer",
+        "picture": null
+      },
+      {
+        "aliases": [],
+        "name": "Keuken",
+        "id": "keuken",
+        "picture": null
+      },
+      {
+        "aliases": [],
+        "name": "Slaapkamer",
+        "id": "slaapkamer",
+        "picture": null
+      }
+    ]
+  }
+}

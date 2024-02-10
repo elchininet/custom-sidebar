@@ -7,7 +7,7 @@ import { validateConfig } from '@validators';
 export const fetchConfig = async (): Promise<Config> => {
     const errorNotFound = `${NAMESPACE}: YAML config file not found.`;
     const errorSuffix = 'Make sure you have valid config in /config/www/sidebar-order.yaml file.';
-    return new Promise<Config>((resolve, reject) => {
+    return new Promise<Config>((resolve) => {
         fetch(`${CONFIG_PATH}.yaml?hash=${randomId()}`)
             .then((response: Response) => {
                 if (response.ok) {
@@ -22,19 +22,17 @@ export const fetchConfig = async (): Promise<Config> => {
                             }
                             if (validateConfig(config)) {
                                 resolve(config);
-                            } else {
-                                reject(`${NAMESPACE}: Bad configuration.\n${errorSuffix}`);
                             }                            
                         })
                         .catch((error: Error) => {
-                            reject(`${NAMESPACE}: ${error?.message || error}`);
+                            throw Error(`${NAMESPACE}: ${error?.message || error}`);
                         });
                 } else {
-                    reject(`${errorNotFound}\n${errorSuffix}`);
+                    throw Error(`${errorNotFound}\n${errorSuffix}`);
                 }
             })
             .catch(() => {
-                reject(`${errorNotFound}\n${errorSuffix}`);
+                throw Error(`${errorNotFound}\n${errorSuffix}`);
             });
     });
 };

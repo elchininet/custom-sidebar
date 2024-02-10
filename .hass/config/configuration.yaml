@@ -1,0 +1,46 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+homeassistant:
+  auth_providers:
+    - type: trusted_networks
+      trusted_networks:
+        - 0.0.0.0/0
+      allow_bypass_login: true
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+input_boolean:
+  my_switch:
+    name: My Switch
+
+input_select:
+  fan_speed:
+    name: Fan Speed
+    initial: '1'
+    icon: mdi:fan-plus
+    options:
+      - '1'
+      - '2'
+      - '3'
+
+lovelace:
+  mode: yaml
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+  extra_module_url: /local/custom-sidebar.js
+
+shell_command:
+  copy_sidebar_config: /config/scripts/copy_sidebar_config.sh {{json}}
+
+timer:
+  laundry:
+    duration: "00:01:00"

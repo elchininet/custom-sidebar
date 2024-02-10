@@ -2,3 +2,12 @@
 /dist
 /.yalc
 /yalc.lock
+.DS_Store
+.hass/config/www/custom-sidebar.js
+/.nyc_output
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/coverage
+/.env

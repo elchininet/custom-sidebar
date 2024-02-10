@@ -25,7 +25,28 @@ jobs:
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: dependencies-v1-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+      - name: Cache Docker images
+        uses: ScribeMD/docker-cache@0.3.6
+        with:
+          key: docker-v1-${{ runner.os }}-${{ hashFiles('.hass/config/.HA_VERSION', '.playwright_docker_version') }}
       - name: Install
         run: yarn install --frozen-lockfile
-      - name: Tests
-        run: yarn test:ts
+      - name: E2E tests
+        run: |
+          touch .env
+          echo HA_TOKEN=${{ secrets.HA_TOKEN }} >> .env
+          yarn test:all
+      - name: Create coverage
+        run: yarn coverage:report
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-report
+          path: |
+            playwright-report/
+            coverage/
+          retention-days: 30
