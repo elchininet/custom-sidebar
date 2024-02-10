@@ -10,14 +10,11 @@ import { version } from '../../package.json';
 
 export const randomId = (): string => Math.random().toString(16).slice(2);
 
-const getArray = (value: undefined | string | string[]): string[] => {
-    if (typeof value === 'string') {
-        return value.toLowerCase().split(/\s*,\s*/);
-    }
+const getArray = (value: string | string[]): string[] => {
     if (Array.isArray(value)) {
         return value.map((val: string) => val.toLocaleLowerCase());
     }
-    return [];
+    return value.toLowerCase().split(/\s*,\s*/);
 };
 
 const flatConfigOrder = (order: ConfigOrder[]): ConfigOrder[] => {
@@ -128,14 +125,11 @@ export const getFinalOrder = (
     return flatConfigOrder(order);
 };
 
-const getElementName = (elem: Element | ShadowRoot): string => {
-	if (elem instanceof ShadowRoot) {
-		return elem.host.localName;
-	}
-	return elem.localName;
+const getElementName = (elem: ShadowRoot): string => {
+	return elem.host.localName;
 };
 
-export const addStyle = (css: string, elem: Element | ShadowRoot): void => {
+export const addStyle = (css: string, elem: ShadowRoot): void => {
 	const name = getElementName(elem);
     const style = document.createElement('style');
     style.setAttribute('id', `${NAMESPACE}_${name}`);

@@ -95,9 +95,30 @@ class CustomSidebar {
             });
     }
 
+    private async _getElements(): Promise<[HTMLElement, NodeListOf<HTMLAnchorElement>, HTMLElement]> {
+        const paperListBox = (await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element) as HTMLElement;
+        const spacer = await getPromisableElement<HTMLElement>(
+            () => paperListBox.querySelector<HTMLElement>(`:scope > ${SELECTOR.SPACER}`),
+            (spacer: HTMLElement): boolean => !! spacer
+        );
+        const items = await getPromisableElement<NodeListOf<HTMLAnchorElement>>(
+            () => paperListBox.querySelectorAll<HTMLAnchorElement>(`:scope > ${SELECTOR.ITEM}`),
+            (elements: NodeListOf<HTMLAnchorElement>): boolean => {
+                if (elements.length) {
+                    return Array.from(elements).every((element: HTMLAnchorElement): boolean => {
+                        const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
+                        return text.length > 0;
+                    });
+                }
+                return false;
+            }
+        );
+        return [paperListBox, items, spacer];
+    }
+
     private async _hasReady(): Promise<HassObject> {
         return getPromisableElement(
-            () => this._ha?.hass,
+            () => this._ha.hass,
             (hass: HassObject): boolean => !!(
                 hass &&
                 hass.areas &&
@@ -133,7 +154,7 @@ class CustomSidebar {
         a.href = configItem.href;
         a.target = configItem.target || '';
         a.setAttribute(ATTRIBUTE.ROLE, 'option');
-        a.setAttribute(ATTRIBUTE.PANEL, name.toLowerCase().replace(/\s+/, '-'));
+        a.setAttribute(ATTRIBUTE.PANEL, configItem.item.toLowerCase().replace(/\s+/, '-'));
         if (configItem.hide) {
             a.style.display = 'none';
         }
@@ -171,8 +192,8 @@ class CustomSidebar {
 
     private _updateName(element: HTMLAnchorElement, name: string): void {
         element
-            .querySelector(SELECTOR.ITEM_TEXT)
-            .textContent = name;
+            .querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)
+            .innerText = name;
     }
 
     private _updateNotification(element: HTMLAnchorElement, notification: string): void {
@@ -189,7 +210,7 @@ class CustomSidebar {
             badgeCollapsed = document.createElement('span');
             badgeCollapsed.classList.add(CLASS.NOTIFICATIONS_BADGE, CLASS.NOTIFICATIONS_BADGE_COLLAPSED);
             element
-                .querySelector(ELEMENT.HA_ICON)
+                .querySelector(`${ELEMENT.HA_SVG_ICON}, ${ELEMENT.HA_ICON}`)
                 .after(badgeCollapsed);
         }
         if (notification?.length) {
@@ -211,14 +232,10 @@ class CustomSidebar {
             ].join(',')
         );
         if (iconElement) {
-            if (iconElement.nodeName === ELEMENT.HA_SVG_ICON.toUpperCase()) {
-                const haIcon = document.createElement(ELEMENT.HA_ICON);
-                haIcon.setAttribute('icon', icon);
-                haIcon.setAttribute('slot', 'item-icon');
-                iconElement.replaceWith(haIcon);
-            } else {
-                iconElement.setAttribute('icon', icon);
-            }
+            const haIcon = document.createElement(ELEMENT.HA_ICON);
+            haIcon.setAttribute('icon', icon);
+            haIcon.setAttribute('slot', 'item-icon');
+            iconElement.replaceWith(haIcon);
         }
     }
 
@@ -364,16 +381,14 @@ class CustomSidebar {
     private _rearrange(): void {
         Promise.all([
             this._getOrder(),
-            this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element,
-            this._sidebar.selector.$.query(`${ELEMENT.PAPER_LISTBOX} > ${SELECTOR.ITEM}`).all,
-            this._sidebar.selector.$.query(`${ELEMENT.PAPER_LISTBOX} > ${SELECTOR.SPACER}`).element
+            this._getElements()
         ])
-            .then(([order, paperListBox, items, spacer]) => {
+            .then(([order, elements]) => {
+
+                const [ paperListBox, items, spacer ] = elements;
 
                 let orderIndex = 0;
                 let crossedBottom = false;
-
-                if (!order.length) return;
 
                 const itemsArray = Array.from(items) as HTMLAnchorElement[];
                 const matched: Set<Element> = new Set();
@@ -389,14 +404,16 @@ class CustomSidebar {
                                 : (
                                     match === Match.HREF
                                         ? element.getAttribute(ATTRIBUTE.HREF)
-                                        : element.querySelector(SELECTOR.ITEM_TEXT).textContent.trim()
+                                        : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim()
                                 );
                             
                             const matchText = (
                                 (!!exact && item === text) ||
                                 (!exact && text.toLowerCase().includes(itemLowerCase))
                             );
+
                             if (matchText) {
+
                                 if (matched.has(element)) {
                                     return false;
                                 } else {

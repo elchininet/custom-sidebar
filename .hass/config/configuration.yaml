@@ -16,6 +16,10 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
+input_boolean:
+  my_switch:
+    name: My Switch
+
 lovelace:
   mode: yaml
 
@@ -23,6 +27,9 @@ lovelace:
 frontend:
   themes: !include_dir_merge_named themes
   extra_module_url: /local/custom-sidebar.js
+
+shell_command:
+  copy_sidebar_config: /config/scripts/copy_sidebar_config.sh {{json}}
 
 timer:
   laundry:

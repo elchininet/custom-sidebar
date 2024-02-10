@@ -4,6 +4,7 @@ import { terser } from 'rollup-plugin-terser';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import alias from '@rollup/plugin-alias';
 import replace from '@rollup/plugin-replace';
+import istanbul from 'rollup-plugin-istanbul';
 
 const CONFIG_REPLACER = '%CONFIG%';
 
@@ -56,6 +57,27 @@ export default [
         input: 'src/custom-sidebar.ts',
         output: {
             file: 'dist/custom-sidebar-yaml.js',
+            format: 'iife'
+        }
+    },
+    {
+        plugins: [
+            replace({
+                [CONFIG_REPLACER]: 'JSON',
+                preventAssignment: true,
+                delimiters: ['', '']
+            }),
+            ...plugins,
+            istanbul({
+                exclude: [
+                    'node_modules/**/*',
+                    'package.json'
+                ]
+            })
+        ],
+        input: 'src/custom-sidebar.ts',
+        output: {
+            file: '.hass/config/www/custom-sidebar.js',
             format: 'iife'
         }
     }
