@@ -42,3 +42,11 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-report
+          path: |
+            playwright-report/
+            coverage/
+          retention-days: 30
