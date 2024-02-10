@@ -4,6 +4,7 @@
 /yalc.lock
 .DS_Store
 .hass/config/www/custom-sidebar.js
+.hass/config/www/sidebar-config.json
 /.nyc_output
 /test-results/
 /playwright-report/
