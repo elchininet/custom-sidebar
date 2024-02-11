@@ -13,18 +13,14 @@ test.beforeAll(async () => {
   await haConfigRequest(CONFIG_FILES.BASIC);
 });
 
-const visitHome = async (page: Page): Promise<void> => {
+test('Clicking on items with the same root path should select the proper item', async ({ page }) => {
+
   await page.goto('/');
   await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
   await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
   await expect(page).toHaveScreenshot('01-sidebar.png', {
     clip: SIDEBAR_CLIP
   });
-};
-
-test('Clicking on items with the same root path should select the proper item', async ({ page }) => {
-
-  await visitHome(page);
 
   await page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG).click();
 
@@ -100,7 +96,8 @@ test('Do not move the clicked item outside the viewport', async ({ page }) => {
     }
   });
 
-  await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).click({ delay: 50 });
+  await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).click({ delay: 150 });
+  await page.waitForTimeout(100);
 
   await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS)).toBeInViewport();
 
