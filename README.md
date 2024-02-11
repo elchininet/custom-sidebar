@@ -33,7 +33,7 @@ Custom [HACS] plugin that allows you to rearrange, hide, and add menu items to [
   </tbody>
 </table>
 
-This is a refactor of [custom-sidebar-v2] by @galloween, which unfortunatelly is now unmaintained and archived. In its beginning, @galloween's code was a refactor of the [original Custom Sidebar] plugin by @Villhellm (R.I.P.). This version refactored completely @galloween's code allowing to use a configuration in `JSON` (as @galloween's version) or in `YAML` (as @Villhellm's one), and using [home-assistant-query-selector] to make it less likely to break with future Home Assistant front-end updates.
+This is a refactor of [custom-sidebar-v2] by @galloween, which unfortunatelly is now unmaintained and archived. In its beginning, @galloween's code was a refactor of the [original Custom Sidebar] plugin by @Villhellm (R.I.P.). This version refactored completely @galloween's code allowing to use a configuration in `JSON` (as @galloween's version) or in `YAML` (as @Villhellm's one), fixing several bugs, improving performance, and using [home-assistant-query-selector] to make it less likely to break with future Home Assistant front-end updates.
 
 ## Installation
 
@@ -56,7 +56,7 @@ You can install the plugin manually or through [HACS], not both. If you install 
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar.js?v1.0.0
+    - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v1.0.0
 ```
 
 #### If you want to use a `YAML` configuration
@@ -73,7 +73,7 @@ frontend:
 ### Manual installation
 
 1. Download the latest [custom-sidebar release]
-2. Copy `custom-sidebar.js` or `custom-sidebar-yaml.js` into `<config directory>/www/` (depending on the configuration format that you are going to use, `JSON` or `YAML`)
+2. Copy `custom-sidebar-json.js` or `custom-sidebar-yaml.js` into `<config directory>/www/` (depending on the configuration format that you are going to use, `JSON` or `YAML`)
 3. Add the url of the plugin as an [extra_module_url] in your `confgiguration.yaml` (unless you use [browser_mod]):
 
 #### If you want to use a `JSON` configuration
@@ -81,7 +81,7 @@ frontend:
 ```yaml
 frontend:
   extra_module_url:
-    - /local/custom-sidebar.js?v1.0.0
+    - /local/custom-sidebar-json.js?v1.0.0
 ```
 
 #### If you want to use a `YAML` configuration
@@ -97,7 +97,7 @@ frontend:
 
 ## Configuration
 
-Depending on the file that you have added to [extra_module_url], you will need to add your configuration in `JSON` or `YAML` format. If you used `custom-sidebar.js` you need to provide the configuration in `JSON` format. If you have used `custom-sidebar-yaml.js` you need to provide the configuration in `YAML` format.
+Depending on the file that you have added to [extra_module_url], you will need to add your configuration in `JSON` or `YAML` format. If you used `custom-sidebar-json.js` you need to provide the configuration in `JSON` format. If you have used `custom-sidebar-yaml.js` you need to provide the configuration in `YAML` format.
 
 Add a file named `sidebar-config.json` or `sidebar-config.yaml` into your `<config directory>/www/` directory. It could be easier if you copy the [example sidebar-config.json] or the [example sidebar-config.yaml] file, delete the `id` parameter, and edit it to match your needs.
 
