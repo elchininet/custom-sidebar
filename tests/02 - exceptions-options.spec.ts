@@ -1,6 +1,10 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import { SELECTORS, CONFIG_FILES } from './constants';
+import {
+  SELECTORS,
+  CONFIG_FILES,
+  SIDEBAR_CLIP
+} from './constants';
 import { haConfigRequest, addJsonExceptionsRoute } from './utilities';
 
 test.beforeAll(async () => {
@@ -31,7 +35,9 @@ test('Exceptions item override', async ({ page }) => {
 
   await pageVisit(page);
 
-  await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('01-sidebar-exceptions-override.png');
+  await expect(page).toHaveScreenshot('01-sidebar-exceptions-override.png', {
+    clip: SIDEBAR_CLIP
+  });
 
 });
 
@@ -56,7 +62,9 @@ test('Exceptions new_item override', async ({ page }) => {
 
   await pageVisit(page);
 
-  await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('02-sidebar-exceptions-new-item-override.png');
+  await expect(page).toHaveScreenshot('02-sidebar-exceptions-new-item-override.png', {
+    clip: SIDEBAR_CLIP
+  });
 
   const google = page.locator(SELECTORS.SIDEBAR_ITEMS.GOOGLE);
   await expect(google).toHaveText('Search', { useInnerText: true });
@@ -94,7 +102,9 @@ test.describe('Exceptions matchers', async () => {
   
     await pageVisit(page);
   
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('03-sidebar-exceptions-check-item.png');
+    await expect(page).toHaveScreenshot('03-sidebar-exceptions-check-item.png', {
+      clip: SIDEBAR_CLIP
+    });
   
   });
 
@@ -109,7 +119,9 @@ test.describe('Exceptions matchers', async () => {
   
     await pageVisit(page);
   
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('03-sidebar-exceptions-check-item.png');
+    await expect(page).toHaveScreenshot('03-sidebar-exceptions-check-item.png', {
+      clip: SIDEBAR_CLIP
+    });
   
   });
   
@@ -124,7 +136,9 @@ test.describe('Exceptions matchers', async () => {
   
     await pageVisit(page);
   
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('03-sidebar-exceptions-check-item.png');
+    await expect(page).toHaveScreenshot('03-sidebar-exceptions-check-item.png', {
+      clip: SIDEBAR_CLIP
+    });
   
   });
 
@@ -139,7 +153,9 @@ test.describe('Exceptions matchers', async () => {
   
     await pageVisit(page);
   
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('03-sidebar-exceptions-check-item.png');
+    await expect(page).toHaveScreenshot('03-sidebar-exceptions-check-item.png', {
+      clip: SIDEBAR_CLIP
+    });
   
   });
 
@@ -154,7 +170,9 @@ test.describe('Exceptions matchers', async () => {
   
     await pageVisit(page);
   
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('03-sidebar-exceptions-check-item.png');
+    await expect(page).toHaveScreenshot('03-sidebar-exceptions-check-item.png', {
+      clip: SIDEBAR_CLIP
+    });
   
   });
 
@@ -169,7 +187,9 @@ test.describe('Exceptions matchers', async () => {
   
     await pageVisit(page);
   
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('03-sidebar-exceptions-check-item.png');
+    await expect(page).toHaveScreenshot('03-sidebar-exceptions-check-item.png', {
+      clip: SIDEBAR_CLIP
+    });
   
   });
 
@@ -184,7 +204,9 @@ test.describe('Exceptions matchers', async () => {
   
     await pageVisit(page);
   
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('03-sidebar-exceptions-check-item.png');
+    await expect(page).toHaveScreenshot('03-sidebar-exceptions-check-item.png', {
+      clip: SIDEBAR_CLIP
+    });
   
   });
 
@@ -199,7 +221,9 @@ test.describe('Exceptions matchers', async () => {
   
     await pageVisit(page);
   
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('03-sidebar-exceptions-check-item.png');
+    await expect(page).toHaveScreenshot('03-sidebar-exceptions-check-item.png', {
+      clip: SIDEBAR_CLIP
+    });
   
   });
 
@@ -226,7 +250,9 @@ test.describe('Exceptions matchers', async () => {
   
     await pageVisit(page);
 
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('04-sidebar-exceptions-check-on-top.png');
+    await expect(page).toHaveScreenshot('04-sidebar-exceptions-check-on-top.png', {
+      clip: SIDEBAR_CLIP
+    });
   
   });
 

@@ -32,3 +32,10 @@ export const CONFIG_FILES = {
     BASIC: 'basic',
     JS_TEMPLATES: 'js-templates'
 };
+
+export const SIDEBAR_CLIP = {
+    x: 0,
+    y: 0,
+    width: 255,
+    height: 598
+};
