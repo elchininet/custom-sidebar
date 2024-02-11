@@ -1,7 +1,10 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import { HomeAssistant } from 'home-assistant-javascript-templates';
-import { SELECTORS, CONFIG_FILES } from './constants';
+import {
+  SELECTORS,
+  CONFIG_FILES,
+  SIDEBAR_CLIP
+} from './constants';
 import { haConfigRequest, fulfillJson } from './utilities';
 
 test.beforeAll(async () => {
@@ -35,6 +38,8 @@ test('Multiple items match the same element', async ({ page }) => {
 
   await pageVisit(page);
 
-  await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('01-multiple-matches.png');
+  await expect(page).toHaveScreenshot('01-multiple-matches.png', {
+    clip: SIDEBAR_CLIP
+  });
 
 });

@@ -1,6 +1,10 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import { SELECTORS, CONFIG_FILES } from './constants';
+import {
+  SELECTORS,
+  CONFIG_FILES,
+  SIDEBAR_CLIP
+} from './constants';
 import { haConfigRequest, fulfillJson } from './utilities';
 
 test.beforeAll(async () => {
@@ -11,7 +15,9 @@ const pageVisit = async (page: Page): Promise<void> => {
   await page.goto('/');
   await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
   await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-  await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('01-sidebar.png');
+  await expect(page).toHaveScreenshot('01-sidebar.png', {
+    clip: SIDEBAR_CLIP
+  });
 };
 
 test('Sidebar items are processed', async ({ page }) => {
@@ -95,7 +101,9 @@ test('Sidebar new item with notification', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
   await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-  await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('02-sidebar-new-item-notification.png');
+  await expect(page).toHaveScreenshot('02-sidebar-new-item-notification.png', {
+    clip: SIDEBAR_CLIP
+  });
 
 });
 

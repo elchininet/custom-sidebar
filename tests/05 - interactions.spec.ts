@@ -1,6 +1,10 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import { SELECTORS, CONFIG_FILES } from './constants';
+import {
+  SELECTORS,
+  CONFIG_FILES,
+  SIDEBAR_CLIP
+} from './constants';
 import { haConfigRequest } from './utilities';
 
 const SELECTED_CLASSNAME = /(^|\s)iron-selected(\s|$)/;
@@ -13,7 +17,9 @@ const visitHome = async (page: Page): Promise<void> => {
   await page.goto('/');
   await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
   await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-  await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('01-sidebar.png');
+  await expect(page).toHaveScreenshot('01-sidebar.png', {
+    clip: SIDEBAR_CLIP
+  });
 };
 
 test('Clicking on items with the same root path should select the proper item', async ({ page }) => {
@@ -87,7 +93,12 @@ test('Do not move the clicked item outside the viewport', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
   await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-  await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('02-sidebar-small-viewport.png');
+  await expect(page).toHaveScreenshot('02-sidebar-small-viewport.png', {
+    clip: {
+      ...SIDEBAR_CLIP,
+      height: 378
+    }
+  });
 
   await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).click({ delay: 50 });
 
