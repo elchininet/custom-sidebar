@@ -1,6 +1,6 @@
 export const NAMESPACE = 'custom-sidebar';
 export const CONFIG_PATH = '/local/sidebar-config';
-export const MAX_ATTEMPTS = 500;
+export const MAX_ATTEMPTS = 100;
 export const RETRY_DELAY = 50;
 
 export const STRING_TYPE = 'string';

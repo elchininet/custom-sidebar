@@ -8,23 +8,49 @@ import istanbul from 'rollup-plugin-istanbul';
 
 const CONFIG_REPLACER = '%CONFIG%';
 
-const plugins = [
+const bundlePlugins = [
     nodeResolve(),
     json(),
+    ts({
+        browserslist: false
+    }),
+    terser({
+        output: {
+            comments: false
+        }
+    })
+];
+
+const testBundlePlugins = [
+    nodeResolve(),
+    json(),
+    ts({
+        browserslist: false,
+        tsconfig: resolvedConfig => ({
+            ...resolvedConfig,
+            removeComments: false
+        })                
+    }),
+    istanbul({
+        exclude: [
+            'node_modules/**/*',
+            'package.json'
+        ]
+    })
 ];
 
 export default [
     {
+        plugins: bundlePlugins,
+        input: 'src/checker.ts',
+        output: {
+            file: 'dist/custom-sidebar.js',
+            format: 'iife'
+        }
+    },
+    {
         plugins: [
-            ...plugins,
-            ts({
-                browserslist: false
-            }),
-            terser({
-                output: {
-                    comments: false
-                }
-            }),
+            ...bundlePlugins,
             replace({
                 [CONFIG_REPLACER]: 'JSON',
                 preventAssignment: true,
@@ -33,21 +59,13 @@ export default [
         ],
         input: 'src/custom-sidebar.ts',
         output: {
-            file: 'dist/custom-sidebar.js',
+            file: 'dist/custom-sidebar-json.js',
             format: 'iife'
         }
     },
     {
         plugins: [
-            ...plugins,
-            ts({
-                browserslist: false
-            }),
-            terser({
-                output: {
-                    comments: false
-                }
-            }),
+            ...bundlePlugins,
             replace({
                 [CONFIG_REPLACER]: 'YAML',
                 preventAssignment: true,
@@ -70,25 +88,12 @@ export default [
     },
     {
         plugins: [
-            ...plugins,
-            ts({
-                browserslist: false,
-                tsconfig: resolvedConfig => ({
-                    ...resolvedConfig,
-                    removeComments: false
-                })                
-            }),
+            ...testBundlePlugins,
             replace({
                 [CONFIG_REPLACER]: 'JSON',
                 preventAssignment: true,
                 delimiters: ['', '']
-            }),
-            istanbul({
-				exclude: [
-					'node_modules/**/*',
-					'package.json'
-				]
-			})
+            })
         ],
         input: 'src/custom-sidebar.ts',
         output: {

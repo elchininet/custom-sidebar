@@ -87,6 +87,7 @@ jobs:
         with:
           files: |
             dist/custom-sidebar.js
+            dist/custom-sidebar-json.js
             dist/custom-sidebar-yaml.js
           body: |
             ${{ steps.build_changelog.outputs.changelog }}

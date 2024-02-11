@@ -89,7 +89,7 @@ test('Do not move the clicked item outside the viewport', async ({ page }) => {
   await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
   await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveScreenshot('02-sidebar-small-viewport.png');
 
-  await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).click();
+  await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).click({ delay: 50 });
 
   await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS)).toBeInViewport();
 
