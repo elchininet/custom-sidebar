@@ -5,6 +5,8 @@ const ERROR_PREFIX = 'custom-sidebar:';
 
 test('JSON not found', async ({ page }) => {
 
+    const errors: string[] = [];
+
     await page.route('local/sidebar-config.json*', async route => {
         await route.fulfill({
             status: 404,
@@ -14,15 +16,22 @@ test('JSON not found', async ({ page }) => {
     });
 
     page.on('pageerror', error => {
-        expect(error.message).toBe(`${ERROR_PREFIX} JSON config file not found.\nMake sure you have valid config in /config/www/sidebar-order.json file.`);
+        errors.push(error.message);
     });
 
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    expect(errors).toEqual(
+        expect.arrayContaining([
+            `${ERROR_PREFIX} JSON config file not found.\nMake sure you have valid config in /config/www/sidebar-order.json file.`
+        ])
+    );
 
 });
 
 test('JSON server error', async ({ page }) => {
+
+    const errors: string[] = [];
 
     await page.route('local/sidebar-config.json*', async route => {
         await route.fulfill({
@@ -33,30 +42,44 @@ test('JSON server error', async ({ page }) => {
     });
 
     page.on('pageerror', error => {
-        expect(error.message).toBe(`${ERROR_PREFIX} JSON config file not found.\nMake sure you have valid config in /config/www/sidebar-order.json file.`);
+        errors.push(error.message);
     });
 
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    expect(errors).toEqual(
+        expect.arrayContaining([
+            `${ERROR_PREFIX} JSON config file not found.\nMake sure you have valid config in /config/www/sidebar-order.json file.`
+        ])
+    );
 
 });
 
 test('JSON malformed', async ({ page }) => {
+
+    const errors: string[] = [];
 
     await page.route('local/sidebar-config.json*', async route => {
         await route.fulfill({ body: 'html' });
     });
 
     page.on('pageerror', error => {
-        expect(error.message).toBe(`${ERROR_PREFIX} Unexpected token \'h\', "html" is not valid JSON`);
+        errors.push(error.message);
     });
 
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    expect(errors).toEqual(
+        expect.arrayContaining([
+            `${ERROR_PREFIX} Unexpected token \'h\', "html" is not valid JSON`
+        ])
+    );
 
 });
 
 test('JSON id warning', async ({ page }) => {
+
+    const warnings: string[] = [];
 
     await page.route('local/sidebar-config.json*', async route => {
         const json = { title: 'Custom Title', order: [], id: 'example_json'};
@@ -65,11 +88,16 @@ test('JSON id warning', async ({ page }) => {
 
     page.on('console', message => {
         if (message.type() === 'warning') {
-            expect(message.text()).toBe(`${ERROR_PREFIX} You seem to be using the example configuration.\nMake sure you have valid config in /config/www/sidebar-order.json file.`);
+            warnings.push(message.text());
         }
     });
 
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    expect(warnings).toEqual(
+        expect.arrayContaining([
+            `${ERROR_PREFIX} You seem to be using the example configuration.\nMake sure you have valid config in /config/www/sidebar-order.json file.`
+        ])
+    );
 
 });
