@@ -587,23 +587,20 @@ class CustomSidebar {
                 }
                 return link;
             }, null);
-
-        if (pathName) {
-            Array.from(allLinks).forEach((anchor: HTMLAnchorElement): void => {
-                const isActive = (
-                    activeLink &&
-                    activeLink === anchor
-                ) ||
-                (
-                    !activeLink &&
-                    activeParentLink === anchor
-                );
-                anchor.classList.toggle(className, isActive);
-                anchor.setAttribute(ATTRIBUTE.ARIA_SELECTED, `${isActive}`);
-            });
-            if (paperListBox.scrollTop !== this._sidebarScroll) {
-                paperListBox.scrollTop = this._sidebarScroll;
-            }
+        Array.from(allLinks).forEach((anchor: HTMLAnchorElement): void => {
+            const isActive = (
+                activeLink &&
+                activeLink === anchor
+            ) ||
+            (
+                !activeLink &&
+                activeParentLink === anchor
+            );
+            anchor.classList.toggle(className, isActive);
+            anchor.setAttribute(ATTRIBUTE.ARIA_SELECTED, `${isActive}`);
+        });
+        if (paperListBox.scrollTop !== this._sidebarScroll) {
+            paperListBox.scrollTop = this._sidebarScroll;
         }
     }
 
