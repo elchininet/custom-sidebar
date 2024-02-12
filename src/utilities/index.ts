@@ -55,8 +55,8 @@ const flatConfigOrder = (order: ConfigOrder[]): ConfigOrder[] => {
 export const logVersionToConsole = () => {
     console.info(
         `%c≡ ${NAMESPACE.toUpperCase()} (%CONFIG%)%cv${version}`,
-        'font-weight: bold; color: #666666; padding: 2px;',
-        'font-weight: normal; color: #212121; padding: 2px'
+        'font-weight: bold; background: #EEEEEE; color: #666666; padding: 2px 5px;',
+        'font-weight: normal; background: #E87A24; color: #FFFFFF; padding: 2px 5px'
     );
 };
 
