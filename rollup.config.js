@@ -50,12 +50,12 @@ export default [
     },
     {
         plugins: [
-            ...bundlePlugins,
             replace({
                 [CONFIG_REPLACER]: 'JSON',
                 preventAssignment: true,
                 delimiters: ['', '']
-            })
+            }),
+            ...bundlePlugins
         ],
         input: 'src/custom-sidebar.ts',
         output: {
@@ -65,12 +65,6 @@ export default [
     },
     {
         plugins: [
-            ...bundlePlugins,
-            replace({
-                [CONFIG_REPLACER]: 'YAML',
-                preventAssignment: true,
-                delimiters: ['', '']
-            }),
             alias({
                 entries: [
                     {
@@ -78,7 +72,13 @@ export default [
                         replacement: '@fetchers/yaml'
                     }
                 ]
-            })
+            }),
+            replace({
+                [CONFIG_REPLACER]: 'YAML',
+                preventAssignment: true,
+                delimiters: ['', '']
+            }),
+            ...bundlePlugins            
         ],
         input: 'src/custom-sidebar.ts',
         output: {
@@ -88,12 +88,12 @@ export default [
     },
     {
         plugins: [
-            ...testBundlePlugins,
             replace({
                 [CONFIG_REPLACER]: 'JSON',
                 preventAssignment: true,
                 delimiters: ['', '']
-            })
+            }),
+            ...testBundlePlugins
         ],
         input: 'src/custom-sidebar.ts',
         output: {
