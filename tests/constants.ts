@@ -8,6 +8,8 @@ const getSidebarItemSelector = (panel: string): string => {
 
 export const SELECTORS = {
     TITLE: '.menu .title',
+    SIDEBAR_EDIT_BUTTON: '.menu mwc-button',
+    PROFILE_EDIT_BUTTON: '.content > ha-card ha-settings-row > mwc-button',
     HA_SIDEBAR: 'ha-sidebar',
     HUI_VIEW: 'hui-view',
     PAPER_LIST_BOX: 'paper-listbox',
@@ -27,6 +29,10 @@ export const SELECTORS = {
         AUTOMATIONS: getSidebarItemSelector('automations'),
         HIDDEN: getSidebarItemSelector('hidden')
     }
+};
+
+export const ATTRIBUTES = {
+    DISABLED: 'disabled'
 };
 
 export const CONFIG_FILES = {

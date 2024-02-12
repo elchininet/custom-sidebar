@@ -5,7 +5,7 @@ import {
   CONFIG_FILES,
   SIDEBAR_CLIP
 } from './constants';
-import { haConfigRequest, addJsonExceptionsRoute } from './utilities';
+import { haConfigRequest, addJsonExtendedRoute } from './utilities';
 
 test.beforeAll(async () => {
   await haConfigRequest(CONFIG_FILES.BASIC);
@@ -19,19 +19,21 @@ const pageVisit = async (page: Page): Promise<void> => {
 
 test('Exceptions item override', async ({ page }) => {
 
-  await addJsonExceptionsRoute(page, [
-    {
-      user: 'Test',
-      base_order: true,
-      order: [
-        {
-          item: 'developer tools',
-          bottom: true,
-          order: 9
-        }
-      ]
-    }
-  ]);
+  await addJsonExtendedRoute(page, {
+    exceptions: [
+      {
+        user: 'Test',
+        base_order: true,
+        order: [
+          {
+            item: 'developer tools',
+            bottom: true,
+            order: 9
+          }
+        ]
+      }
+    ]
+  });
 
   await pageVisit(page);
 
@@ -43,22 +45,24 @@ test('Exceptions item override', async ({ page }) => {
 
 test('Exceptions new_item override', async ({ page }) => {
 
-  await addJsonExceptionsRoute(page, [
-    {
-      user: 'Test',
-      base_order: true,
-      order: [
-        {
-          new_item: true,
-          item: 'Google',
-          name: 'Search',
-          icon: 'mdi:web',
-          href: 'https://google.com',
-          order: -1
-        }
-      ]
-    }
-  ]);
+  await addJsonExtendedRoute(page, {
+    exceptions: [
+      {
+        user: 'Test',
+        base_order: true,
+        order: [
+          {
+            new_item: true,
+            item: 'Google',
+            name: 'Search',
+            icon: 'mdi:web',
+            href: 'https://google.com',
+            order: -1
+          }
+        ]
+      }
+    ]
+  });
 
   await pageVisit(page);
 
@@ -93,12 +97,14 @@ test.describe('Exceptions matchers', async () => {
 
   test('Exceptions user', async ({ page }) => {
 
-    await addJsonExceptionsRoute(page, [
-      {
-        user: 'Test',
-        ...json
-      }
-    ]);
+    await addJsonExtendedRoute(page, {
+      exceptions: [
+        {
+          user: 'Test',
+          ...json
+        }
+      ]
+    });
   
     await pageVisit(page);
   
@@ -110,12 +116,14 @@ test.describe('Exceptions matchers', async () => {
 
   test('Exceptions user as array', async ({ page }) => {
 
-    await addJsonExceptionsRoute(page, [
-      {
-        user: ['ElChiniNet', 'Test', 'Palaus'],
-        ...json
-      }
-    ]);
+    await addJsonExtendedRoute(page, {
+      exceptions: [
+        {
+          user: ['ElChiniNet', 'Test', 'Palaus'],
+          ...json
+        }
+      ]
+    });
   
     await pageVisit(page);
   
@@ -127,12 +135,14 @@ test.describe('Exceptions matchers', async () => {
   
   test('Exceptions not_user', async ({ page }) => {
   
-    await addJsonExceptionsRoute(page, [
-      {
-        not_user: 'ElChiniNet',
-        ...json
-      }
-    ]);
+    await addJsonExtendedRoute(page, {
+      exceptions: [
+        {
+          not_user: 'ElChiniNet',
+          ...json
+        }
+      ]
+    });
   
     await pageVisit(page);
   
@@ -144,12 +154,14 @@ test.describe('Exceptions matchers', async () => {
 
   test('Exceptions not_user as an array', async ({ page }) => {
   
-    await addJsonExceptionsRoute(page, [
-      {
-        not_user: ['ElChiniNet', 'Palaus'],
-        ...json
-      }
-    ]);
+    await addJsonExtendedRoute(page, {
+      exceptions: [
+        {
+          not_user: ['ElChiniNet', 'Palaus'],
+          ...json
+        }
+      ]
+    });
   
     await pageVisit(page);
   
@@ -161,12 +173,14 @@ test.describe('Exceptions matchers', async () => {
 
   test('Exceptions device', async ({ page }) => {
   
-    await addJsonExceptionsRoute(page, [
-      {
-        device: 'Chrome',
-        ...json
-      }
-    ]);
+    await addJsonExtendedRoute(page, {
+      exceptions: [
+        {
+          device: 'Chrome',
+          ...json
+        }
+      ]
+    });
   
     await pageVisit(page);
   
@@ -178,12 +192,14 @@ test.describe('Exceptions matchers', async () => {
 
   test('Exceptions device as an array', async ({ page }) => {
   
-    await addJsonExceptionsRoute(page, [
-      {
-        device: ['Android', 'Chrome', 'iPad'],
-        ...json
-      }
-    ]);
+    await addJsonExtendedRoute(page, {
+      exceptions: [
+        {
+          device: ['Android', 'Chrome', 'iPad'],
+          ...json
+        }
+      ]
+    });
   
     await pageVisit(page);
   
@@ -195,12 +211,14 @@ test.describe('Exceptions matchers', async () => {
 
   test('Exceptions not_device', async ({ page }) => {
   
-    await addJsonExceptionsRoute(page, [
-      {
-        not_device: 'iPad',
-        ...json
-      }
-    ]);
+    await addJsonExtendedRoute(page, {
+      exceptions: [
+        {
+          not_device: 'iPad',
+          ...json
+        }
+      ]
+    });
   
     await pageVisit(page);
   
@@ -212,12 +230,14 @@ test.describe('Exceptions matchers', async () => {
 
   test('Exceptions not_device as an array', async ({ page }) => {
   
-    await addJsonExceptionsRoute(page, [
-      {
-        not_device: ['iPad', 'Android'],
-        ...json
-      }
-    ]);
+    await addJsonExtendedRoute(page, {
+      exceptions: [
+        {
+          not_device: ['iPad', 'Android'],
+          ...json
+        }
+      ]
+    });
   
     await pageVisit(page);
   
@@ -229,24 +249,26 @@ test.describe('Exceptions matchers', async () => {
 
   test('Exceptions do not extend', async ({ page }) => {
   
-    await addJsonExceptionsRoute(page, [
-      {
-        user: 'Test',
-        order: [
-          ...json.order,
-          {
-            item: 'dev',
-            bottom: true
-          },
-          {
-            item: 'config',
-            match: 'data-panel',
-            bottom: true
-          }
-        ],
-        base_order: false
-      }
-    ]);
+    await addJsonExtendedRoute(page, {
+      exceptions: [
+        {
+          user: 'Test',
+          order: [
+            ...json.order,
+            {
+              item: 'dev',
+              bottom: true
+            },
+            {
+              item: 'config',
+              match: 'data-panel',
+              bottom: true
+            }
+          ],
+          base_order: false
+        }
+      ]
+    });
   
     await pageVisit(page);
 

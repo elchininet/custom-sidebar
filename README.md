@@ -108,6 +108,7 @@ Add a file named `sidebar-config.json` or `sidebar-config.yaml` into your `<conf
 | ------------------ | ---------------------------------- | -------- | ----------- |
 | order              | Array of [items](#item-properties) | true     | List of items to process |
 | title<sup>\*</sup> | String                             | false    | Custom title to replace the `Home Assistant` title |
+| sidebar_editable   | Boolean                            | false    | If it is set to `false`, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled |
 
 #### Item properties
 
