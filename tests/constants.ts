@@ -10,6 +10,7 @@ export const SELECTORS = {
     TITLE: '.menu .title',
     HA_SIDEBAR: 'ha-sidebar',
     HUI_VIEW: 'hui-view',
+    PAPER_LIST_BOX: 'paper-listbox',
     SIDEBAR_ITEMS: {
         OVERVIEW: getSidebarItemSelector('lovelace'),
         ENERGY: getSidebarItemSelector('energy'),

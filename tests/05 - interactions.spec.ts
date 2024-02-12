@@ -95,10 +95,15 @@ test('Do not move the clicked item outside the viewport', async ({ page }) => {
       height: 378
     }
   });
+  await page.waitForTimeout(600);
+
+  const scrollTopStart = await page.locator(SELECTORS.PAPER_LIST_BOX).evaluate(element => element.scrollTop);
 
   await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).click({ delay: 150 });
-  await page.waitForTimeout(100);
+  await page.waitForTimeout(600);
 
-  await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS)).toBeInViewport();
+  expect(
+    await page.locator(SELECTORS.PAPER_LIST_BOX).evaluate(element => element.scrollTop)
+  ).toBe(scrollTopStart);
 
 });
