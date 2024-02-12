@@ -25,7 +25,6 @@ import {
     CLASS,
     EVENT,
     TEMPLATE_REG,
-    ENTITIES_REGEXP,
     DOMAIN_REGEXP
 } from '@constants';
 import {
@@ -244,43 +243,44 @@ class CustomSidebar {
             ._getElementWithConfig(titleElementPromise)
             .then(([config, titleElement]): void => {
                 if (config.title) {
-                    titleElement.innerHTML = this._titleEntities.size
-                        ? this._renderText(config.title)
-                        : this._renderText(
-                            config.title,
-                            {
-                                title: true
-                            }
-                        );
+                    titleElement.innerHTML = this._renderText(
+                        config.title,
+                        {
+                            title: true
+                        }
+                    );
                 }
             }); 
     }
 
-    private _renderText(template: string | undefined, params?: RenderTextParams): string {
+    private _renderText(template: string | undefined, params: RenderTextParams): string {
         if (TEMPLATE_REG.test(template)) {
+
+            this._renderer.cleanTracked();
+
             const code = template.replace(TEMPLATE_REG, '$1');
-            if (params?.configItem || params?.title) {
-                ENTITIES_REGEXP.lastIndex = 0;
-                let matches: RegExpExecArray;
-                while ((matches = ENTITIES_REGEXP.exec(code)) !== null) {
-                    const matched = matches[1] || matches[2] || matches[3];
-                    if (params.configItem) {
-                        if (this._entities.has(matched)) {
-                            this._entities
-                                .get(matched)
-                                .push(params.configItem);
-    
-                        } else {
-                            this._entities
-                                .set(matched, [ params.configItem ]);
+            const compiled = this._renderer.renderTemplate(code);
+            const tracked = this._renderer.tracked;
+            
+            [...tracked.entities, ...tracked.domains].forEach((id: string): void => {
+
+                if (params.configItem) {
+                    if (this._entities.has(id)) {
+                        const configs = this._entities.get(id);
+                        if (!configs.includes(params.configItem)) {
+                            configs.push(params.configItem);
                         }
-                    }
-                    if (params.title) {
-                        this._titleEntities.add(matched);
+                    } else {
+                        this._entities
+                            .set(id, [ params.configItem ]);
                     }
                 }
-            }
-            const compiled = this._renderer.renderTemplate(code) as unknown;
+
+                if (params.title) {
+                    this._titleEntities.add(id);
+                }
+
+            });
 
             if (
                 typeof compiled === 'string' ||
@@ -382,7 +382,12 @@ class CustomSidebar {
                 ) {
                     this._updateName(
                         configItem.element,
-                        this._renderText(configItem.name)
+                        this._renderText(
+                            configItem.name,
+                            {
+                                configItem
+                            }
+                        )
                     );
                 }
                 if (
@@ -391,7 +396,12 @@ class CustomSidebar {
                 ) {
                     this._updateNotification(
                         configItem.element,
-                        this._renderText(configItem.notification)
+                        this._renderText(
+                            configItem.notification,
+                            {
+                                configItem
+                            }
+                        )
                     );
                 }
             }            

@@ -392,7 +392,7 @@ test('Validation: "exceptions" with malformed "not_device"', async ({ page }) =>
 
 });
 
-test('Validation: "exceptions" with "user" and "no_uer"', async ({ page }) => {
+test('Validation: "exceptions" with "user" and "no_user"', async ({ page }) => {
 
     const errors: string[] = [];
 

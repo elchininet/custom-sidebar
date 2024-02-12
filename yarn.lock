@@ -861,10 +861,10 @@ helpertypes@^0.0.19:
   resolved "https://registry.yarnpkg.com/helpertypes/-/helpertypes-0.0.19.tgz#6f8cb18e4e1fad73dc103b98e624ac85cb06a720"
   integrity sha512-J00e55zffgi3yVnUp0UdbMztNkr2PnizEkOe9URNohnrNhW5X0QpegkuLpOmFQInpi93Nb8MCjQRHAiCDF42NQ==
 
-home-assistant-javascript-templates@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/home-assistant-javascript-templates/-/home-assistant-javascript-templates-3.0.1.tgz#1ba1e3e5d6634f9ed7d80a6abbf19c7b016ad3b9"
-  integrity sha512-dVzYFBlJdgDyEh+AfJ061Z9n8vz1J4jlWK9jPPK+hIlekWuhYuEVUTs+ZH51IPxx6E+iuANW8jZ7X131Kvkk7w==
+home-assistant-javascript-templates@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/home-assistant-javascript-templates/-/home-assistant-javascript-templates-3.1.0.tgz#06db0b60c437b79df12956b0df76ff39076d7528"
+  integrity sha512-p+za9mtntAVyUHdCSwVp9sdP+1AIBWbelBZzNcBswydHG9mmMN5zcjr4EjM1NVQW4yYaEnT4ftjJS/RWYTlf4Q==
 
 home-assistant-query-selector@^4.2.0:
   version "4.2.0"
