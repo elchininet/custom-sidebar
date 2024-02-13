@@ -22,6 +22,7 @@ import {
     ELEMENT,
     SELECTOR,
     ATTRIBUTE,
+    KEY,
     CLASS,
     EVENT,
     TEMPLATE_REG,
@@ -81,7 +82,7 @@ class CustomSidebar {
     private _entities: Map<string, ConfigOrderWithItem[]>;
     private _titleEntities: Set<string>;
     private _items: ConfigOrderWithItem[];
-    private _itemTouchedBinded: (event: Event) => Promise<void>;
+    private _itemTouchedBinded: () => Promise<void>;
 
     private async _getOrder(): Promise<ConfigOrder[]> {
         const device = this._getCurrentDevice();
@@ -149,6 +150,7 @@ class CustomSidebar {
         const a = document.createElement('a');
         a.href = configItem.href;
         a.target = configItem.target || '';
+        a.tabIndex = -1;
         a.setAttribute(ATTRIBUTE.ROLE, 'option');
         a.setAttribute(ATTRIBUTE.PANEL, configItem.item.toLowerCase().replace(/\s+/, '-'));
         if (configItem.hide) {
@@ -309,6 +311,45 @@ class CustomSidebar {
         return template || '';
     }
 
+    private _assingTabIndexToNotificationsAndAccount(lastOrderIndex: number): void {
+        this._sidebar.selector.$.element
+            .then((sidebarShadowRoot: ShadowRoot): void => {
+                const notifications = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.SIDEBAR_NOTIFICATIONS);
+                const profile = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.PROFILE);
+                notifications.tabIndex = lastOrderIndex;
+                profile.tabIndex = lastOrderIndex;
+            });
+    }
+
+    private _focusItemByKeyboard(paperListBox: HTMLElement, forward: boolean): void {
+        const lastIndex = this._items.length - 1;
+        const activeAnchor = paperListBox.querySelector(`
+            ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:not(.${CLASS.IRON_SELECTED}):focus,
+            ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:focus
+        `.trim());
+        let activeIndex: number = 0;
+        let focusIndex: number;
+        for (const entry of Object.entries(this._items)) {
+            const [index, configItem] = entry;
+            if (configItem.element === activeAnchor) {
+                activeIndex = +index;
+            } else {
+                configItem.element.tabIndex = -1;
+            }
+        }
+        if (forward) {
+            focusIndex = activeIndex < lastIndex
+                ? activeIndex + 1
+                : 0;
+        } else {
+            focusIndex = activeIndex > 0
+                ? activeIndex - 1
+                : lastIndex
+        }
+        this._items[focusIndex].element.focus();
+        this._items[focusIndex].element.tabIndex = 0;
+    }
+
     private _processSidebar(): void {
 
         // Apply sidebar edit blocker
@@ -326,6 +367,20 @@ class CustomSidebar {
         // Add overrriding styles
         this._sidebar.selector.$.element
             .then((sideBarShadowRoot: ShadowRoot): void => {
+
+                const paperListBox = sideBarShadowRoot.querySelector<HTMLElement>(ELEMENT.PAPER_LISTBOX);
+
+                paperListBox.addEventListener('keydown', (event: KeyboardEvent) => {
+                    if (
+                        event.key === KEY.ARROW_DOWN ||
+                        event.key === KEY.ARROW_UP
+                    ) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
+                        this._focusItemByKeyboard(paperListBox, event.key === KEY.ARROW_DOWN);
+                    }
+                }, true);
+
                 addStyle(
                     `
                     ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
@@ -439,7 +494,7 @@ class CustomSidebar {
                 const itemsArray = Array.from(items) as HTMLAnchorElement[];
                 const matched: Set<Element> = new Set();
 
-                this._items = order.map((orderItem: ConfigOrder): ConfigOrderWithItem => {
+                const configItems: ConfigOrderWithItem[] = order.map((orderItem: ConfigOrder): ConfigOrderWithItem => {
                     const { item, match, exact, new_item } = orderItem;
                     const itemLowerCase = item.toLocaleLowerCase();
                     const element = new_item
@@ -492,7 +547,7 @@ class CustomSidebar {
                     }
                 };
 
-                this._items.forEach((orderItem: ConfigOrderWithItem): void => {
+                configItems.forEach((orderItem: ConfigOrderWithItem): void => {
 
                     if (orderItem.bottom) {
                         processBottom();
@@ -503,8 +558,6 @@ class CustomSidebar {
                         const newItem = this._buildNewItem(orderItem);
                         newItem.style.order = `${orderIndex}`;
                         paperListBox.appendChild(newItem);
-
-                        newItem.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
 
                         orderItem.element = newItem;
 
@@ -553,8 +606,21 @@ class CustomSidebar {
                             element.target = orderItem.target;
                         }
 
-                        orderItem.element.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
+                    }
 
+                    // When the item is clicked
+                    orderItem.element.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
+                    orderItem.element.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent): void => {
+                        if (event.key === KEY.ENTER) {
+                            this._itemTouchedBinded();
+                        }
+                    });
+
+                    // Set tabindex for correct keyboard navigation
+                    orderItem.element.querySelector<HTMLElement>(ELEMENT.PAPER_ICON_ITEM).tabIndex = orderIndex + 1;
+
+                    if (!orderItem.hide) {
+                        this._items.push(orderItem);
                     }
 
                     orderIndex++;
@@ -563,6 +629,7 @@ class CustomSidebar {
 
                 processBottom();
 
+                this._assingTabIndexToNotificationsAndAccount(orderIndex + 1);
                 this._panelLoaded();
                 this._watchForEntitiesChange();
                 
@@ -579,7 +646,6 @@ class CustomSidebar {
     private async _panelLoaded(): Promise<void> {
 
         // Select the right element in the sidebar
-        const className = 'iron-selected';
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
         const pathName = panelResolver.__route.path;
         const paperListBox = await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element as PaperListBox;
@@ -590,9 +656,11 @@ class CustomSidebar {
                 `${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}/dashboard"]`
             ].join(',')
         );
+
         const activeParentLink = activeLink
             ? null
-            : Array.from(allLinks).reduce((link: HTMLAnchorElement | null, anchor: HTMLAnchorElement): HTMLAnchorElement | null => {
+            : this._items.reduce((link: HTMLAnchorElement | null, configItem: ConfigOrderWithItem): HTMLAnchorElement | null => {
+                const anchor = configItem.element;
                 const href = anchor.getAttribute(ATTRIBUTE.HREF);
                 if (pathName.startsWith(href)) {
                     if (
@@ -604,7 +672,9 @@ class CustomSidebar {
                 }
                 return link;
             }, null);
-        Array.from(allLinks).forEach((anchor: HTMLAnchorElement): void => {
+
+        this._items.forEach((configItem: ConfigOrderWithItem) => {
+            const anchor = configItem.element;
             const isActive = (
                 activeLink &&
                 activeLink === anchor
@@ -613,9 +683,10 @@ class CustomSidebar {
                 !activeLink &&
                 activeParentLink === anchor
             );
-            anchor.classList.toggle(className, isActive);
+            anchor.classList.toggle(CLASS.IRON_SELECTED, isActive);
             anchor.setAttribute(ATTRIBUTE.ARIA_SELECTED, `${isActive}`);
         });
+
         if (paperListBox.scrollTop !== this._sidebarScroll) {
             paperListBox.scrollTop = this._sidebarScroll;
         }
@@ -623,7 +694,7 @@ class CustomSidebar {
         // Disable the edit sidebar button in the profile panel
         if (pathName === '/profile') {
             const config = await this._configPromise;
-            const editSidebarButton = await this._partialPanelResolver.selector.query('ha-panel-profile$ ha-settings-row mwc-button').element;
+            const editSidebarButton = await this._partialPanelResolver.selector.query(SELECTOR.EDIT_SIDEBAR_BUTTON).element;
             if (
                 config.sidebar_editable === false &&
                 editSidebarButton

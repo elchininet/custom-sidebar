@@ -21,12 +21,16 @@ export enum SELECTOR {
     SPACER = '.spacer',
     ITEM_TEXT = '.item-text',
     NOTIFICATION_BADGE = '.notification-badge',
-    NOTIFICATIONS_BADGE_COLLAPSED = '.notification-badge-collapsed'
+    NOTIFICATIONS_BADGE_COLLAPSED = '.notification-badge-collapsed',
+    EDIT_SIDEBAR_BUTTON = 'ha-panel-profile$ ha-settings-row mwc-button',
+    SIDEBAR_NOTIFICATIONS = '.notifications',
+    PROFILE = '.profile'
 }
 
 export enum CLASS {
     NOTIFICATIONS_BADGE = 'notification-badge',
-    NOTIFICATIONS_BADGE_COLLAPSED = 'notification-badge-collapsed'
+    NOTIFICATIONS_BADGE_COLLAPSED = 'notification-badge-collapsed',
+    IRON_SELECTED = 'iron-selected'
 }
 
 export enum ATTRIBUTE {
@@ -43,7 +47,14 @@ export enum ATTRIBUTE {
 
 export enum EVENT {
     MOUSEDOWN = 'mousedown',
+    KEYDOWN = 'keydown',
     HASS_EDIT_SIDEBAR = 'hass-edit-sidebar'
+}
+
+export enum KEY {
+    ARROW_DOWN = 'ArrowDown',
+    ARROW_UP = 'ArrowUp',
+    ENTER = 'Enter'
 }
 
 export const TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;
