@@ -36,12 +36,14 @@ export enum ATTRIBUTE {
     WITH_NOTIFICATION = 'data-notification',
     ARIA_SELECTED = 'aria-selected',
     ARIA_DISABLED = 'aria-disabled',
+    DISABLED = 'disabled',
     HREF = 'href',
     STYLE = 'style'
 }
 
 export enum EVENT {
-    MOUSEDOWN = 'mousedown'
+    MOUSEDOWN = 'mousedown',
+    HASS_EDIT_SIDEBAR = 'hass-edit-sidebar'
 }
 
 export const TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;

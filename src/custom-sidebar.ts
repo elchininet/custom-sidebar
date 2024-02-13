@@ -45,6 +45,7 @@ class CustomSidebar {
             HAQuerySelectorEvent.ON_LISTEN,
             (event: CustomEvent<OnListenDetail>) => {
                 this._homeAssistant = event.detail.HOME_ASSISTANT;
+                this._main = event.detail.HOME_ASSISTANT_MAIN;
                 this._sidebar = event.detail.HA_SIDEBAR;
                 this._partialPanelResolver = event.detail.PARTIAL_PANEL_RESOLVER;
             },
@@ -55,7 +56,7 @@ class CustomSidebar {
 
         selector.addEventListener(
             HAQuerySelectorEvent.ON_PANEL_LOAD,
-            this._updateSidebarSelection.bind(this)
+            this._panelLoaded.bind(this)
         );        
 
         selector.listen();
@@ -71,6 +72,7 @@ class CustomSidebar {
 
     private _configPromise: Promise<Config>;
     private _homeAssistant: HAElement;
+    private _main: HAElement;
     private _ha: HomeAsssistantExtended;
     private _partialPanelResolver: HAElement;
     private _sidebar: HAElement;
@@ -307,7 +309,21 @@ class CustomSidebar {
         return template || '';
     }
 
-    private _addSidebarStyles(): void {
+    private _processSidebar(): void {
+
+        // Apply sidebar edit blocker
+        this._getElementWithConfig(
+            this._main.element
+        ).then(([config, homeAssistantMain]): void => {
+            if (config.sidebar_editable === false) {
+                homeAssistantMain.addEventListener(EVENT.HASS_EDIT_SIDEBAR, (event: CustomEvent): void => {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                }, true);
+            }
+        });
+
+        // Add overrriding styles
         this._sidebar.selector.$.element
             .then((sideBarShadowRoot: ShadowRoot): void => {
                 addStyle(
@@ -547,7 +563,7 @@ class CustomSidebar {
 
                 processBottom();
 
-                this._updateSidebarSelection();
+                this._panelLoaded();
                 this._watchForEntitiesChange();
                 
             });
@@ -560,8 +576,9 @@ class CustomSidebar {
             });
     }
 
-    private async _updateSidebarSelection(): Promise<void> {
+    private async _panelLoaded(): Promise<void> {
 
+        // Select the right element in the sidebar
         const className = 'iron-selected';
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
         const pathName = panelResolver.__route.path;
@@ -602,6 +619,19 @@ class CustomSidebar {
         if (paperListBox.scrollTop !== this._sidebarScroll) {
             paperListBox.scrollTop = this._sidebarScroll;
         }
+
+        // Disable the edit sidebar button in the profile panel
+        if (pathName === '/profile') {
+            const config = await this._configPromise;
+            const editSidebarButton = await this._partialPanelResolver.selector.query('ha-panel-profile$ ha-settings-row mwc-button').element;
+            if (
+                config.sidebar_editable === false &&
+                editSidebarButton
+            ) {
+                editSidebarButton.setAttribute(ATTRIBUTE.DISABLED, '');
+            }
+        }        
+
     }
 
     private _process(): void {
@@ -618,7 +648,7 @@ class CustomSidebar {
                     });
             });
         
-        this._addSidebarStyles();
+        this._processSidebar();
     }
 
 }

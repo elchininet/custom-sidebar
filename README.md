@@ -106,25 +106,26 @@ Add a file named `sidebar-config.json` or `sidebar-config.yaml` into your `<conf
 
 | Property           | Type                               | Required | Description |
 | ------------------ | ---------------------------------- | -------- | ----------- |
-| order              | Array of [items](#item-properties) | true     | List of items to process |
-| title<sup>\*</sup> | String                             | false    | Custom title to replace the `Home Assistant` title |
+| order              | Array of [items](#item-properties) | yes      | List of items to process |
+| title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
+| sidebar_editable   | Boolean                            | no       | If it is set to `false`, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled |
 
 #### Item properties
 
 | Property                  | Type    | Required  | Description |
 | ------------------------- | ------- | --------- | ----------- |
-| item                      | String  | true      | This is a string that will be used to match each sidebar item by its text, its `data-panel` attribute or its `href`. If the `exact` property is not set, it is case insensitive and it can be a substring such as `developer` instead of `Developer Tools` or `KITCHEN` instead of `kitchen-lights`. |
-| match                     | String  | false     | This property will define which string will be used to match the `item` property. It has three possible values "text" (default) to match the text content of the element, "data-panel" to match the `data-panel` attribute of the element, or "href", to match the `href` attribute of the element |
-| exact                     | Boolean | false     | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`). |
-| name<sup>\*</sup>         | String  | false     | Changes the name of the sidebar item |
-| notification<sup>\*</sup> | String  | false     | Add a notification badge to the sidebar item |
-| order                     | Number  | false     | Sets the order number of the sidebar item |
-| bottom                    | Boolean | false     | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc)         |
-| hide                      | Boolean | false     | Setting this property to `true` will hide the sidebar item |
-| href                      | String  | false     | Specifies the `href` of the sidebar item |
-| target                    | String  | false     | Specifies the [target property] of the sidebar item |
-| icon                      | String  | false     | Specifies the icon of the sidebar item |
-| new_item                  | Boolean | false     | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
+| item                      | String  | yes       | This is a string that will be used to match each sidebar item by its text, its `data-panel` attribute or its `href`. If the `exact` property is not set, it is case insensitive and it can be a substring such as `developer` instead of `Developer Tools` or `KITCHEN` instead of `kitchen-lights`. |
+| match                     | String  | no        | This property will define which string will be used to match the `item` property. It has three possible values "text" (default) to match the text content of the element, "data-panel" to match the `data-panel` attribute of the element, or "href", to match the `href` attribute of the element |
+| exact                     | Boolean | no        | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`). |
+| name<sup>\*</sup>         | String  | no        | Changes the name of the sidebar item |
+| notification<sup>\*</sup> | String  | no        | Add a notification badge to the sidebar item |
+| order                     | Number  | no        | Sets the order number of the sidebar item |
+| bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc)         |
+| hide                      | Boolean | no        | Setting this property to `true` will hide the sidebar item |
+| href                      | String  | no        | Specifies the `href` of the sidebar item |
+| target                    | String  | no        | Specifies the [target property] of the sidebar item |
+| icon                      | String  | no        | Specifies the icon of the sidebar item |
+| new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
 
 >\* These options and item properties allow [JavaScript templates](#javascript-templates).
 
@@ -193,12 +194,12 @@ You can define user-specific order using exceptions feature. Exceptions can be u
 
 | Property   | Type    | Required | Description |
 | ---------- | ------- | -------- | ----------- |
-| order      | Array of [items](#item-properties) | true   | Defines the sidebar items order |
-| base_order | Boolean | false   | If true, the `order` property will be merged with the root `config.order` array |
-| user       | String or String[] | false   | Home Assistant user name(s) you would like to display this order for |
-| not_user   | String or String[] | false   | Home Assistant user name(s) you wouldn't like to display this order for |
-| device     | String or String[] | false   | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
-| not_device | String or String[] | false   | Device(s) you wouldn't like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
+| order      | Array of [items](#item-properties) | yes   | Defines the sidebar items order |
+| base_order | Boolean | no       | If true, the `order` property will be merged with the root `config.order` array |
+| user       | String or String[] | no          | Home Assistant user name(s) you would like to display this order for |
+| not_user   | String or String[] | no          | Home Assistant user name(s) you wouldn't like to display this order for |
+| device     | String or String[] | no          | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
+| not_device | String or String[] | no          | Device(s) you wouldn't like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
 
 Short example in `JSON` format:
 

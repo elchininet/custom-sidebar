@@ -69,17 +69,17 @@ export const haSelectStateRequest = async (state: 1 | 2 | 3, retries = 0) => {
 	});
 };
 
-export const addJsonExceptionsRoute = async (page: Page, exceptions: Record<string, unknown>[]): Promise<void> => {
+export const addJsonExtendedRoute = async (page: Page, options: Record<string, unknown>): Promise<void> => {
 	await page.route(JSON_PATH, async route => {
 		const response = await route.fetch();
 		const json = await response.json();
-		const jsonWithExceptions = {
+		const jsonExtended = {
 			...json,
-			exceptions
+			...options
 		};
 		await route.fulfill({
 			response,
-			json: jsonWithExceptions
+			json: jsonExtended
 		});
 	});
 };
