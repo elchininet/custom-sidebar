@@ -6,29 +6,54 @@ const getSidebarItemSelector = (panel: string): string => {
     return  `paper-listbox > a[data-panel="${panel}"]`;
 }
 
+const getPaperIconSelector = (panel: string): string => {
+    const anchorSelector = getSidebarItemSelector(panel);
+    return `${anchorSelector} > paper-icon-item`;
+};
+
+export const PANELS = {
+    OVERVIEW: 'lovelace',
+    ENERGY: 'energy',
+    MAP: 'map',
+    LOGBOOK: 'logbook',
+    HISTORY: 'history',
+    MEDIA_BROWSER: 'media-browser',
+    TODO: 'todo',
+    DEV_TOOLS: 'developer-tools',
+    CONFIG: 'config',
+    GOOGLE: 'google',
+    INTEGRATIONS: 'integrations',
+    ENTITIES: 'entities',
+    AUTOMATIONS: 'automations',
+    HIDDEN: 'hidden'
+}
+
+const SIDEBAR_ITEMS = Object.fromEntries(
+    Object.entries(PANELS).map(([key, value]) => [
+        key,
+        getSidebarItemSelector(value)
+    ])
+);
+
+const SIDEBAR_PAPER_ICON_ITEMS = Object.fromEntries(
+    Object.entries(PANELS).map(([key, value]) => [
+        key,
+        getPaperIconSelector(value)
+    ])
+);
+
 export const SELECTORS = {
     TITLE: '.menu .title',
+    SIDEBAR_HA_ICON_BUTTON: '.menu ha-icon-button',
     SIDEBAR_EDIT_BUTTON: '.menu mwc-button',
     PROFILE_EDIT_BUTTON: '.content > ha-card ha-settings-row > mwc-button',
+    NOTIFICATIONS: '.notifications-container .notifications',
+    PROFILE: '.profile paper-icon-item',
     HA_SIDEBAR: 'ha-sidebar',
     HUI_VIEW: 'hui-view',
     PAPER_LIST_BOX: 'paper-listbox',
-    SIDEBAR_ITEMS: {
-        OVERVIEW: getSidebarItemSelector('lovelace'),
-        ENERGY: getSidebarItemSelector('energy'),
-        MAP: getSidebarItemSelector('map'),
-        LOGBOOK: getSidebarItemSelector('logbook'),
-        HISTORY: getSidebarItemSelector('history'),
-        MEDIA_BROWSER: getSidebarItemSelector('media-browser'),
-        TODO: getSidebarItemSelector('todo'),
-        DEV_TOOLS: getSidebarItemSelector('developer-tools'),
-        CONFIG: getSidebarItemSelector('config'),
-        GOOGLE: getSidebarItemSelector('google'),
-        INTEGRATIONS: getSidebarItemSelector('integrations'),
-        ENTITIES: getSidebarItemSelector('entities'),
-        AUTOMATIONS: getSidebarItemSelector('automations'),
-        HIDDEN: getSidebarItemSelector('hidden')
-    }
+    SIDEBAR_ITEMS,
+    SIDEBAR_PAPER_ICON_ITEMS
 };
 
 export const ATTRIBUTES = {

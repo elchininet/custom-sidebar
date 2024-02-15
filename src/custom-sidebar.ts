@@ -326,9 +326,8 @@ class CustomSidebar {
             const [index, configItem] = entry;
             if (configItem.element === activeAnchor) {
                 activeIndex = +index;
-            } else {
-                configItem.element.tabIndex = -1;
             }
+            configItem.element.tabIndex = -1;
         }
         if (forward) {
             focusIndex = activeIndex < lastIndex
@@ -403,6 +402,11 @@ class CustomSidebar {
                 ? this._getActivePaperIconElement(activeEl.shadowRoot)
                 : null;
         }
+        // In theory, activeElement could be null
+        // but this is hard to reproduce during the tests
+        // because there is always an element focused (e.g. the body)
+        // So excluding this from the coverage
+        /* istanbul ignore next */
         return null;
     }
 
