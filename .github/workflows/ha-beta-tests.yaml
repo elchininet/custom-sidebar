@@ -1,0 +1,35 @@
+name: Home Assistant Nightly Beta Tests
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:      
+  beta-tests:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'yarn'
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache
+          key: dependencies-v1-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+      - name: Cache Docker images
+        uses: ScribeMD/docker-cache@0.3.7
+        with:
+          key: docker-ha-beta-v1-${{ runner.os }}-${{ hashFiles('.playwright_docker_version') }}
+      - name: Install
+        run: yarn install --frozen-lockfile
+      - name: E2E Tests
+        run: |
+          touch .env
+          echo HA_TOKEN=${{ secrets.CYPRESS_HA_TOKEN }} >> .env
+          TAG=beta yarn test:ci
