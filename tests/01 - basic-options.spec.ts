@@ -78,9 +78,7 @@ test('Sidebar new items', async ({ page }) => {
   await expect(automations).not.toHaveAttribute('target', '_blank');
 
   const hidden = page.locator(SELECTORS.SIDEBAR_ITEMS.HIDDEN);
-  await expect(hidden).toHaveText('Hidden', { useInnerText: true });
-  await expect(hidden).toHaveAttribute('href', '/hidden');
-  await expect(hidden).not.toHaveAttribute('target', '_blank');
+  await expect(hidden).not.toBeAttached();
 
 });
 
@@ -141,7 +139,6 @@ test('Sidebar order', async ({ page }) => {
     [SELECTORS.SIDEBAR_ITEMS.ENTITIES, '3'],
     [SELECTORS.SIDEBAR_ITEMS.AUTOMATIONS, '4'],
     [SELECTORS.SIDEBAR_ITEMS.TODO, '5'],
-    [SELECTORS.SIDEBAR_ITEMS.HIDDEN, '6'],
     [SELECTORS.SIDEBAR_ITEMS.ENERGY, '7'],
     [SELECTORS.SIDEBAR_ITEMS.MAP, '8'],
     [SELECTORS.SIDEBAR_ITEMS.HISTORY, '9'],
@@ -164,8 +161,7 @@ test('Sidebar no visible', async ({ page }) => {
   const items = [
     SELECTORS.SIDEBAR_ITEMS.ENERGY,
     SELECTORS.SIDEBAR_ITEMS.MAP,
-    SELECTORS.SIDEBAR_ITEMS.HISTORY,
-    SELECTORS.SIDEBAR_ITEMS.HIDDEN
+    SELECTORS.SIDEBAR_ITEMS.HISTORY
   ];
 
   for (const selector of items) {
