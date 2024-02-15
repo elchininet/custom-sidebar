@@ -25,7 +25,10 @@ import {
     KEY,
     CLASS,
     EVENT,
+    CHECK_FOCUSED_SHADOW_ROOT,
+    NODE_NAME,
     TEMPLATE_REG,
+    PROFILE_PATH,
     DOMAIN_REGEXP
 } from '@constants';
 import {
@@ -153,9 +156,7 @@ class CustomSidebar {
         a.tabIndex = -1;
         a.setAttribute(ATTRIBUTE.ROLE, 'option');
         a.setAttribute(ATTRIBUTE.PANEL, configItem.item.toLowerCase().replace(/\s+/, '-'));
-        if (configItem.hide) {
-            a.style.display = 'none';
-        }
+
         a.setAttribute(ATTRIBUTE.ARIA_SELECTED, 'false');
 
         if (notification.length) {
@@ -311,22 +312,14 @@ class CustomSidebar {
         return template || '';
     }
 
-    private _assingTabIndexToNotificationsAndAccount(lastOrderIndex: number): void {
-        this._sidebar.selector.$.element
-            .then((sidebarShadowRoot: ShadowRoot): void => {
-                const notifications = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.SIDEBAR_NOTIFICATIONS);
-                const profile = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.PROFILE);
-                notifications.tabIndex = lastOrderIndex;
-                profile.tabIndex = lastOrderIndex;
-            });
-    }
-
     private _focusItemByKeyboard(paperListBox: HTMLElement, forward: boolean): void {
         const lastIndex = this._items.length - 1;
         const activeAnchor = paperListBox.querySelector(`
             ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:not(.${CLASS.IRON_SELECTED}):focus,
-            ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:focus
+            ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:focus,
+            ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:has(> ${ELEMENT.PAPER_ICON_ITEM}:focus)
         `.trim());
+        
         let activeIndex: number = 0;
         let focusIndex: number;
         for (const entry of Object.entries(this._items)) {
@@ -350,6 +343,69 @@ class CustomSidebar {
         this._items[focusIndex].element.tabIndex = 0;
     }
 
+    private _focusItemByTab(sidebarShadowRoot: ShadowRoot, element: HTMLElement, forward: boolean): void {
+        
+        const lastIndex = this._items.length - 1;
+
+        if (element.nodeName === NODE_NAME.A) {
+
+            const anchor = element as HTMLAnchorElement;
+
+            const activeIndex = this._items.findIndex((configItem: ConfigOrderWithItem): boolean => configItem.element === anchor);
+
+            let focusIndex: number = NaN;
+
+            if (forward && activeIndex < lastIndex) {
+                focusIndex = activeIndex + 1;
+            } else if (!forward && activeIndex > 0) {
+                focusIndex = activeIndex - 1;
+            }
+
+            if (Number.isNaN(focusIndex)) {
+                if (forward) {
+                    const notifications = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.SIDEBAR_NOTIFICATIONS);
+                    notifications.focus();
+                } else {
+                    const menuButton = sidebarShadowRoot.querySelector<HTMLElement>(ELEMENT.HA_ICON_BUTTON);
+                    menuButton.focus();
+                }
+            } else {
+                this._items[focusIndex].element.querySelector<HTMLElement>(ELEMENT.PAPER_ICON_ITEM).focus();
+            }
+
+        } else {
+            if (forward) {
+                const profile = sidebarShadowRoot.querySelector<HTMLElement>(`${SELECTOR.PROFILE} > ${ELEMENT.PAPER_ICON_ITEM}`);
+                profile.focus();
+            } else {
+                this._items[lastIndex].element.querySelector<HTMLElement>(ELEMENT.PAPER_ICON_ITEM).focus();
+            }            
+        }
+        
+    }
+
+    private _getActivePaperIconElement(root: Document | ShadowRoot = document): Element | null {
+        const activeEl = root.activeElement;
+        if (activeEl) {
+            if (
+                activeEl instanceof HTMLElement &&
+                (
+                    activeEl.nodeName === NODE_NAME.PAPER_ICON_ITEM ||
+                    (
+                        activeEl.nodeName === NODE_NAME.A &&
+                        activeEl.getAttribute('role') === 'option'
+                    )
+                )
+            ) {
+                return activeEl;
+            }
+            return activeEl.shadowRoot && CHECK_FOCUSED_SHADOW_ROOT.includes(activeEl.nodeName)
+                ? this._getActivePaperIconElement(activeEl.shadowRoot)
+                : null;
+        }
+        return null;
+    }
+
     private _processSidebar(): void {
 
         // Apply sidebar edit blocker
@@ -370,7 +426,7 @@ class CustomSidebar {
 
                 const paperListBox = sideBarShadowRoot.querySelector<HTMLElement>(ELEMENT.PAPER_LISTBOX);
 
-                paperListBox.addEventListener('keydown', (event: KeyboardEvent) => {
+                paperListBox.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
                     if (
                         event.key === KEY.ARROW_DOWN ||
                         event.key === KEY.ARROW_UP
@@ -378,6 +434,28 @@ class CustomSidebar {
                         event.preventDefault();
                         event.stopImmediatePropagation();
                         this._focusItemByKeyboard(paperListBox, event.key === KEY.ARROW_DOWN);
+                    }
+                }, true);
+
+                window.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                    if (
+                        event.key === KEY.TAB
+                    ) {
+                        const activePaperItem = this._getActivePaperIconElement();
+                        if (activePaperItem) {
+                            if (activePaperItem.nodeName === NODE_NAME.PAPER_ICON_ITEM) {
+                                const parentElement = activePaperItem.parentElement as HTMLElement;
+                                if (parentElement.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
+                                    event.preventDefault();
+                                    event.stopImmediatePropagation();
+                                    this._focusItemByTab(sideBarShadowRoot, parentElement, !event.shiftKey);
+                                }
+                            } else if (activePaperItem.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
+                                event.preventDefault();
+                                event.stopImmediatePropagation();
+                                this._focusItemByTab(sideBarShadowRoot, activePaperItem as HTMLElement, !event.shiftKey);
+                            }                            
+                        }
                     }
                 }, true);
 
@@ -553,7 +631,7 @@ class CustomSidebar {
                         processBottom();
                     }
 
-                    if (orderItem.new_item) {
+                    if (orderItem.new_item && !orderItem.hide) {
 
                         const newItem = this._buildNewItem(orderItem);
                         newItem.style.order = `${orderIndex}`;
@@ -616,9 +694,6 @@ class CustomSidebar {
                         }
                     });
 
-                    // Set tabindex for correct keyboard navigation
-                    orderItem.element.querySelector<HTMLElement>(ELEMENT.PAPER_ICON_ITEM).tabIndex = orderIndex + 1;
-
                     if (!orderItem.hide) {
                         this._items.push(orderItem);
                     }
@@ -629,7 +704,6 @@ class CustomSidebar {
 
                 processBottom();
 
-                this._assingTabIndexToNotificationsAndAccount(orderIndex + 1);
                 this._panelLoaded();
                 this._watchForEntitiesChange();
                 
@@ -649,7 +723,6 @@ class CustomSidebar {
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
         const pathName = panelResolver.__route.path;
         const paperListBox = await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element as PaperListBox;
-        const allLinks = paperListBox.querySelectorAll<HTMLAnchorElement>(`${SELECTOR.SCOPE} > ${SELECTOR.ITEM}`);
         const activeLink = paperListBox.querySelector<HTMLAnchorElement>(
             [
                 `${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}"]`,
@@ -701,7 +774,7 @@ class CustomSidebar {
             ) {
                 editSidebarButton.setAttribute(ATTRIBUTE.DISABLED, '');
             }
-        }        
+        }
 
     }
 
