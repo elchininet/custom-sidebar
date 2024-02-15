@@ -22,9 +22,13 @@ import {
     ELEMENT,
     SELECTOR,
     ATTRIBUTE,
+    KEY,
     CLASS,
     EVENT,
+    CHECK_FOCUSED_SHADOW_ROOT,
+    NODE_NAME,
     TEMPLATE_REG,
+    PROFILE_PATH,
     DOMAIN_REGEXP
 } from '@constants';
 import {
@@ -81,7 +85,7 @@ class CustomSidebar {
     private _entities: Map<string, ConfigOrderWithItem[]>;
     private _titleEntities: Set<string>;
     private _items: ConfigOrderWithItem[];
-    private _itemTouchedBinded: (event: Event) => Promise<void>;
+    private _itemTouchedBinded: () => Promise<void>;
 
     private async _getOrder(): Promise<ConfigOrder[]> {
         const device = this._getCurrentDevice();
@@ -149,11 +153,10 @@ class CustomSidebar {
         const a = document.createElement('a');
         a.href = configItem.href;
         a.target = configItem.target || '';
+        a.tabIndex = -1;
         a.setAttribute(ATTRIBUTE.ROLE, 'option');
         a.setAttribute(ATTRIBUTE.PANEL, configItem.item.toLowerCase().replace(/\s+/, '-'));
-        if (configItem.hide) {
-            a.style.display = 'none';
-        }
+
         a.setAttribute(ATTRIBUTE.ARIA_SELECTED, 'false');
 
         if (notification.length) {
@@ -309,6 +312,104 @@ class CustomSidebar {
         return template || '';
     }
 
+    private _focusItemByKeyboard(paperListBox: HTMLElement, forward: boolean): void {
+        const lastIndex = this._items.length - 1;
+        const activeAnchor = paperListBox.querySelector(`
+            ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:not(.${CLASS.IRON_SELECTED}):focus,
+            ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:focus,
+            ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:has(> ${ELEMENT.PAPER_ICON_ITEM}:focus)
+        `.trim());
+        
+        let activeIndex: number = 0;
+        let focusIndex: number;
+        for (const entry of Object.entries(this._items)) {
+            const [index, configItem] = entry;
+            if (configItem.element === activeAnchor) {
+                activeIndex = +index;
+            }
+            configItem.element.tabIndex = -1;
+        }
+        if (forward) {
+            focusIndex = activeIndex < lastIndex
+                ? activeIndex + 1
+                : 0;
+        } else {
+            focusIndex = activeIndex > 0
+                ? activeIndex - 1
+                : lastIndex
+        }
+        this._items[focusIndex].element.focus();
+        this._items[focusIndex].element.tabIndex = 0;
+    }
+
+    private _focusItemByTab(sidebarShadowRoot: ShadowRoot, element: HTMLElement, forward: boolean): void {
+        
+        const lastIndex = this._items.length - 1;
+
+        if (element.nodeName === NODE_NAME.A) {
+
+            const anchor = element as HTMLAnchorElement;
+
+            const activeIndex = this._items.findIndex((configItem: ConfigOrderWithItem): boolean => configItem.element === anchor);
+
+            let focusIndex: number = NaN;
+
+            if (forward && activeIndex < lastIndex) {
+                focusIndex = activeIndex + 1;
+            } else if (!forward && activeIndex > 0) {
+                focusIndex = activeIndex - 1;
+            }
+
+            if (Number.isNaN(focusIndex)) {
+                if (forward) {
+                    const notifications = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.SIDEBAR_NOTIFICATIONS);
+                    notifications.focus();
+                } else {
+                    const menuButton = sidebarShadowRoot.querySelector<HTMLElement>(ELEMENT.HA_ICON_BUTTON);
+                    menuButton.focus();
+                }
+            } else {
+                this._items[focusIndex].element.querySelector<HTMLElement>(ELEMENT.PAPER_ICON_ITEM).focus();
+            }
+
+        } else {
+            if (forward) {
+                const profile = sidebarShadowRoot.querySelector<HTMLElement>(`${SELECTOR.PROFILE} > ${ELEMENT.PAPER_ICON_ITEM}`);
+                profile.focus();
+            } else {
+                this._items[lastIndex].element.querySelector<HTMLElement>(ELEMENT.PAPER_ICON_ITEM).focus();
+            }            
+        }
+        
+    }
+
+    private _getActivePaperIconElement(root: Document | ShadowRoot = document): Element | null {
+        const activeEl = root.activeElement;
+        if (activeEl) {
+            if (
+                activeEl instanceof HTMLElement &&
+                (
+                    activeEl.nodeName === NODE_NAME.PAPER_ICON_ITEM ||
+                    (
+                        activeEl.nodeName === NODE_NAME.A &&
+                        activeEl.getAttribute('role') === 'option'
+                    )
+                )
+            ) {
+                return activeEl;
+            }
+            return activeEl.shadowRoot && CHECK_FOCUSED_SHADOW_ROOT.includes(activeEl.nodeName)
+                ? this._getActivePaperIconElement(activeEl.shadowRoot)
+                : null;
+        }
+        // In theory, activeElement could be null
+        // but this is hard to reproduce during the tests
+        // because there is always an element focused (e.g. the body)
+        // So excluding this from the coverage
+        /* istanbul ignore next */
+        return null;
+    }
+
     private _processSidebar(): void {
 
         // Apply sidebar edit blocker
@@ -326,6 +427,42 @@ class CustomSidebar {
         // Add overrriding styles
         this._sidebar.selector.$.element
             .then((sideBarShadowRoot: ShadowRoot): void => {
+
+                const paperListBox = sideBarShadowRoot.querySelector<HTMLElement>(ELEMENT.PAPER_LISTBOX);
+
+                paperListBox.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                    if (
+                        event.key === KEY.ARROW_DOWN ||
+                        event.key === KEY.ARROW_UP
+                    ) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
+                        this._focusItemByKeyboard(paperListBox, event.key === KEY.ARROW_DOWN);
+                    }
+                }, true);
+
+                window.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                    if (
+                        event.key === KEY.TAB
+                    ) {
+                        const activePaperItem = this._getActivePaperIconElement();
+                        if (activePaperItem) {
+                            if (activePaperItem.nodeName === NODE_NAME.PAPER_ICON_ITEM) {
+                                const parentElement = activePaperItem.parentElement as HTMLElement;
+                                if (parentElement.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
+                                    event.preventDefault();
+                                    event.stopImmediatePropagation();
+                                    this._focusItemByTab(sideBarShadowRoot, parentElement, !event.shiftKey);
+                                }
+                            } else if (activePaperItem.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
+                                event.preventDefault();
+                                event.stopImmediatePropagation();
+                                this._focusItemByTab(sideBarShadowRoot, activePaperItem as HTMLElement, !event.shiftKey);
+                            }                            
+                        }
+                    }
+                }, true);
+
                 addStyle(
                     `
                     ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
@@ -439,7 +576,7 @@ class CustomSidebar {
                 const itemsArray = Array.from(items) as HTMLAnchorElement[];
                 const matched: Set<Element> = new Set();
 
-                this._items = order.map((orderItem: ConfigOrder): ConfigOrderWithItem => {
+                const configItems: ConfigOrderWithItem[] = order.map((orderItem: ConfigOrder): ConfigOrderWithItem => {
                     const { item, match, exact, new_item } = orderItem;
                     const itemLowerCase = item.toLocaleLowerCase();
                     const element = new_item
@@ -492,19 +629,17 @@ class CustomSidebar {
                     }
                 };
 
-                this._items.forEach((orderItem: ConfigOrderWithItem): void => {
+                configItems.forEach((orderItem: ConfigOrderWithItem): void => {
 
                     if (orderItem.bottom) {
                         processBottom();
                     }
 
-                    if (orderItem.new_item) {
+                    if (orderItem.new_item && !orderItem.hide) {
 
                         const newItem = this._buildNewItem(orderItem);
                         newItem.style.order = `${orderIndex}`;
                         paperListBox.appendChild(newItem);
-
-                        newItem.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
 
                         orderItem.element = newItem;
 
@@ -553,8 +688,19 @@ class CustomSidebar {
                             element.target = orderItem.target;
                         }
 
-                        orderItem.element.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
+                    }
 
+                    if (!orderItem.hide) {
+
+                        // When the item is clicked
+                        orderItem.element.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
+                        orderItem.element.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent): void => {
+                            if (event.key === KEY.ENTER) {
+                                this._itemTouchedBinded();
+                            }
+                        });
+
+                        this._items.push(orderItem);
                     }
 
                     orderIndex++;
@@ -579,20 +725,20 @@ class CustomSidebar {
     private async _panelLoaded(): Promise<void> {
 
         // Select the right element in the sidebar
-        const className = 'iron-selected';
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
         const pathName = panelResolver.__route.path;
         const paperListBox = await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element as PaperListBox;
-        const allLinks = paperListBox.querySelectorAll<HTMLAnchorElement>(`${SELECTOR.SCOPE} > ${SELECTOR.ITEM}`);
         const activeLink = paperListBox.querySelector<HTMLAnchorElement>(
             [
                 `${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}"]`,
                 `${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}/dashboard"]`
             ].join(',')
         );
+
         const activeParentLink = activeLink
             ? null
-            : Array.from(allLinks).reduce((link: HTMLAnchorElement | null, anchor: HTMLAnchorElement): HTMLAnchorElement | null => {
+            : this._items.reduce((link: HTMLAnchorElement | null, configItem: ConfigOrderWithItem): HTMLAnchorElement | null => {
+                const anchor = configItem.element;
                 const href = anchor.getAttribute(ATTRIBUTE.HREF);
                 if (pathName.startsWith(href)) {
                     if (
@@ -604,7 +750,9 @@ class CustomSidebar {
                 }
                 return link;
             }, null);
-        Array.from(allLinks).forEach((anchor: HTMLAnchorElement): void => {
+
+        this._items.forEach((configItem: ConfigOrderWithItem) => {
+            const anchor = configItem.element;
             const isActive = (
                 activeLink &&
                 activeLink === anchor
@@ -613,9 +761,10 @@ class CustomSidebar {
                 !activeLink &&
                 activeParentLink === anchor
             );
-            anchor.classList.toggle(className, isActive);
+            anchor.classList.toggle(CLASS.IRON_SELECTED, isActive);
             anchor.setAttribute(ATTRIBUTE.ARIA_SELECTED, `${isActive}`);
         });
+
         if (paperListBox.scrollTop !== this._sidebarScroll) {
             paperListBox.scrollTop = this._sidebarScroll;
         }
@@ -623,14 +772,14 @@ class CustomSidebar {
         // Disable the edit sidebar button in the profile panel
         if (pathName === '/profile') {
             const config = await this._configPromise;
-            const editSidebarButton = await this._partialPanelResolver.selector.query('ha-panel-profile$ ha-settings-row mwc-button').element;
+            const editSidebarButton = await this._partialPanelResolver.selector.query(SELECTOR.EDIT_SIDEBAR_BUTTON).element;
             if (
                 config.sidebar_editable === false &&
                 editSidebarButton
             ) {
                 editSidebarButton.setAttribute(ATTRIBUTE.DISABLED, '');
             }
-        }        
+        }
 
     }
 
