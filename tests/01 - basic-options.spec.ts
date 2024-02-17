@@ -5,7 +5,11 @@ import {
   CONFIG_FILES,
   SIDEBAR_CLIP
 } from './constants';
-import { haConfigRequest, fulfillJson } from './utilities';
+import {
+  haConfigRequest,
+  fulfillJson,
+  addJsonExtendedRoute
+} from './utilities';
 
 test.beforeAll(async () => {
   await haConfigRequest(CONFIG_FILES.BASIC);
@@ -154,7 +158,7 @@ test('Sidebar order', async ({ page }) => {
   }
 });
 
-test('Sidebar no visible', async ({ page }) => {
+test('Sidebar non-visible items', async ({ page }) => {
 
   await pageVisit(page);
 
@@ -167,5 +171,35 @@ test('Sidebar no visible', async ({ page }) => {
   for (const selector of items) {
     await expect(page.locator(selector)).not.toBeVisible();
   }
+
+});
+
+test('Sidebar title', async ({ page }) => {
+
+  await addJsonExtendedRoute(page, {
+    title: 'My Home'
+  });
+
+  await page.goto('/');
+  await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+  await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+  await expect(page).toHaveScreenshot('02-sidebar-custom-title.png', {
+    clip: SIDEBAR_CLIP
+  });
+
+});
+
+test('Sidebar custom styles', async ({ page }) => {
+
+  await addJsonExtendedRoute(page, {
+    styles: '.menu .title { color: red; } a[role="option"] .item-text { color: blue; }'
+  });
+
+  await page.goto('/');
+  await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+  await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+  await expect(page).toHaveScreenshot('03-sidebar-custom-styles.png', {
+    clip: SIDEBAR_CLIP
+  });
 
 });

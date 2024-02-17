@@ -429,72 +429,74 @@ class CustomSidebar {
         });
 
         // Add overrriding styles
-        this._sidebar.selector.$.element
-            .then((sideBarShadowRoot: ShadowRoot): void => {
+        this._getElementWithConfig(
+            this._sidebar.selector.$.element
+        ).then(([config, sideBarShadowRoot]) => {
 
-                const paperListBox = sideBarShadowRoot.querySelector<HTMLElement>(ELEMENT.PAPER_LISTBOX);
+            const paperListBox = sideBarShadowRoot.querySelector<HTMLElement>(ELEMENT.PAPER_LISTBOX);
 
-                paperListBox.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
-                    if (
-                        event.key === KEY.ARROW_DOWN ||
-                        event.key === KEY.ARROW_UP
-                    ) {
-                        event.preventDefault();
-                        event.stopImmediatePropagation();
-                        this._focusItemByKeyboard(paperListBox, event.key === KEY.ARROW_DOWN);
-                    }
-                }, true);
+            paperListBox.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                if (
+                    event.key === KEY.ARROW_DOWN ||
+                    event.key === KEY.ARROW_UP
+                ) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    this._focusItemByKeyboard(paperListBox, event.key === KEY.ARROW_DOWN);
+                }
+            }, true);
 
-                window.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
-                    if (
-                        event.key === KEY.TAB
-                    ) {
-                        const activePaperItem = this._getActivePaperIconElement();
-                        if (activePaperItem) {
-                            if (activePaperItem.nodeName === NODE_NAME.PAPER_ICON_ITEM) {
-                                const parentElement = activePaperItem.parentElement as HTMLElement;
-                                if (parentElement.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
-                                    event.preventDefault();
-                                    event.stopImmediatePropagation();
-                                    this._focusItemByTab(sideBarShadowRoot, parentElement, !event.shiftKey);
-                                }
-                            } else if (activePaperItem.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
+            window.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                if (
+                    event.key === KEY.TAB
+                ) {
+                    const activePaperItem = this._getActivePaperIconElement();
+                    if (activePaperItem) {
+                        if (activePaperItem.nodeName === NODE_NAME.PAPER_ICON_ITEM) {
+                            const parentElement = activePaperItem.parentElement as HTMLElement;
+                            if (parentElement.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
                                 event.preventDefault();
                                 event.stopImmediatePropagation();
-                                this._focusItemByTab(sideBarShadowRoot, activePaperItem as HTMLElement, !event.shiftKey);
-                            }                            
-                        }
+                                this._focusItemByTab(sideBarShadowRoot, parentElement, !event.shiftKey);
+                            }
+                        } else if (activePaperItem.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            this._focusItemByTab(sideBarShadowRoot, activePaperItem as HTMLElement, !event.shiftKey);
+                        }                            
                     }
-                }, true);
+                }
+            }, true);
 
-                addStyle(
-                    `
-                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
-                        border-radius: 20px;
-                        left: calc(var(--app-drawer-width, 248px) - 22px);
-                        max-width: 80px;
-                        overflow: hidden;
-                        padding: 0px 5px;
-                        transform: translateX(-100%);
-                        text-overflow: ellipsis;
-                        text-wrap: nowrap;   
-                    }
-                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
-                        bottom: 14px;
-                        font-size: 0.65em;
-                        left: 26px;
-                        position: absolute;  
-                    }
-                    :host([expanded]) ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
-                        opacity: 0;
-                    }
-                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_NOTIFICATION }] > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
-                        max-width: calc(100% - 86px);
-                    }
-                    `.trim(),
-                    sideBarShadowRoot
-                );
-            });
+            addStyle(
+                `
+                ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
+                    border-radius: 20px;
+                    left: calc(var(--app-drawer-width, 248px) - 22px);
+                    max-width: 80px;
+                    overflow: hidden;
+                    padding: 0px 5px;
+                    transform: translateX(-100%);
+                    text-overflow: ellipsis;
+                    text-wrap: nowrap;   
+                }
+                ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
+                    bottom: 14px;
+                    font-size: 0.65em;
+                    left: 26px;
+                    position: absolute;  
+                }
+                :host([expanded]) ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
+                    opacity: 0;
+                }
+                ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_NOTIFICATION }] > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
+                    max-width: calc(100% - 86px);
+                }
+                ${ config.styles || '' }
+                `.trim(),
+                sideBarShadowRoot
+            );
+        });
     }
 
     private async _watchForEntitiesChange() {
