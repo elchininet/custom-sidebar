@@ -111,6 +111,7 @@ Add a file named `sidebar-config.json` or `sidebar-config.yaml` into your `<conf
 | order              | Array of [items](#item-properties) | yes      | List of items to process |
 | title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
 | sidebar_editable   | Boolean                            | no       | If it is set to `false`, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled |
+| styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin |
 
 #### Item properties
 
