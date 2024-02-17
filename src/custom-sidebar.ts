@@ -13,7 +13,7 @@ import {
     ConfigOrderWithItem,
     HassObject,
     PartialPanelResolver,
-    PaperListBox,
+    Sidebar,
     Match,
     SuscriberEvent,
     RenderTextParams
@@ -70,6 +70,8 @@ class CustomSidebar {
         this._titleEntities = new Set<string>();
         this._sidebarScroll = 0;
         this._itemTouchedBinded = this._itemTouched.bind(this);
+        this._mouseEnterBinded = this._mouseEnter.bind(this);
+        this._mouseLeaveBinded = this._mouseLeave.bind(this);
         this._configPromise = fetchConfig();
         this._process();
     }
@@ -86,6 +88,8 @@ class CustomSidebar {
     private _titleEntities: Set<string>;
     private _items: ConfigOrderWithItem[];
     private _itemTouchedBinded: () => Promise<void>;
+    private _mouseEnterBinded: (event: MouseEvent) => void;
+    private _mouseLeaveBinded: () => void;
 
     private async _getOrder(): Promise<ConfigOrder[]> {
         const device = this._getCurrentDevice();
@@ -692,6 +696,14 @@ class CustomSidebar {
 
                     if (!orderItem.hide) {
 
+                        if (orderItem.new_item) {
+
+                            // New items rollover
+                            orderItem.element.addEventListener(EVENT.MOUSEENTER, this._mouseEnterBinded);
+                            orderItem.element.addEventListener(EVENT.MOUSELEAVE, this._mouseLeaveBinded);
+
+                        }
+
                         // When the item is clicked
                         orderItem.element.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
                         orderItem.element.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent): void => {
@@ -717,8 +729,34 @@ class CustomSidebar {
 
     private async _itemTouched(): Promise<void> {
         this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element
-            .then((paperListBox: PaperListBox): void => {
+            .then((paperListBox: HTMLElement): void => {
                 this._sidebarScroll = paperListBox.scrollTop;
+            });
+    }
+
+    private _mouseEnter(event: MouseEvent): void {
+        this._sidebar.element
+            .then((sidebar: Sidebar): void => {
+                if (sidebar.alwaysExpand) {
+                    return;
+                }
+                if (sidebar._mouseLeaveTimeout) {
+                    clearTimeout(sidebar._mouseLeaveTimeout);
+                    sidebar._mouseLeaveTimeout = undefined;
+                }
+                sidebar._showTooltip(event.currentTarget as HTMLAnchorElement);
+            });
+    }
+
+    private async _mouseLeave(): Promise<void> {
+        this._sidebar.element
+            .then((sidebar: Sidebar): void => {
+                if (sidebar._mouseLeaveTimeout) {
+                    clearTimeout(sidebar._mouseLeaveTimeout);
+                }
+                sidebar._mouseLeaveTimeout = window.setTimeout(() => {
+                    sidebar._hideTooltip();
+                }, 500);
             });
     }
 
@@ -727,7 +765,7 @@ class CustomSidebar {
         // Select the right element in the sidebar
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
         const pathName = panelResolver.__route.path;
-        const paperListBox = await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element as PaperListBox;
+        const paperListBox = await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element as HTMLElement;
         const activeLink = paperListBox.querySelector<HTMLAnchorElement>(
             [
                 `${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}"]`,

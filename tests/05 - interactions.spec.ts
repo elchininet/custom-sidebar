@@ -334,3 +334,25 @@ test('Pressing tab without being in the sidebar will not select any item', async
   await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.OVERVIEW)).not.toBeFocused();
 
 });
+
+test('Tooltip behaviour in new items', async ({ page }) => {
+
+  await visitHome(page);
+
+  await page.locator(SELECTORS.SIDEBAR_PAPER_ICON_ITEMS.GOOGLE).hover();
+
+  await expect(page.locator(SELECTORS.TOOLTIP)).not.toBeVisible();
+
+  await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
+
+  await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('expanded');
+
+  await page.locator(SELECTORS.SIDEBAR_PAPER_ICON_ITEMS.GOOGLE).hover();
+
+  await expect(page.locator(SELECTORS.TOOLTIP)).toBeVisible();
+
+  await expect(page.locator(SELECTORS.TOOLTIP)).toContainText('Google');
+
+  await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
+
+});

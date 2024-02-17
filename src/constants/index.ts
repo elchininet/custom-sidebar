@@ -48,6 +48,8 @@ export enum ATTRIBUTE {
 
 export enum EVENT {
     MOUSEDOWN = 'mousedown',
+    MOUSEENTER = 'mouseenter',
+    MOUSELEAVE = 'mouseleave',
     KEYDOWN = 'keydown',
     HASS_EDIT_SIDEBAR = 'hass-edit-sidebar'
 }

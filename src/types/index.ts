@@ -17,8 +17,11 @@ export interface PartialPanelResolver extends HTMLElement {
     }
 }
 
-export interface PaperListBox extends HTMLElement {
-    _updateAttrForSelected: () => void;
+export interface Sidebar extends HTMLElement {
+    alwaysExpand: boolean;
+    _mouseLeaveTimeout?: number;
+    _showTooltip: (anchor: HTMLAnchorElement) => void;
+    _hideTooltip: () => void;
 }
 
 export enum Match {
