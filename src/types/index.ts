@@ -91,6 +91,7 @@ export interface Config {
     order: ConfigOrder[];
     exceptions?: ConfigException[];
     sidebar_editable?: boolean;
+    styles?: string;
 }
 
 export type SuscriberEvent = {
