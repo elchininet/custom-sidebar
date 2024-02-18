@@ -1,6 +1,6 @@
 import { test, expect } from 'playwright-test-coverage';
-import { SELECTORS } from './constants';
 import { fulfillJson } from './utilities';
+import { SELECTORS } from './selectors';
 
 const ERROR_PREFIX = 'custom-sidebar: Invalid configuration';
 

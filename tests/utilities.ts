@@ -89,3 +89,12 @@ export const fulfillJson = async (page: Page, json: Record<string, unknown>): Pr
         await route.fulfill({ json });
     });
 };
+
+export const getSidebarItemSelector = (panel: string): string => {
+    return  `paper-listbox > a[data-panel="${panel}"]`;
+}
+
+export const getPaperIconSelector = (panel: string): string => {
+    const anchorSelector = getSidebarItemSelector(panel);
+    return `${anchorSelector} > paper-icon-item`;
+};

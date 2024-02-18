@@ -1,12 +1,12 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import {
-  SELECTORS,
   CONFIG_FILES,
   SIDEBAR_CLIP,
   ATTRIBUTES
 } from './constants';
 import { haConfigRequest, addJsonExtendedRoute } from './utilities';
+import { SELECTORS } from './selectors';
 
 const SELECTED_CLASSNAME = /(^|\s)iron-selected(\s|$)/;
 
