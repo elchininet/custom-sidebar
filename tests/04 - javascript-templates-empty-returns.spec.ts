@@ -1,11 +1,11 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import { SELECTORS } from './constants';
 import {
   fulfillJson,
   haSwitchStateRequest,
   haSelectStateRequest
 } from './utilities';
+import { SELECTORS } from './selectors';
 
 const pageVisit = async (page: Page): Promise<void> => {
   await page.goto('/');

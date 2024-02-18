@@ -1,11 +1,8 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import {
-  SELECTORS,
-  CONFIG_FILES,
-  SIDEBAR_CLIP
-} from './constants';
+import { CONFIG_FILES, SIDEBAR_CLIP } from './constants';
 import { haConfigRequest, fulfillJson } from './utilities';
+import { SELECTORS } from './selectors';
 
 test.beforeAll(async () => {
     await haConfigRequest(CONFIG_FILES.BASIC);

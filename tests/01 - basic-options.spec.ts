@@ -1,15 +1,12 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import {
-  SELECTORS,
-  CONFIG_FILES,
-  SIDEBAR_CLIP
-} from './constants';
+import { CONFIG_FILES, SIDEBAR_CLIP } from './constants';
 import {
   haConfigRequest,
   fulfillJson,
   addJsonExtendedRoute
 } from './utilities';
+import { SELECTORS } from './selectors';
 
 test.beforeAll(async () => {
   await haConfigRequest(CONFIG_FILES.BASIC);
@@ -109,6 +106,37 @@ test('Sidebar new item with notification', async ({ page }) => {
 
 });
 
+test('Sidebar new item with notification collapsed', async ({ page }) => {
+
+  await fulfillJson(page, {
+    order: [
+      {
+        new_item: true,
+        item: 'Integrations',
+        href: '/config/integrations',
+        icon: "mdi:puzzle",
+        notification: '2'
+      },
+    ]
+  });
+
+  await page.goto('/');
+  await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+  await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+  
+  await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
+  
+  await expect(page).toHaveScreenshot('03-sidebar-new-item-notification-collapsed.png', {
+    clip: {
+      ...SIDEBAR_CLIP,
+      width: 55
+    }
+  });
+
+  await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
+
+});
+
 test('Sidebar change href and target', async ({ page }) => {
 
   await fulfillJson(page, {
@@ -198,7 +226,7 @@ test('Sidebar custom styles', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
   await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-  await expect(page).toHaveScreenshot('03-sidebar-custom-styles.png', {
+  await expect(page).toHaveScreenshot('04-sidebar-custom-styles.png', {
     clip: SIDEBAR_CLIP
   });
 
