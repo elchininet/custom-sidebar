@@ -17,7 +17,7 @@ export const PANELS = {
     ENTITIES: 'entities',
     AUTOMATIONS: 'automations',
     HIDDEN: 'hidden'
-}
+};
 
 export const ATTRIBUTES = {
     DISABLED: 'disabled'

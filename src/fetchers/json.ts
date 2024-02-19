@@ -18,7 +18,7 @@ export const fetchConfig = async (): Promise<Config> => {
                             }
                             if (validateConfig(config)) {
                                 resolve(config);
-                            }                          
+                            }
                         })
                         .catch((error: Error) => {
                             throw Error(`${NAMESPACE}: ${error.message}`);

@@ -71,7 +71,7 @@ test('JSON malformed', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     expect(errors).toEqual(
         expect.arrayContaining([
-            `${ERROR_PREFIX} Unexpected token \'h\', "html" is not valid JSON`
+            `${ERROR_PREFIX} Unexpected token 'h', "html" is not valid JSON`
         ])
     );
 
