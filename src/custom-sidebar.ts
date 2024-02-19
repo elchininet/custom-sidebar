@@ -19,6 +19,7 @@ import {
     RenderTextParams
 } from '@types';
 import {
+    NAMESPACE,
     ELEMENT,
     SELECTOR,
     ATTRIBUTE,
@@ -582,44 +583,53 @@ class CustomSidebar {
                 const itemsArray = Array.from(items) as HTMLAnchorElement[];
                 const matched: Set<Element> = new Set();
 
-                const configItems: ConfigOrderWithItem[] = order.map((orderItem: ConfigOrder): ConfigOrderWithItem => {
-                    const { item, match, exact, new_item } = orderItem;
-                    const itemLowerCase = item.toLocaleLowerCase();
-                    const element = new_item
-                        ? undefined
-                        : itemsArray.find((element: Element): boolean => {
-                            const text = match === Match.DATA_PANEL
-                                ? element.getAttribute(ATTRIBUTE.PANEL)
-                                : (
-                                    match === Match.HREF
-                                        ? element.getAttribute(ATTRIBUTE.HREF)
-                                        : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim()
+                const configItems: ConfigOrderWithItem[] = order.reduce(
+                    (acc: ConfigOrderWithItem[], orderItem: ConfigOrder): ConfigOrderWithItem[] => {
+                        const { item, match, exact, new_item } = orderItem;
+                        const itemLowerCase = item.toLocaleLowerCase();
+                        const element = new_item
+                            ? undefined
+                            : itemsArray.find((element: Element): boolean => {
+                                const text = match === Match.DATA_PANEL
+                                    ? element.getAttribute(ATTRIBUTE.PANEL)
+                                    : (
+                                        match === Match.HREF
+                                            ? element.getAttribute(ATTRIBUTE.HREF)
+                                            : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim()
+                                    );
+
+                                const matchText = (
+                                    (!!exact && item === text) ||
+                                    (!exact && text.toLowerCase().includes(itemLowerCase))
                                 );
 
-                            const matchText = (
-                                (!!exact && item === text) ||
-                                (!exact && text.toLowerCase().includes(itemLowerCase))
-                            );
+                                if (matchText) {
 
-                            if (matchText) {
-
-                                if (matched.has(element)) {
-                                    return false;
-                                } else {
-                                    matched.add(element);
-                                    return true;
+                                    if (matched.has(element)) {
+                                        return false;
+                                    } else {
+                                        matched.add(element);
+                                        return true;
+                                    }
                                 }
-                            }
-                            return false;
-                        });
-                    if (element) {
-                        element.setAttribute(ATTRIBUTE.PROCESSED, 'true');
-                    }
-                    return {
-                        ...orderItem,
-                        element
-                    };
-                });
+                                return false;
+                            });
+                        if (element) {
+                            element.setAttribute(ATTRIBUTE.PROCESSED, 'true');
+                        }
+                        if (new_item || element) {
+                            acc.push({
+                                ...orderItem,
+                                element
+                            });
+                        }
+                        if (!new_item && !element) {
+                            console.warn(`${NAMESPACE}: you have an order item in your configuration that didn't match any sidebar item: "${item}"`);
+                        }
+                        return acc;
+                    },
+                    []
+                );
 
                 const processBottom = () => {
                     if (!crossedBottom) {
