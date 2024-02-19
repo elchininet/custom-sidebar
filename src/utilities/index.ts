@@ -61,29 +61,29 @@ export const logVersionToConsole = () => {
 };
 
 export const getPromisableElement = <T>(
-	getElement: () => T,
-	check: (element: T) => boolean
+    getElement: () => T,
+    check: (element: T) => boolean
 ): Promise<T> => {
-	return new Promise<T>((resolve) => {
-		let attempts = 0;
-		const select = () => {
-			const element: T = getElement();
-			if (element && check(element)) {
-				resolve(element);
-			} else {
-				attempts++;
+    return new Promise<T>((resolve) => {
+        let attempts = 0;
+        const select = () => {
+            const element: T = getElement();
+            if (element && check(element)) {
+                resolve(element);
+            } else {
+                attempts++;
                 // The else clause is an edge case that should not happen
                 // Very hard to reproduce so it cannot be covered
                 /* istanbul ignore else */
-				if (attempts < MAX_ATTEMPTS) {
-					setTimeout(select, RETRY_DELAY);
-				} else {
-					resolve(element);
-				}
-			}
-		};
-		select();
-	});
+                if (attempts < MAX_ATTEMPTS) {
+                    setTimeout(select, RETRY_DELAY);
+                } else {
+                    resolve(element);
+                }
+            }
+        };
+        select();
+    });
 };
 
 export const getFinalOrder = (
@@ -129,13 +129,13 @@ export const getFinalOrder = (
 };
 
 const getElementName = (elem: ShadowRoot): string => {
-	return elem.host.localName;
+    return elem.host.localName;
 };
 
 export const addStyle = (css: string, elem: ShadowRoot): void => {
-	const name = getElementName(elem);
+    const name = getElementName(elem);
     const style = document.createElement('style');
     style.setAttribute('id', `${NAMESPACE}_${name}`);
     elem.appendChild(style);
-	style.innerHTML = css.replace(CSS_CLEANER_REGEXP, '$2');
+    style.innerHTML = css.replace(CSS_CLEANER_REGEXP, '$2');
 };

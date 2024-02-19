@@ -126,7 +126,7 @@ export interface RenderTextParams {
 
 declare global {
     interface Window {
-        CustomSidebar: {};
+        CustomSidebar: object;
         hassConnection: Promise<HassConnection>;
     }
 }

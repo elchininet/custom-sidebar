@@ -61,7 +61,7 @@ class CustomSidebar {
         selector.addEventListener(
             HAQuerySelectorEvent.ON_PANEL_LOAD,
             this._panelLoaded.bind(this)
-        );        
+        );
 
         selector.listen();
 
@@ -147,8 +147,8 @@ class CustomSidebar {
         return navigator.userAgent.toLowerCase();
     }
 
-    private _buildNewItem = (configItem: ConfigNewItem): HTMLAnchorElement => {
-        
+    private _buildNewItem(configItem: ConfigNewItem): HTMLAnchorElement {
+
         const name = configItem.name
             ? this._renderText(configItem.name, { configItem })
             : configItem.item;
@@ -224,7 +224,7 @@ class CustomSidebar {
             badge.innerHTML = '';
             badgeCollapsed.innerHTML = '';
             element.removeAttribute(ATTRIBUTE.WITH_NOTIFICATION);
-        }        
+        }
     }
 
     private _updateIcon(element: HTMLAnchorElement, icon: string): void {
@@ -259,7 +259,7 @@ class CustomSidebar {
                         }
                     );
                 }
-            }); 
+            });
     }
 
     private _renderText(template: string | undefined, params: RenderTextParams): string {
@@ -270,7 +270,7 @@ class CustomSidebar {
             const code = template.replace(TEMPLATE_REG, '$1');
             const compiled = this._renderer.renderTemplate(code);
             const tracked = this._renderer.tracked;
-            
+
             [...tracked.entities, ...tracked.domains].forEach((id: string): void => {
 
                 if (params.configItem) {
@@ -281,7 +281,7 @@ class CustomSidebar {
                         }
                     } else {
                         this._entities
-                            .set(id, [ params.configItem ]);
+                            .set(id, [params.configItem]);
                     }
                 }
 
@@ -323,7 +323,7 @@ class CustomSidebar {
             ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:focus,
             ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:has(> ${ELEMENT.PAPER_ICON_ITEM}:focus)
         `.trim());
-        
+
         let activeIndex: number = 0;
         let focusIndex: number;
         for (const entry of Object.entries(this._items)) {
@@ -340,14 +340,14 @@ class CustomSidebar {
         } else {
             focusIndex = activeIndex > 0
                 ? activeIndex - 1
-                : lastIndex
+                : lastIndex;
         }
         this._items[focusIndex].element.focus();
         this._items[focusIndex].element.tabIndex = 0;
     }
 
     private _focusItemByTab(sidebarShadowRoot: ShadowRoot, element: HTMLElement, forward: boolean): void {
-        
+
         const lastIndex = this._items.length - 1;
 
         if (element.nodeName === NODE_NAME.A) {
@@ -382,9 +382,9 @@ class CustomSidebar {
                 profile.focus();
             } else {
                 this._items[lastIndex].element.querySelector<HTMLElement>(ELEMENT.PAPER_ICON_ITEM).focus();
-            }            
+            }
         }
-        
+
     }
 
     private _getActivePaperIconElement(root: Document | ShadowRoot = document): Element | null {
@@ -463,7 +463,7 @@ class CustomSidebar {
                             event.preventDefault();
                             event.stopImmediatePropagation();
                             this._focusItemByTab(sideBarShadowRoot, activePaperItem as HTMLElement, !event.shiftKey);
-                        }                            
+                        }
                     }
                 }
             }, true);
@@ -501,9 +501,9 @@ class CustomSidebar {
 
     private async _watchForEntitiesChange() {
         (await window.hassConnection).conn.subscribeMessage((e) => this._entityWatchCallback(e), {
-			type: 'subscribe_events',
-			event_type: 'state_changed'
-		});
+            type: 'subscribe_events',
+            event_type: 'state_changed'
+        });
     }
 
     private _entityWatchCallback(event: SuscriberEvent) {
@@ -563,7 +563,7 @@ class CustomSidebar {
                         )
                     );
                 }
-            }            
+            }
         });
     }
 
@@ -574,7 +574,7 @@ class CustomSidebar {
         ])
             .then(([order, elements]) => {
 
-                const [ paperListBox, items, spacer ] = elements;
+                const [paperListBox, items, spacer] = elements;
 
                 let orderIndex = 0;
                 let crossedBottom = false;
@@ -595,7 +595,7 @@ class CustomSidebar {
                                         ? element.getAttribute(ATTRIBUTE.HREF)
                                         : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim()
                                 );
-                            
+
                             const matchText = (
                                 (!!exact && item === text) ||
                                 (!exact && text.toLowerCase().includes(itemLowerCase))
@@ -725,7 +725,7 @@ class CustomSidebar {
 
                 this._panelLoaded();
                 this._watchForEntitiesChange();
-                
+
             });
     }
 
@@ -836,7 +836,7 @@ class CustomSidebar {
                         this._rearrange();
                     });
             });
-        
+
         this._processSidebar();
     }
 

@@ -65,7 +65,7 @@ const validateExceptions = (exceptions: ConfigException[] | undefined): boolean 
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions should be an array`);
     }
     return exceptions.every(validateExceptionItem);
-}
+};
 
 const validateConfigItem = (configItem: ConfigItem): boolean => {
 
@@ -77,7 +77,7 @@ const validateConfigItem = (configItem: ConfigItem): boolean => {
         throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, item property should be an string`);
     }
 
-    if (!!configItem.new_item) {
+    if (configItem.new_item) {
         if (!configItem.href) {
             throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, if you set "new_item" as "true", "href" property is necessary`);
         }
