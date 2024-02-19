@@ -52,7 +52,7 @@ You can install the plugin manually or through [HACS], not both. If you install 
 6. Click on `Add`
 7. Click on `Explore and download repositories` button in the bottom-right of the screen
 8. Search for `custom-sidebar` and install it
-9. Add the url of the plugin as an [extra_module_url] in your `confgiguration.yaml` (unless you use [browser_mod]):
+9. Add the url of the plugin as an [extra_module_url] in your `configuration.yaml` (unless you use [browser_mod]):
 
 #### If you want to use a `JSON` configuration
 
@@ -77,7 +77,7 @@ frontend:
 
 1. Download the latest [custom-sidebar release]
 2. Copy `custom-sidebar-json.js` or `custom-sidebar-yaml.js` into `<config directory>/www/` (depending on the configuration format that you are going to use, `JSON` or `YAML`)
-3. Add the url of the plugin as an [extra_module_url] in your `confgiguration.yaml` (unless you use [browser_mod]):
+3. Add the url of the plugin as an [extra_module_url] in your `configuration.yaml` (unless you use [browser_mod]):
 
 #### If you want to use a `JSON` configuration
 
