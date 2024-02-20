@@ -94,7 +94,7 @@ export interface Config {
     styles?: string;
 }
 
-export type SuscriberEvent = {
+export type SubscriberEvent = {
     event_type: string;
     data: {
         entity_id: string;
@@ -107,21 +107,14 @@ export type SuscriberEvent = {
     }
 };
 
-export type SuscriberCallback = (event: SuscriberEvent) => void;
-export type SuscriberOptions = {
-    type: string;
-    event_type: string;
+export type SubscriberTemplate = {
+    result: string;
 };
 
 export interface HassConnection {
     conn: {
-        subscribeMessage: (callback: SuscriberCallback, options: SuscriberOptions) => void;
+        subscribeMessage: <T>(callback: (response: T) => void, options: Record<string, string>) => void;
     }
-}
-
-export interface RenderTextParams {
-    configItem?: ConfigOrderWithItem;
-    title?: boolean;
 }
 
 declare global {

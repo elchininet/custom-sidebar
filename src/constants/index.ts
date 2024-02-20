@@ -66,6 +66,11 @@ export enum NODE_NAME {
     A = 'A'
 }
 
+export enum SUBSCRIBE_TYPE {
+    SUBSCRIBE_EVENTS = 'subscribe_events',
+    RENDER_TEMPLATE = 'render_template'
+}
+
 export const CHECK_FOCUSED_SHADOW_ROOT = [
     'HOME-ASSISTANT',
     'HOME-ASSISTANT-MAIN',
@@ -74,6 +79,7 @@ export const CHECK_FOCUSED_SHADOW_ROOT = [
 
 export const PROFILE_PATH = '/profile';
 
-export const TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;
+export const JS_TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;
+export const JINJA_TEMPLATE_REG = /\{\{[\s\S]*\}\}|\{%[\s\S]*%\}/;
 export const CSS_CLEANER_REGEXP = /(\s*)([\w-]+\s*:\s*[^;]+;?|\})(\s*)/g;
 export const DOMAIN_REGEXP = /^([a-z_]+)[\w.]*$/;
