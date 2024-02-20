@@ -40,3 +40,51 @@ test('Multiple items match the same element', async ({ page }) => {
     });
 
 });
+
+test('Non new-items that don\'t match a sidebar item should trigger a warning', async ({ page }) => {
+
+    const MESSAGE = 'custom-sidebar: you have an order item in your configuration that didn\'t match any sidebar item:';
+    const warnings: string[] = [];
+
+    await fulfillJson(page, {
+        order: [
+            {
+                item: 'medium',
+                order: 1
+            },
+            {
+                item: 'bazinga',
+                new_item: true,
+                href: '/bazinga',
+                icon: 'mdi:nuke',
+                order: 2
+            },
+            {
+                item: 'logboek',
+                order: 3
+            }
+        ]
+    });
+
+    page.on('console', message => {
+        if (message.type() === 'warning') {
+            warnings.push(message.text());
+        }
+    });
+
+    await pageVisit(page);
+
+    expect(warnings).toEqual(
+        expect.arrayContaining([
+            `${MESSAGE} "medium"`,
+            `${MESSAGE} "logboek"`
+        ])
+    );
+
+    expect(warnings).toEqual(
+        expect.not.arrayContaining([
+            `${MESSAGE} "bazinga"`
+        ])
+    );
+
+});
