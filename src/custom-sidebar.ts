@@ -238,6 +238,7 @@ class CustomSidebar {
         }
 
         const callback = (rendered: string): void => {
+            console.log('rendered', rendered);
             if (rendered.length) {
                 badge.innerHTML = rendered;
                 badgeCollapsed.innerHTML = rendered;
@@ -343,9 +344,9 @@ class CustomSidebar {
             hassConnection.conn.subscribeMessage<SubscriberTemplate>(
                 (message: SubscriberTemplate): void => {
                     if (callback) {
-                        callback(message.result);
+                        callback(`${message.result}`);
                     } else {
-                        element.innerHTML = message.result;
+                        element.innerHTML = `${message.result}`;
                     }
                 },
                 {

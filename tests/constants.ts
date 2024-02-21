@@ -25,7 +25,8 @@ export const ATTRIBUTES = {
 
 export const CONFIG_FILES = {
     BASIC: 'basic',
-    JS_TEMPLATES: 'js-templates'
+    JS_TEMPLATES: 'js-templates',
+    JINJA_TEMPLATES: 'jinja-templates'
 };
 
 export const SIDEBAR_CLIP = {
