@@ -1,0 +1,17 @@
+{
+  "title": "Power: {{ states('input_boolean.my_switch') }}",
+  "order": [
+    {
+      "item": "energy",
+      "name": "{% set state = states('input_boolean.my_switch') %} Energy ({{ state }})",
+      "notification": "{{ states('input_select.fan_speed') | float * 2 }}"
+    },
+    {
+      "new_item": true,
+      "item": "Fan",
+      "href": "/my_fan",
+      "icon": "mdi:fan-plus",
+      "notification": "{{ states('input_select.fan_speed') }}"
+    }
+  ]
+}

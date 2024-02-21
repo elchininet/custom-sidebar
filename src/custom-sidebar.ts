@@ -15,8 +15,9 @@ import {
     PartialPanelResolver,
     Sidebar,
     Match,
-    SuscriberEvent,
-    RenderTextParams
+    HassConnection,
+    SubscriberEvent,
+    SubscriberTemplate
 } from '@types';
 import {
     NAMESPACE,
@@ -28,9 +29,11 @@ import {
     EVENT,
     CHECK_FOCUSED_SHADOW_ROOT,
     NODE_NAME,
-    TEMPLATE_REG,
+    JS_TEMPLATE_REG,
+    JINJA_TEMPLATE_REG,
     PROFILE_PATH,
-    DOMAIN_REGEXP
+    DOMAIN_REGEXP,
+    SUBSCRIBE_TYPE
 } from '@constants';
 import {
     logVersionToConsole,
@@ -67,8 +70,7 @@ class CustomSidebar {
         selector.listen();
 
         this._items = [];
-        this._entities = new Map<string, ConfigOrderWithItem[]>();
-        this._titleEntities = new Set<string>();
+        this._jsSuscriptions = new Map<string, Map<Element, () => void>>();
         this._sidebarScroll = 0;
         this._itemTouchedBinded = this._itemTouched.bind(this);
         this._mouseEnterBinded = this._mouseEnter.bind(this);
@@ -85,8 +87,7 @@ class CustomSidebar {
     private _sidebar: HAElement;
     private _sidebarScroll: number;
     private _renderer: HomeAssistantJavaScriptTemplates;
-    private _entities: Map<string, ConfigOrderWithItem[]>;
-    private _titleEntities: Set<string>;
+    private _jsSuscriptions: Map<string, Map<Element, () => void>>;
     private _items: ConfigOrderWithItem[];
     private _itemTouchedBinded: () => Promise<void>;
     private _mouseEnterBinded: (event: MouseEvent) => void;
@@ -150,11 +151,6 @@ class CustomSidebar {
 
     private _buildNewItem(configItem: ConfigNewItem): HTMLAnchorElement {
 
-        const name = configItem.name
-            ? this._renderText(configItem.name, { configItem })
-            : configItem.item;
-        const notification = this._renderText(configItem.notification, { configItem });
-
         const a = document.createElement('a');
         a.href = configItem.href;
         a.target = configItem.target || '';
@@ -163,10 +159,6 @@ class CustomSidebar {
         a.setAttribute(ATTRIBUTE.PANEL, configItem.item.toLowerCase().replace(/\s+/, '-'));
 
         a.setAttribute(ATTRIBUTE.ARIA_SELECTED, 'false');
-
-        if (notification.length) {
-            a.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, 'true');
-        }
 
         a.innerHTML = `
             <paper-icon-item
@@ -179,53 +171,15 @@ class CustomSidebar {
                     icon="${configItem.icon}"
                 >
                 </ha-icon>
-                <span class="${CLASS.NOTIFICATIONS_BADGE} ${CLASS.NOTIFICATIONS_BADGE_COLLAPSED}">
-                    ${ notification }
-                </span>
+                <span class="${CLASS.NOTIFICATIONS_BADGE} ${CLASS.NOTIFICATIONS_BADGE_COLLAPSED}"></span>
                 <span class="item-text">
-                    ${ name }
+                    ${ configItem.item }
                 </span>
-                <span class="${CLASS.NOTIFICATIONS_BADGE}">
-                    ${ notification }
-                </span>
+                <span class="${CLASS.NOTIFICATIONS_BADGE}"></span>
             </paper-icon-item>
         `.trim();
 
         return a;
-    }
-
-    private _updateName(element: HTMLAnchorElement, name: string): void {
-        element
-            .querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)
-            .innerText = name;
-    }
-
-    private _updateNotification(element: HTMLAnchorElement, notification: string): void {
-        let badge = element.querySelector(`${SELECTOR.NOTIFICATION_BADGE}:not(${SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED})`);
-        let badgeCollapsed = element.querySelector(SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED);
-        if (!badge) {
-            badge = document.createElement('span');
-            badge.classList.add(CLASS.NOTIFICATIONS_BADGE);
-            element
-                .querySelector(ELEMENT.PAPER_ICON_ITEM)
-                .appendChild(badge);
-        }
-        if (!badgeCollapsed) {
-            badgeCollapsed = document.createElement('span');
-            badgeCollapsed.classList.add(CLASS.NOTIFICATIONS_BADGE, CLASS.NOTIFICATIONS_BADGE_COLLAPSED);
-            element
-                .querySelector(`${ELEMENT.HA_SVG_ICON}, ${ELEMENT.HA_ICON}`)
-                .after(badgeCollapsed);
-        }
-        if (notification.length) {
-            badge.innerHTML = notification;
-            badgeCollapsed.innerHTML = notification;
-            element.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, 'true');
-        } else {
-            badge.innerHTML = '';
-            badgeCollapsed.innerHTML = '';
-            element.removeAttribute(ATTRIBUTE.WITH_NOTIFICATION);
-        }
     }
 
     private _updateIcon(element: HTMLAnchorElement, icon: string): void {
@@ -243,7 +197,7 @@ class CustomSidebar {
         }
     }
 
-    private _setTitle(): void {
+    private _subscribeTitle(): void {
         const titleElementPromise = this._sidebar
             .selector
             .$
@@ -253,45 +207,103 @@ class CustomSidebar {
             ._getElementWithConfig(titleElementPromise)
             .then(([config, titleElement]): void => {
                 if (config.title) {
-                    titleElement.innerHTML = this._renderText(
-                        config.title,
-                        {
-                            title: true
-                        }
-                    );
+                    this._subscribeTemplate(titleElement, config.title);
                 }
             });
     }
 
-    private _renderText(template: string | undefined, params: RenderTextParams): string {
-        if (TEMPLATE_REG.test(template)) {
+    private _subscribeName(element: Element, name: string): void {
+        this._subscribeTemplate(
+            element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT),
+            name
+        );
+    }
 
+    private _subscribeNotification(element: HTMLAnchorElement, notification: string): void {
+        let badge = element.querySelector(`${SELECTOR.NOTIFICATION_BADGE}:not(${SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED})`);
+        let badgeCollapsed = element.querySelector(SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED);
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.classList.add(CLASS.NOTIFICATIONS_BADGE);
+            element
+                .querySelector(ELEMENT.PAPER_ICON_ITEM)
+                .appendChild(badge);
+        }
+        if (!badgeCollapsed) {
+            badgeCollapsed = document.createElement('span');
+            badgeCollapsed.classList.add(CLASS.NOTIFICATIONS_BADGE, CLASS.NOTIFICATIONS_BADGE_COLLAPSED);
+            element
+                .querySelector(`${ELEMENT.HA_SVG_ICON}, ${ELEMENT.HA_ICON}`)
+                .after(badgeCollapsed);
+        }
+
+        const callback = (rendered: string): void => {
+            console.log('rendered', rendered);
+            if (rendered.length) {
+                badge.innerHTML = rendered;
+                badgeCollapsed.innerHTML = rendered;
+                element.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, 'true');
+            } else {
+                badge.innerHTML = '';
+                badgeCollapsed.innerHTML = '';
+                element.removeAttribute(ATTRIBUTE.WITH_NOTIFICATION);
+            }
+        };
+
+        this._subscribeTemplate(badge, notification, callback);
+
+    }
+
+    private _subscribeTemplate(element: Element, template: string, callback?: (rendered: string) => void): void {
+        element.innerHTML = '';
+        if (JS_TEMPLATE_REG.test(template)) {
+            this._createJsTemplateSubscription(
+                element,
+                template.replace(JS_TEMPLATE_REG, '$1'),
+                callback
+            );
+        } else if (JINJA_TEMPLATE_REG.test(template)) {
+            this._createJinjaTemplateSubscription(
+                element,
+                template,
+                callback
+            );
+        } else {
+            if (callback) {
+                callback(template);
+            } else {
+                element.innerHTML = template;
+            }
+        }
+    }
+
+    private _createJsTemplateSubscription(
+        element: Element,
+        code: string,
+        extraCallback?: (rendered: string) => void
+    ): void {
+
+        const callback = () => {
             this._renderer.cleanTracked();
-
-            const code = template.replace(TEMPLATE_REG, '$1');
             const compiled = this._renderer.renderTemplate(code);
             const tracked = this._renderer.tracked;
-
-            [...tracked.entities, ...tracked.domains].forEach((id: string): void => {
-
-                if (params.configItem) {
-                    if (this._entities.has(id)) {
-                        const configs = this._entities.get(id);
-                        if (!configs.includes(params.configItem)) {
-                            configs.push(params.configItem);
-                        }
-                    } else {
-                        this._entities
-                            .set(id, [params.configItem]);
+            const {entities, domains} = tracked;
+            [...entities, ...domains].forEach((id: string): void => {
+                if (this._jsSuscriptions.has(id)) {
+                    const elements = this._jsSuscriptions.get(id);
+                    if (!elements.has(element)) {
+                        elements.set(element, callback);
                     }
+                } else {
+                    this._jsSuscriptions.set(
+                        id,
+                        new Map([
+                            [element, callback]
+                        ])
+                    );
                 }
-
-                if (params.title) {
-                    this._titleEntities.add(id);
-                }
-
             });
-
+            let rendered = '';
             if (
                 typeof compiled === 'string' ||
                 (
@@ -302,19 +314,47 @@ class CustomSidebar {
                 typeof compiled === 'object'
             ) {
                 if (typeof compiled === 'string') {
-                    return compiled.trim();
-                }
-                if (
+                    rendered = compiled.trim();
+                } else if (
                     typeof compiled === 'number' ||
                     typeof compiled === 'boolean'
                 ) {
-                    return compiled.toString();
+                    rendered = compiled.toString();
+                } else {
+                    rendered = JSON.stringify(compiled);
                 }
-                return JSON.stringify(compiled);
             }
-            return '';
-        }
-        return template || '';
+            if (extraCallback) {
+                extraCallback(rendered);
+            } else {
+                element.innerHTML = rendered;
+            }
+        };
+
+        callback();
+
+    }
+
+    private _createJinjaTemplateSubscription(
+        element: Element,
+        template: string,
+        callback?: (rendered: string) => void
+    ): void {
+        window.hassConnection.then((hassConnection: HassConnection): void => {
+            hassConnection.conn.subscribeMessage<SubscriberTemplate>(
+                (message: SubscriberTemplate): void => {
+                    if (callback) {
+                        callback(`${message.result}`);
+                    } else {
+                        element.innerHTML = `${message.result}`;
+                    }
+                },
+                {
+                    type: SUBSCRIBE_TYPE.RENDER_TEMPLATE,
+                    template
+                }
+            );
+        });
     }
 
     private _focusItemByKeyboard(paperListBox: HTMLElement, forward: boolean): void {
@@ -500,72 +540,37 @@ class CustomSidebar {
         });
     }
 
-    private async _watchForEntitiesChange() {
-        (await window.hassConnection).conn.subscribeMessage((e) => this._entityWatchCallback(e), {
-            type: 'subscribe_events',
-            event_type: 'state_changed'
+    private _watchForEntitiesChange() {
+        window.hassConnection.then((hassConnection: HassConnection): void => {
+            hassConnection.conn.subscribeMessage<SubscriberEvent>(
+                (event) => this._entityWatchCallback(event),
+                {
+                    type: SUBSCRIBE_TYPE.SUBSCRIBE_EVENTS,
+                    event_type: 'state_changed'
+                }
+            );
         });
     }
 
-    private _entityWatchCallback(event: SuscriberEvent) {
-        if (
-            this._entities.size ||
-            this._titleEntities.size
-        ) {
+    private _entityWatchCallback(event: SubscriberEvent) {
+        if (this._jsSuscriptions.size) {
             const entityId = event.data.entity_id;
             const domain = entityId.replace(DOMAIN_REGEXP, '$1');
-            if (this._entities.has(entityId)) {
-                this._updateTemplates(
-                    this._entities.get(entityId)
-                );
+            if (this._jsSuscriptions.has(entityId)) {
+                const elements = this._jsSuscriptions.get(entityId);
+                const callbacks = elements.values();
+                Array.from(callbacks).forEach((callback) => {
+                    callback();
+                });
             }
-            if (this._entities.has(domain)) {
-                this._updateTemplates(
-                    this._entities.get(domain)
-                );
-            }
-            if (
-                this._titleEntities.has(entityId) ||
-                this._titleEntities.has(domain)
-            ) {
-                this._setTitle();
+            if (this._jsSuscriptions.has(domain)) {
+                const elements = this._jsSuscriptions.get(domain);
+                const callbacks = elements.values();
+                Array.from(callbacks).forEach((callback) => {
+                    callback();
+                });
             }
         }
-    }
-
-    private _updateTemplates(configItems: ConfigOrderWithItem[]) {
-        configItems.forEach((configItem: ConfigOrderWithItem) => {
-            if (configItem.element) {
-                if (
-                    configItem.name &&
-                    TEMPLATE_REG.test(configItem.name)
-                ) {
-                    this._updateName(
-                        configItem.element,
-                        this._renderText(
-                            configItem.name,
-                            {
-                                configItem
-                            }
-                        )
-                    );
-                }
-                if (
-                    configItem.notification &&
-                    TEMPLATE_REG.test(configItem.notification)
-                ) {
-                    this._updateNotification(
-                        configItem.element,
-                        this._renderText(
-                            configItem.notification,
-                            {
-                                configItem
-                            }
-                        )
-                    );
-                }
-            }
-        });
     }
 
     private _rearrange(): void {
@@ -668,30 +673,6 @@ class CustomSidebar {
                             element.style.display = 'none';
                         }
 
-                        if (orderItem.name) {
-                            this._updateName(
-                                element,
-                                this._renderText(
-                                    orderItem.name,
-                                    {
-                                        configItem: orderItem
-                                    }
-                                )
-                            );
-                        }
-
-                        if (orderItem.notification) {
-                            this._updateNotification(
-                                element,
-                                this._renderText(
-                                    orderItem.notification,
-                                    {
-                                        configItem: orderItem
-                                    }
-                                )
-                            );
-                        }
-
                         if (orderItem.icon) {
                             this._updateIcon(element, orderItem.icon);
                         }
@@ -704,6 +685,20 @@ class CustomSidebar {
                             element.target = orderItem.target;
                         }
 
+                    }
+
+                    if (orderItem.name) {
+                        this._subscribeName(
+                            orderItem.element,
+                            orderItem.name
+                        );
+                    }
+
+                    if (orderItem.notification) {
+                        this._subscribeNotification(
+                            orderItem.element,
+                            orderItem.notification
+                        );
                     }
 
                     if (!orderItem.hide) {
@@ -842,7 +837,7 @@ class CustomSidebar {
                 this._hasReady()
                     .then(() => {
                         this._renderer = new HomeAssistantJavaScriptTemplates(this._ha);
-                        this._setTitle();
+                        this._subscribeTitle();
                         this._rearrange();
                     });
             });

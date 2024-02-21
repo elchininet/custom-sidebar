@@ -18,7 +18,7 @@ const FAN_ITEM_NOTIFICATION_COLLAPSED = `${FAN_ITEM} ${SELECTORS.ITEM_NOTIFICATI
 const FAN_ITEM_NOTIFICATION = `${FAN_ITEM} ${SELECTORS.ITEM_NOTIFICATION}`;
 
 test.beforeAll(async () => {
-    await haConfigRequest(CONFIG_FILES.JS_TEMPLATES);
+    await haConfigRequest(CONFIG_FILES.JINJA_TEMPLATES);
 });
 
 const pageVisit = async (page: Page): Promise<void> => {
