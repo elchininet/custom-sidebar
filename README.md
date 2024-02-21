@@ -291,7 +291,7 @@ order:
 
 >Note: `Custom Sidebar` uses [Home Assistant Javascript Templates] for the `JavaScript` templating system. To know all the objects, variables and methods available in the `JavaScript` templates, consult the [proper section](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#objects-and-methods-available-in-the-templates) in the repository.
 
-## Jinja templates
+### Jinja templates
 
 This templating system is [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). You can use the majority of the template methods and objects. The entire template will be processed, rendered and the result will be used as the inner html of the element. If you don‘t want to display anything in certain scenarios, you should return an empty string in those cases.
 
