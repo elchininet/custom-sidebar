@@ -130,7 +130,7 @@ Add a file named `sidebar-config.json` or `sidebar-config.yaml` into your `<conf
 | icon                      | String  | no        | Specifies the icon of the sidebar item |
 | new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
 
->\* These options and item properties allow [JavaScript templates](#javascript-templates).
+>\* These options and item properties allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
 
 Short example in `JSON` format:
 
@@ -238,19 +238,23 @@ exceptions:
 * You cannot use `device` and `not_device` at the same time, doing so will end in an error
 * Pay attention to `base_order` property. If it's set to `false` (default value), the main `config.order` will be ignored, leaving you with default sidebar modified only by the exception's orders
 
-## JavaScript templates
+## Templates
 
-Some config options and item properties, as `title`, `name` and `notification`, admit `JavaScript` templates. This templating system is not [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). It is basically a `JavaScript` code block in which you can use certain client-side objects, variables and methods. To set a property as a `JavaScript` template block, include the code between three square brackets `[[[ JavaScript code ]]]`. If you don‘t use the square brackets, the property will be interpreted as a regular string.
+Some config options and item properties, as `title`, `name` and `notification`, admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main difference between the two templating systems (apart from the syntax) is that `JavaScript` can access local data like information about the user (name, is admin, is owner) or DOM APIs menwhile `Jinja` templates are agnostic to the device in which `Home Assistant` is being executed.
+
+### JavaScript templates
+
+This templating system is not [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). It is basically a `JavaScript` code block in which you can use certain client-side objects, variables and methods. To set a property as a `JavaScript` template block, include the code between three square brackets `[[[ JavaScript code ]]]`. If you don‘t use the square brackets, the property will be interpreted as a regular string.
 
 The `JavaScript` code will be taken as something that you want to return, but if you have a more complex logic, you can create your own variables and return the desired result at the end.
 
 The entities and domains used in the templates will be stored so if the state of these entities change, it will update the templates used in the configuration.
 
-### JavaScript templates example
+#### JavaScript templates example
 
 The next example will set the title of the sidebar as "My Home" followed by the current time. It will also add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed. And it also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses.
 
-#### in `JSON` format:
+##### in `JSON` format:
 
 ```json5
 {
@@ -271,7 +275,7 @@ The next example will set the title of the sidebar as "My Home" followed by the 
 }
 ```
 
-#### in `YAML` format:
+##### in `YAML` format:
 
 ```yaml
 title: '[[[ "My Home " + new Date(states("sensor.date_time_iso")).toLocaleTimeString().slice(0, 5) ]]]'
@@ -285,7 +289,52 @@ order:
     icon: mdi:information-outline
 ```
 
->Note: `Custom Sidebar` uses [Home Assistant Javascript Templates] for the templating system. To know all the objects, variables and methods available in the `JavaScript` templates, consult the [proper section](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#objects-and-methods-available-in-the-templates) in the repository.
+>Note: `Custom Sidebar` uses [Home Assistant Javascript Templates] for the `JavaScript` templating system. To know all the objects, variables and methods available in the `JavaScript` templates, consult the [proper section](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#objects-and-methods-available-in-the-templates) in the repository.
+
+## Jinja templates
+
+This templating system is [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). You can use the majority of the template methods and objects. The entire template will be processed, rendered and the result will be used as the inner html of the element. If you don‘t want to display anything in certain scenarios, you should return an empty string in those cases.
+
+When the entities and domains used in a templates change, it will trigger an update and the updated result of the template will be rendered.
+
+#### Jinja templates example
+
+The next example will set the title of the sidebar as "My Home" followed by the current time. It will also add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed. And it also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version between parentheses.
+
+##### in `JSON` format:
+
+```json5
+{
+  "title": "My Home {{ as_timestamp(states('sensor.date_time_iso')) | timestamp_custom('%H:%M') }}",
+  "order": [
+    {
+      "item": "hacs",
+      "notification": "{{ state_attr('sensor.hacs', 'repositories') | length or '' }}"
+    },
+    {
+      "new_item": true,
+      "item": "info",
+      "name": "Info ({{ state_attr('update.home_assistant_supervisor_update', 'latest_version') }})",
+      "href": "/config/info",
+      "icon": "mdi:information-outline"
+    }
+  ]
+}
+```
+
+##### in `YAML` format:
+
+```yaml
+title: 'My Home {{ as_timestamp(states("sensor.date_time_iso")) | timestamp_custom("%H:%M") }}'
+order:
+  - item: hacs
+    notification: '{{ state_attr("sensor.hacs", "repositories") | length or "" }}'
+  - new_item: true
+    item: info
+    name: 'Info ({{ state_attr("update.home_assistant_supervisor_update", "latest_version") }})'
+    href: '/config/info'
+    icon: mdi:information-outline
+```
 
 ## Home Assistant built-in sidebar configuration options
 
@@ -357,3 +406,4 @@ order:
 [user-agent]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
 [Home Assistant Javascript Templates]: https://github.com/elchininet/home-assistant-javascript-templates
 [Home Assistant's Iframe Panel feature]: https://www.home-assistant.io/integrations/panel_iframe/
+[websocket call]: https://developers.home-assistant.io/docs/api/websocket
