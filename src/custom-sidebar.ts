@@ -238,7 +238,6 @@ class CustomSidebar {
         }
 
         const callback = (rendered: string): void => {
-            console.log('rendered', rendered);
             if (rendered.length) {
                 badge.innerHTML = rendered;
                 badgeCollapsed.innerHTML = rendered;
