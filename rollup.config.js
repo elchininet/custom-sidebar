@@ -1,6 +1,6 @@
 import ts from 'rollup-plugin-ts';
 import json from '@rollup/plugin-json';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import alias from '@rollup/plugin-alias';
 import replace from '@rollup/plugin-replace';
@@ -29,7 +29,7 @@ const testBundlePlugins = [
         tsconfig: resolvedConfig => ({
             ...resolvedConfig,
             removeComments: false
-        })                
+        })
     }),
     istanbul({
         exclude: [
@@ -78,7 +78,7 @@ export default [
                 preventAssignment: true,
                 delimiters: ['', '']
             }),
-            ...bundlePlugins            
+            ...bundlePlugins
         ],
         input: 'src/custom-sidebar.ts',
         output: {
