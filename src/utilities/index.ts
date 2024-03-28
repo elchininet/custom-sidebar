@@ -1,4 +1,8 @@
-import { ConfigOrder, ConfigException } from '@types';
+import {
+    ConfigOrder,
+    ConfigException,
+    Version
+} from '@types';
 import {
     NAMESPACE,
     MAX_ATTEMPTS,
@@ -138,4 +142,19 @@ export const addStyle = (css: string, elem: ShadowRoot): void => {
     style.setAttribute('id', `${NAMESPACE}_${name}`);
     elem.appendChild(style);
     style.innerHTML = css.replace(CSS_CLEANER_REGEXP, '$2');
+};
+
+export const parseVersion = (version: string | undefined): Version | null => {
+    const versionRegExp = /^(\d+)\.(\d+)\.(\w+)(?:\.(\w+))?$/;
+    const match = version
+        ? version.match(versionRegExp)
+        : null;
+    if (match) {
+        return [
+            +match[1],
+            +match[2],
+            match[3]
+        ];
+    }
+    return null;
 };

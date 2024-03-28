@@ -23,7 +23,8 @@ export enum SELECTOR {
     ITEM_TEXT = '.item-text',
     NOTIFICATION_BADGE = '.notification-badge',
     NOTIFICATIONS_BADGE_COLLAPSED = '.notification-badge-collapsed',
-    EDIT_SIDEBAR_BUTTON = 'ha-panel-profile$ ha-settings-row mwc-button',
+    EDIT_SIDEBAR_BUTTON_LEGACY = 'ha-panel-profile$ ha-settings-row mwc-button',
+    EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-settings-row mwc-button',
     SIDEBAR_NOTIFICATIONS = '.notifications',
     PROFILE = '.profile'
 }
