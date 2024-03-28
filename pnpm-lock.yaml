@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   home-assistant-javascript-templates:
-    specifier: ^3.1.0
-    version: 3.1.0
+    specifier: ^3.1.1
+    version: 3.1.1
   home-assistant-query-selector:
     specifier: ^4.2.0
     version: 4.2.0
@@ -1516,8 +1516,9 @@ packages:
     engines: {node: '>=10.0.0'}
     dev: true
 
-  /home-assistant-javascript-templates@3.1.0:
-    resolution: {integrity: sha512-p+za9mtntAVyUHdCSwVp9sdP+1AIBWbelBZzNcBswydHG9mmMN5zcjr4EjM1NVQW4yYaEnT4ftjJS/RWYTlf4Q==}
+  /home-assistant-javascript-templates@3.1.1:
+    resolution: {integrity: sha512-6ytok3f1djd8nYGTx3XWFK7zqZ/Si/RWPB2gDe/NWdKWz3+JtDG3ZZ8EcEBgcgIDRKecPXp2gdf9fC053IJFKA==}
+    requiresBuild: true
     dev: false
 
   /home-assistant-query-selector@4.2.0:
