@@ -1,6 +1,6 @@
 {
   "name": "custom-sidebar",
-  "version": "4.5.1",
+  "version": "4.5.2",
   "description": "Custom HACS plugin that allows you to rearrange, hide, and add menu items to Home Assistant's sidebar",
   "main": "dist/custom-sidebar.js",
   "repository": "git@github.com:elchininet/custom-sidebar.git",
@@ -23,7 +23,7 @@
     "start:playwright": "docker run --rm --network host --add-host host.docker.internal:host-gateway -v $(pwd):/$(pwd)/ -w $(pwd) -i mcr.microsoft.com/playwright:$(cat .playwright_docker_version) sh -c \"yarn test:run && exit\"",
     "coverage:report": "nyc report --reporter=lcov --reporter=text-summary",
     "reset:ha": "git add .hass/config/.HA_VERSION && git checkout .hass/config",
-    "preinstall": "npx -y only-allow pnpm", 
+    "preinstall": "npx -y only-allow pnpm",
     "prepare": "pnpm build",
     "prepublishOnly": "pnpm test:all",
     "version": "git add .",
