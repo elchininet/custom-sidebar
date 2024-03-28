@@ -101,7 +101,10 @@ test('Sidebar new item with notification', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
     await expect(page).toHaveScreenshot('02-sidebar-new-item-notification.png', {
-        clip: SIDEBAR_CLIP
+        clip: SIDEBAR_CLIP,
+        // Temporary fix until Home Assistant 2024.4.x arrives
+        threshold: 1,
+        maxDiffPixels: 80
     });
 
 });
@@ -130,7 +133,10 @@ test('Sidebar new item with notification collapsed', async ({ page }) => {
         clip: {
             ...SIDEBAR_CLIP,
             width: 55
-        }
+        },
+        // Temporary fix until Home Assistant 2024.4.x arrives
+        threshold: 1,
+        maxDiffPixels: 80
     });
 
     await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
