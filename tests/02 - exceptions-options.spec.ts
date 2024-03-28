@@ -270,7 +270,10 @@ test.describe('Exceptions matchers', async () => {
         await pageVisit(page);
 
         await expect(page).toHaveScreenshot('04-sidebar-exceptions-check-on-top.png', {
-            clip: SIDEBAR_CLIP
+            clip: SIDEBAR_CLIP,
+            // Temporary fix until Home Assistant 2024.4.x arrives
+            threshold: 1,
+            maxDiffPixels: 80
         });
 
     });

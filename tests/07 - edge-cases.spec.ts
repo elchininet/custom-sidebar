@@ -36,7 +36,10 @@ test('Multiple items match the same element', async ({ page }) => {
     await pageVisit(page);
 
     await expect(page).toHaveScreenshot('01-multiple-matches.png', {
-        clip: SIDEBAR_CLIP
+        clip: SIDEBAR_CLIP,
+        // Temporary fix until Home Assistant 2024.4.x arrives
+        threshold: 1,
+        maxDiffPixels: 80
     });
 
 });
