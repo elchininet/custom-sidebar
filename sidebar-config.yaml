@@ -26,7 +26,7 @@ order:
     order: 5
   - item: hacs
     order: 6
-    notification: '[[[ state_attr("sensor.hacs", "repositories").length || '' ]]]'
+    notification: '[[[ state_attr("sensor.hacs", "repositories").length || "" ]]]'
   - item: config
     bottom: true
     order: 7

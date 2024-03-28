@@ -281,7 +281,7 @@ The next example will set the title of the sidebar as "My Home" followed by the 
 title: '[[[ "My Home " + new Date(states("sensor.date_time_iso")).toLocaleTimeString().slice(0, 5) ]]]'
 order:
   - item: hacs
-    notification: '[[[ state_attr("sensor.hacs", "repositories").length || '' ]]]'
+    notification: '[[[ state_attr("sensor.hacs", "repositories").length || "" ]]]'
   - new_item: true
     item: info
     name: '[[[ "Info (" + state_attr("update.home_assistant_supervisor_update", "latest_version") + ")" ]]]'
