@@ -52,7 +52,7 @@ You can install the plugin manually or through [HACS], not both. If you install 
 6. Click on `Add`
 7. Click on `Explore and download repositories` button in the bottom-right of the screen
 8. Search for `custom-sidebar` and install it
-9. Add the url of the plugin as an [extra_module_url] in your `configuration.yaml` (unless you use [browser_mod]):
+9. Add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
 
 #### If you want to use a `JSON` configuration
 
@@ -77,7 +77,7 @@ frontend:
 
 1. Download the latest [custom-sidebar release]
 2. Copy `custom-sidebar-json.js` or `custom-sidebar-yaml.js` into `<config directory>/www/` (depending on the configuration format that you are going to use, `JSON` or `YAML`)
-3. Add the url of the plugin as an [extra_module_url] in your `configuration.yaml` (unless you use [browser_mod]):
+3. Add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
 
 #### If you want to use a `JSON` configuration
 
@@ -398,7 +398,6 @@ order:
 [original Custom Sidebar]: https://github.com/Villhellm/custom-sidebar
 [home-assistant-query-selector]: https://github.com/elchininet/home-assistant-query-selector
 [extra_module_url]: https://www.home-assistant.io/integrations/frontend/#extra_module_url
-[browser_mod]: https://github.com/thomasloven/hass-browser_mod
 [custom-sidebar release]: https://github.com/elchininet/custom-sidebar/releases
 [example sidebar-config.json]: https://raw.githubusercontent.com/elchininet/custom-sidebar/master/sidebar-config.json
 [example sidebar-config.yaml]: https://raw.githubusercontent.com/elchininet/custom-sidebar/master/sidebar-config.yaml
