@@ -101,10 +101,7 @@ test('Sidebar new item with notification', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
     await expect(page).toHaveScreenshot('02-sidebar-new-item-notification.png', {
-        clip: SIDEBAR_CLIP,
-        // Temporary fix until Home Assistant 2024.4.x arrives
-        threshold: 1,
-        maxDiffPixels: 80
+        clip: SIDEBAR_CLIP
     });
 
 });
@@ -133,10 +130,7 @@ test('Sidebar new item with notification collapsed', async ({ page }) => {
         clip: {
             ...SIDEBAR_CLIP,
             width: 55
-        },
-        // Temporary fix until Home Assistant 2024.4.x arrives
-        threshold: 1,
-        maxDiffPixels: 80
+        }
     });
 
     await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
@@ -217,7 +211,7 @@ test('Sidebar title', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('02-sidebar-custom-title.png', {
+    await expect(page).toHaveScreenshot('04-sidebar-custom-title.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -232,7 +226,7 @@ test('Sidebar custom styles', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('04-sidebar-custom-styles.png', {
+    await expect(page).toHaveScreenshot('05-sidebar-custom-styles.png', {
         clip: SIDEBAR_CLIP
     });
 

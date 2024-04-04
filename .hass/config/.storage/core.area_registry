@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "minor_version": 3,
+  "minor_version": 6,
   "key": "core.area_registry",
   "data": {
     "areas": [
@@ -8,19 +8,28 @@
         "aliases": [],
         "name": "Woonkamer",
         "id": "woonkamer",
-        "picture": null
+        "picture": null,
+        "icon": null,
+        "floor_id": null,
+        "labels": []
       },
       {
         "aliases": [],
         "name": "Keuken",
         "id": "keuken",
-        "picture": null
+        "picture": null,
+        "icon": null,
+        "floor_id": null,
+        "labels": []
       },
       {
         "aliases": [],
         "name": "Slaapkamer",
         "id": "slaapkamer",
-        "picture": null
+        "picture": null,
+        "icon": null,
+        "floor_id": null,
+        "labels": []
       }
     ]
   }
