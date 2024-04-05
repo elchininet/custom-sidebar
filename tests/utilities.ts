@@ -2,7 +2,8 @@ import { Page } from '@playwright/test';
 import {
     BASE_URL,
     JSON_PATH,
-    MAXIMUM_RETRIES
+    MAXIMUM_RETRIES,
+    RETRY_DELAY
 } from './constants';
 
 export const haConfigRequest = async (file: string, retries = 0) => {
@@ -22,7 +23,13 @@ export const haConfigRequest = async (file: string, retries = 0) => {
         if (response.ok || retries >= MAXIMUM_RETRIES) {
             return response;
         }
-        return haConfigRequest(file, retries + 1);
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(
+                    haConfigRequest(file, retries + 1)
+                );
+            }, RETRY_DELAY);
+        });
     });
 };
 
