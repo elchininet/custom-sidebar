@@ -30,7 +30,7 @@
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {
-    "@playwright/test": "^1.42.1",
+    "@playwright/test": "^1.43.0",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
@@ -38,18 +38,17 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@stylistic/eslint-plugin-js": "^1.7.0",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^20.12.2",
-    "@typescript-eslint/eslint-plugin": "^7.4.0",
-    "@typescript-eslint/parser": "^7.4.0",
+    "@types/node": "^20.12.5",
     "dotenv-cli": "^7.4.1",
-    "eslint": "^8.57.0",
+    "eslint": "^9.0.0",
     "nyc": "^15.1.0",
     "playwright-test-coverage": "^1.2.12",
-    "rollup": "^4.13.2",
+    "rollup": "^4.14.1",
     "rollup-plugin-istanbul": "^5.0.0",
     "rollup-plugin-ts": "^3.4.5",
     "tslib": "^2.6.2",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.4",
+    "typescript-eslint": "^7.5.0"
   },
   "dependencies": {
     "home-assistant-javascript-templates": "^3.1.1",
