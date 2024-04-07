@@ -43,12 +43,6 @@ devDependencies:
   '@types/node':
     specifier: ^20.12.5
     version: 20.12.5
-  '@typescript-eslint/eslint-plugin':
-    specifier: ^7.5.0
-    version: 7.5.0(@typescript-eslint/parser@7.5.0)(eslint@9.0.0)(typescript@5.4.4)
-  '@typescript-eslint/parser':
-    specifier: ^7.5.0
-    version: 7.5.0(eslint@9.0.0)(typescript@5.4.4)
   dotenv-cli:
     specifier: ^7.4.1
     version: 7.4.1
@@ -76,6 +70,9 @@ devDependencies:
   typescript:
     specifier: ^5.4.4
     version: 5.4.4
+  typescript-eslint:
+    specifier: ^7.5.0
+    version: 7.5.0(eslint@9.0.0)(typescript@5.4.4)
 
 packages:
 
@@ -2435,6 +2432,25 @@ packages:
     resolution: {integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==}
     dependencies:
       is-typedarray: 1.0.0
+    dev: true
+
+  /typescript-eslint@7.5.0(eslint@9.0.0)(typescript@5.4.4):
+    resolution: {integrity: sha512-eKhF39LRi2xYvvXh3h3S+mCxC01dZTIZBlka25o39i81VeQG+OZyfC4i2GEDspNclMRdXkg9uGhmvWMhjph2XQ==}
+    engines: {node: ^18.18.0 || >=20.0.0}
+    peerDependencies:
+      eslint: ^8.56.0
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@typescript-eslint/eslint-plugin': 7.5.0(@typescript-eslint/parser@7.5.0)(eslint@9.0.0)(typescript@5.4.4)
+      '@typescript-eslint/parser': 7.5.0(eslint@9.0.0)(typescript@5.4.4)
+      '@typescript-eslint/utils': 7.5.0(eslint@9.0.0)(typescript@5.4.4)
+      eslint: 9.0.0
+      typescript: 5.4.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /typescript@5.4.4:
