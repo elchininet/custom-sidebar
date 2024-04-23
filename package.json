@@ -40,17 +40,17 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.12.7",
     "dotenv-cli": "^7.4.1",
-    "eslint": "^9.0.0",
+    "eslint": "^9.1.1",
     "globals": "^15.0.0",
     "husky": "^9.0.11",
     "nyc": "^15.1.0",
     "playwright-test-coverage": "^1.2.12",
-    "rollup": "^4.14.2",
+    "rollup": "^4.16.4",
     "rollup-plugin-istanbul": "^5.0.0",
     "rollup-plugin-ts": "^3.4.5",
     "tslib": "^2.6.2",
     "typescript": "^5.4.5",
-    "typescript-eslint": "^7.6.0"
+    "typescript-eslint": "^7.7.1"
   },
   "dependencies": {
     "home-assistant-javascript-templates": "^3.1.1",
