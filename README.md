@@ -8,7 +8,7 @@
 
 [![Home Assistant Nightly Beta Tests](https://github.com/elchininet/custom-sidebar/actions/workflows/ha-beta-tests.yaml/badge.svg)](https://github.com/elchininet/custom-sidebar/actions/workflows/ha-beta-tests.yaml)
 
-Custom [HACS] plugin that allows you to rearrange, hide, and add menu items to [Home Assistant]'s sidebar.
+Custom [HACS] plugin that allows you to manage [Home Assistant]'s sidebar items per user or device basis.
 
 <table>
   <thead>
