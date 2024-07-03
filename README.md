@@ -241,7 +241,7 @@ exceptions:
 
 ## Templates
 
-Some config options and item properties, as `title`, `name` and `notification`, admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main difference between the two templating systems (apart from the syntax) is that `JavaScript` can access local data like information about the user (name, is admin, is owner) or DOM APIs menwhile `Jinja` templates are agnostic to the device in which `Home Assistant` is being executed.
+Some config options and item properties, as `title`, `name` and `notification`, admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main difference between the two templating systems (apart from the syntax) is that `JavaScript` can access local data like information about the user (name, is admin, is owner) or DOM APIs meanwhile `Jinja` templates are agnostic to the device in which `Home Assistant` is being executed.
 
 ### JavaScript templates
 
