@@ -39,16 +39,16 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.14.10",
     "dotenv-cli": "^7.4.2",
-    "eslint": "^9.6.0",
+    "eslint": "^9.7.0",
     "globals": "^15.8.0",
     "nyc": "^17.0.0",
     "playwright-test-coverage": "^1.2.12",
-    "rollup": "^4.18.0",
+    "rollup": "^4.18.1",
     "rollup-plugin-istanbul": "^5.0.0",
     "rollup-plugin-ts": "^3.4.5",
     "tslib": "^2.6.3",
     "typescript": "^5.5.3",
-    "typescript-eslint": "^7.14.1"
+    "typescript-eslint": "^7.16.0"
   },
   "dependencies": {
     "home-assistant-javascript-templates": "^3.1.1",
