@@ -1,15 +1,7 @@
 import { HomeAssistant, Hass } from 'home-assistant-javascript-templates';
 
-export type Version = [number, number, string];
-
-export interface HassObject extends Hass {
-    config: {
-        version: string;
-    };
-}
-
 export interface HomeAsssistantExtended extends HomeAssistant {
-    hass: HassObject;
+    hass: Hass;
 }
 
 export interface PartialPanelResolver extends HTMLElement {

@@ -4,21 +4,19 @@ import {
     OnListenDetail,
     HAElement
 } from 'home-assistant-query-selector';
-import HomeAssistantJavaScriptTemplates from 'home-assistant-javascript-templates';
+import HomeAssistantJavaScriptTemplates, { Hass } from 'home-assistant-javascript-templates';
 import {
     HomeAsssistantExtended,
     Config,
     ConfigNewItem,
     ConfigOrder,
     ConfigOrderWithItem,
-    HassObject,
     PartialPanelResolver,
     Sidebar,
     Match,
     HassConnection,
     SubscriberEvent,
-    SubscriberTemplate,
-    Version
+    SubscriberTemplate
 } from '@types';
 import {
     NAMESPACE,
@@ -38,7 +36,6 @@ import {
 } from '@constants';
 import {
     logVersionToConsole,
-    parseVersion,
     getPromisableElement,
     getFinalOrder,
     addStyle
@@ -91,7 +88,6 @@ class CustomSidebar {
     private _renderer: HomeAssistantJavaScriptTemplates;
     private _jsSuscriptions: Map<string, Map<Element, () => void>>;
     private _items: ConfigOrderWithItem[];
-    private _version: Version | null;
     private _itemTouchedBinded: () => Promise<void>;
     private _mouseEnterBinded: (event: MouseEvent) => void;
     private _mouseLeaveBinded: () => void;
@@ -127,10 +123,10 @@ class CustomSidebar {
         return [paperListBox, items, spacer];
     }
 
-    private async _hasReady(): Promise<HassObject> {
+    private async _hasReady(): Promise<Hass> {
         return getPromisableElement(
             () => this._ha.hass,
-            (hass: HassObject): boolean => !!(
+            (hass: Hass): boolean => !!(
                 hass &&
                 hass.areas &&
                 hass.devices &&
@@ -771,14 +767,6 @@ class CustomSidebar {
 
     private async _panelLoaded(): Promise<void> {
 
-        const legacyVersion = (
-            this._version?.[0] < 2024 ||
-            (
-                this._version?.[0] === 2024 &&
-                this._version?.[1] <= 3
-            )
-        );
-
         // Select the right element in the sidebar
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
         const pathName = panelResolver.__route.path;
@@ -825,20 +813,9 @@ class CustomSidebar {
         }
 
         // Disable the edit sidebar button in the profile panel
-        if (
-            (
-                legacyVersion &&
-                pathName === '/profile'
-            ) ||
-            (
-                !legacyVersion &&
-                pathName === '/profile/general'
-            )
-        ) {
+        if (pathName === '/profile/general') {
             const config = await this._configPromise;
-            const editSidebarButton = legacyVersion
-                ? await this._partialPanelResolver.selector.query(SELECTOR.EDIT_SIDEBAR_BUTTON_LEGACY).element
-                : await this._partialPanelResolver.selector.query(SELECTOR.EDIT_SIDEBAR_BUTTON).element;
+            const editSidebarButton = await this._partialPanelResolver.selector.query(SELECTOR.EDIT_SIDEBAR_BUTTON).element;
             if (
                 config.sidebar_editable === false &&
                 editSidebarButton
@@ -857,7 +834,6 @@ class CustomSidebar {
                 this._ha = ha;
                 this._hasReady()
                     .then(() => {
-                        this._version = parseVersion(this._ha.hass.config?.version);
                         this._renderer = new HomeAssistantJavaScriptTemplates(this._ha);
                         this._subscribeTitle();
                         this._rearrange();
