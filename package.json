@@ -30,7 +30,7 @@
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {
-    "@playwright/test": "^1.45.3",
+    "@playwright/test": "1.45.3",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
