@@ -60,7 +60,7 @@ order:
     hide: true
   - item: energy
     hide: true
-  - item: media browser
+  - item: media
     hide: true
 exceptions:
   - user:
