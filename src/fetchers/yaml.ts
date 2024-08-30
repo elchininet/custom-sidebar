@@ -1,12 +1,16 @@
 import jsYaml from 'js-yaml';
 import { Config } from '@types';
-import { NAMESPACE, CONFIG_PATH } from '@constants';
+import {
+    NAMESPACE,
+    CONFIG_NAME,
+    CONFIG_PATH
+} from '@constants';
 import { randomId } from '@utilities';
 import { validateConfig } from '@validators';
 
 export const fetchConfig = async (): Promise<Config> => {
     const errorNotFound = `${NAMESPACE}: YAML config file not found.`;
-    const errorSuffix = 'Make sure you have valid config in /config/www/sidebar-order.yaml file.';
+    const errorSuffix = `Make sure you have valid config in /config/www/${CONFIG_NAME}.yaml file.`;
     return new Promise<Config>((resolve) => {
         fetch(`${CONFIG_PATH}.yaml?hash=${randomId()}`)
             .then((response: Response) => {

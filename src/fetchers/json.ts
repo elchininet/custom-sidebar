@@ -1,11 +1,15 @@
 import { Config } from '@types';
-import { NAMESPACE, CONFIG_PATH } from '@constants';
+import {
+    NAMESPACE,
+    CONFIG_NAME,
+    CONFIG_PATH
+} from '@constants';
 import { randomId } from '@utilities';
 import { validateConfig } from '@validators';
 
 export const fetchConfig = async (): Promise<Config> => {
     const errorNotFound = `${NAMESPACE}: JSON config file not found.`;
-    const errorSuffix = 'Make sure you have valid config in /config/www/sidebar-order.json file.';
+    const errorSuffix = `Make sure you have valid config in /config/www/${CONFIG_NAME}.json file.`;
     return new Promise<Config>((resolve) => {
         fetch(`${CONFIG_PATH}.json?hash=${randomId()}`)
             .then((response: Response) => {

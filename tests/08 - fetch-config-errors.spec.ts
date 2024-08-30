@@ -23,7 +23,7 @@ test('JSON not found', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     expect(errors).toEqual(
         expect.arrayContaining([
-            `${ERROR_PREFIX} JSON config file not found.\nMake sure you have valid config in /config/www/sidebar-order.json file.`
+            `${ERROR_PREFIX} JSON config file not found.\nMake sure you have valid config in /config/www/sidebar-config.json file.`
         ])
     );
 
@@ -49,7 +49,7 @@ test('JSON server error', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     expect(errors).toEqual(
         expect.arrayContaining([
-            `${ERROR_PREFIX} JSON config file not found.\nMake sure you have valid config in /config/www/sidebar-order.json file.`
+            `${ERROR_PREFIX} JSON config file not found.\nMake sure you have valid config in /config/www/sidebar-config.json file.`
         ])
     );
 
@@ -96,7 +96,7 @@ test('JSON id warning', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     expect(warnings).toEqual(
         expect.arrayContaining([
-            `${ERROR_PREFIX} You seem to be using the example configuration.\nMake sure you have valid config in /config/www/sidebar-order.json file.`
+            `${ERROR_PREFIX} You seem to be using the example configuration.\nMake sure you have valid config in /config/www/sidebar-config.json file.`
         ])
     );
 

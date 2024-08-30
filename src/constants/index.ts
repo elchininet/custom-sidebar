@@ -1,5 +1,7 @@
 export const NAMESPACE = 'custom-sidebar';
-export const CONFIG_PATH = '/local/sidebar-config';
+export const LOCAL_PATH = '/local/';
+export const CONFIG_NAME = 'sidebar-config';
+export const CONFIG_PATH = `${LOCAL_PATH}${CONFIG_NAME}`;
 export const MAX_ATTEMPTS = 100;
 export const RETRY_DELAY = 50;
 
