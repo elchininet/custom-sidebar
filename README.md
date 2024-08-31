@@ -355,7 +355,6 @@ order:
         | selectattr('state', 'eq', 'on')
         | map(attribute='entity_id')
         | map('device_attr', 'identifiers')
-        | map('first')
         | map('contains', 'hacs')
         | list
         | length or ""
@@ -375,7 +374,7 @@ order:
   "order": [
     {
       "item": "hacs",
-      "notification": "{{ expand(states.update) | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | map('device_attr', 'identifiers') | map('first') | map('contains', 'hacs') | list | length or '' }}"
+      "notification": "{{ expand(states.update) | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | map('device_attr', 'identifiers') | map('contains', 'hacs') | list | length or '' }}"
     },
     {
       "new_item": true,
