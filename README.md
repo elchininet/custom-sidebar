@@ -37,7 +37,7 @@ Custom [HACS] plugin that allows you to manage [Home Assistant]'s sidebar items 
   </tbody>
 </table>
 
-This is a refactor of [custom-sidebar-v2] by @galloween, which unfortunatelly is now unmaintained and archived. In its beginning, @galloween's code was a refactor of the [original Custom Sidebar] plugin by @Villhellm (R.I.P.). This version refactored completely @galloween's code allowing to use a configuration in `JSON` (as @galloween's version) or in `YAML` (as @Villhellm's one), fixing several bugs, improving performance, and using [home-assistant-query-selector] to make it less likely to break with future Home Assistant front-end updates.
+This is a refactor of [custom-sidebar-v2] by @galloween, which unfortunatelly is now unmaintained and archived. In its beginning, @galloween's code was a refactor of the [original Custom Sidebar] plugin by @Villhellm (R.I.P.). This version refactored completely @galloween's code allowing to use a configuration in `YAML` (as @Villhellm's one) or in `JSON` (as @galloween's version), fixing several bugs, improving performance, and using [home-assistant-query-selector] to make it less likely to break with future Home Assistant front-end updates.
 
 ## Installation
 
@@ -57,20 +57,20 @@ You can install the plugin manually or through [HACS], not both. If you install 
 8. Click on `Download` in the more-info dialog
 9. When the plugin is already downloaded, add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
 
-#### If you want to use a `JSON` configuration
-
-```yaml
-frontend:
-  extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v1.0.0
-```
-
 #### If you want to use a `YAML` configuration
 
 ```yaml
 frontend:
   extra_module_url:
     - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js?v1.0.0
+```
+
+#### If you want to use a `JSON` configuration
+
+```yaml
+frontend:
+  extra_module_url:
+    - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v1.0.0
 ```
 
 10. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
@@ -88,14 +88,6 @@ frontend:
 8. Search for `custom-sidebar` and install it
 9. Add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
 
-#### If you want to use a `JSON` configuration
-
-```yaml
-frontend:
-  extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v1.0.0
-```
-
 #### If you want to use a `YAML` configuration
 
 ```yaml
@@ -104,22 +96,22 @@ frontend:
     - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js?v1.0.0
 ```
 
+#### If you want to use a `JSON` configuration
+
+```yaml
+frontend:
+  extra_module_url:
+    - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v1.0.0
+```
+
 10. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
 11. Restart Home Assistant
 
 ### Manual installation
 
 1. Download the latest [custom-sidebar release]
-2. Copy `custom-sidebar-json.js` or `custom-sidebar-yaml.js` into `<config directory>/www/` (depending on the configuration format that you are going to use, `JSON` or `YAML`)
+2. Copy `custom-sidebar-yaml.js` or `custom-sidebar-json.js` into `<config directory>/www/` (depending on the configuration format that you are going to use,  `YAML` or `JSON`)
 3. Add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
-
-#### If you want to use a `JSON` configuration
-
-```yaml
-frontend:
-  extra_module_url:
-    - /local/custom-sidebar-json.js?v1.0.0
-```
 
 #### If you want to use a `YAML` configuration
 
@@ -129,14 +121,22 @@ frontend:
     - /local/custom-sidebar-yaml.js?v1.0.0
 ```
 
+#### If you want to use a `JSON` configuration
+
+```yaml
+frontend:
+  extra_module_url:
+    - /local/custom-sidebar-json.js?v1.0.0
+```
+
 4. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
 5. Restart Home Assistant
 
 ## Configuration
 
-Depending on the file that you have added to [extra_module_url], you will need to add your configuration in `JSON` or `YAML` format. If you used `custom-sidebar-json.js` you need to provide the configuration in `JSON` format. If you have used `custom-sidebar-yaml.js` you need to provide the configuration in `YAML` format.
+Depending on the file that you have added to [extra_module_url], you will need to add your configuration in `YAML` or `JSON` format. If you used `custom-sidebar-yaml.js` you need to provide the configuration in `YAML` format. If you have used `custom-sidebar-json.js` you need to provide the configuration in `JSON` format.
 
-Add a file named `sidebar-config.json` or `sidebar-config.yaml` into your `<config directory>/www/` directory. It could be easier if you copy the [example sidebar-config.json] or the [example sidebar-config.yaml] file, delete the `id` parameter, and edit it to match your needs.
+Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<config directory>/www/` directory. It could be easier if you copy the [example sidebar-config.yaml] or the [example sidebar-config.json] file, delete the `id` parameter, and edit it to match your needs.
 
 ### Configuration options
 
@@ -165,6 +165,26 @@ Add a file named `sidebar-config.json` or `sidebar-config.yaml` into your `<conf
 | new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
 
 >\* These options and item properties allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
+
+Short example in `YAML` format:
+
+```yaml
+title: My Home
+order:
+  - new_item: true
+    item: Google
+    href: https://mrdoob.com/projects/chromeexperiments/google-gravity/
+    icon: mdi:earth
+    target: _blank
+    order: 1
+  - item: overview
+    order: 2
+  - new_item: true
+    item: Integrations
+    href: "/config/integrations"
+    icon: mdi:puzzle
+    order: 3
+```
 
 Short example in `JSON` format:
 
@@ -195,26 +215,6 @@ Short example in `JSON` format:
  }
 ```
 
-Short example in `YAML` format:
-
-```yaml
-title: My Home
-order:
-  - new_item: true
-    item: Google
-    href: https://mrdoob.com/projects/chromeexperiments/google-gravity/
-    icon: mdi:earth
-    target: _blank
-    order: 1
-  - item: overview
-    order: 2
-  - new_item: true
-    item: Integrations
-    href: "/config/integrations"
-    icon: mdi:puzzle
-    order: 3
-```
-
 #### Notes
 
 * All items in `config.order` should have a unique `item` property
@@ -240,6 +240,18 @@ You can define user-specific order using exceptions feature. Exceptions can be u
 
 Short example in `JSON` format:
 
+Short example in `YAML` format:
+
+```yaml
+...
+exceptions:
+  - user:
+    - Jim Hawkins
+    - Long John Silver
+    order:
+      ...
+```
+
 ```json5
 {
   ...
@@ -252,18 +264,6 @@ Short example in `JSON` format:
     }
   ]  
 }
-```
-
-Short example in `YAML` format:
-
-```yaml
-...
-exceptions:
-  - user:
-    - Jim Hawkins
-    - Long John Silver
-    order:
-      ...
 ```
 
 #### Notes
@@ -288,6 +288,28 @@ The entities and domains used in the templates will be stored so if the state of
 
 The next example will set the title of the sidebar as "My Home" followed by the current time. It will also add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed. And it also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses.
 
+##### in `YAML` format:
+
+```yaml
+title: '[[[ "My Home " + new Date(states("sensor.date_time_iso")).toLocaleTimeString().slice(0, 5) ]]]'
+order:
+  - item: hacs
+    notification: |
+      [[[
+        const updates = Object.values(states.update);
+        const hacsUpdates = updates.filter((update) => {
+          const { entity_id, state } = update;
+          return hass.entities[entity_id].platform === 'hacs' && state === 'on';
+        });
+        return hacsUpdates.length || '';
+      ]]]
+  - new_item: true
+    item: info
+    name: '[[[ "Info (" + state_attr("update.home_assistant_supervisor_update", "latest_version") + ")" ]]]'
+    href: '/config/info'
+    icon: mdi:information-outline
+```
+
 ##### in `JSON` format:
 
 ```json5
@@ -296,7 +318,7 @@ The next example will set the title of the sidebar as "My Home" followed by the 
   "order": [
     {
       "item": "hacs",
-      "notification": "[[[ state_attr('sensor.hacs', 'repositories').length || '' ]]]"
+      "notification": "[[[ return Object.values(states.update).filter((update) => hass.entities[update.entity_id].platform === 'hacs' && update.state === 'on').length || '' ]]]"
     },
     {
       "new_item": true,
@@ -307,20 +329,6 @@ The next example will set the title of the sidebar as "My Home" followed by the 
     }
   ]
 }
-```
-
-##### in `YAML` format:
-
-```yaml
-title: '[[[ "My Home " + new Date(states("sensor.date_time_iso")).toLocaleTimeString().slice(0, 5) ]]]'
-order:
-  - item: hacs
-    notification: '[[[ state_attr("sensor.hacs", "repositories").length || "" ]]]'
-  - new_item: true
-    item: info
-    name: '[[[ "Info (" + state_attr("update.home_assistant_supervisor_update", "latest_version") + ")" ]]]'
-    href: '/config/info'
-    icon: mdi:information-outline
 ```
 
 >Note: `Custom Sidebar` uses [Home Assistant Javascript Templates] for the `JavaScript` templating system. To know all the objects, variables and methods available in the `JavaScript` templates, consult the [proper section](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#objects-and-methods-available-in-the-templates) in the repository.
@@ -335,6 +343,30 @@ When the entities and domains used in a templates change, it will trigger an upd
 
 The next example will set the title of the sidebar as "My Home" followed by the current time. It will also add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed. And it also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version between parentheses.
 
+##### in `YAML` format:
+
+```yaml
+title: 'My Home {{ as_timestamp(states("sensor.date_time_iso")) | timestamp_custom("%H:%M") }}'
+order:
+  - item: hacs
+    notification: |
+      {{
+        expand(states.update)
+        | selectattr('state', 'eq', 'on')
+        | map(attribute='entity_id')
+        | map('device_attr', 'identifiers')
+        | map('first')
+        | map('contains', 'hacs')
+        | list
+        | length or ""
+      }}
+  - new_item: true
+    item: info
+    name: 'Info ({{ state_attr("update.home_assistant_supervisor_update", "latest_version") }})'
+    href: '/config/info'
+    icon: mdi:information-outline
+```
+
 ##### in `JSON` format:
 
 ```json5
@@ -343,7 +375,7 @@ The next example will set the title of the sidebar as "My Home" followed by the 
   "order": [
     {
       "item": "hacs",
-      "notification": "{{ state_attr('sensor.hacs', 'repositories') | length or '' }}"
+      "notification": "{{ expand(states.update) | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | map('device_attr', 'identifiers') | map('first') | map('contains', 'hacs') | list | length or '' }}"
     },
     {
       "new_item": true,
@@ -354,20 +386,6 @@ The next example will set the title of the sidebar as "My Home" followed by the 
     }
   ]
 }
-```
-
-##### in `YAML` format:
-
-```yaml
-title: 'My Home {{ as_timestamp(states("sensor.date_time_iso")) | timestamp_custom("%H:%M") }}'
-order:
-  - item: hacs
-    notification: '{{ state_attr("sensor.hacs", "repositories") | length or "" }}'
-  - new_item: true
-    item: info
-    name: 'Info ({{ state_attr("update.home_assistant_supervisor_update", "latest_version") }})'
-    href: '/config/info'
-    icon: mdi:information-outline
 ```
 
 ## Home Assistant built-in sidebar configuration options
@@ -396,6 +414,16 @@ panel_iframe:
 
 Then you can modify them as the regular ones:
 
+#### In `YAML` format
+
+```yaml
+order:
+  - item: fridge
+  - item: overview
+  - item: router
+  ...
+```
+
 #### In `JSON` format
 
 ```json5
@@ -407,16 +435,6 @@ Then you can modify them as the regular ones:
     ...
   ]
 }
-```
-
-#### In `YAML` format
-
-```yaml
-order:
-  - item: fridge
-  - item: overview
-  - item: router
-  ...
 ```
 
 ---
