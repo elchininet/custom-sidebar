@@ -40,7 +40,7 @@
     {
       "item": "hacs",
       "order": 6,
-      "notification": "[[[ state_attr('sensor.hacs', 'repositories').length || '' ]]]"
+      "notification": "[[[ return Object.values(entities.update).filter((entity) => entity.platform === 'hacs' && is_state(entity.entity_id, 'on')).length || '' ]]]"
     },
     {
       "item": "config",

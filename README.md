@@ -296,12 +296,10 @@ order:
   - item: hacs
     notification: |
       [[[
-        const updates = Object.values(states.update);
-        const hacsUpdates = updates.filter((update) => {
-          const { entity_id, state } = update;
-          return hass.entities[entity_id].platform === 'hacs' && state === 'on';
-        });
-        return hacsUpdates.length || '';
+        const outdatedHacsEntities = Object.values(entities.update).filter(
+          (entity) => entity.platform === 'hacs' && is_state(entity.entity_id, 'on')
+        );
+        return outdatedHacsEntities.length || '';
       ]]]
   - new_item: true
     item: info
@@ -318,7 +316,7 @@ order:
   "order": [
     {
       "item": "hacs",
-      "notification": "[[[ return Object.values(states.update).filter((update) => hass.entities[update.entity_id].platform === 'hacs' && update.state === 'on').length || '' ]]]"
+      "notification": "[[[ return Object.values(entities.update).filter((entity) => entity.platform === 'hacs' && is_state(entity.entity_id, 'on')).length || '' ]]]"
     },
     {
       "new_item": true,
