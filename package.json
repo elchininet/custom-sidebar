@@ -37,18 +37,18 @@
     "@rollup/plugin-replace": "^5.0.7",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^22.5.0",
+    "@types/node": "^22.5.2",
     "dotenv-cli": "^7.4.2",
     "eslint": "^9.9.1",
     "globals": "^15.9.0",
     "nyc": "^17.0.0",
     "playwright-test-coverage": "^1.2.12",
-    "rollup": "^4.21.0",
+    "rollup": "^4.21.2",
     "rollup-plugin-istanbul": "^5.0.0",
     "rollup-plugin-ts": "^3.4.5",
     "tslib": "^2.7.0",
     "typescript": "^5.5.4",
-    "typescript-eslint": "^8.2.0"
+    "typescript-eslint": "^8.3.0"
   },
   "dependencies": {
     "home-assistant-javascript-templates": "^4.0.0",
