@@ -37,7 +37,7 @@
     "@rollup/plugin-replace": "^5.0.7",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^22.5.2",
+    "@types/node": "22.5.2",
     "dotenv-cli": "^7.4.2",
     "eslint": "^9.9.1",
     "globals": "^15.9.0",

@@ -603,7 +603,7 @@ class CustomSidebar {
 
                                 const matchText = (
                                     (!!exact && item === text) ||
-                                    (!exact && text.toLowerCase().includes(itemLowerCase))
+                                    (!exact && !!text?.toLowerCase().includes(itemLowerCase))
                                 );
 
                                 if (matchText) {
