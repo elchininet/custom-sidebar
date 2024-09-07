@@ -40,7 +40,7 @@ importers:
         specifier: ^4.0.9
         version: 4.0.9
       '@types/node':
-        specifier: ^22.5.2
+        specifier: 22.5.2
         version: 22.5.2
       dotenv-cli:
         specifier: ^7.4.2
