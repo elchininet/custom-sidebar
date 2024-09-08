@@ -30,16 +30,16 @@
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {
-    "@playwright/test": "1.46.1",
+    "@playwright/test": "1.47.0",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.7",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "22.5.2",
+    "@types/node": "22.5.4",
     "dotenv-cli": "^7.4.2",
-    "eslint": "^9.9.1",
+    "eslint": "^9.10.0",
     "globals": "^15.9.0",
     "nyc": "^17.0.0",
     "playwright-test-coverage": "^1.2.12",
@@ -48,7 +48,7 @@
     "rollup-plugin-ts": "^3.4.5",
     "tslib": "^2.7.0",
     "typescript": "^5.5.4",
-    "typescript-eslint": "^8.3.0"
+    "typescript-eslint": "^8.4.0"
   },
   "dependencies": {
     "home-assistant-javascript-templates": "^4.0.0",
