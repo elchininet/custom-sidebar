@@ -20,7 +20,7 @@
     "demo": "pnpm build && pnpm start:ha",
     "start:ha": "docker run --rm -d -p8123:8123 --shm-size=512m -v ${PWD}/.hass/config:/config homeassistant/home-assistant:${TAG:-$(cat .hass/config/.HA_VERSION)}",
     "stop:ha": "docker stop $(docker ps -a -q  --filter ancestor=homeassistant/home-assistant:${TAG:-$(cat .hass/config/.HA_VERSION)}) || true",
-    "start:playwright": "docker run --rm --network host --add-host host.docker.internal:host-gateway -v $(pwd):/$(pwd)/ -w $(pwd) -i mcr.microsoft.com/playwright:$(cat .playwright_docker_version) sh -c \"yarn test:run && exit\"",
+    "start:playwright": "docker run --rm --network host --add-host host.docker.internal:host-gateway -v $(pwd):/$(pwd)/ -w $(pwd) -i mcr.microsoft.com/playwright:v$npm_package_devDependencies__playwright_test-jammy sh -c \"yarn test:run && exit\"",
     "coverage:report": "nyc report --reporter=lcov --reporter=text-summary",
     "reset:ha": "git add .hass/config/.HA_VERSION && git checkout .hass/config",
     "preinstall": "npx -y only-allow pnpm",
