@@ -253,7 +253,7 @@ test('Validation: "exceptions" should be an array', async ({ page }) => {
 
 });
 
-test('Validation: "exceptions" without "order"', async ({ page }) => {
+test('Validation: "exceptions" with an invalid "order"', async ({ page }) => {
 
     const errors: string[] = [];
 
@@ -261,7 +261,8 @@ test('Validation: "exceptions" without "order"', async ({ page }) => {
         order: [],
         exceptions: [
             {
-                base_order: false
+                order: 100,
+                extend_from_base: false
             }
         ]
     });
@@ -274,7 +275,88 @@ test('Validation: "exceptions" without "order"', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     expect(errors).toEqual(
         expect.arrayContaining([
-            `${ERROR_PREFIX}, every item in "exceptions" array should have an "order" property`
+            `${ERROR_PREFIX}, exceptions "order" property should be an array`
+        ])
+    );
+
+});
+
+test('Validation: "exceptions" with an invalid "title"', async ({ page }) => {
+
+    const errors: string[] = [];
+
+    await fulfillJson(page, {
+        order: [],
+        exceptions: [
+            {
+                title: ['Invalid title']
+            }
+        ]
+    });
+
+    page.on('pageerror', error => {
+        errors.push(error.message);
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    expect(errors).toEqual(
+        expect.arrayContaining([
+            `${ERROR_PREFIX}, exceptions "title" property should be a string`
+        ])
+    );
+
+});
+
+test('Validation: "exceptions" with an invalid "sidebar_editable"', async ({ page }) => {
+
+    const errors: string[] = [];
+
+    await fulfillJson(page, {
+        order: [],
+        exceptions: [
+            {
+                sidebar_editable: NaN
+            }
+        ]
+    });
+
+    page.on('pageerror', error => {
+        errors.push(error.message);
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    expect(errors).toEqual(
+        expect.arrayContaining([
+            `${ERROR_PREFIX}, exceptions "sidebar_editable" property should be a boolean or a template string`
+        ])
+    );
+
+});
+
+test('Validation: "exceptions" with an invalid "styles"', async ({ page }) => {
+
+    const errors: string[] = [];
+
+    await fulfillJson(page, {
+        order: [],
+        exceptions: [
+            {
+                styles: { body: 'display: none' }
+            }
+        ]
+    });
+
+    page.on('pageerror', error => {
+        errors.push(error.message);
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    expect(errors).toEqual(
+        expect.arrayContaining([
+            `${ERROR_PREFIX}, exceptions "styles" property should be a string`
         ])
     );
 

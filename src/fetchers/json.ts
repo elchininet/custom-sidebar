@@ -20,9 +20,8 @@ export const fetchConfig = async (): Promise<Config> => {
                             if (config.id?.startsWith('example_json')) {
                                 console.warn(`${NAMESPACE}: You seem to be using the example configuration.\n${errorSuffix}`);
                             }
-                            if (validateConfig(config)) {
-                                resolve(config);
-                            }
+                            validateConfig(config);
+                            resolve(config);
                         })
                         .catch((error: Error) => {
                             throw Error(`${NAMESPACE}: ${error.message}`);

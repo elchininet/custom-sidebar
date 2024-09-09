@@ -255,7 +255,7 @@ class CustomSidebar {
             }
             if (typeof this._configWithExceptions.sidebar_editable === 'string') {
                 this._subscribeTemplate(
-                    new Element(),
+                    document.createElement('div'),
                     this._configWithExceptions.sidebar_editable,
                     (rendered: string) => {
                         if (rendered === 'true' || rendered === 'false') {
@@ -896,8 +896,6 @@ class CustomSidebar {
                     .then(() => {
                         this._getConfigWithExceptions()
                             .then(() => {
-                                console.log('config with exceptions ===>');
-                                console.log(this._configWithExceptions);
                                 this._processSidebar();
                                 this._renderer = new HomeAssistantJavaScriptTemplates(this._ha);
                                 this._subscribeTitle();

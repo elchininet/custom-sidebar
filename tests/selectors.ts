@@ -16,6 +16,7 @@ const SIDEBAR_PAPER_ICON_ITEMS = Object.fromEntries(
 );
 
 export const SELECTORS = {
+    MENU: '.menu',
     TITLE: '.menu .title',
     SIDEBAR_HA_ICON_BUTTON: '.menu ha-icon-button',
     SIDEBAR_EDIT_BUTTON: '.menu mwc-button',

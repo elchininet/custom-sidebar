@@ -109,6 +109,20 @@ test('Title update returns an empty string', async ({ page }) => {
 
 });
 
+test('sidebar_editable update does not return true or false', async ({ page }) => {
+
+    await fulfillJson(page, {
+        sidebar_editable: '[[[ const array = [1, 2, 3]; return array.length; ]]]',
+        order: []
+    });
+
+    await pageVisit(page);
+
+    await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
+    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
+
+});
+
 test('Name returns undefined', async ({ page }) => {
 
     await fulfillJson(page, {

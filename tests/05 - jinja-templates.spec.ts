@@ -47,11 +47,17 @@ test('Templates update entity for name and title', async ({ page }) => {
 
     await pageVisit(page);
 
+    await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
+    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
+
     await haSwitchStateRequest(true);
 
     await expect(page).toHaveScreenshot('02-sidebar-templates-name-title.png', {
         clip: SIDEBAR_CLIP
     });
+
+    await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
+    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
 
     await expect(page.locator(ENERGY_ITEM_TEXT)).toContainText('Energy (on)');
     await expect(page.locator(ENERGY_ITEM_NOTIFICATION_COLLAPSED)).toContainText('2');
@@ -61,6 +67,9 @@ test('Templates update entity for name and title', async ({ page }) => {
     await expect(page.locator(FAN_ITEM_NOTIFICATION)).toContainText('1');
 
     await haSwitchStateRequest(false);
+
+    await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
+    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
 
     await expect(page.locator(ENERGY_ITEM_TEXT)).toContainText('Energy (off)');
     await expect(page.locator(ENERGY_ITEM_NOTIFICATION_COLLAPSED)).toContainText('2');

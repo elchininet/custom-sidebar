@@ -22,7 +22,7 @@ const validateStringOrArrayOfStrings = (value: undefined | string | string[]): b
     );
 };
 
-const validateExceptionItem = (exception: ConfigException): boolean => {
+const validateExceptionItem = (exception: ConfigException): void => {
 
     if (
         typeof exception.order !== UNDEFINED_TYPE &&
@@ -84,23 +84,21 @@ const validateExceptionItem = (exception: ConfigException): boolean => {
     }
 
     if (exception.order) {
-        return exception.order.every(validateConfigItem);
-    } else {
-        return true;
+        exception.order.forEach(validateConfigItem);
     }
 };
 
-const validateExceptions = (exceptions: ConfigException[] | undefined): boolean => {
+const validateExceptions = (exceptions: ConfigException[] | undefined): void => {
     if (typeof exceptions === UNDEFINED_TYPE) {
-        return true;
+        return;
     }
     if (!Array.isArray(exceptions)) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions should be an array`);
     }
-    return exceptions.every(validateExceptionItem);
+    exceptions.forEach(validateExceptionItem);
 };
 
-const validateConfigItem = (configItem: ConfigItem): boolean => {
+const validateConfigItem = (configItem: ConfigItem): void => {
 
     if (!configItem.item) {
         throw new SyntaxError(`${ERROR_PREFIX}, every item in an "order" array should have an "item" property`);
@@ -124,23 +122,15 @@ const validateConfigItem = (configItem: ConfigItem): boolean => {
             throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, "icon" property should be a string`);
         }
     }
-
-    return true;
-
 };
 
-export const validateConfig = (config: Config): boolean => {
+export const validateConfig = (config: Config): void => {
     if (typeof config.order === UNDEFINED_TYPE) {
         throw new SyntaxError(`${ERROR_PREFIX}, "order" parameter is required`);
     }
     if (!Array.isArray(config.order)) {
         throw new SyntaxError(`${ERROR_PREFIX}, "order" parameter should be an array`);
     }
-    if (
-        config.order.every(validateConfigItem) &&
-        validateExceptions(config.exceptions)
-    ) {
-        return true;
-    }
-    throw new Error(`${ERROR_PREFIX}, unknown error validating the configuration`);
+    config.order.forEach(validateConfigItem);
+    validateExceptions(config.exceptions);
 };

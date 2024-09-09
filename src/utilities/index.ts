@@ -126,13 +126,13 @@ export const getConfigWithExceptions = (
 
         const title = extendsBaseConfig
             ? lastException?.title ?? config.title
-            : lastException?.title;
+            : lastException.title;
         const sidebar_editable = extendsBaseConfig
             ? lastException?.sidebar_editable ?? config.sidebar_editable
-            : lastException?.sidebar_editable;
+            : lastException.sidebar_editable;
         const styles = extendsBaseConfig
             ? lastException?.styles ?? config.styles
-            : lastException?.styles;
+            : lastException.styles;
         if (title) configCommonProps.title = title;
         if (typeof sidebar_editable !== UNDEFINED_TYPE) configCommonProps.sidebar_editable = sidebar_editable;
         if (styles) configCommonProps.styles = styles;

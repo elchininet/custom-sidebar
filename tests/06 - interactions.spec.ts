@@ -210,8 +210,10 @@ test('If sidebar_editable is set to false it should not be possible to edit the 
 
     await visitHome(page);
 
-    await page.locator(SELECTORS.TITLE).click({ delay: 1000 });
+    await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
+    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
 
+    await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click({ delay: 1000 });
     await expect(page.locator(SELECTORS.TITLE)).toBeVisible();
     await expect(page.locator(SELECTORS.SIDEBAR_EDIT_BUTTON)).not.toBeVisible();
 
