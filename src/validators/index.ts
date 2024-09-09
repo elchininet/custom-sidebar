@@ -3,7 +3,11 @@ import {
     ConfigItem,
     ConfigException
 } from '@types';
-import { STRING_TYPE, UNDEFINED_TYPE } from '@constants';
+import {
+    BOOLEAN_TYPE,
+    STRING_TYPE,
+    UNDEFINED_TYPE
+} from '@constants';
 
 const ERROR_PREFIX = 'Invalid configuration';
 
@@ -20,8 +24,33 @@ const validateStringOrArrayOfStrings = (value: undefined | string | string[]): b
 
 const validateExceptionItem = (exception: ConfigException): boolean => {
 
-    if (!exception.order) {
-        throw new SyntaxError(`${ERROR_PREFIX}, every item in "exceptions" array should have an "order" property`);
+    if (
+        typeof exception.order !== UNDEFINED_TYPE &&
+        !Array.isArray(exception.order)
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "order" property should be an array`);
+    }
+
+    if (
+        typeof exception.title !== UNDEFINED_TYPE &&
+        typeof exception.title !== STRING_TYPE
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "title" property should be a string`);
+    }
+
+    if (
+        typeof exception.sidebar_editable !== UNDEFINED_TYPE &&
+        typeof exception.sidebar_editable !== BOOLEAN_TYPE &&
+        typeof exception.sidebar_editable !== STRING_TYPE
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "sidebar_editable" property should be a boolean or a template string`);
+    }
+
+    if (
+        typeof exception.styles !== UNDEFINED_TYPE &&
+        typeof exception.styles !== STRING_TYPE
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "styles" property should be a string`);
     }
 
     if (!validateStringOrArrayOfStrings(exception.user)) {
@@ -54,7 +83,11 @@ const validateExceptionItem = (exception: ConfigException): boolean => {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "device" and "not_device" properties cannot be used together`);
     }
 
-    return exception.order.every(validateConfigItem);
+    if (exception.order) {
+        return exception.order.every(validateConfigItem);
+    } else {
+        return true;
+    }
 };
 
 const validateExceptions = (exceptions: ConfigException[] | undefined): boolean => {
@@ -97,16 +130,17 @@ const validateConfigItem = (configItem: ConfigItem): boolean => {
 };
 
 export const validateConfig = (config: Config): boolean => {
-    if (config.order) {
-        if (Array.isArray(config.order)) {
-            if (
-                config.order.every(validateConfigItem) &&
-                validateExceptions(config.exceptions)
-            ) {
-                return true;
-            }
-        }
+    if (typeof config.order === UNDEFINED_TYPE) {
+        throw new SyntaxError(`${ERROR_PREFIX}, "order" parameter is required`);
+    }
+    if (!Array.isArray(config.order)) {
         throw new SyntaxError(`${ERROR_PREFIX}, "order" parameter should be an array`);
     }
-    throw new SyntaxError(`${ERROR_PREFIX}, "order" parameter is required`);
+    if (
+        config.order.every(validateConfigItem) &&
+        validateExceptions(config.exceptions)
+    ) {
+        return true;
+    }
+    throw new Error(`${ERROR_PREFIX}, unknown error validating the configuration`);
 };

@@ -1,4 +1,8 @@
-import { ConfigOrder, ConfigException } from '@types';
+import {
+    Config,
+    ConfigOrder,
+    ConfigException
+} from '@types';
 import {
     NAMESPACE,
     MAX_ATTEMPTS,
@@ -86,15 +90,14 @@ export const getPromisableElement = <T>(
     });
 };
 
-export const getFinalOrder = (
+export const getConfigWithExceptions = (
     currentUser: string,
     currentDevice: string,
-    order: ConfigOrder[],
-    exceptions: ConfigException[] | undefined
-): ConfigOrder[] => {
-    if (exceptions) {
+    config: Config
+): Config => {
+    if (config.exceptions) {
 
-        const filteredExceptions = exceptions.filter((exception: ConfigException): boolean => {
+        const filteredExceptions = config.exceptions.filter((exception: ConfigException): boolean => {
             return (
                 (
                     exception.user &&
@@ -114,18 +117,45 @@ export const getFinalOrder = (
                 )
             );
         });
+        const lastException = filteredExceptions.length
+            ? filteredExceptions[filteredExceptions.length -1]
+            : null;
+        const exceptionsOrder = filteredExceptions.flatMap((exception: ConfigException) => exception.order || []);
+        const extendsBaseConfig = filteredExceptions.every((exception: ConfigException): boolean => !!exception.extend_from_base);
+        const configCommonProps: Pick<Config, 'title' | 'sidebar_editable' | 'styles'> = {};
 
-        const exceptionsOrder = filteredExceptions.flatMap((exception: ConfigException) => exception.order);
-        const extendsBaseConfig = filteredExceptions.every((exception: ConfigException): boolean => !!exception.base_order);
+        const title = extendsBaseConfig
+            ? lastException?.title ?? config.title
+            : lastException?.title;
+        const sidebar_editable = extendsBaseConfig
+            ? lastException?.sidebar_editable ?? config.sidebar_editable
+            : lastException?.sidebar_editable;
+        const styles = extendsBaseConfig
+            ? lastException?.styles ?? config.styles
+            : lastException?.styles;
+        if (title) configCommonProps.title = title;
+        if (typeof sidebar_editable !== UNDEFINED_TYPE) configCommonProps.sidebar_editable = sidebar_editable;
+        if (styles) configCommonProps.styles = styles;
+
         if (extendsBaseConfig) {
-            return flatConfigOrder([
-                ...order,
-                ...exceptionsOrder
-            ]);
+            return {
+                ...configCommonProps,
+                order: flatConfigOrder([
+                    ...config.order,
+                    ...exceptionsOrder
+                ])
+            };
         }
-        return flatConfigOrder(exceptionsOrder);
+
+        return {
+            ...configCommonProps,
+            order: flatConfigOrder(exceptionsOrder)
+        };
     }
-    return flatConfigOrder(order);
+    return {
+        ...config,
+        order: flatConfigOrder(config.order)
+    };
 };
 
 const getElementName = (elem: ShadowRoot): string => {

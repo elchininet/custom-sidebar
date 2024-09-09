@@ -5,6 +5,7 @@ export const CONFIG_PATH = `${LOCAL_PATH}${CONFIG_NAME}`;
 export const MAX_ATTEMPTS = 100;
 export const RETRY_DELAY = 50;
 
+export const BOOLEAN_TYPE = 'boolean';
 export const STRING_TYPE = 'string';
 export const UNDEFINED_TYPE = 'undefined';
 
@@ -28,7 +29,9 @@ export enum SELECTOR {
     EDIT_SIDEBAR_BUTTON_LEGACY = 'ha-panel-profile$ ha-settings-row mwc-button',
     EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-settings-row mwc-button',
     SIDEBAR_NOTIFICATIONS = '.notifications',
-    PROFILE = '.profile'
+    PROFILE = '.profile',
+    MENU = '.menu',
+    HA_ICON_BUTTON = 'ha-icon-button'
 }
 
 export enum CLASS {
@@ -81,6 +84,7 @@ export const CHECK_FOCUSED_SHADOW_ROOT = [
 ];
 
 export const PROFILE_PATH = '/profile';
+export const PROFILE_GENERAL_PATH = '/profile/general';
 
 export const JS_TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;
 export const JINJA_TEMPLATE_REG = /\{\{[\s\S]*\}\}|\{%[\s\S]*%\}/;
