@@ -450,7 +450,7 @@ order:
 
 ## Credits and huge thanks to:
 
-* [Villhellm](https://github.com/Villhellm/custom-sidebar) | Original creator of custom-sidebar (R.I.P.).
+* [Villhellm](https://github.com/Villhellm) | Original creator of custom-sidebar (R.I.P.).
 * [galloween](https://github.com/galloween) | forked the `original custom-sidebar` and maintained it for a while
 
 [HACS]: https://hacs.xyz
