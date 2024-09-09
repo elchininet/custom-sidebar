@@ -144,7 +144,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | ------------------ | ---------------------------------- | -------- | ----------- |
 | order              | Array of [items](#item-properties) | yes      | List of items to process |
 | title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
-| sidebar_editable<sup>\*</sup> | Boolean                            | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
+| sidebar_editable<sup>\*</sup> | Boolean or String       | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin |
 
 #### Item properties
@@ -243,8 +243,6 @@ You can define user-specific options using exceptions feature. Exceptions can be
 
 >\* These options and item properties allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
 
-Short example in `JSON` format:
-
 Short example in `YAML` format:
 
 ```yaml
@@ -257,6 +255,8 @@ exceptions:
     order:
       ...
 ```
+
+Short example in `JSON` format:
 
 ```json5
 {
@@ -281,11 +281,11 @@ exceptions:
 
 ## Templates
 
-Some config options and item properties, as `title`, `name` and `notification`, admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main difference between the two templating systems (apart from the syntax) is that `JavaScript` can access local data like information about the user (name, is admin, is owner) or DOM APIs meanwhile `Jinja` templates are agnostic to the device in which `Home Assistant` is being executed.
+Some config options and item properties, as `title`, `sidebar_editable`, `name` and `notification`, admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main difference between the two templating systems (apart from the syntax) is that `JavaScript` can access client side data like DOM APIs meanwhile `Jinja` templates are agnostic to the device in which `Home Assistant` is being executed.
 
 ### JavaScript templates
 
-This templating system is not [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). It is basically a `JavaScript` code block in which you can use certain client-side objects, variables and methods. To set a property as a `JavaScript` template block, include the code between three square brackets `[[[ JavaScript code ]]]`. If you don‘t use the square brackets, the property will be interpreted as a regular string.
+This templating system IS NOT [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). It is basically a `JavaScript` code block in which you can use certain client-side objects, variables and methods. To set a property as a `JavaScript` template block, include the code between three square brackets `[[[ JavaScript code ]]]`. If you don‘t use the square brackets, the property will be interpreted as a regular string.
 
 The `JavaScript` code will be taken as something that you want to return, but if you have a more complex logic, you can create your own variables and return the desired result at the end.
 
@@ -340,7 +340,12 @@ order:
 
 ### Jinja templates
 
-This templating system is [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). You can use the majority of the template methods and objects. The entire template will be processed, rendered and the result will be used as the inner html of the element. If you don‘t want to display anything in certain scenarios, you should return an empty string in those cases.
+This templating system is [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). You can use the majority of the template methods and objects. The entire template will be processed, rendered and the result will be used as the inner html of the element. If you don‘t want to display anything in certain scenarios, you should return an empty string in those cases. The next client side varianles will be available in `Jinja templates`:
+
+* `user_name`: String with the logged user's name
+* `user_is_admin`: Bolean value than indicates if the logged user is admin or not
+* `user_is_owner`: Bolean value than indicates if the logged user is the owner or not
+* `user_agent`: User agent of the browser in which Home Assistant is being executed
 
 When the entities and domains used in a templates change, it will trigger an update and the updated result of the template will be rendered.
 

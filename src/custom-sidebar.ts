@@ -415,7 +415,13 @@ class CustomSidebar {
                 },
                 {
                     type: SUBSCRIBE_TYPE.RENDER_TEMPLATE,
-                    template
+                    template,
+                    variables: {
+                        user_name: this._ha.hass.user.name,
+                        user_is_admin: this._ha.hass.user.is_admin,
+                        user_is_owner: this._ha.hass.user.is_owner,
+                        user_agent: window.navigator.userAgent
+                    }
                 }
             );
         });
