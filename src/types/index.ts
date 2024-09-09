@@ -110,7 +110,7 @@ export type SubscriberTemplate = {
 
 export interface HassConnection {
     conn: {
-        subscribeMessage: <T>(callback: (response: T) => void, options: Record<string, string>) => void;
+        subscribeMessage: <T>(callback: (response: T) => void, options: Record<string, string | Record<string, string | boolean>>) => void;
     }
 }
 
