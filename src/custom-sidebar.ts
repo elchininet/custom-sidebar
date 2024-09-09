@@ -31,13 +31,14 @@ import {
     JS_TEMPLATE_REG,
     JINJA_TEMPLATE_REG,
     PROFILE_PATH,
+    PROFILE_GENERAL_PATH,
     DOMAIN_REGEXP,
     SUBSCRIBE_TYPE
 } from '@constants';
 import {
     logVersionToConsole,
     getPromisableElement,
-    getFinalOrder,
+    getConfigWithExceptions,
     addStyle
 } from '@utilities';
 import { fetchConfig } from '@fetchers/json';
@@ -71,6 +72,7 @@ class CustomSidebar {
         this._items = [];
         this._jsSuscriptions = new Map<string, Map<Element, () => void>>();
         this._sidebarScroll = 0;
+        this._isSidebarEditable = undefined;
         this._itemTouchedBinded = this._itemTouched.bind(this);
         this._mouseEnterBinded = this._mouseEnter.bind(this);
         this._mouseLeaveBinded = this._mouseLeave.bind(this);
@@ -79,12 +81,14 @@ class CustomSidebar {
     }
 
     private _configPromise: Promise<Config>;
+    private _configWithExceptions: Config;
     private _homeAssistant: HAElement;
     private _main: HAElement;
     private _ha: HomeAsssistantExtended;
     private _partialPanelResolver: HAElement;
     private _sidebar: HAElement;
     private _sidebarScroll: number;
+    private _isSidebarEditable: boolean | undefined;
     private _renderer: HomeAssistantJavaScriptTemplates;
     private _jsSuscriptions: Map<string, Map<Element, () => void>>;
     private _items: ConfigOrderWithItem[];
@@ -92,15 +96,14 @@ class CustomSidebar {
     private _mouseEnterBinded: (event: MouseEvent) => void;
     private _mouseLeaveBinded: () => void;
 
-    private async _getOrder(): Promise<ConfigOrder[]> {
+    private async _getConfigWithExceptions(): Promise<void> {
         const device = this._getCurrentDevice();
-        return this._configPromise
+        this._configWithExceptions = await this._configPromise
             .then((config: Config) => {
-                return getFinalOrder(
+                return getConfigWithExceptions(
                     this._ha.hass.user.name.toLocaleLowerCase(),
                     device,
-                    config.order,
-                    config.exceptions
+                    config
                 );
             });
     }
@@ -135,13 +138,6 @@ class CustomSidebar {
                 hass.user
             )
         );
-    }
-
-    private _getElementWithConfig<P>(promise: Promise<P>): Promise<[Config, Awaited<P>]> {
-        return Promise.all([
-            this._configPromise,
-            promise
-        ]);
     }
 
     private _getCurrentDevice(): string {
@@ -197,18 +193,88 @@ class CustomSidebar {
     }
 
     private _subscribeTitle(): void {
-        const titleElementPromise = this._sidebar
+        this._sidebar
             .selector
             .$
             .query(SELECTOR.TITLE)
-            .element;
-        this
-            ._getElementWithConfig(titleElementPromise)
-            .then(([config, titleElement]): void => {
-                if (config.title) {
-                    this._subscribeTemplate(titleElement, config.title);
+            .element
+            .then((titleElement: HTMLElement) => {
+                if (this._configWithExceptions.title) {
+                    this._subscribeTemplate(
+                        titleElement,
+                        this._configWithExceptions.title,
+                        (rendered: string) => {
+                            titleElement.innerHTML = rendered;
+                        }
+                    );
                 }
             });
+    }
+
+    private _subscribeSideBarEdition(): void {
+
+        const sidebarEditListener = (event: CustomEvent): void => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        };
+
+        const getMenuElements = (sidebarShadowRoot: ShadowRoot) => {
+            const menu = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.MENU);
+            const menuButton = menu.querySelector<HTMLElement>(SELECTOR.HA_ICON_BUTTON);
+            return {
+                menu,
+                menuButton
+            };
+        };
+
+        const unblockSidebar = (homeAssistantMain: Element, sidebarShadowRoot: ShadowRoot) => {
+            const menuElements = getMenuElements(sidebarShadowRoot);
+            homeAssistantMain.removeEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
+            menuElements.menu.removeAttribute('style');
+            menuElements.menuButton.removeAttribute('style');
+        };
+
+        const blockSidebar = (homeAssistantMain: Element, sidebarShadowRoot: ShadowRoot) => {
+            const menuElements = getMenuElements(sidebarShadowRoot);
+            homeAssistantMain.removeEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
+            homeAssistantMain.addEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
+            menuElements.menu.style.pointerEvents = 'none';
+            menuElements.menuButton.style.pointerEvents = 'all';
+        };
+
+        // Apply sidebar edit blocker
+        Promise.all([
+            this._main.element,
+            this._sidebar.selector.$.element
+        ]).then(([homeAssistantMain, sidebarShadowRoot]) => {
+            if (typeof this._configWithExceptions.sidebar_editable === 'boolean') {
+                this._isSidebarEditable = this._configWithExceptions.sidebar_editable;
+                if (!this._isSidebarEditable) {
+                    blockSidebar(homeAssistantMain, sidebarShadowRoot);
+                }
+            }
+            if (typeof this._configWithExceptions.sidebar_editable === 'string') {
+                this._subscribeTemplate(
+                    new Element(),
+                    this._configWithExceptions.sidebar_editable,
+                    (rendered: string) => {
+                        if (rendered === 'true' || rendered === 'false') {
+                            this._isSidebarEditable = !(rendered === 'false');
+                            if (this._isSidebarEditable) {
+                                unblockSidebar(homeAssistantMain, sidebarShadowRoot);
+                            } else {
+                                blockSidebar(homeAssistantMain, sidebarShadowRoot);
+                            }
+                        } else {
+                            this._isSidebarEditable = undefined;
+                            unblockSidebar(homeAssistantMain, sidebarShadowRoot);
+                        }
+                        this._checkProfileEditableButton();
+                    }
+                );
+            }
+        });
+
     }
 
     private _subscribeName(element: Element, name: string): void {
@@ -455,87 +521,77 @@ class CustomSidebar {
 
     private _processSidebar(): void {
 
-        // Apply sidebar edit blocker
-        this._getElementWithConfig(
-            this._main.element
-        ).then(([config, homeAssistantMain]): void => {
-            if (config.sidebar_editable === false) {
-                homeAssistantMain.addEventListener(EVENT.HASS_EDIT_SIDEBAR, (event: CustomEvent): void => {
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-                }, true);
-            }
-        });
-
         // Add overrriding styles
-        this._getElementWithConfig(
-            this._sidebar.selector.$.element
-        ).then(([config, sideBarShadowRoot]) => {
+        this._sidebar
+            .selector
+            .$
+            .element
+            .then((sideBarShadowRoot) => {
 
-            const paperListBox = sideBarShadowRoot.querySelector<HTMLElement>(ELEMENT.PAPER_LISTBOX);
+                const paperListBox = sideBarShadowRoot.querySelector<HTMLElement>(ELEMENT.PAPER_LISTBOX);
 
-            paperListBox.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
-                if (
-                    event.key === KEY.ARROW_DOWN ||
-                    event.key === KEY.ARROW_UP
-                ) {
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-                    this._focusItemByKeyboard(paperListBox, event.key === KEY.ARROW_DOWN);
-                }
-            }, true);
+                paperListBox.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                    if (
+                        event.key === KEY.ARROW_DOWN ||
+                        event.key === KEY.ARROW_UP
+                    ) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
+                        this._focusItemByKeyboard(paperListBox, event.key === KEY.ARROW_DOWN);
+                    }
+                }, true);
 
-            window.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
-                if (
-                    event.key === KEY.TAB
-                ) {
-                    const activePaperItem = this._getActivePaperIconElement();
-                    if (activePaperItem) {
-                        if (activePaperItem.nodeName === NODE_NAME.PAPER_ICON_ITEM) {
-                            const parentElement = activePaperItem.parentElement as HTMLElement;
-                            if (parentElement.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
+                window.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                    if (
+                        event.key === KEY.TAB
+                    ) {
+                        const activePaperItem = this._getActivePaperIconElement();
+                        if (activePaperItem) {
+                            if (activePaperItem.nodeName === NODE_NAME.PAPER_ICON_ITEM) {
+                                const parentElement = activePaperItem.parentElement as HTMLElement;
+                                if (parentElement.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
+                                    event.preventDefault();
+                                    event.stopImmediatePropagation();
+                                    this._focusItemByTab(sideBarShadowRoot, parentElement, !event.shiftKey);
+                                }
+                            } else if (activePaperItem.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
                                 event.preventDefault();
                                 event.stopImmediatePropagation();
-                                this._focusItemByTab(sideBarShadowRoot, parentElement, !event.shiftKey);
+                                this._focusItemByTab(sideBarShadowRoot, activePaperItem as HTMLElement, !event.shiftKey);
                             }
-                        } else if (activePaperItem.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
-                            event.preventDefault();
-                            event.stopImmediatePropagation();
-                            this._focusItemByTab(sideBarShadowRoot, activePaperItem as HTMLElement, !event.shiftKey);
                         }
                     }
-                }
-            }, true);
+                }, true);
 
-            addStyle(
-                `
-                ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
-                    border-radius: 20px;
-                    left: calc(var(--app-drawer-width, 248px) - 22px);
-                    max-width: 80px;
-                    overflow: hidden;
-                    padding: 0px 5px;
-                    transform: translateX(-100%);
-                    text-overflow: ellipsis;
-                    text-wrap: nowrap;   
-                }
-                ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
-                    bottom: 14px;
-                    font-size: 0.65em;
-                    left: 26px;
-                    position: absolute;  
-                }
-                :host([expanded]) ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
-                    opacity: 0;
-                }
-                ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_NOTIFICATION }] > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
-                    max-width: calc(100% - 86px);
-                }
-                ${ config.styles || '' }
-                `.trim(),
-                sideBarShadowRoot
-            );
-        });
+                addStyle(
+                    `
+                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
+                        border-radius: 20px;
+                        left: calc(var(--app-drawer-width, 248px) - 22px);
+                        max-width: 80px;
+                        overflow: hidden;
+                        padding: 0px 5px;
+                        transform: translateX(-100%);
+                        text-overflow: ellipsis;
+                        text-wrap: nowrap;   
+                    }
+                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
+                        bottom: 14px;
+                        font-size: 0.65em;
+                        left: 26px;
+                        position: absolute;  
+                    }
+                    :host([expanded]) ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
+                        opacity: 0;
+                    }
+                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_NOTIFICATION }] > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
+                        max-width: calc(100% - 86px);
+                    }
+                    ${ this._configWithExceptions.styles || '' }
+                    `.trim(),
+                    sideBarShadowRoot
+                );
+            });
     }
 
     private _watchForEntitiesChange() {
@@ -572,12 +628,10 @@ class CustomSidebar {
     }
 
     private _rearrange(): void {
-        Promise.all([
-            this._getOrder(),
-            this._getElements()
-        ])
-            .then(([order, elements]) => {
+        this._getElements()
+            .then((elements) => {
 
+                const { order } = this._configWithExceptions;
                 const [paperListBox, items, spacer] = elements;
 
                 let orderIndex = 0;
@@ -765,6 +819,22 @@ class CustomSidebar {
             });
     }
 
+    private async _checkProfileEditableButton(): Promise<void> {
+        const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
+        const pathName = panelResolver.__route.path;
+        // Disable the edit sidebar button in the profile panel
+        if (pathName === PROFILE_GENERAL_PATH) {
+            const editSidebarButton = await this._partialPanelResolver.selector.query(SELECTOR.EDIT_SIDEBAR_BUTTON).element;
+            if (editSidebarButton) {
+                if (this._isSidebarEditable === false) {
+                    editSidebarButton.setAttribute(ATTRIBUTE.DISABLED, '');
+                } else {
+                    editSidebarButton.removeAttribute(ATTRIBUTE.DISABLED);
+                }
+            }
+        }
+    }
+
     private async _panelLoaded(): Promise<void> {
 
         // Select the right element in the sidebar
@@ -812,17 +882,7 @@ class CustomSidebar {
             paperListBox.scrollTop = this._sidebarScroll;
         }
 
-        // Disable the edit sidebar button in the profile panel
-        if (pathName === '/profile/general') {
-            const config = await this._configPromise;
-            const editSidebarButton = await this._partialPanelResolver.selector.query(SELECTOR.EDIT_SIDEBAR_BUTTON).element;
-            if (
-                config.sidebar_editable === false &&
-                editSidebarButton
-            ) {
-                editSidebarButton.setAttribute(ATTRIBUTE.DISABLED, '');
-            }
-        }
+        this._checkProfileEditableButton();
 
     }
 
@@ -834,13 +894,18 @@ class CustomSidebar {
                 this._ha = ha;
                 this._hasReady()
                     .then(() => {
-                        this._renderer = new HomeAssistantJavaScriptTemplates(this._ha);
-                        this._subscribeTitle();
-                        this._rearrange();
+                        this._getConfigWithExceptions()
+                            .then(() => {
+                                console.log('config with exceptions ===>');
+                                console.log(this._configWithExceptions);
+                                this._processSidebar();
+                                this._renderer = new HomeAssistantJavaScriptTemplates(this._ha);
+                                this._subscribeTitle();
+                                this._subscribeSideBarEdition();
+                                this._rearrange();
+                            });
                     });
             });
-
-        this._processSidebar();
     }
 
 }

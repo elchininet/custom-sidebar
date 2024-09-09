@@ -50,8 +50,11 @@ export type ConfigOrder = ConfigItem | ConfigNewItem;
 export type ConfigOrderWithItem = ConfigOrder & { element?: HTMLAnchorElement };
 
 interface ConfigExceptionBase {
-    order: ConfigOrder[];
-    base_order?: boolean;
+    order?: ConfigOrder[];
+    extend_from_base?: boolean;
+    title?: string;
+    sidebar_editable?: boolean | string;
+    styles?: string;
 }
 
 interface ConfigExceptionUserInclude extends ConfigExceptionBase {
@@ -84,7 +87,7 @@ export interface Config {
     title?: string;
     order: ConfigOrder[];
     exceptions?: ConfigException[];
-    sidebar_editable?: boolean;
+    sidebar_editable?: boolean | string;
     styles?: string;
 }
 
