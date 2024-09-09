@@ -1,6 +1,10 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import { CONFIG_FILES, SIDEBAR_CLIP } from './constants';
+import {
+    CONFIG_FILES,
+    SIDEBAR_CLIP,
+    ATTRIBUTES
+} from './constants';
 import { haConfigRequest, addJsonExtendedRoute } from './utilities';
 import { SELECTORS } from './selectors';
 
@@ -20,7 +24,7 @@ test('Exceptions item override', async ({ page }) => {
         exceptions: [
             {
                 user: 'Test',
-                base_order: true,
+                extend_from_base: true,
                 order: [
                     {
                         item: 'developer tools',
@@ -46,7 +50,7 @@ test('Exceptions new_item override', async ({ page }) => {
         exceptions: [
             {
                 user: 'Test',
-                base_order: true,
+                extend_from_base: true,
                 order: [
                     {
                         new_item: true,
@@ -80,7 +84,7 @@ test('Exceptions new_item override', async ({ page }) => {
 test.describe('Exceptions matchers', async () => {
 
     const json = {
-        base_order: true,
+        extend_from_base: true,
         order: [
             {
                 new_item: true,
@@ -262,7 +266,7 @@ test.describe('Exceptions matchers', async () => {
                             bottom: true
                         }
                     ],
-                    base_order: false
+                    extend_from_base: false
                 }
             ]
         });
@@ -270,6 +274,363 @@ test.describe('Exceptions matchers', async () => {
         await pageVisit(page);
 
         await expect(page).toHaveScreenshot('04-sidebar-exceptions-check-on-top.png', {
+            clip: SIDEBAR_CLIP
+        });
+
+    });
+
+    test('Exceptions do not extend, title should be taken from the exception', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            exceptions: [
+                {
+                    user: 'Test',
+                    order: json.order,
+                    title: 'Exception Title'
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page).toHaveScreenshot('05-sidebar-exceptions-not-extend-title.png', {
+            clip: SIDEBAR_CLIP
+        });
+
+    });
+
+    test('Exceptions with extend, title should be taken from the exception', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            exceptions: [
+                {
+                    user: 'Test',
+                    order: json.order,
+                    title: 'Exception Title',
+                    extend_from_base: true
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page).toHaveScreenshot('06-sidebar-exceptions-extend-title.png', {
+            clip: SIDEBAR_CLIP
+        });
+
+    });
+
+    test('Exceptions with extend not matching, title should be taken from the base', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            exceptions: [
+                {
+                    user: 'ElChiniNet',
+                    order: json.order,
+                    title: 'Exception Title',
+                    extend_from_base: true
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page).toHaveScreenshot('07-sidebar-exceptions-extend-title-from-base.png', {
+            clip: SIDEBAR_CLIP
+        });
+
+    });
+
+    test('Exceptions do not extend, style should be taken from the exception', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            styles: `
+                .item-text {
+                    color: blue !important;
+                }
+            `,
+            exceptions: [
+                {
+                    user: 'Test',
+                    order: json.order,
+                    styles: `
+                        .item-text {
+                            color: red !important;
+                        }
+                    `
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page).toHaveScreenshot('08-sidebar-exceptions-not-extend-style.png', {
+            clip: SIDEBAR_CLIP
+        });
+
+    });
+
+    test('Exceptions do not extend, style should not be taken from the base', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            styles: `
+                .item-text {
+                    color: blue !important;
+                }
+            `,
+            exceptions: [
+                {
+                    user: 'Test',
+                    order: json.order
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page).toHaveScreenshot('09-sidebar-exceptions-not-extend-style.png', {
+            clip: SIDEBAR_CLIP
+        });
+
+    });
+
+    test('Exceptions extend, style should be taken from the exception', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            styles: `
+                .item-text {
+                    color: blue !important;
+                }
+            `,
+            exceptions: [
+                {
+                    user: 'Test',
+                    order: json.order,
+                    styles: `
+                        .item-text {
+                            color: red !important;
+                        }
+                    `,
+                    extend_from_base: true
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page).toHaveScreenshot('10-sidebar-exceptions-extend-style.png', {
+            clip: SIDEBAR_CLIP
+        });
+
+    });
+
+    test('Exceptions extend, style should be taken from the base', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            styles: `
+                .item-text {
+                    color: blue !important;
+                }
+            `,
+            exceptions: [
+                {
+                    user: 'Test',
+                    order: json.order,
+                    extend_from_base: true
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page).toHaveScreenshot('11-sidebar-exceptions-extend-style-from-base.png', {
+            clip: SIDEBAR_CLIP
+        });
+
+    });
+
+    test('Exceptions with extend not matching, style should be taken from the base', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            styles: `
+                .item-text {
+                    color: blue !important;
+                }
+            `,
+            exceptions: [
+                {
+                    user: 'ElChiniNet',
+                    order: json.order,
+                    extend_from_base: true,
+                    styles: `
+                        .item-text {
+                            color: red !important;
+                        }
+                    `
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page).toHaveScreenshot('12-sidebar-exceptions-extend-style-from-base.png', {
+            clip: SIDEBAR_CLIP
+        });
+
+    });
+
+    test('Exceptions do not extend, sidebar_editable should be taken from the exception', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            sidebar_editable: true,
+            exceptions: [
+                {
+                    user: 'Test',
+                    order: json.order,
+                    sidebar_editable: false
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
+        await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
+
+        await page.goto('/profile');
+
+        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
+
+    });
+
+    test('Exceptions do not extend, sidebar_editable should not be taken from the base', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            sidebar_editable: false,
+            exceptions: [
+                {
+                    user: 'Test',
+                    order: json.order
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
+        await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
+
+        await page.goto('/profile');
+
+        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
+
+    });
+
+    test('Exceptions extend, sidebar_editable should be taken from the exception', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            sidebar_editable: true,
+            exceptions: [
+                {
+                    user: 'Test',
+                    order: json.order,
+                    sidebar_editable: false,
+                    extend_from_base: true
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
+        await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
+
+        await page.goto('/profile');
+
+        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
+
+    });
+
+    test('Exceptions extend, sidebar_editable should be taken from the base', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            sidebar_editable: false,
+            exceptions: [
+                {
+                    user: 'Test',
+                    order: json.order,
+                    extend_from_base: true
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
+        await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
+
+        await page.goto('/profile');
+
+        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
+
+    });
+
+    test('Exceptions with extend not matching, sidebar_editable should be taken from the base', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            sidebar_editable: true,
+            exceptions: [
+                {
+                    user: 'ElChiniNet',
+                    order: json.order,
+                    sidebar_editable: false,
+                    extend_from_base: true
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
+        await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
+
+        await page.goto('/profile');
+
+        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
+
+    });
+
+    test('Exceptions without extend and without options', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            exceptions: [
+                {
+                    user: 'Test'
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page).toHaveScreenshot('13-sidebar-exceptions-no-extend-no-options.png', {
+            clip: SIDEBAR_CLIP
+        });
+
+    });
+
+    test('Exceptions without extend and no match without options', async ({ page }) => {
+
+        await addJsonExtendedRoute(page, {
+            exceptions: [
+                {
+                    user: 'ElChiniNet'
+                }
+            ]
+        });
+
+        await pageVisit(page);
+
+        await expect(page).toHaveScreenshot('14-sidebar-exceptions-not-extend-no-options.png', {
             clip: SIDEBAR_CLIP
         });
 

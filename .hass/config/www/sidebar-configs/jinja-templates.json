@@ -1,5 +1,6 @@
 {
   "title": "Power: {{ states('input_boolean.my_switch') }}",
+  "sidebar_editable": "{{ 'true' if is_state('input_boolean.my_switch', 'off') else 'false' }}",
   "order": [
     {
       "item": "energy",

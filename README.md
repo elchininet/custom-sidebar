@@ -144,7 +144,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | ------------------ | ---------------------------------- | -------- | ----------- |
 | order              | Array of [items](#item-properties) | yes      | List of items to process |
 | title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
-| sidebar_editable   | Boolean                            | no       | If it is set to `false`, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled |
+| sidebar_editable<sup>\*</sup> | Boolean                            | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin |
 
 #### Item properties
@@ -227,16 +227,21 @@ Short example in `JSON` format:
 
 ### Exceptions
 
-You can define user-specific order using exceptions feature. Exceptions can be used if you would like to define an order for a specific user/device.
+You can define user-specific options using exceptions feature. Exceptions can be used if you would like to define different options for a specific user/device.
 
-| Property   | Type    | Required | Description |
-| ---------- | ------- | -------- | ----------- |
-| order      | Array of [items](#item-properties) | yes   | Defines the sidebar items order |
-| base_order | Boolean | no       | If true, the `order` property will be merged with the root `config.order` array |
+| Property            | Type              | Required | Description |
+| ------------------- | ----------------- | -------- | ----------- |
+| order               | Array of [items](#item-properties) | no   | Defines the sidebar items order |
+| title<sup>\*</sup>             | String            | no       | Custom title to replace the `Home Assistant` title |
+| sidebar_editable<sup>\*</sup>  | Boolean or String | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
+| styles              | String            | no       | Custom styles that will be added to the styles block of the plugin |
+| extend_from_base    | Boolean           | no       | If true, the options will be extended with the root options. The property `order` will be merged with the base one, the rest of properties will use the base counterpart if they are not specified. If it is false, it will take into account only the options in the exception |
 | user       | String or String[] | no          | Home Assistant user name(s) you would like to display this order for |
 | not_user   | String or String[] | no          | Home Assistant user name(s) you wouldn't like to display this order for |
 | device     | String or String[] | no          | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
 | not_device | String or String[] | no          | Device(s) you wouldn't like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
+
+>\* These options and item properties allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
 
 Short example in `JSON` format:
 
@@ -248,6 +253,7 @@ exceptions:
   - user:
     - Jim Hawkins
     - Long John Silver
+    title: My Home
     order:
       ...
 ```
@@ -258,6 +264,7 @@ exceptions:
   "exceptions": [
     {
       "user": ["Jim Hawkins", "Long John Silver"],
+      "title": "My Home",
       "order": [
           ...
       ]
@@ -270,7 +277,7 @@ exceptions:
 
 * You cannot use `user` and `not_user` at the same time, doing so will end in an error
 * You cannot use `device` and `not_device` at the same time, doing so will end in an error
-* Pay attention to `base_order` property. If it's set to `false` (default value), the main `config.order` will be ignored, leaving you with default sidebar modified only by the exception's orders
+* Pay attention to `extend_from_base` property. If it's set to `false` (default value), the main `config` will be ignored, leaving you with default sidebar modified only by the exception's options
 
 ## Templates
 
