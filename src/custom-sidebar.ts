@@ -33,7 +33,8 @@ import {
     PROFILE_PATH,
     PROFILE_GENERAL_PATH,
     DOMAIN_REGEXP,
-    SUBSCRIBE_TYPE
+    SUBSCRIBE_TYPE,
+    BLOCKED_PROPERTY
 } from '@constants';
 import {
     logVersionToConsole,
@@ -218,43 +219,26 @@ class CustomSidebar {
             event.stopImmediatePropagation();
         };
 
-        const getMenuElements = (sidebarShadowRoot: ShadowRoot) => {
-            const menu = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.MENU);
-            const menuButton = sidebarShadowRoot.querySelector<HTMLElement>(`${SELECTOR.MENU} > ${SELECTOR.HA_ICON_BUTTON}`);
-            return {
-                menu,
-                menuButton
-            };
-        };
-
-        const unblockSidebar = (homeAssistantMain: Element, sidebarShadowRoot: ShadowRoot) => {
-            const menuElements = getMenuElements(sidebarShadowRoot);
+        const unblockSidebar = (homeAssistantMain: Element, menu: Element) => {
             homeAssistantMain.removeEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
-            menuElements.menu?.removeAttribute('style');
-            menuElements.menuButton?.removeAttribute('style');
+            menu.removeAttribute(BLOCKED_PROPERTY);
         };
 
-        const blockSidebar = (homeAssistantMain: Element, sidebarShadowRoot: ShadowRoot) => {
-            const menuElements = getMenuElements(sidebarShadowRoot);
+        const blockSidebar = (homeAssistantMain: Element, menu: Element) => {
             homeAssistantMain.removeEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
             homeAssistantMain.addEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
-            if (menuElements.menu?.style) {
-                menuElements.menu.style.pointerEvents = 'none';
-            }
-            if (menuElements.menuButton?.style) {
-                menuElements.menuButton.style.pointerEvents = 'all';
-            }
+            menu.setAttribute(BLOCKED_PROPERTY, '');
         };
 
         // Apply sidebar edit blocker
         Promise.all([
             this._main.element,
-            this._sidebar.selector.$.element
-        ]).then(([homeAssistantMain, sidebarShadowRoot]) => {
+            this._sidebar.selector.$.query(SELECTOR.MENU).element
+        ]).then(([homeAssistantMain, menu]) => {
             if (typeof this._configWithExceptions.sidebar_editable === 'boolean') {
                 this._isSidebarEditable = this._configWithExceptions.sidebar_editable;
                 if (!this._isSidebarEditable) {
-                    blockSidebar(homeAssistantMain, sidebarShadowRoot);
+                    blockSidebar(homeAssistantMain, menu);
                 }
             }
             if (typeof this._configWithExceptions.sidebar_editable === 'string') {
@@ -265,13 +249,13 @@ class CustomSidebar {
                         if (rendered === 'true' || rendered === 'false') {
                             this._isSidebarEditable = !(rendered === 'false');
                             if (this._isSidebarEditable) {
-                                unblockSidebar(homeAssistantMain, sidebarShadowRoot);
+                                unblockSidebar(homeAssistantMain, menu);
                             } else {
-                                blockSidebar(homeAssistantMain, sidebarShadowRoot);
+                                blockSidebar(homeAssistantMain, menu);
                             }
                         } else {
                             this._isSidebarEditable = undefined;
-                            unblockSidebar(homeAssistantMain, sidebarShadowRoot);
+                            unblockSidebar(homeAssistantMain, menu);
                         }
                         this._checkProfileEditableButton();
                     }
@@ -596,6 +580,12 @@ class CustomSidebar {
                     }
                     ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_NOTIFICATION }] > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
                         max-width: calc(100% - 86px);
+                    }
+                    ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] {
+                        pointer-events: none;
+                    }
+                    ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] > ${ SELECTOR.HA_ICON_BUTTON } {
+                        pointer-events: all;
                     }
                     ${ this._configWithExceptions.styles || '' }
                     `.trim(),
