@@ -9,6 +9,8 @@ export const BOOLEAN_TYPE = 'boolean';
 export const STRING_TYPE = 'string';
 export const UNDEFINED_TYPE = 'undefined';
 
+export const BLOCKED_PROPERTY = 'data-blocked';
+
 export enum ELEMENT {
     SIDEBAR = 'ha-sidebar',
     PAPER_LISTBOX = 'paper-listbox',
