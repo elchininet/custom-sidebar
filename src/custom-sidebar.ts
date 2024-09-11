@@ -220,7 +220,7 @@ class CustomSidebar {
 
         const getMenuElements = (sidebarShadowRoot: ShadowRoot) => {
             const menu = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.MENU);
-            const menuButton = menu.querySelector<HTMLElement>(SELECTOR.HA_ICON_BUTTON);
+            const menuButton = sidebarShadowRoot.querySelector<HTMLElement>(`${SELECTOR.MENU} > ${SELECTOR.HA_ICON_BUTTON}`);
             return {
                 menu,
                 menuButton
@@ -230,16 +230,20 @@ class CustomSidebar {
         const unblockSidebar = (homeAssistantMain: Element, sidebarShadowRoot: ShadowRoot) => {
             const menuElements = getMenuElements(sidebarShadowRoot);
             homeAssistantMain.removeEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
-            menuElements.menu.removeAttribute('style');
-            menuElements.menuButton.removeAttribute('style');
+            menuElements.menu?.removeAttribute('style');
+            menuElements.menuButton?.removeAttribute('style');
         };
 
         const blockSidebar = (homeAssistantMain: Element, sidebarShadowRoot: ShadowRoot) => {
             const menuElements = getMenuElements(sidebarShadowRoot);
             homeAssistantMain.removeEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
             homeAssistantMain.addEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
-            menuElements.menu.style.pointerEvents = 'none';
-            menuElements.menuButton.style.pointerEvents = 'all';
+            if (menuElements.menu?.style) {
+                menuElements.menu.style.pointerEvents = 'none';
+            }
+            if (menuElements.menuButton?.style) {
+                menuElements.menuButton.style.pointerEvents = 'all';
+            }
         };
 
         // Apply sidebar edit blocker
