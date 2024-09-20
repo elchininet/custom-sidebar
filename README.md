@@ -401,50 +401,9 @@ order:
 
 Check out Home Assistant's native sidebar tools, maybe it will be enough for your needs.
 
-* You can use HA's `panel_custom` integration to add internal links to the sidebar. Take a look at [this tutorial](https://home-assistant-guide.com/2021/12/08/how-to-add-internal-links-to-the-home-assistant-sidebar). Official [docs](https://www.home-assistant.io/integrations/panel_custom).
-* You can use HA's `panel_iframe` integration to add external links. [See below](#combine-with-iframe-panel-to-show-external-content-inside-home-assitant). Official [docs](https://www.home-assistant.io/integrations/panel_iframe).
-* You can click and hold the Home Assistant header on top of the sidebar and then it will allow you to add/remove and re-order some of the items (but not add new custom ones). This feature is also accessible from your profile settings (if you click on your username in the bottom left corner)
-
-## Combine with Iframe Panel to show external content inside Home Assitant
-
-If you use [Home Assistant's Iframe Panel feature] and have some iframe_panel links configured in `configuration.yaml`:
-
-```yaml
-panel_iframe:
-  router:
-    title: "Router"
-    url: "http://192.168.1.1"
-    icon: mdi:router-wireless
-  fridge:
-    title: "Fridge"
-    url: "http://192.168.1.5"
-    icon: mdi:fridge
-```
-
-Then you can modify them as the regular ones:
-
-#### In `YAML` format
-
-```yaml
-order:
-  - item: fridge
-  - item: overview
-  - item: router
-  ...
-```
-
-#### In `JSON` format
-
-```json5
-{
-  "order": [
-    { "item": "fridge" },
-    { "item": "overview" },
-    { "item": "router" }
-    ...
-  ]
-}
-```
+* You can use Home Assistant's `panel_custom` integration to add internal links to the sidebar. Take a look at [this tutorial](https://home-assistant-guide.com/2021/12/08/how-to-add-internal-links-to-the-home-assistant-sidebar). Official [docs](https://www.home-assistant.io/integrations/panel_custom).
+* You can use Home Assistant's `Webpage dashboard` feature to add external URLs to Home Assistant's sidebar. Official [docs](https://www.home-assistant.io/dashboards/dashboards/#webpage-dashboard). If you use Home Assistant's `Webpage dashboard` feature to add some wepage dashboards to your sidebar, then you can modify them as the regular ones adding them to the `order` property.
+* You can click and hold the Home Assistant header on top of the sidebar and then it will allow you to add/remove and re-order some of the items (but not add new custom ones). This feature is also accessible from your profile settings (if you click on your username in the bottom left corner). The drawback of this feature is that it only works per device/session, so you need to log-in in the specific device and do these changes, but if you log-out, the changes will be lost.
 
 ---
 
@@ -465,5 +424,4 @@ order:
 [target property]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target
 [user-agent]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
 [Home Assistant Javascript Templates]: https://github.com/elchininet/home-assistant-javascript-templates
-[Home Assistant's Iframe Panel feature]: https://www.home-assistant.io/integrations/panel_iframe/
 [websocket call]: https://developers.home-assistant.io/docs/api/websocket
