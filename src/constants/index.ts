@@ -59,7 +59,8 @@ export enum EVENT {
     MOUSEENTER = 'mouseenter',
     MOUSELEAVE = 'mouseleave',
     KEYDOWN = 'keydown',
-    HASS_EDIT_SIDEBAR = 'hass-edit-sidebar'
+    HASS_EDIT_SIDEBAR = 'hass-edit-sidebar',
+    RENDER_TEMPLATE = 'render_template'
 }
 
 export enum KEY {
@@ -74,11 +75,6 @@ export enum NODE_NAME {
     A = 'A'
 }
 
-export enum SUBSCRIBE_TYPE {
-    SUBSCRIBE_EVENTS = 'subscribe_events',
-    RENDER_TEMPLATE = 'render_template'
-}
-
 export const CHECK_FOCUSED_SHADOW_ROOT = [
     'HOME-ASSISTANT',
     'HOME-ASSISTANT-MAIN',
@@ -91,4 +87,3 @@ export const PROFILE_GENERAL_PATH = '/profile/general';
 export const JS_TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;
 export const JINJA_TEMPLATE_REG = /\{\{[\s\S]*\}\}|\{%[\s\S]*%\}/;
 export const CSS_CLEANER_REGEXP = /(\s*)([\w-]+\s*:\s*[^;]+;?|\})(\s*)/g;
-export const DOMAIN_REGEXP = /^([a-z_]+)[\w.]*$/;
