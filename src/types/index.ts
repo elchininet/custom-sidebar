@@ -91,32 +91,12 @@ export interface Config {
     styles?: string;
 }
 
-export type SubscriberEvent = {
-    event_type: string;
-    data: {
-        entity_id: string;
-        old_state?: {
-            state: string;
-        };
-        new_state: {
-            state: string;
-        };
-    }
-};
-
-export type SubscriberTemplate = {
+export interface SubscriberTemplate {
     result: string;
-};
-
-export interface HassConnection {
-    conn: {
-        subscribeMessage: <T>(callback: (response: T) => void, options: Record<string, string | Record<string, string | boolean>>) => void;
-    }
 }
 
 declare global {
     interface Window {
         CustomSidebar: object;
-        hassConnection: Promise<HassConnection>;
     }
 }

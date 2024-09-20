@@ -4,7 +4,10 @@ import {
     OnListenDetail,
     HAElement
 } from 'home-assistant-query-selector';
-import HomeAssistantJavaScriptTemplates, { Hass } from 'home-assistant-javascript-templates';
+import HomeAssistantJavaScriptTemplates, {
+    HomeAssistantJavaScriptTemplatesRenderer,
+    HassConnection
+} from 'home-assistant-javascript-templates';
 import {
     HomeAsssistantExtended,
     Config,
@@ -14,8 +17,6 @@ import {
     PartialPanelResolver,
     Sidebar,
     Match,
-    HassConnection,
-    SubscriberEvent,
     SubscriberTemplate
 } from '@types';
 import {
@@ -32,8 +33,6 @@ import {
     JINJA_TEMPLATE_REG,
     PROFILE_PATH,
     PROFILE_GENERAL_PATH,
-    DOMAIN_REGEXP,
-    SUBSCRIBE_TYPE,
     BLOCKED_PROPERTY
 } from '@constants';
 import {
@@ -71,7 +70,6 @@ class CustomSidebar {
         selector.listen();
 
         this._items = [];
-        this._jsSuscriptions = new Map<string, Map<Element, () => void>>();
         this._sidebarScroll = 0;
         this._isSidebarEditable = undefined;
         this._itemTouchedBinded = this._itemTouched.bind(this);
@@ -90,8 +88,7 @@ class CustomSidebar {
     private _sidebar: HAElement;
     private _sidebarScroll: number;
     private _isSidebarEditable: boolean | undefined;
-    private _renderer: HomeAssistantJavaScriptTemplates;
-    private _jsSuscriptions: Map<string, Map<Element, () => void>>;
+    private _renderer: HomeAssistantJavaScriptTemplatesRenderer;
     private _items: ConfigOrderWithItem[];
     private _itemTouchedBinded: () => Promise<void>;
     private _mouseEnterBinded: (event: MouseEvent) => void;
@@ -125,20 +122,6 @@ class CustomSidebar {
             }
         );
         return [paperListBox, items, spacer];
-    }
-
-    private async _hasReady(): Promise<Hass> {
-        return getPromisableElement(
-            () => this._ha.hass,
-            (hass: Hass): boolean => !!(
-                hass &&
-                hass.areas &&
-                hass.devices &&
-                hass.entities &&
-                hass.states &&
-                hass.user
-            )
-        );
     }
 
     private _getCurrentDevice(): string {
@@ -332,58 +315,40 @@ class CustomSidebar {
     private _createJsTemplateSubscription(
         element: Element,
         code: string,
-        extraCallback?: (rendered: string) => void
+        extraCallback?: (result: string) => void
     ): void {
 
-        const callback = () => {
-            this._renderer.cleanTracked();
-            const compiled = this._renderer.renderTemplate(code);
-            const tracked = this._renderer.tracked;
-            const {entities, domains} = tracked;
-            [...entities, ...domains].forEach((id: string): void => {
-                if (this._jsSuscriptions.has(id)) {
-                    const elements = this._jsSuscriptions.get(id);
-                    if (!elements.has(element)) {
-                        elements.set(element, callback);
-                    }
-                } else {
-                    this._jsSuscriptions.set(
-                        id,
-                        new Map([
-                            [element, callback]
-                        ])
-                    );
-                }
-            });
-            let rendered = '';
-            if (
-                typeof compiled === 'string' ||
-                (
-                    typeof compiled === 'number' &&
-                    !Number.isNaN(compiled)
-                ) ||
-                typeof compiled === 'boolean' ||
-                typeof compiled === 'object'
-            ) {
-                if (typeof compiled === 'string') {
-                    rendered = compiled.trim();
-                } else if (
-                    typeof compiled === 'number' ||
-                    typeof compiled === 'boolean'
+        this._renderer.trackTemplate(
+            code,
+            (result: unknown): void => {
+                let rendered = '';
+                if (
+                    typeof result === 'string' ||
+                    (
+                        typeof result === 'number' &&
+                        !Number.isNaN(result)
+                    ) ||
+                    typeof result === 'boolean' ||
+                    typeof result === 'object'
                 ) {
-                    rendered = compiled.toString();
+                    if (typeof result === 'string') {
+                        rendered = result.trim();
+                    } else if (
+                        typeof result === 'number' ||
+                        typeof result === 'boolean'
+                    ) {
+                        rendered = result.toString();
+                    } else {
+                        rendered = JSON.stringify(result);
+                    }
+                }
+                if (extraCallback) {
+                    extraCallback(rendered);
                 } else {
-                    rendered = JSON.stringify(compiled);
+                    element.innerHTML = rendered;
                 }
             }
-            if (extraCallback) {
-                extraCallback(rendered);
-            } else {
-                element.innerHTML = rendered;
-            }
-        };
-
-        callback();
+        );
 
     }
 
@@ -402,7 +367,7 @@ class CustomSidebar {
                     }
                 },
                 {
-                    type: SUBSCRIBE_TYPE.RENDER_TEMPLATE,
+                    type: EVENT.RENDER_TEMPLATE,
                     template,
                     variables: {
                         user_name: this._ha.hass.user.name,
@@ -594,39 +559,6 @@ class CustomSidebar {
             });
     }
 
-    private _watchForEntitiesChange() {
-        window.hassConnection.then((hassConnection: HassConnection): void => {
-            hassConnection.conn.subscribeMessage<SubscriberEvent>(
-                (event) => this._entityWatchCallback(event),
-                {
-                    type: SUBSCRIBE_TYPE.SUBSCRIBE_EVENTS,
-                    event_type: 'state_changed'
-                }
-            );
-        });
-    }
-
-    private _entityWatchCallback(event: SubscriberEvent) {
-        if (this._jsSuscriptions.size) {
-            const entityId = event.data.entity_id;
-            const domain = entityId.replace(DOMAIN_REGEXP, '$1');
-            if (this._jsSuscriptions.has(entityId)) {
-                const elements = this._jsSuscriptions.get(entityId);
-                const callbacks = elements.values();
-                Array.from(callbacks).forEach((callback) => {
-                    callback();
-                });
-            }
-            if (this._jsSuscriptions.has(domain)) {
-                const elements = this._jsSuscriptions.get(domain);
-                const callbacks = elements.values();
-                Array.from(callbacks).forEach((callback) => {
-                    callback();
-                });
-            }
-        }
-    }
-
     private _rearrange(): void {
         this._getElements()
             .then((elements) => {
@@ -781,7 +713,6 @@ class CustomSidebar {
                 processBottom();
 
                 this._panelLoaded();
-                this._watchForEntitiesChange();
 
             });
     }
@@ -892,12 +823,13 @@ class CustomSidebar {
             .element
             .then((ha: HomeAsssistantExtended) => {
                 this._ha = ha;
-                this._hasReady()
-                    .then(() => {
+                new HomeAssistantJavaScriptTemplates(this._ha)
+                    .getRenderer()
+                    .then((renderer) => {
+                        this._renderer = renderer;
                         this._getConfigWithExceptions()
                             .then(() => {
                                 this._processSidebar();
-                                this._renderer = new HomeAssistantJavaScriptTemplates(this._ha);
                                 this._subscribeTitle();
                                 this._subscribeSideBarEdition();
                                 this._rearrange();

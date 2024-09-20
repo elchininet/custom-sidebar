@@ -51,7 +51,7 @@
     "typescript-eslint": "^8.5.0"
   },
   "dependencies": {
-    "home-assistant-javascript-templates": "^4.0.0",
+    "home-assistant-javascript-templates": "^5.0.0",
     "home-assistant-query-selector": "^4.2.0",
     "js-yaml": "^4.1.0"
   }
