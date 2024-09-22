@@ -142,12 +142,12 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 
 | Property           | Type                               | Required | Description |
 | ------------------ | ---------------------------------- | -------- | ----------- |
-| order              | Array of [items](#item-properties) | yes      | List of items to process |
+| order              | Array of [item](#order-item-properties) | yes      | List of items to process |
 | title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
 | sidebar_editable<sup>\*</sup> | Boolean or String       | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin |
 
-#### Item properties
+#### Order item properties
 
 | Property                  | Type    | Required  | Description |
 | ------------------------- | ------- | --------- | ----------- |
@@ -184,6 +184,10 @@ order:
     href: "/config/integrations"
     icon: mdi:puzzle
     order: 3
+styles: |
+  paper-listbox {
+      --icon-primary-color: var(--accent-color);
+  }
 ```
 
 Short example in `JSON` format:
@@ -211,7 +215,8 @@ Short example in `JSON` format:
       "icon": "mdi:puzzle",
       "order": 3
     }
-  ]
+  ],
+  "styles": "paper-listbox { --icon-primary-color: var(--accent-color); }"
  }
 ```
 
@@ -231,7 +236,7 @@ You can define user-specific options using exceptions feature. Exceptions can be
 
 | Property            | Type              | Required | Description |
 | ------------------- | ----------------- | -------- | ----------- |
-| order               | Array of [items](#item-properties) | no   | Defines the sidebar items order |
+| order               | Array of [item](#order-item-properties) | no   | Defines the sidebar items order |
 | title<sup>\*</sup>             | String            | no       | Custom title to replace the `Home Assistant` title |
 | sidebar_editable<sup>\*</sup>  | Boolean or String | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
 | styles              | String            | no       | Custom styles that will be added to the styles block of the plugin |
