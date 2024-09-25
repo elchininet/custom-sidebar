@@ -106,8 +106,29 @@
         "Jim Hawkins",
         "Long John Silver"
       ],
-      "base_order": false,
-      "order": []
+      "extend_from_base": false,
+      "order": [
+        {
+          "new_item": true,
+          "item": "Updates",
+          "href": "/config/updates",
+          "icon": "mdi:update"
+        }
+      ]
+    },
+    {
+      "user": "Palaus",
+      "extend_from_base": true,
+      "order": [
+        {
+          "item": "history",
+          "order": 12
+        },
+        {
+          "item": "media",
+          "order": 13
+        }
+      ]
     }
   ],
   "id": "example_json (remove this from your config or replace with any other string)"
