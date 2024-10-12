@@ -21,6 +21,7 @@ export const SELECTORS = {
     SIDEBAR_HA_ICON_BUTTON: '.menu ha-icon-button',
     SIDEBAR_EDIT_BUTTON: '.menu mwc-button',
     PROFILE_EDIT_BUTTON: '.content > ha-card ha-settings-row > mwc-button',
+    PROFILE_HIDE_SIDEBAR: '.content > ha-card ha-force-narrow-row ha-settings-row > ha-switch',
     NOTIFICATIONS: '.notifications-container .notifications',
     ITEM_NOTIFICATION_COLLAPSED: '.notification-badge-collapsed',
     ITEM_NOTIFICATION: '.notification-badge:not(.notification-badge-collapsed)',

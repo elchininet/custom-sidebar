@@ -137,6 +137,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | order              | Array of [item](#order-item-properties) | yes      | List of items to process |
 | title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
 | sidebar_editable<sup>\*</sup> | Boolean or String       | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
+| sidebar_mode       | String                             | no       | Defines the default status of the sidebar when Home Assistant is loaded. It has three possible values: "hidden" to make the sidebar hidden, "narrow" to make the sidebar visible in narrow state and "extended" to make sidebar visible in extended state. This option will show or hide the sidebar ignoring if it is a desktop or a mobile device or if the `Always hide the sidebar` switch in the profile page in on or off (depending on the value of this option, this switch will be switched on or off automatically) |
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin |
 
 #### Order item properties

@@ -1,12 +1,109 @@
 import { test, expect } from 'playwright-test-coverage';
+import { SidebarMode } from '../src/types';
 import { fulfillJson } from './utilities';
 import { SELECTORS } from './selectors';
 
 const ERROR_PREFIX = 'custom-sidebar: Invalid configuration';
 
-test.describe('root options', () => {
+test.describe('main options', () => {
 
-    test('should throw an error if there is no order parameter', async ({ page }) => {
+    test('should throw an error if it has a malformed title option', async ({ page }) => {
+
+        const errors: string[] = [];
+
+        await fulfillJson(page, {
+            title: ['Custom Title'],
+            order: {}
+        });
+
+        page.on('pageerror', error => {
+            errors.push(error.message);
+        });
+
+        await page.goto('/');
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        expect(errors).toEqual(
+            expect.arrayContaining([
+                `${ERROR_PREFIX}, "title" property should be a string`
+            ])
+        );
+
+    });
+
+    test('should throw an error if it has an invalid "sidebar_editable" option', async ({ page }) => {
+
+        const errors: string[] = [];
+
+        await fulfillJson(page, {
+            order: [],
+            sidebar_editable: { editable: true }
+        });
+
+        page.on('pageerror', error => {
+            errors.push(error.message);
+        });
+
+        await page.goto('/');
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        expect(errors).toEqual(
+            expect.arrayContaining([
+                `${ERROR_PREFIX}, "sidebar_editable" property should be a boolean or a template string`
+            ])
+        );
+
+    });
+
+    test('should throw an error if it has wrong sidebar_mode option', async ({ page }) => {
+
+        const errors: string[] = [];
+
+        await fulfillJson(page, {
+            order: {},
+            sidebar_mode: 'non_valid'
+        });
+
+        page.on('pageerror', error => {
+            errors.push(error.message);
+        });
+
+        await page.goto('/');
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        expect(errors).toEqual(
+            expect.arrayContaining([
+                `${ERROR_PREFIX}, "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`
+            ])
+        );
+
+    });
+
+    test('should throw an error if it has a malformed styles option', async ({ page }) => {
+
+        const errors: string[] = [];
+
+        await fulfillJson(page, {
+            order: {},
+            styles: {
+                body: {
+                    color: 'red'
+                }
+            }
+        });
+
+        page.on('pageerror', error => {
+            errors.push(error.message);
+        });
+
+        await page.goto('/');
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        expect(errors).toEqual(
+            expect.arrayContaining([
+                `${ERROR_PREFIX}, "styles" property should be a string`
+            ])
+        );
+
+    });
+
+    test('should throw an error if there is no order option', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -240,7 +337,7 @@ test.describe('order item property', () => {
 
 test.describe('exceptions', () => {
 
-    test('should throw an error if the "exceptions" option is not an array', async ({ page }) => {
+    test('should throw an error if "exceptions" is not an array', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -263,7 +360,7 @@ test.describe('exceptions', () => {
 
     });
 
-    test('should throw an error if the "exceptions" option have an invalid "order" option', async ({ page }) => {
+    test('should throw an error if it has a malformed "order" option', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -291,7 +388,7 @@ test.describe('exceptions', () => {
 
     });
 
-    test('should throw an error if the "exceptions" option has an invalid "title" option', async ({ page }) => {
+    test('should throw an error if it has an invalid "title" option', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -318,7 +415,34 @@ test.describe('exceptions', () => {
 
     });
 
-    test('should throw an error if the "exceptions" option has an invalid "sidebar_editable" option', async ({ page }) => {
+    test('should throw an error if it has an invalid "sidebar_mode" option', async ({ page }) => {
+
+        const errors: string[] = [];
+
+        await fulfillJson(page, {
+            order: [],
+            exceptions: [
+                {
+                    sidebar_mode: 'non-valid'
+                }
+            ]
+        });
+
+        page.on('pageerror', error => {
+            errors.push(error.message);
+        });
+
+        await page.goto('/');
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        expect(errors).toEqual(
+            expect.arrayContaining([
+                `${ERROR_PREFIX}, exceptions "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`
+            ])
+        );
+
+    });
+
+    test('should throw an error if it has an invalid "sidebar_editable" option', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -345,7 +469,7 @@ test.describe('exceptions', () => {
 
     });
 
-    test('should throw an error if the "exceptions" option has an invalid "styles" option', async ({ page }) => {
+    test('should throw an error if it has an invalid "styles" option', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -372,7 +496,7 @@ test.describe('exceptions', () => {
 
     });
 
-    test('should throw an error if the "exceptions" option has a malformed "user" option', async ({ page }) => {
+    test('should throw an error if it has a malformed "user" option', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -400,7 +524,7 @@ test.describe('exceptions', () => {
 
     });
 
-    test('should throw an error if the "exceptions" option has a malformed "not_user" option', async ({ page }) => {
+    test('should throw an error if it has a malformed "not_user" option', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -428,7 +552,7 @@ test.describe('exceptions', () => {
 
     });
 
-    test('should throw an error if the "exceptions" option has a malformed "device" option', async ({ page }) => {
+    test('should throw an error if it has a malformed "device" option', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -456,7 +580,7 @@ test.describe('exceptions', () => {
 
     });
 
-    test('should throw an error if the "exceptions" option has a malformed "not_device" option', async ({ page }) => {
+    test('should throw an error if it has a malformed "not_device" option', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -484,7 +608,7 @@ test.describe('exceptions', () => {
 
     });
 
-    test('should throw an error if the "exceptions" option has "user" and "no_user" parameters at the same time', async ({ page }) => {
+    test('should throw an error if it has "user" and "no_user" parameters at the same time', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -513,7 +637,7 @@ test.describe('exceptions', () => {
 
     });
 
-    test('should throw an error if the "exceptions" option has "device" and "not_device" parameters at the same time', async ({ page }) => {
+    test('should throw an error if it has "device" and "not_device" parameters at the same time', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -542,7 +666,7 @@ test.describe('exceptions', () => {
 
     });
 
-    test('should throw an error if the "exceptions" option has an invalid "order" property', async ({ page }) => {
+    test('should throw an error if it not every item in "order" property has an "item" property', async ({ page }) => {
 
         const errors: string[] = [];
 

@@ -3,7 +3,8 @@ import {
     BASE_URL,
     JSON_PATH,
     MAXIMUM_RETRIES,
-    RETRY_DELAY
+    RETRY_DELAY,
+    MOBILE_VIEWPORT_SIZE
 } from './constants';
 
 export const haConfigRequest = async (file: string, retries = 0) => {
@@ -89,6 +90,10 @@ export const addJsonExtendedRoute = async (page: Page, options: Record<string, u
             json: jsonExtended
         });
     });
+};
+
+export const changeToMobileViewport = async (page: Page): Promise<void> => {
+    await page.setViewportSize(MOBILE_VIEWPORT_SIZE);
 };
 
 export const fulfillJson = async (page: Page, json: Record<string, unknown>): Promise<void> => {

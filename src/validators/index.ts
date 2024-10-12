@@ -1,12 +1,14 @@
 import {
     Config,
     ConfigItem,
-    ConfigException
+    ConfigException,
+    SidebarMode
 } from '@types';
 import {
     BOOLEAN_TYPE,
     STRING_TYPE,
-    UNDEFINED_TYPE
+    UNDEFINED_TYPE,
+    SIDEBAR_MODE_TO_DOCKED_SIDEBAR
 } from '@constants';
 
 const ERROR_PREFIX = 'Invalid configuration';
@@ -44,6 +46,13 @@ const validateExceptionItem = (exception: ConfigException): void => {
         typeof exception.sidebar_editable !== STRING_TYPE
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "sidebar_editable" property should be a boolean or a template string`);
+    }
+
+    if (
+        typeof exception.sidebar_mode !== UNDEFINED_TYPE &&
+        !(exception.sidebar_mode in SIDEBAR_MODE_TO_DOCKED_SIDEBAR)
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`);
     }
 
     if (
@@ -125,6 +134,31 @@ const validateConfigItem = (configItem: ConfigItem): void => {
 };
 
 export const validateConfig = (config: Config): void => {
+    if (
+        typeof config.title !== UNDEFINED_TYPE &&
+        typeof config.title !== STRING_TYPE
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, "title" property should be a string`);
+    }
+    if (
+        typeof config.sidebar_editable !== UNDEFINED_TYPE &&
+        typeof config.sidebar_editable !== BOOLEAN_TYPE &&
+        typeof config.sidebar_editable !== STRING_TYPE
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, "sidebar_editable" property should be a boolean or a template string`);
+    }
+    if (
+        typeof config.sidebar_mode !== UNDEFINED_TYPE &&
+        !(config.sidebar_mode in SIDEBAR_MODE_TO_DOCKED_SIDEBAR)
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`);
+    }
+    if (
+        typeof config.styles !== UNDEFINED_TYPE &&
+        typeof config.styles !== STRING_TYPE
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, "styles" property should be a string`);
+    }
     if (typeof config.order === UNDEFINED_TYPE) {
         throw new SyntaxError(`${ERROR_PREFIX}, "order" parameter is required`);
     }
