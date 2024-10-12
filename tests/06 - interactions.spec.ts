@@ -5,7 +5,11 @@ import {
     SIDEBAR_CLIP,
     ATTRIBUTES
 } from './constants';
-import { haConfigRequest, addJsonExtendedRoute } from './utilities';
+import {
+    haConfigRequest,
+    addJsonExtendedRoute,
+    changeToMobileViewport
+} from './utilities';
 import { SELECTORS } from './selectors';
 
 const SELECTED_CLASSNAME = /(^|\s)iron-selected(\s|$)/;
@@ -199,6 +203,81 @@ test('If sidebar_editable is set to true it should be possible to edit the sideb
     await page.goto('/profile');
 
     await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
+
+});
+
+test('If sidebar_mode is set to "hidden" it should not be possible to make the sidebar visible', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        sidebar_mode: 'hidden'
+    });
+
+    await page.goto('/profile');
+
+    await page.locator(SELECTORS.PROFILE_HIDE_SIDEBAR).click();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
+
+    await page.reload();
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
+
+});
+
+test('If sidebar_mode is set to "narrow" it should not be possible to hide the sidebar', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        sidebar_mode: 'narrow'
+    });
+
+    await page.goto('/profile');
+
+    await page.locator(SELECTORS.PROFILE_HIDE_SIDEBAR).click();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
+
+    await page.reload();
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
+
+});
+
+test('If sidebar_mode is set to "extended" it should not be possible to hide the sidebar', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        sidebar_mode: 'extended'
+    });
+
+    await page.goto('/profile');
+
+    await page.locator(SELECTORS.PROFILE_HIDE_SIDEBAR).click();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
+
+    await page.reload();
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
+
+});
+
+test('If sidebar_mode is set to "extended" it should keep the extended mode when changed to mobile', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        sidebar_mode: 'extended'
+    });
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await changeToMobileViewport(page);
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
 });
 

@@ -10,12 +10,15 @@ import HomeAssistantJavaScriptTemplates, {
 } from 'home-assistant-javascript-templates';
 import {
     HomeAsssistantExtended,
+    HomeAssistantMain,
+    HaMenuButton,
     Config,
     ConfigNewItem,
     ConfigOrder,
     ConfigOrderWithItem,
     PartialPanelResolver,
     Sidebar,
+    SidebarMode,
     Match,
     SubscriberTemplate
 } from '@types';
@@ -33,12 +36,14 @@ import {
     JINJA_TEMPLATE_REG,
     PROFILE_PATH,
     PROFILE_GENERAL_PATH,
-    BLOCKED_PROPERTY
+    BLOCKED_PROPERTY,
+    SIDEBAR_MODE_TO_DOCKED_SIDEBAR
 } from '@constants';
 import {
     logVersionToConsole,
     getPromisableElement,
     getConfigWithExceptions,
+    flushPromise,
     addStyle
 } from '@utilities';
 import { fetchConfig } from '@fetchers/json';
@@ -480,7 +485,43 @@ class CustomSidebar {
 
     private _processSidebar(): void {
 
-        // Add overrriding styles
+        // Process Home Assistant Main and Partial Panel Resolver
+        Promise.all([
+            this._main.element,
+            this._partialPanelResolver.element
+        ]).then(([homeAssistantMain, partialPanelResolver]: [HomeAssistantMain, PartialPanelResolver]) => {
+
+            const sidebarMode = this._configWithExceptions.sidebar_mode;
+            const mql = matchMedia('(max-width: 870px)');
+
+            if (sidebarMode) {
+
+                homeAssistantMain.hass.dockedSidebar = SIDEBAR_MODE_TO_DOCKED_SIDEBAR[sidebarMode];
+
+                const checkForNarrow = async (isNarrow: boolean): Promise<void> => {
+                    if (sidebarMode !== SidebarMode.HIDDEN) {
+                        await flushPromise();
+                        homeAssistantMain.narrow = false;
+                        await flushPromise();
+                        partialPanelResolver.narrow = isNarrow;
+                        await flushPromise();
+                        if (isNarrow) {
+                            const haMenuButton = await this._partialPanelResolver.selector.query(SELECTOR.HA_MENU_BUTTON).element as HaMenuButton;
+                            haMenuButton.narrow = false;
+                        }
+                    }
+                };
+
+                mql.addEventListener('change', (event: MediaQueryListEvent): void => {
+                    checkForNarrow(event.matches);
+                });
+
+                checkForNarrow(mql.matches);
+            }
+
+        });
+
+        // Process sidebar
         this._sidebar
             .selector
             .$

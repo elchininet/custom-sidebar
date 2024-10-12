@@ -30,9 +30,21 @@ export const CONFIG_FILES = {
     JINJA_TEMPLATES: 'jinja-templates'
 };
 
+export const MOBILE_VIEWPORT_SIZE = {
+    height: 667,
+    width: 375
+};
+
 export const SIDEBAR_CLIP = {
     x: 0,
     y: 0,
     width: 255,
     height: 598
+};
+
+export const SIDEBAR_NARROW_CLIP = {
+    x: 0,
+    y: 0,
+    width: 60,
+    height: 667
 };

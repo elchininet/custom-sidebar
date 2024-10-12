@@ -1,14 +1,41 @@
 import { HomeAssistant, Hass } from 'home-assistant-javascript-templates';
 
+export enum SidebarMode {
+    HIDDEN = 'hidden',
+    NARROW = 'narrow',
+    EXTENDED = 'extended'
+}
+
+export enum DockedSidebar {
+    DOCKED = 'docked',
+    AUTO = 'auto',
+    ALWAYS_HIDDEN = 'always_hidden'
+}
+
+export interface HassExtended extends Hass {
+    dockedSidebar: `${DockedSidebar}`;
+}
+
 export interface HomeAsssistantExtended extends HomeAssistant {
-    hass: Hass;
+    hass: HassExtended;
 }
 
 export interface PartialPanelResolver extends HTMLElement {
+    hass: HassExtended;
+    narrow: boolean;
     __route: {
         prefix: string,
         path: string;
     }
+}
+
+export interface HomeAssistantMain extends HTMLElement {
+    hass: HassExtended;
+    narrow: boolean;
+}
+
+export interface HaMenuButton extends HTMLElement {
+    narrow: boolean;
 }
 
 export interface Sidebar extends HTMLElement {
@@ -49,12 +76,16 @@ export interface ConfigNewItem extends Omit<ConfigItem, 'new_item'> {
 export type ConfigOrder = ConfigItem | ConfigNewItem;
 export type ConfigOrderWithItem = ConfigOrder & { element?: HTMLAnchorElement };
 
-interface ConfigExceptionBase {
-    order?: ConfigOrder[];
-    extend_from_base?: boolean;
+interface BaseConfig {
     title?: string;
+    order: ConfigOrder[];
     sidebar_editable?: boolean | string;
+    sidebar_mode?: `${SidebarMode}`;
     styles?: string;
+}
+
+interface ConfigExceptionBase extends BaseConfig {
+    extend_from_base?: boolean;
 }
 
 interface ConfigExceptionUserInclude extends ConfigExceptionBase {
@@ -82,13 +113,9 @@ type ConfigExceptionDevice = ConfigExceptionDeviceInclude | ConfigExceptionDevic
 
 export type ConfigException = ConfigExceptionUser & ConfigExceptionDevice;
 
-export interface Config {
+export interface Config extends BaseConfig {
     id?: string;
-    title?: string;
-    order: ConfigOrder[];
     exceptions?: ConfigException[];
-    sidebar_editable?: boolean | string;
-    styles?: string;
 }
 
 export interface SubscriberTemplate {

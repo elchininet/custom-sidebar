@@ -1,9 +1,12 @@
+import{ SidebarMode, DockedSidebar } from '@types';
+
 export const NAMESPACE = 'custom-sidebar';
 export const LOCAL_PATH = '/local/';
 export const CONFIG_NAME = 'sidebar-config';
 export const CONFIG_PATH = `${LOCAL_PATH}${CONFIG_NAME}`;
 export const MAX_ATTEMPTS = 100;
 export const RETRY_DELAY = 50;
+export const FLUSH_PROMISE_DELAY = 1;
 
 export const BOOLEAN_TYPE = 'boolean';
 export const STRING_TYPE = 'string';
@@ -28,7 +31,7 @@ export enum SELECTOR {
     ITEM_TEXT = '.item-text',
     NOTIFICATION_BADGE = '.notification-badge',
     NOTIFICATIONS_BADGE_COLLAPSED = '.notification-badge-collapsed',
-    EDIT_SIDEBAR_BUTTON_LEGACY = 'ha-panel-profile$ ha-settings-row mwc-button',
+    HA_MENU_BUTTON = 'ha-panel-lovelace$ hui-root$ .toolbar > ha-menu-button',
     EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-settings-row mwc-button',
     SIDEBAR_NOTIFICATIONS = '.notifications',
     PROFILE = '.profile',
@@ -80,6 +83,12 @@ export const CHECK_FOCUSED_SHADOW_ROOT = [
     'HOME-ASSISTANT-MAIN',
     'HA-SIDEBAR'
 ];
+
+export const SIDEBAR_MODE_TO_DOCKED_SIDEBAR = {
+    [SidebarMode.HIDDEN]: DockedSidebar.ALWAYS_HIDDEN,
+    [SidebarMode.NARROW]: DockedSidebar.AUTO,
+    [SidebarMode.EXTENDED]: DockedSidebar.DOCKED
+};
 
 export const PROFILE_PATH = '/profile';
 export const PROFILE_GENERAL_PATH = '/profile/general';

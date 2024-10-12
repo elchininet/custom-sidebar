@@ -7,6 +7,7 @@ import {
     NAMESPACE,
     MAX_ATTEMPTS,
     RETRY_DELAY,
+    FLUSH_PROMISE_DELAY,
     UNDEFINED_TYPE,
     CSS_CLEANER_REGEXP
 } from '@constants';
@@ -122,7 +123,10 @@ export const getConfigWithExceptions = (
             : null;
         const exceptionsOrder = filteredExceptions.flatMap((exception: ConfigException) => exception.order || []);
         const extendsBaseConfig = filteredExceptions.every((exception: ConfigException): boolean => !!exception.extend_from_base);
-        const configCommonProps: Pick<Config, 'title' | 'sidebar_editable' | 'styles'> = {};
+        const configCommonProps: Pick<
+            Config,
+            'title' | 'sidebar_editable' | 'sidebar_mode' | 'styles'
+        > = {};
 
         const title = extendsBaseConfig
             ? lastException?.title ?? config.title
@@ -130,11 +134,15 @@ export const getConfigWithExceptions = (
         const sidebar_editable = extendsBaseConfig
             ? lastException?.sidebar_editable ?? config.sidebar_editable
             : lastException.sidebar_editable;
+        const sidebar_mode = extendsBaseConfig
+            ? lastException?.sidebar_mode ?? config.sidebar_mode
+            : lastException.sidebar_mode;
         const styles = extendsBaseConfig
             ? lastException?.styles ?? config.styles
             : lastException.styles;
         if (title) configCommonProps.title = title;
         if (typeof sidebar_editable !== UNDEFINED_TYPE) configCommonProps.sidebar_editable = sidebar_editable;
+        if (sidebar_mode) configCommonProps.sidebar_mode = sidebar_mode;
         if (styles) configCommonProps.styles = styles;
 
         if (extendsBaseConfig) {
@@ -157,6 +165,10 @@ export const getConfigWithExceptions = (
         order: flatConfigOrder(config.order)
     };
 };
+
+export const flushPromise = () => new Promise((resolve) => {
+    setTimeout(resolve, FLUSH_PROMISE_DELAY);
+});
 
 const getElementName = (elem: ShadowRoot): string => {
     return elem.host.localName;
