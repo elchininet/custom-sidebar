@@ -3,7 +3,7 @@ import { SELECTORS } from './selectors';
 
 const ERROR_PREFIX = 'custom-sidebar:';
 
-test('JSON not found', async ({ page }) => {
+test('if the configuration is not found it should throw an error', async ({ page }) => {
 
     const errors: string[] = [];
 
@@ -29,7 +29,7 @@ test('JSON not found', async ({ page }) => {
 
 });
 
-test('JSON server error', async ({ page }) => {
+test('if there is an error loading the configuration it should be thrown', async ({ page }) => {
 
     const errors: string[] = [];
 
@@ -55,7 +55,7 @@ test('JSON server error', async ({ page }) => {
 
 });
 
-test('JSON malformed', async ({ page }) => {
+test('if the configuration is malformed it should throw an error', async ({ page }) => {
 
     const errors: string[] = [];
 
@@ -77,7 +77,7 @@ test('JSON malformed', async ({ page }) => {
 
 });
 
-test('JSON id warning', async ({ page }) => {
+test('if the id is in the configuration it should throw a warning', async ({ page }) => {
 
     const warnings: string[] = [];
 

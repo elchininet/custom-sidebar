@@ -30,7 +30,7 @@ const pageVisit = async (page: Page): Promise<void> => {
     });
 };
 
-test('Templates default', async ({ page }) => {
+test('should have the default result of the templates', async ({ page }) => {
 
     await pageVisit(page);
 
@@ -43,7 +43,7 @@ test('Templates default', async ({ page }) => {
 
 });
 
-test('Templates update entity for name and title', async ({ page }) => {
+test('name and title using templates should update if one of their entities change', async ({ page }) => {
 
     await pageVisit(page);
 
@@ -80,7 +80,7 @@ test('Templates update entity for name and title', async ({ page }) => {
 
 });
 
-test('Templates update entity for notifications', async ({ page }) => {
+test('notifications using a template should update if one of its entities change', async ({ page }) => {
 
     await pageVisit(page);
 

@@ -14,7 +14,7 @@ const pageVisit = async (page: Page): Promise<void> => {
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 };
 
-test('Multiple items match the same element', async ({ page }) => {
+test('if multiple items match the same element the last one should be used', async ({ page }) => {
 
     await fulfillJson(page, {
         order: [
