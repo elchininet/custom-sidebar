@@ -21,7 +21,7 @@ const pageVisit = async (page: Page): Promise<void> => {
     });
 };
 
-test('Sidebar items are processed', async ({ page }) => {
+test('sidebar items should have a data-processed attribute after being processed', async ({ page }) => {
 
     await pageVisit(page);
 
@@ -43,7 +43,7 @@ test('Sidebar items are processed', async ({ page }) => {
 
 });
 
-test('Sidebar new items', async ({ page }) => {
+test('new items should be added properly with all their attributes', async ({ page }) => {
 
     await pageVisit(page);
 
@@ -83,7 +83,7 @@ test('Sidebar new items', async ({ page }) => {
 
 });
 
-test('Sidebar new item with notification', async ({ page }) => {
+test('a new item with notification should be added properly', async ({ page }) => {
 
     await fulfillJson(page, {
         order: [
@@ -106,7 +106,7 @@ test('Sidebar new item with notification', async ({ page }) => {
 
 });
 
-test('Sidebar new item with notification collapsed', async ({ page }) => {
+test('a new item with notification should behave propely when the sidebar is collapsed', async ({ page }) => {
 
     await fulfillJson(page, {
         order: [
@@ -137,7 +137,7 @@ test('Sidebar new item with notification collapsed', async ({ page }) => {
 
 });
 
-test('Sidebar change href and target', async ({ page }) => {
+test('should change href and target of an existing item', async ({ page }) => {
 
     await fulfillJson(page, {
         order: [
@@ -160,7 +160,7 @@ test('Sidebar change href and target', async ({ page }) => {
 
 });
 
-test('Sidebar order', async ({ page }) => {
+test('should apply the order propely', async ({ page }) => {
 
     await pageVisit(page);
 
@@ -186,7 +186,7 @@ test('Sidebar order', async ({ page }) => {
     }
 });
 
-test('Sidebar non-visible items', async ({ page }) => {
+test('should hide items properly', async ({ page }) => {
 
     await pageVisit(page);
 
@@ -202,7 +202,7 @@ test('Sidebar non-visible items', async ({ page }) => {
 
 });
 
-test('Sidebar title', async ({ page }) => {
+test('should change the title', async ({ page }) => {
 
     await addJsonExtendedRoute(page, {
         title: 'My Home'
@@ -217,7 +217,7 @@ test('Sidebar title', async ({ page }) => {
 
 });
 
-test('Sidebar custom styles', async ({ page }) => {
+test('should apply custom styles', async ({ page }) => {
 
     await addJsonExtendedRoute(page, {
         styles: '.menu .title { color: red; } a[role="option"] .item-text { color: blue; }'

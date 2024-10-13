@@ -115,7 +115,7 @@ test('Visit a URL that matches with multiple items should select the proper item
 
 });
 
-test('Restore the scroll after clicking on an element', async ({ page }) => {
+test('the scroll should be restored after clicking on an element', async ({ page }) => {
 
     await page.setViewportSize({ width: 1024, height: 500 });
 
@@ -141,7 +141,7 @@ test('Restore the scroll after clicking on an element', async ({ page }) => {
 
 });
 
-test('Restore the scroll after pressing Enter with an element focused', async ({ page }) => {
+test('the scroll should be restored after pressing Enter with an element focused', async ({ page }) => {
 
     await page.setViewportSize({ width: 1024, height: 500 });
 
@@ -223,7 +223,7 @@ test('If sidebar_editable is set to false it should not be possible to edit the 
 
 });
 
-test('Navigate focused items with the up and down arrows', async ({ page }) => {
+test('navigating with the keyboard up and down arrows should focus the proper items in order', async ({ page }) => {
 
     await visitHome(page);
 
@@ -263,7 +263,7 @@ test('Navigate focused items with the up and down arrows', async ({ page }) => {
 
 });
 
-test('Navigate focused items with tabs', async ({ page }) => {
+test('navigating with the keyboard using tab should focus the proper items in order', async ({ page }) => {
 
     await visitHome(page);
 
@@ -320,7 +320,7 @@ test('Navigate focused items with tabs', async ({ page }) => {
 
 });
 
-test('Pressing tab without being in the sidebar will not select any item', async ({ page }) => {
+test('Pressing tab without being in the sidebar should not select any item', async ({ page }) => {
 
     await visitHome(page);
 
@@ -337,7 +337,7 @@ test('Pressing tab without being in the sidebar will not select any item', async
 
 });
 
-test('Tooltip behaviour in new items', async ({ page }) => {
+test('new items should have tooltips', async ({ page }) => {
 
     await visitHome(page);
 
