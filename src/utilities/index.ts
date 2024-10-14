@@ -24,17 +24,13 @@ const getArray = (value: string | string[]): string[] => {
 
 const flatConfigOrder = (order: ConfigOrder[]): ConfigOrder[] => {
 
-    const added: string[] = [];
-    const flatOrder: ConfigOrder[] = [];
-    const total = order.length;
+    const orderMap = new Map<string, ConfigOrder>();
 
-    for (let index = total - 1; index >= 0; index --) {
-        const orderItem = order[index];
-        if (!added.includes(orderItem.item)) {
-            flatOrder.unshift(orderItem);
-            added.push(orderItem.item);
-        }
-    }
+    order.forEach((orderItem: ConfigOrder): void => {
+        orderMap.set(orderItem.item, orderItem);
+    });
+
+    const flatOrder = Array.from(orderMap.values());
 
     return flatOrder.sort((orderItemA: ConfigOrder, orderItemB: ConfigOrder): number => {
         if (!!orderItemA.bottom !== !!orderItemB.bottom) {
@@ -114,18 +110,21 @@ export const getConfigWithExceptions = (
                 ) ||
                 (
                     exception.not_device &&
-                    getArray(exception.not_device).every((device: string) => !currentDevice.includes(device))
+                    !getArray(exception.not_device).some((device: string) => currentDevice.includes(device))
                 )
             );
         });
         const lastException = filteredExceptions.length
             ? filteredExceptions[filteredExceptions.length -1]
             : null;
-        const exceptionsOrder = filteredExceptions.flatMap((exception: ConfigException) => exception.order || []);
-        const extendsBaseConfig = filteredExceptions.every((exception: ConfigException): boolean => !!exception.extend_from_base);
+        const exceptionsOrder = filteredExceptions.flatMap((exception: ConfigException): ConfigOrder[] => exception.order || []);
+        const extendsBaseConfig = !filteredExceptions.some((exception: ConfigException): boolean => !exception.extend_from_base);
         const configCommonProps: Pick<
             Config,
-            'title' | 'sidebar_editable' | 'sidebar_mode' | 'styles'
+            | 'title'
+            | 'sidebar_editable'
+            | 'sidebar_mode'
+            | 'styles'
         > = {};
 
         const title = extendsBaseConfig
@@ -148,21 +147,27 @@ export const getConfigWithExceptions = (
         if (extendsBaseConfig) {
             return {
                 ...configCommonProps,
-                order: flatConfigOrder([
-                    ...config.order,
-                    ...exceptionsOrder
-                ])
+                order: flatConfigOrder(
+                    [
+                        ...config.order,
+                        ...exceptionsOrder
+                    ]
+                )
             };
         }
 
         return {
             ...configCommonProps,
-            order: flatConfigOrder(exceptionsOrder)
+            order: flatConfigOrder(
+                exceptionsOrder
+            )
         };
     }
     return {
         ...config,
-        order: flatConfigOrder(config.order)
+        order: flatConfigOrder(
+            config.order
+        )
     };
 };
 
