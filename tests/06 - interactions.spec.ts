@@ -276,6 +276,7 @@ test('If sidebar_mode is set to "extended" it should keep the extended mode when
 
     await changeToMobileViewport(page);
 
+    await page.waitForTimeout(5);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
