@@ -563,23 +563,28 @@ class CustomSidebar {
                     }
                 }, true);
 
+                const commonNotificationStyles = `
+                    border-radius: 20px;
+                    font-size: 0.65em;
+                    overflow: hidden;
+                    padding: 0px 5px;
+                    text-overflow: ellipsis;
+                    text-wrap: nowrap;
+                `;
+
                 addStyle(
                     `
                     ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
-                        border-radius: 20px;
                         left: calc(var(--app-drawer-width, 248px) - 22px);
                         max-width: 80px;
-                        overflow: hidden;
-                        padding: 0px 5px;
                         transform: translateX(-100%);
-                        text-overflow: ellipsis;
-                        text-wrap: nowrap;   
+                        ${commonNotificationStyles} 
                     }
                     ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
                         bottom: 14px;
-                        font-size: 0.65em;
                         left: 26px;
-                        position: absolute;  
+                        max-width: 20px;
+                        ${commonNotificationStyles}
                     }
                     :host([expanded]) ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
                         opacity: 0;
