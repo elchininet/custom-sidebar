@@ -203,7 +203,7 @@ test.describe('order item property', () => {
         await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
         expect(errors).toEqual(
             expect.arrayContaining([
-                `${ERROR_PREFIX} in dev, item property should be an string`
+                `${ERROR_PREFIX} in dev, "item" property should be a string`
             ])
         );
 

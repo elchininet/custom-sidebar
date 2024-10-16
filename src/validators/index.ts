@@ -13,6 +13,26 @@ import {
 
 const ERROR_PREFIX = 'Invalid configuration';
 
+const validateStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
+    props.forEach((prop: K): void => {
+        if (
+            typeof obj[prop] !== UNDEFINED_TYPE &&
+            typeof obj[prop] !== STRING_TYPE
+        ) {
+            throw new SyntaxError(`${prefix} "${String(prop)}" property should be a string`);
+        }
+    });
+};
+
+const validateStringOrArrayOfStringsOptions = <T extends [string, undefined | string | string[]]>(dictionary: T[], prefix: string): void => {
+    dictionary.forEach((entry): void => {
+        const [prop, value] = entry;
+        if (!validateStringOrArrayOfStrings(value)) {
+            throw new SyntaxError(`${prefix} "${prop}" property should be a string or an array of strings`);
+        }
+    });
+};
+
 const validateStringOrArrayOfStrings = (value: undefined | string | string[]): boolean => {
     if (typeof value === UNDEFINED_TYPE) return true;
     return (
@@ -26,18 +46,37 @@ const validateStringOrArrayOfStrings = (value: undefined | string | string[]): b
 
 const validateExceptionItem = (exception: ConfigException): void => {
 
+    validateStringOptions(
+        exception,
+        [
+            'title',
+            'icon_color',
+            'icon_color_selected',
+            'text_color',
+            'text_color_selected',
+            'selection_color',
+            'info_color',
+            'info_color_selected',
+            'styles'
+        ],
+        `${ERROR_PREFIX}, exceptions`
+    );
+
+    validateStringOrArrayOfStringsOptions(
+        [
+            ['user', exception.user],
+            ['not_user', exception.not_user],
+            ['device', exception.device],
+            ['not_device', exception.not_device]
+        ],
+        `${ERROR_PREFIX}, exceptions`
+    );
+
     if (
         typeof exception.order !== UNDEFINED_TYPE &&
         !Array.isArray(exception.order)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "order" property should be an array`);
-    }
-
-    if (
-        typeof exception.title !== UNDEFINED_TYPE &&
-        typeof exception.title !== STRING_TYPE
-    ) {
-        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "title" property should be a string`);
     }
 
     if (
@@ -53,29 +92,6 @@ const validateExceptionItem = (exception: ConfigException): void => {
         !(exception.sidebar_mode in SIDEBAR_MODE_TO_DOCKED_SIDEBAR)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`);
-    }
-
-    if (
-        typeof exception.styles !== UNDEFINED_TYPE &&
-        typeof exception.styles !== STRING_TYPE
-    ) {
-        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "styles" property should be a string`);
-    }
-
-    if (!validateStringOrArrayOfStrings(exception.user)) {
-        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "user" property should be a string or an array of strings`);
-    }
-
-    if (!validateStringOrArrayOfStrings(exception.not_user)) {
-        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "not_user" property should be a string or an array of strings`);
-    }
-
-    if (!validateStringOrArrayOfStrings(exception.device)) {
-        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "device" property should be a string or an array of strings`);
-    }
-
-    if (!validateStringOrArrayOfStrings(exception.not_device)) {
-        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "not_device" property should be a string or an array of strings`);
     }
 
     if (
@@ -113,33 +129,53 @@ const validateConfigItem = (configItem: ConfigItem): void => {
         throw new SyntaxError(`${ERROR_PREFIX}, every item in an "order" array should have an "item" property`);
     }
 
-    if (typeof configItem.item !== STRING_TYPE) {
-        throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, item property should be an string`);
-    }
+    validateStringOptions(
+        configItem,
+        [
+            'item',
+            'info',
+            'icon_color',
+            'icon_color_selected',
+            'text_color',
+            'text_color_selected',
+            'selection_color',
+            'info_color',
+            'info_color_selected'
+        ],
+        `${ERROR_PREFIX} in ${configItem.item},`
+    );
 
     if (configItem.new_item) {
+        validateStringOptions(
+            configItem,
+            ['href', 'icon'],
+            `${ERROR_PREFIX} in ${configItem.item},`
+        );
         if (!configItem.href) {
             throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, if you set "new_item" as "true", "href" property is necessary`);
         }
-        if (typeof configItem.href !== STRING_TYPE) {
-            throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, "href" property should be a string`);
-        }
         if (!configItem.icon) {
             throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, if you set "new_item" as "true", "icon" property is necessary`);
-        }
-        if (typeof configItem.icon !== STRING_TYPE) {
-            throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, "icon" property should be a string`);
         }
     }
 };
 
 export const validateConfig = (config: Config): void => {
-    if (
-        typeof config.title !== UNDEFINED_TYPE &&
-        typeof config.title !== STRING_TYPE
-    ) {
-        throw new SyntaxError(`${ERROR_PREFIX}, "title" property should be a string`);
-    }
+    validateStringOptions(
+        config,
+        [
+            'title',
+            'icon_color',
+            'icon_color_selected',
+            'text_color',
+            'text_color_selected',
+            'selection_color',
+            'info_color',
+            'info_color_selected',
+            'styles'
+        ],
+        `${ERROR_PREFIX},`
+    );
     if (
         typeof config.sidebar_editable !== UNDEFINED_TYPE &&
         typeof config.sidebar_editable !== BOOLEAN_TYPE &&
@@ -152,12 +188,6 @@ export const validateConfig = (config: Config): void => {
         !(config.sidebar_mode in SIDEBAR_MODE_TO_DOCKED_SIDEBAR)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`);
-    }
-    if (
-        typeof config.styles !== UNDEFINED_TYPE &&
-        typeof config.styles !== STRING_TYPE
-    ) {
-        throw new SyntaxError(`${ERROR_PREFIX}, "styles" property should be a string`);
     }
     if (typeof config.order === UNDEFINED_TYPE) {
         throw new SyntaxError(`${ERROR_PREFIX}, "order" parameter is required`);
