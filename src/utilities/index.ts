@@ -13,6 +13,28 @@ import {
 } from '@constants';
 import { version } from '../../package.json';
 
+const EXTENDABLE_ITEM_OPTIONS = [
+    'icon_color',
+    'icon_color_selected',
+    'text_color',
+    'text_color_selected',
+    'selection_color',
+    'info_color',
+    'info_color_selected'
+] as const;
+
+const EXTENDABLE_OPTIONS = [
+    'title',
+    'sidebar_editable',
+    'sidebar_mode',
+    'styles',
+    ...EXTENDABLE_ITEM_OPTIONS
+] as const;
+
+type ExetndableItemConfigOption = typeof EXTENDABLE_ITEM_OPTIONS[number];
+type ExtendableConfigOption = typeof EXTENDABLE_OPTIONS[number];
+type ExtendableConfigOptions = Partial<Pick<Config, ExtendableConfigOption>>;
+
 export const randomId = (): string => Math.random().toString(16).slice(2);
 
 const getArray = (value: string | string[]): string[] => {
@@ -22,11 +44,40 @@ const getArray = (value: string | string[]): string[] => {
     return value.toLowerCase().split(/\s*,\s*/);
 };
 
-const flatConfigOrder = (order: ConfigOrder[]): ConfigOrder[] => {
+const extendOptionsFromBase = (
+    config: Config,
+    lastException: ConfigException | null,
+    extendFromBase: boolean
+): ExtendableConfigOptions => {
+
+    const configCommonProps: Record<string, string | boolean> = {};
+
+    EXTENDABLE_OPTIONS.forEach((option: ExtendableConfigOption): void => {
+        const lasExceptionValue = lastException?.[option];
+        const value = extendFromBase
+            ? lasExceptionValue ?? config[option]
+            : lasExceptionValue;
+        if (typeof value !== UNDEFINED_TYPE) {
+            configCommonProps[option] = value;
+        }
+    });
+
+    return configCommonProps;
+
+};
+
+const extendItemOptionsFromBase = (item: ConfigOrder, config: Config): void => {
+    EXTENDABLE_ITEM_OPTIONS.forEach((option: ExetndableItemConfigOption): void => {
+        item[option] = item[option] ?? config[option];
+    });
+};
+
+const flatConfigOrder = (order: ConfigOrder[], config: Config): ConfigOrder[] => {
 
     const orderMap = new Map<string, ConfigOrder>();
 
     order.forEach((orderItem: ConfigOrder): void => {
+        extendItemOptionsFromBase(orderItem, config);
         orderMap.set(orderItem.item, orderItem);
     });
 
@@ -119,30 +170,8 @@ export const getConfigWithExceptions = (
             : null;
         const exceptionsOrder = filteredExceptions.flatMap((exception: ConfigException): ConfigOrder[] => exception.order || []);
         const extendsBaseConfig = !filteredExceptions.some((exception: ConfigException): boolean => !exception.extend_from_base);
-        const configCommonProps: Pick<
-            Config,
-            | 'title'
-            | 'sidebar_editable'
-            | 'sidebar_mode'
-            | 'styles'
-        > = {};
 
-        const title = extendsBaseConfig
-            ? lastException?.title ?? config.title
-            : lastException.title;
-        const sidebar_editable = extendsBaseConfig
-            ? lastException?.sidebar_editable ?? config.sidebar_editable
-            : lastException.sidebar_editable;
-        const sidebar_mode = extendsBaseConfig
-            ? lastException?.sidebar_mode ?? config.sidebar_mode
-            : lastException.sidebar_mode;
-        const styles = extendsBaseConfig
-            ? lastException?.styles ?? config.styles
-            : lastException.styles;
-        if (title) configCommonProps.title = title;
-        if (typeof sidebar_editable !== UNDEFINED_TYPE) configCommonProps.sidebar_editable = sidebar_editable;
-        if (sidebar_mode) configCommonProps.sidebar_mode = sidebar_mode;
-        if (styles) configCommonProps.styles = styles;
+        const configCommonProps = extendOptionsFromBase(config, lastException, extendsBaseConfig);
 
         if (extendsBaseConfig) {
             return {
@@ -151,7 +180,8 @@ export const getConfigWithExceptions = (
                     [
                         ...config.order,
                         ...exceptionsOrder
-                    ]
+                    ],
+                    config
                 )
             };
         }
@@ -159,14 +189,16 @@ export const getConfigWithExceptions = (
         return {
             ...configCommonProps,
             order: flatConfigOrder(
-                exceptionsOrder
+                exceptionsOrder,
+                config
             )
         };
     }
     return {
         ...config,
         order: flatConfigOrder(
-            config.order
+            config.order,
+            config
         )
     };
 };

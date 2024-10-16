@@ -27,6 +27,7 @@ export enum SELECTOR {
     SCOPE = ':scope',
     TITLE = '.title',
     ITEM = 'a[role="option"]',
+    ITEM_SELECTED = '.iron-selected',
     SPACER = '.spacer',
     ITEM_TEXT = '.item-text',
     NOTIFICATION_BADGE = '.notification-badge',
@@ -37,6 +38,16 @@ export enum SELECTOR {
     PROFILE = '.profile',
     MENU = '.menu',
     HA_ICON_BUTTON = 'ha-icon-button'
+}
+
+export enum CSS_VARIABLES {
+    SIDEBAR_ICON_COLOR = '--sidebar-icon-color',
+    SIDEBAR_SELECTED_ICON_COLOR= '--sidebar-selected-icon-color',
+    SIDEBAR_TEXT_COLOR = '--sidebar-text-color',
+    SIDEBAR_SELECTED_TEXT_COLOR = '--sidebar-selected-text-color',
+    CUSTOM_SIDEBAR_SELECTION_COLOR = '--custom-sidebar-selection-color',
+    CUSTOM_SIDEBAR_INFO_COLOR = '--custom-sidebar-info-color',
+    CUSTOM_SIDEBAR_SELECTED_INFO_COLOR = '--custom-sidebar-selected-info-color',
 }
 
 export enum CLASS {

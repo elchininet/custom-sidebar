@@ -21,7 +21,6 @@ export interface HomeAsssistantExtended extends HomeAssistant {
 }
 
 export interface PartialPanelResolver extends HTMLElement {
-    hass: HassExtended;
     narrow: boolean;
     __route: {
         prefix: string,
@@ -51,11 +50,22 @@ export enum Match {
     HREF = 'href'
 }
 
-export interface ConfigItem {
+interface ColorConfig {
+    icon_color?: string;
+    icon_color_selected?: string;
+    text_color?: string;
+    text_color_selected?: string;
+    selection_color?: string;
+    info_color?: string;
+    info_color_selected?: string;
+}
+
+export interface ConfigItem extends ColorConfig {
     item: string;
     match?: `${Match}`;
     exact?: boolean;
     name?: string;
+    info?: string;
     notification?: string;
     order?: number;
     bottom?: boolean;
@@ -76,7 +86,7 @@ export interface ConfigNewItem extends Omit<ConfigItem, 'new_item'> {
 export type ConfigOrder = ConfigItem | ConfigNewItem;
 export type ConfigOrderWithItem = ConfigOrder & { element?: HTMLAnchorElement };
 
-interface BaseConfig {
+interface BaseConfig extends ColorConfig {
     title?: string;
     order: ConfigOrder[];
     sidebar_editable?: boolean | string;

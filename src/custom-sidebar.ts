@@ -27,6 +27,7 @@ import {
     ELEMENT,
     SELECTOR,
     ATTRIBUTE,
+    CSS_VARIABLES,
     KEY,
     CLASS,
     EVENT,
@@ -133,6 +134,15 @@ class CustomSidebar {
         return navigator.userAgent.toLowerCase();
     }
 
+    private _getIcon(element: HTMLElement): HTMLElement | null {
+        return element.querySelector(
+            [
+                ELEMENT.HA_SVG_ICON,
+                ELEMENT.HA_ICON
+            ].join(',')
+        );
+    }
+
     private _buildNewItem(configItem: ConfigNewItem): HTMLAnchorElement {
 
         const a = document.createElement('a');
@@ -167,12 +177,7 @@ class CustomSidebar {
     }
 
     private _updateIcon(element: HTMLAnchorElement, icon: string): void {
-        const iconElement = element.querySelector(
-            [
-                ELEMENT.HA_SVG_ICON,
-                ELEMENT.HA_ICON
-            ].join(',')
-        );
+        const iconElement = this._getIcon(element);
         if (iconElement) {
             const haIcon = document.createElement(ELEMENT.HA_ICON);
             haIcon.setAttribute('icon', icon);
@@ -190,7 +195,6 @@ class CustomSidebar {
             .then((titleElement: HTMLElement) => {
                 if (this._configWithExceptions.title) {
                     this._subscribeTemplate(
-                        titleElement,
                         this._configWithExceptions.title,
                         (rendered: string) => {
                             titleElement.innerHTML = rendered;
@@ -231,7 +235,6 @@ class CustomSidebar {
             }
             if (typeof this._configWithExceptions.sidebar_editable === 'string') {
                 this._subscribeTemplate(
-                    document.createElement('div'),
                     this._configWithExceptions.sidebar_editable,
                     (rendered: string) => {
                         if (rendered === 'true' || rendered === 'false') {
@@ -253,10 +256,25 @@ class CustomSidebar {
 
     }
 
-    private _subscribeName(element: Element, name: string): void {
+    private _subscribeName(element: HTMLElement, name: string): void {
+        const itemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
         this._subscribeTemplate(
-            element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT),
-            name
+            name,
+            (rendered: string): void => {
+                itemText.innerHTML = rendered;
+            }
+        );
+    }
+
+    private _subscribeInfo(element: HTMLElement, info: string): void {
+        const textElement = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
+        this._subscribeTemplate(
+            info,
+            (rendered: string): void => {
+                if (rendered.length) {
+                    textElement.dataset.info = rendered;
+                }
+            }
         );
     }
 
@@ -290,37 +308,81 @@ class CustomSidebar {
             }
         };
 
-        this._subscribeTemplate(badge, notification, callback);
+        this._subscribeTemplate(notification, callback);
 
     }
 
-    private _subscribeTemplate(element: Element, template: string, callback?: (rendered: string) => void): void {
-        element.innerHTML = '';
+    private _subscribeIconColor(element: HTMLElement, variable: string, color: string): void {
+        const iconElement = this._getIcon(element);
+        this._subscribeTemplate(
+            color,
+            (rendered: string): void => {
+                iconElement.style.setProperty(
+                    variable,
+                    rendered
+                );
+            }
+        );
+    }
+
+    private _subscribeTextColor(element: HTMLElement, variable: string, color: string): void {
+        const textElement = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
+        this._subscribeTemplate(
+            color,
+            (rendered: string): void => {
+                textElement.style.setProperty(
+                    variable,
+                    rendered
+                );
+            }
+        );
+    }
+
+    private _subscribeInfoColor(element: HTMLElement, variable: string, color: string) {
+        this._subscribeTemplate(
+            color,
+            (rendered: string): void => {
+                element.style.setProperty(
+                    variable,
+                    rendered
+                );
+            }
+        );
+    }
+
+    private _subscribeSelectionColor(element: HTMLElement, color: string): void {
+        this._subscribeTemplate(
+            color,
+            (rendered: string): void => {
+                if (rendered.length) {
+                    element.style.setProperty(
+                        CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR,
+                        rendered
+                    );
+                }
+            }
+        );
+    }
+
+    private _subscribeTemplate(template: string, callback: (rendered: string) => void): void {
         if (JS_TEMPLATE_REG.test(template)) {
             this._createJsTemplateSubscription(
-                element,
                 template.replace(JS_TEMPLATE_REG, '$1'),
                 callback
             );
         } else if (JINJA_TEMPLATE_REG.test(template)) {
             this._createJinjaTemplateSubscription(
-                element,
                 template,
                 callback
             );
         } else {
-            if (callback) {
-                callback(template);
-            } else {
-                element.innerHTML = template;
-            }
+            callback(template);
         }
     }
 
     private _createJsTemplateSubscription(
-        element: Element,
         code: string,
-        extraCallback?: (result: string) => void
+        extraCallback: (result: string) => void
     ): void {
 
         this._renderer.trackTemplate(
@@ -347,29 +409,20 @@ class CustomSidebar {
                         rendered = JSON.stringify(result);
                     }
                 }
-                if (extraCallback) {
-                    extraCallback(rendered);
-                } else {
-                    element.innerHTML = rendered;
-                }
+                extraCallback(rendered);
             }
         );
 
     }
 
     private _createJinjaTemplateSubscription(
-        element: Element,
         template: string,
         callback?: (rendered: string) => void
     ): void {
         window.hassConnection.then((hassConnection: HassConnection): void => {
             hassConnection.conn.subscribeMessage<SubscriberTemplate>(
                 (message: SubscriberTemplate): void => {
-                    if (callback) {
-                        callback(`${message.result}`);
-                    } else {
-                        element.innerHTML = `${message.result}`;
-                    }
+                    callback(`${message.result}`);
                 },
                 {
                     type: EVENT.RENDER_TEMPLATE,
@@ -574,29 +627,79 @@ class CustomSidebar {
 
                 addStyle(
                     `
-                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
-                        left: calc(var(--app-drawer-width, 248px) - 22px);
-                        max-width: 80px;
-                        transform: translateX(-100%);
-                        ${commonNotificationStyles} 
-                    }
-                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
-                        bottom: 14px;
-                        left: 26px;
-                        max-width: 20px;
-                        ${commonNotificationStyles}
-                    }
-                    :host([expanded]) ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
-                        opacity: 0;
-                    }
-                    ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_NOTIFICATION }] > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
-                        max-width: calc(100% - 86px);
+                    ${ ELEMENT.PAPER_LISTBOX } {
+                        & > ${ SELECTOR.ITEM_SELECTED } {
+                            & > ${ ELEMENT.PAPER_ICON_ITEM } {
+                                &::before {
+                                    background-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR }));
+                                }
+                            }
+                        }
+                        & > ${ SELECTOR.ITEM } {
+                            & > ${ ELEMENT.PAPER_ICON_ITEM } {
+                                & > ${ SELECTOR.NOTIFICATION_BADGE } {
+                                    &:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
+                                        left: calc(var(--app-drawer-width, 248px) - 22px);
+                                        max-width: 80px;
+                                        transform: translateX(-100%);
+                                        ${commonNotificationStyles} 
+                                    }
+                                }
+                                & > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
+                                    bottom: 14px;
+                                    left: 26px;
+                                    max-width: 20px;
+                                    ${commonNotificationStyles}
+                                }
+                            }
+                            &[${ ATTRIBUTE.WITH_NOTIFICATION }] {
+                                & > ${ ELEMENT.PAPER_ICON_ITEM } {
+                                    & > ${ SELECTOR.ITEM_TEXT } {
+                                        max-width: calc(100% - 86px);
+                                    }
+                                }
+                            }
+                        }
+                        :host([expanded]) & {
+                            & > ${ SELECTOR.ITEM } {
+                                & > ${ ELEMENT.PAPER_ICON_ITEM } {
+                                    & > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
+                                        opacity: 0;
+                                    }
+                                    & > ${ SELECTOR.ITEM_TEXT } {
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: 2px;
+                                        line-height: 1;
+                                        &::after {
+                                            content: attr(data-info);
+                                            display: none;
+                                            font-size: 11px;
+                                            line-height: 1;
+                                        }
+                                        &[data-info]::after {
+                                            color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_TEXT_COLOR }));
+                                            display: block;
+                                        }
+                                    }
+                                }
+                                &${ SELECTOR.ITEM_SELECTED } {
+                                    & > ${ ELEMENT.PAPER_ICON_ITEM } {
+                                        & > ${ SELECTOR.ITEM_TEXT } {
+                                            &[data-info]::after {
+                                                color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR }));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] {
                         pointer-events: none;
-                    }
-                    ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] > ${ SELECTOR.HA_ICON_BUTTON } {
-                        pointer-events: all;
+                        & > ${ SELECTOR.HA_ICON_BUTTON } {
+                            pointer-events: all;
+                        }
                     }
                     ${ this._configWithExceptions.styles || '' }
                     `.trim(),
@@ -724,10 +827,72 @@ class CustomSidebar {
                         );
                     }
 
+                    if (orderItem.info) {
+                        this._subscribeInfo(
+                            orderItem.element,
+                            orderItem.info
+                        );
+                    }
+
                     if (orderItem.notification) {
                         this._subscribeNotification(
                             orderItem.element,
                             orderItem.notification
+                        );
+                    }
+
+                    if (orderItem.icon_color) {
+                        this._subscribeIconColor(
+                            orderItem.element,
+                            CSS_VARIABLES.SIDEBAR_ICON_COLOR,
+                            orderItem.icon_color
+                        );
+                    }
+
+                    if (orderItem.icon_color_selected) {
+                        this._subscribeIconColor(
+                            orderItem.element,
+                            CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR,
+                            orderItem.icon_color_selected
+                        );
+                    }
+
+                    if (orderItem.text_color) {
+                        this._subscribeTextColor(
+                            orderItem.element,
+                            CSS_VARIABLES.SIDEBAR_TEXT_COLOR,
+                            orderItem.text_color
+                        );
+                    }
+
+                    if (orderItem.text_color_selected) {
+                        this._subscribeTextColor(
+                            orderItem.element,
+                            CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR,
+                            orderItem.text_color_selected
+                        );
+                    }
+
+                    if (orderItem.info_color) {
+                        this._subscribeInfoColor(
+                            orderItem.element,
+                            CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR,
+                            orderItem.info_color
+                        );
+                    }
+
+                    if (orderItem.info_color_selected) {
+                        this._subscribeInfoColor(
+                            orderItem.element,
+                            CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR,
+                            orderItem.info_color_selected
+                        );
+                    }
+
+                    if (orderItem.selection_color || orderItem.icon_color_selected) {
+                        this._subscribeSelectionColor(
+                            orderItem.element,
+                            orderItem.selection_color ?? orderItem.icon_color_selected
                         );
                     }
 
