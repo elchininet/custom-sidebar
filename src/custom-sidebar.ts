@@ -820,83 +820,83 @@ class CustomSidebar {
 
                     }
 
-                    if (orderItem.name) {
-                        this._subscribeName(
-                            orderItem.element,
-                            orderItem.name
-                        );
-                    }
-
-                    if (orderItem.info) {
-                        this._subscribeInfo(
-                            orderItem.element,
-                            orderItem.info
-                        );
-                    }
-
-                    if (orderItem.notification) {
-                        this._subscribeNotification(
-                            orderItem.element,
-                            orderItem.notification
-                        );
-                    }
-
-                    if (orderItem.icon_color) {
-                        this._subscribeIconColor(
-                            orderItem.element,
-                            CSS_VARIABLES.SIDEBAR_ICON_COLOR,
-                            orderItem.icon_color
-                        );
-                    }
-
-                    if (orderItem.icon_color_selected) {
-                        this._subscribeIconColor(
-                            orderItem.element,
-                            CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR,
-                            orderItem.icon_color_selected
-                        );
-                    }
-
-                    if (orderItem.text_color) {
-                        this._subscribeTextColor(
-                            orderItem.element,
-                            CSS_VARIABLES.SIDEBAR_TEXT_COLOR,
-                            orderItem.text_color
-                        );
-                    }
-
-                    if (orderItem.text_color_selected) {
-                        this._subscribeTextColor(
-                            orderItem.element,
-                            CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR,
-                            orderItem.text_color_selected
-                        );
-                    }
-
-                    if (orderItem.info_color) {
-                        this._subscribeInfoColor(
-                            orderItem.element,
-                            CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR,
-                            orderItem.info_color
-                        );
-                    }
-
-                    if (orderItem.info_color_selected) {
-                        this._subscribeInfoColor(
-                            orderItem.element,
-                            CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR,
-                            orderItem.info_color_selected
-                        );
-                    }
-
-                    if (orderItem.selection_color || orderItem.icon_color_selected) {
-                        this._subscribeSelectionColor(
-                            orderItem.element,
-                            orderItem.selection_color ?? orderItem.icon_color_selected
-                        );
-                    }
-
                     if (!orderItem.hide) {
+
+                        if (orderItem.name) {
+                            this._subscribeName(
+                                orderItem.element,
+                                orderItem.name
+                            );
+                        }
+
+                        if (orderItem.info) {
+                            this._subscribeInfo(
+                                orderItem.element,
+                                orderItem.info
+                            );
+                        }
+
+                        if (orderItem.notification) {
+                            this._subscribeNotification(
+                                orderItem.element,
+                                orderItem.notification
+                            );
+                        }
+
+                        if (orderItem.icon_color) {
+                            this._subscribeIconColor(
+                                orderItem.element,
+                                CSS_VARIABLES.SIDEBAR_ICON_COLOR,
+                                orderItem.icon_color
+                            );
+                        }
+
+                        if (orderItem.icon_color_selected) {
+                            this._subscribeIconColor(
+                                orderItem.element,
+                                CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR,
+                                orderItem.icon_color_selected
+                            );
+                        }
+
+                        if (orderItem.text_color) {
+                            this._subscribeTextColor(
+                                orderItem.element,
+                                CSS_VARIABLES.SIDEBAR_TEXT_COLOR,
+                                orderItem.text_color
+                            );
+                        }
+
+                        if (orderItem.text_color_selected) {
+                            this._subscribeTextColor(
+                                orderItem.element,
+                                CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR,
+                                orderItem.text_color_selected
+                            );
+                        }
+
+                        if (orderItem.info_color) {
+                            this._subscribeInfoColor(
+                                orderItem.element,
+                                CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR,
+                                orderItem.info_color
+                            );
+                        }
+
+                        if (orderItem.info_color_selected) {
+                            this._subscribeInfoColor(
+                                orderItem.element,
+                                CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR,
+                                orderItem.info_color_selected
+                            );
+                        }
+
+                        if (orderItem.selection_color || orderItem.icon_color_selected) {
+                            this._subscribeSelectionColor(
+                                orderItem.element,
+                                orderItem.selection_color ?? orderItem.icon_color_selected
+                            );
+                        }
 
                         if (orderItem.new_item) {
 

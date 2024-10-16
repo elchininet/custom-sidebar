@@ -275,6 +275,149 @@ test('If sidebar_mode is set to "hidden" the sidebar should not be visible in de
 
 });
 
+test('If info is set in one item it should add the secondary text', async ({ page }) => {
+
+    await fulfillJson(page, {
+        order: [
+            {
+                new_item: true,
+                item: 'Integrations',
+                info: 'Integrations',
+                href: '/config/integrations',
+                icon: 'mdi:puzzle'
+            }
+        ]
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('07-sidebar-item-info.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
+test('If icon_color is set the icons should change their color', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        icon_color: 'red'
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('08-sidebar-icon-color.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
+test('If icon_color_selected is set the icons of the selected item should change its color', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        icon_color_selected: 'red'
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('09-sidebar-icon-color-selected.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
+test('If text_color is set the texts should change their color', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        text_color: 'red'
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('10-sidebar-text-color.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
+test('If text_color_selected is set the text of the selected item should change its color', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        text_color_selected: 'red'
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('11-sidebar-text-color-selected.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
+test('If selection_color is set the background of the selected item should change its color', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        selection_color: 'red'
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('12-sidebar-selection-color.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
+test('If info_color is set the color of the secondary text of the item should change its color', async ({ page }) => {
+
+    await fulfillJson(page, {
+        info_color: 'red',
+        order: [
+            {
+                new_item: true,
+                item: 'Integrations',
+                info: 'Integrations',
+                href: '/config/integrations',
+                icon: 'mdi:puzzle'
+            }
+        ]
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('13-sidebar-info-color.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
+test('If info_color_selected is set the color of the secondary text of the selected item should change its color', async ({ page }) => {
+
+    await fulfillJson(page, {
+        info_color_selected: 'red',
+        order: [
+            {
+                item: 'overview',
+                info: 'Integrations'
+            }
+        ]
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('14-sidebar-info-color-selected.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
 test('should apply custom styles', async ({ page }) => {
 
     await addJsonExtendedRoute(page, {
@@ -284,7 +427,7 @@ test('should apply custom styles', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('07-sidebar-custom-styles.png', {
+    await expect(page).toHaveScreenshot('15-sidebar-custom-styles.png', {
         clip: SIDEBAR_CLIP
     });
 
