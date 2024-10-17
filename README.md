@@ -134,13 +134,20 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 
 | Property           | Type                               | Required | Description |
 | ------------------ | ---------------------------------- | -------- | ----------- |
-| order              | Array of [item](#order-item-properties) | yes      | List of items to process |
+| order              | Array of [items](#order-items-properties) | yes      | List of items to process |
 | title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
 | sidebar_editable<sup>\*</sup> | Boolean or String       | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
 | sidebar_mode       | String                             | no       | Defines the default status of the sidebar when Home Assistant is loaded. It has three possible values: "hidden" to make the sidebar hidden, "narrow" to make the sidebar visible in narrow state and "extended" to make sidebar visible in extended state. This option will show or hide the sidebar ignoring if it is a desktop or a mobile device or if the `Always hide the sidebar` switch in the profile page in on or off (depending on the value of this option, this switch will be switched on or off automatically) |
-| styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin |
+| icon_color<sup>\*</sup> | String                        | no       | Sets the color of the sidebar icons |
+| icon_color_selected<sup>\*</sup> | String               | no       | Sets the icon color of the selected sidebar item |
+| text_color<sup>\*</sup> | String                        | no       | Sets the text color of the sidebar items |
+| text_color_selected<sup>\*</sup> | String               | no       | Sets the text color of the selected sidebar item |
+| selection_color<sup>\*</sup> | String                   | no       | Sets the color of the selected item background. If it is not specified, the `icon_color_selected` will be used (this color has an opacity of 0.12) |
+| info_color<sup>\*</sup> | String                        | no       | Sets the color of the info texts of the sidebar items |
+| info_color_selected<sup>\*</sup> | String               | no       | Sets the color of the info text of the selected sidebar item |
+| styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
 
-#### Order item properties
+#### Order items properties
 
 | Property                  | Type    | Required  | Description |
 | ------------------------- | ------- | --------- | ----------- |
@@ -148,9 +155,17 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | match                     | String  | no        | This property will define which string will be used to match the `item` property. It has three possible values "text" (default) to match the text content of the element, "data-panel" to match the `data-panel` attribute of the element, or "href", to match the `href` attribute of the element |
 | exact                     | Boolean | no        | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`). |
 | name<sup>\*</sup>         | String  | no        | Changes the name of the sidebar item |
+| info<sup>\*</sup>         | String  | no        | Sets the content of the info text (a smaller secondary text below the main item text) |
 | notification<sup>\*</sup> | String  | no        | Add a notification badge to the sidebar item |
+| icon_color<sup>\*</sup>   | String  | no        | Sets the color of the icon (it overrides the global `icon_color`) |
+| icon_color_selected<sup>\*</sup> | String | no  | Sets the icon color of the item when it is selected (it overrides the global `icon_color_selected`) |
+| text_color<sup>\*</sup> | String    | no        | Sets the text color of the item (it overrides the global `text_color`) |
+| text_color_selected<sup>\*</sup> | String | no  | Sets the text color of the item when it is selected (it overrides the global `text_color_selected`) |
+| selection_color<sup>\*</sup> | String     | no  | Sets the color of the item background when it is selected. If it is not specified, the `icon_color_selected` will be used (this color has an opacity of 0.12 and it overrides the global `selection_color`) |
+| info_color<sup>\*</sup> | String | no           | Sets the color of the info text (it overrides the global `info_color`) |
+| info_color_selected<sup>\*</sup> | String | no  | Sets the color of the info text when the item is selected (it overrides the global `info_color_selected`) |
 | order                     | Number  | no        | Sets the order number of the sidebar item |
-| bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc)         |
+| bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
 | hide                      | Boolean | no        | Setting this property to `true` will hide the sidebar item |
 | href                      | String  | no        | Specifies the `href` of the sidebar item |
 | target                    | String  | no        | Specifies the [target property] of the sidebar item |
@@ -163,6 +178,7 @@ Short example in `YAML` format:
 
 ```yaml
 title: My Home
+icon_color_selected: var(--accent-color)
 order:
   - new_item: true
     item: Google
@@ -173,14 +189,12 @@ order:
   - item: overview
     order: 2
   - new_item: true
-    item: Integrations
-    href: "/config/integrations"
-    icon: mdi:puzzle
+    item: Automations
+    href: "/config/automation"
+    icon: mdi:robot
+    info: |
+      {{ states.automation | selectattr('state', 'eq', 'on') | list | count }} active
     order: 3
-styles: |
-  paper-listbox {
-      --icon-primary-color: var(--accent-color);
-  }
 ```
 
 Short example in `JSON` format:
@@ -188,6 +202,7 @@ Short example in `JSON` format:
 ```json5
 {
   "title": "My Home",
+  "icon_color_selected": "var(--accent-color)",
   "order": [
     {
       "new_item": true,
@@ -203,13 +218,13 @@ Short example in `JSON` format:
     },
     {
       "new_item": true,
-      "item": "Integrations",
-      "href": "/config/integrations",
-      "icon": "mdi:puzzle",
+      "item": "Automations",
+      "href": "/config/automation",
+      "icon": "mdi:robot",
+      "info": "{{ states.automation | selectattr('state', 'eq', 'on') | list | count }} active",
       "order": 3
     }
-  ],
-  "styles": "paper-listbox { --icon-primary-color: var(--accent-color); }"
+  ]
  }
 ```
 
@@ -229,10 +244,17 @@ You can define user-specific options using exceptions feature. Exceptions can be
 
 | Property            | Type              | Required | Description |
 | ------------------- | ----------------- | -------- | ----------- |
-| order               | Array of [item](#order-item-properties) | no   | Defines the sidebar items order |
+| order               | Array of [items](#order-items-properties) | no   | Defines the sidebar items order |
 | title<sup>\*</sup>             | String            | no       | Custom title to replace the `Home Assistant` title |
 | sidebar_editable<sup>\*</sup>  | Boolean or String | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
 | sidebar_mode       | String                             | no       | Defines the default status of the sidebar when Home Assistant is loaded. It has three possible values: "hidden" to make the sidebar hidden, "narrow" to make the sidebar visible in narrow state and "extended" to make sidebar visible in extended state. This option will show or hide the sidebar ignoring if it is a desktop or a mobile device or if the `Always hide the sidebar` switch in the profile page in on or off (depending on the value of this option, this switch will be switched on or off automatically) |
+| icon_color<sup>\*</sup> | String                        | no       | Sets the color of the sidebar icons |
+| icon_color_selected<sup>\*</sup> | String               | no       | Sets the icon color of the selected sidebar item |
+| text_color<sup>\*</sup> | String                        | no       | Sets the text color of the sidebar items |
+| text_color_selected<sup>\*</sup> | String               | no       | Sets the text color of the selected sidebar item |
+| selection_color<sup>\*</sup> | String                   | no       | Sets the color of the selected item background. If it is not specified, the `icon_color_selected` will be used (this color has an opacity of 0.12) |
+| info_color<sup>\*</sup> | String                        | no       | Sets the color of the info texts of the sidebar items |
+| info_color_selected<sup>\*</sup> | String               | no       | Sets the color of the info text of the selected sidebar item |
 | styles              | String            | no       | Custom styles that will be added to the styles block of the plugin |
 | extend_from_base    | Boolean           | no       | If true, the options will be extended with the root options. The property `order` will be merged with the base one, the rest of properties will use the base counterpart if they are not specified. If it is false, it will take into account only the options in the exception |
 | user       | String or String[] | no          | Home Assistant user name(s) you would like to display this order for |
@@ -280,7 +302,7 @@ Short example in `JSON` format:
 
 ## Templates
 
-Some config options and item properties, as `title`, `sidebar_editable`, `name` and `notification`, admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main difference between the two templating systems (apart from the syntax) is that `JavaScript` can access client side data like DOM APIs meanwhile `Jinja` templates are agnostic to the device in which `Home Assistant` is being executed.
+Some config options and item properties, as `title`, `sidebar_editable`, `name` `notification`, and `info`, admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main difference between the two templating systems (apart from the syntax) is that `JavaScript` can access client side data like DOM APIs meanwhile `Jinja` templates are agnostic to the device in which `Home Assistant` is being executed.
 
 ### JavaScript templates
 
@@ -292,7 +314,7 @@ The entities and domains used in the templates will be stored so if the state of
 
 #### JavaScript templates example
 
-The next example will set the title of the sidebar as "My Home" followed by the current time. It will also add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed. And it also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses.
+The next example will set the title of the sidebar as "My Home" followed by the current time. It will also add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed. And it also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses and the Operating System version in the info text.
 
 ##### in `YAML` format:
 
@@ -310,6 +332,7 @@ order:
   - new_item: true
     item: info
     name: '[[[ "Info (" + state_attr("update.home_assistant_supervisor_update", "latest_version") + ")" ]]]'
+    info: '[[[ return "OS " + state_attr("update.home_assistant_operating_system_update", "latest_version") ]]]'
     href: '/config/info'
     icon: mdi:information-outline
 ```
@@ -328,6 +351,7 @@ order:
       "new_item": true,
       "item": "info",
       "name": "[[[ 'Info (' + state_attr('update.home_assistant_supervisor_update', 'latest_version') + ')' ]]]",
+      "info": "[[[ return 'OS ' + state_attr('update.home_assistant_operating_system_update', 'latest_version') ]]]",
       "href": "/config/info",
       "icon": "mdi:information-outline"
     }
@@ -350,7 +374,7 @@ When the entities and domains used in a templates change, it will trigger an upd
 
 #### Jinja templates example
 
-The next example will set the title of the sidebar as "My Home" followed by the current time. It will also add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed. And it also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version between parentheses.
+The next example will set the title of the sidebar as "My Home" followed by the current time. It will also add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed. And it also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version between parentheses and the Operating System version in the info text.
 
 ##### in `YAML` format:
 
@@ -371,6 +395,7 @@ order:
   - new_item: true
     item: info
     name: 'Info ({{ state_attr("update.home_assistant_supervisor_update", "latest_version") }})'
+    info: 'OS {{ state_attr("update.home_assistant_operating_system_update", "latest_version") }}'
     href: '/config/info'
     icon: mdi:information-outline
 ```
@@ -389,6 +414,7 @@ order:
       "new_item": true,
       "item": "info",
       "name": "Info ({{ state_attr('update.home_assistant_supervisor_update', 'latest_version') }})",
+      "info": "OS {{ state_attr('update.home_assistant_operating_system_update', 'latest_version') }}",
       "href": "/config/info",
       "icon": "mdi:information-outline"
     }
