@@ -66,18 +66,18 @@ const extendOptionsFromBase = (
 
 };
 
-const extendItemOptionsFromBase = (item: ConfigOrder, config: Config): void => {
+const extendItemOptionsFromBase = (item: ConfigOrder, base: Partial<Config>): void => {
     EXTENDABLE_ITEM_OPTIONS.forEach((option: ExetndableItemConfigOption): void => {
-        item[option] = item[option] ?? config[option];
+        item[option] = item[option] ?? base[option];
     });
 };
 
-const flatConfigOrder = (order: ConfigOrder[], config: Config): ConfigOrder[] => {
+const flatConfigOrder = (order: ConfigOrder[], base: Partial<Config>): ConfigOrder[] => {
 
     const orderMap = new Map<string, ConfigOrder>();
 
     order.forEach((orderItem: ConfigOrder): void => {
-        extendItemOptionsFromBase(orderItem, config);
+        extendItemOptionsFromBase(orderItem, base);
         orderMap.set(orderItem.item, orderItem);
     });
 
@@ -181,7 +181,7 @@ export const getConfigWithExceptions = (
                         ...config.order,
                         ...exceptionsOrder
                     ],
-                    config
+                    configCommonProps
                 )
             };
         }
@@ -190,7 +190,7 @@ export const getConfigWithExceptions = (
             ...configCommonProps,
             order: flatConfigOrder(
                 exceptionsOrder,
-                config
+                configCommonProps
             )
         };
     }
