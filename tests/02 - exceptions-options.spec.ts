@@ -429,6 +429,173 @@ test.describe('extending from the base', () => {
 
         });
 
+        test('should take the icon_color option from the base', async ({ page }) => {
+
+            await addJsonExtendedRoute(page, {
+                icon_color: 'green',
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: json.order,
+                        extend_from_base: true
+                    }
+                ]
+            });
+
+            await pageVisit(page);
+
+            await expect(page).toHaveScreenshot('15-sidebar-exceptions-extend-icon-color-from-base.png', {
+                clip: SIDEBAR_CLIP
+            });
+
+        });
+
+        test('should take the icon_color_selected option from the base', async ({ page }) => {
+
+            await addJsonExtendedRoute(page, {
+                icon_color_selected: 'red',
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: json.order,
+                        extend_from_base: true
+                    }
+                ]
+            });
+
+            await pageVisit(page);
+
+            await expect(page).toHaveScreenshot('16-sidebar-exceptions-extend-icon-color-selected-from-base.png', {
+                clip: SIDEBAR_CLIP
+            });
+
+        });
+
+        test('should take the text_color option from the base', async ({ page }) => {
+
+            await addJsonExtendedRoute(page, {
+                text_color: 'green',
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: json.order,
+                        extend_from_base: true
+                    }
+                ]
+            });
+
+            await pageVisit(page);
+
+            await expect(page).toHaveScreenshot('17-sidebar-exceptions-extend-text-color-from-base.png', {
+                clip: SIDEBAR_CLIP
+            });
+
+        });
+
+        test('should take the text_color_selected option from the base', async ({ page }) => {
+
+            await addJsonExtendedRoute(page, {
+                text_color_selected: 'red',
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: json.order,
+                        extend_from_base: true
+                    }
+                ]
+            });
+
+            await pageVisit(page);
+
+            await expect(page).toHaveScreenshot('18-sidebar-exceptions-extend-text-color-selected-from-base.png', {
+                clip: SIDEBAR_CLIP
+            });
+
+        });
+
+        test('should take the selection_color option from the base', async ({ page }) => {
+
+            await addJsonExtendedRoute(page, {
+                selection_color: 'red',
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: json.order,
+                        extend_from_base: true
+                    }
+                ]
+            });
+
+            await pageVisit(page);
+
+            await expect(page).toHaveScreenshot('19-sidebar-exceptions-extend-selection-color-from-base.png', {
+                clip: SIDEBAR_CLIP
+            });
+
+        });
+
+        test('should take the info_color option from the base', async ({ page }) => {
+
+            await addJsonExtendedRoute(page, {
+                info_color: 'red',
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: [
+                            {
+                                item: 'overview',
+                                info: 'Some info',
+                                order: 0
+                            },
+                            {
+                                ...json.order[0],
+                                info: 'Some info'
+                            }
+                        ],
+                        extend_from_base: true
+                    }
+                ]
+            });
+
+            await pageVisit(page);
+
+            await expect(page).toHaveScreenshot('20-sidebar-exceptions-extend-info-color-from-base.png', {
+                clip: SIDEBAR_CLIP
+            });
+
+        });
+
+        test('@testing should take the info_color_selected option from the base', async ({ page }) => {
+
+            await addJsonExtendedRoute(page, {
+                info_color_selected: 'red',
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: [
+                            {
+                                item: 'overview',
+                                info: 'Some info',
+                                order: 0
+                            },
+                            {
+                                ...json.order[0],
+                                info: 'Some info'
+                            }
+                        ],
+                        extend_from_base: true
+                    }
+                ]
+            });
+
+            await pageVisit(page);
+
+            await expect(page).toHaveScreenshot('21-sidebar-exceptions-extend-info-color-selected-from-base.png', {
+                clip: SIDEBAR_CLIP
+            });
+
+        });
+
         test('should take the sidebar_editable option from the base', async ({ page }) => {
 
             await addJsonExtendedRoute(page, {
@@ -484,7 +651,7 @@ test.describe('without extending from the base', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('15-sidebar-exceptions-few-changes.png', {
+        await expect(page).toHaveScreenshot('22-sidebar-exceptions-few-changes.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -504,7 +671,7 @@ test.describe('without extending from the base', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('16-sidebar-exceptions-title-from-exception.png', {
+        await expect(page).toHaveScreenshot('23-sidebar-exceptions-title-from-exception.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -527,7 +694,7 @@ test.describe('without extending from the base', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('17-sidebar-exceptions-sidebar-mode-from-exception.png', {
+        await expect(page).toHaveScreenshot('24-sidebar-exceptions-sidebar-mode-from-exception.png', {
             clip: SIDEBAR_NARROW_CLIP
         });
 
@@ -577,7 +744,7 @@ test.describe('without extending from the base', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('18-sidebar-exceptions-style-from-exception.png', {
+        await expect(page).toHaveScreenshot('25-sidebar-exceptions-style-from-exception.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -601,7 +768,7 @@ test.describe('without extending from the base', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('19-sidebar-exceptions-no-style.png', {
+        await expect(page).toHaveScreenshot('26-sidebar-exceptions-no-style.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -666,7 +833,7 @@ test.describe('without extending from the base', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('20-sidebar-exceptions-no-options-default-sidebar.png', {
+        await expect(page).toHaveScreenshot('27-sidebar-exceptions-no-options-default-sidebar.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -689,7 +856,7 @@ test.describe('user and device matchers', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('21-sidebar-exceptions-match-success.png', {
+        await expect(page).toHaveScreenshot('28-sidebar-exceptions-match-success.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -708,7 +875,7 @@ test.describe('user and device matchers', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('21-sidebar-exceptions-match-success.png', {
+        await expect(page).toHaveScreenshot('28-sidebar-exceptions-match-success.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -727,7 +894,7 @@ test.describe('user and device matchers', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('21-sidebar-exceptions-match-success.png', {
+        await expect(page).toHaveScreenshot('28-sidebar-exceptions-match-success.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -746,7 +913,7 @@ test.describe('user and device matchers', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('21-sidebar-exceptions-match-success.png', {
+        await expect(page).toHaveScreenshot('28-sidebar-exceptions-match-success.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -765,7 +932,7 @@ test.describe('user and device matchers', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('21-sidebar-exceptions-match-success.png', {
+        await expect(page).toHaveScreenshot('28-sidebar-exceptions-match-success.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -784,7 +951,7 @@ test.describe('user and device matchers', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('21-sidebar-exceptions-match-success.png', {
+        await expect(page).toHaveScreenshot('28-sidebar-exceptions-match-success.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -803,7 +970,7 @@ test.describe('user and device matchers', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('21-sidebar-exceptions-match-success.png', {
+        await expect(page).toHaveScreenshot('28-sidebar-exceptions-match-success.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -822,7 +989,7 @@ test.describe('user and device matchers', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('21-sidebar-exceptions-match-success.png', {
+        await expect(page).toHaveScreenshot('28-sidebar-exceptions-match-success.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -847,7 +1014,7 @@ test.describe('exceptions that do not match', async () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('22-sidebar-exceptions-no-match-title-from-base.png', {
+        await expect(page).toHaveScreenshot('29-sidebar-exceptions-no-match-title-from-base.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -870,7 +1037,7 @@ test.describe('exceptions that do not match', async () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('23-sidebar-exceptions-no-match-sidebar-mode-from-base.png', {
+        await expect(page).toHaveScreenshot('30-sidebar-exceptions-no-match-sidebar-mode-from-base.png', {
             clip: SIDEBAR_NARROW_CLIP
         });
 
@@ -900,7 +1067,7 @@ test.describe('exceptions that do not match', async () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('24-sidebar-exceptions-no-match-style-from-base.png', {
+        await expect(page).toHaveScreenshot('31-sidebar-exceptions-no-match-style-from-base.png', {
             clip: SIDEBAR_CLIP
         });
 
@@ -943,7 +1110,7 @@ test.describe('exceptions that do not match', async () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('25-sidebar-exceptions-no-match-everything-from-base.png', {
+        await expect(page).toHaveScreenshot('32-sidebar-exceptions-no-match-everything-from-base.png', {
             clip: SIDEBAR_CLIP
         });
 
