@@ -565,7 +565,7 @@ test.describe('extending from the base', () => {
 
         });
 
-        test('@testing should take the info_color_selected option from the base', async ({ page }) => {
+        test('should take the info_color_selected option from the base', async ({ page }) => {
 
             await addJsonExtendedRoute(page, {
                 info_color_selected: 'red',

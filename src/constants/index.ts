@@ -32,6 +32,7 @@ export enum SELECTOR {
     ITEM_TEXT = '.item-text',
     NOTIFICATION_BADGE = '.notification-badge',
     NOTIFICATIONS_BADGE_COLLAPSED = '.notification-badge-collapsed',
+    CONFIGURATION_BADGE = '.configuration-badge',
     HA_MENU_BUTTON = 'ha-panel-lovelace$ hui-root$ .toolbar > ha-menu-button',
     EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-settings-row mwc-button',
     SIDEBAR_NOTIFICATIONS = '.notifications',
@@ -44,10 +45,14 @@ export enum CSS_VARIABLES {
     SIDEBAR_ICON_COLOR = '--sidebar-icon-color',
     SIDEBAR_SELECTED_ICON_COLOR= '--sidebar-selected-icon-color',
     SIDEBAR_TEXT_COLOR = '--sidebar-text-color',
+    SIDEBAR_BACKGROUND_COLOR = '--sidebar-background-color',
+    SIDEBAR_TITLE_COLOR = '--sidebar-menu-button-text-color',
+    SIDEBAR_BUTTON_COLOR = '--sidebar-icon-color',
     SIDEBAR_SELECTED_TEXT_COLOR = '--sidebar-selected-text-color',
     CUSTOM_SIDEBAR_SELECTION_COLOR = '--custom-sidebar-selection-color',
     CUSTOM_SIDEBAR_INFO_COLOR = '--custom-sidebar-info-color',
     CUSTOM_SIDEBAR_SELECTED_INFO_COLOR = '--custom-sidebar-selected-info-color',
+    CUSTOM_SIDEBAR_NOTIFICATION_COLOR = '--custom-sidebar-notification-color',
 }
 
 export enum CLASS {

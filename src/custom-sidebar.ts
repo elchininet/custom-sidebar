@@ -271,9 +271,7 @@ class CustomSidebar {
         this._subscribeTemplate(
             info,
             (rendered: string): void => {
-                if (rendered.length) {
-                    textElement.dataset.info = rendered;
-                }
+                textElement.dataset.info = rendered;
             }
         );
     }
@@ -310,6 +308,18 @@ class CustomSidebar {
 
         this._subscribeTemplate(notification, callback);
 
+    }
+
+    private _subscribeNotificationColor(element: HTMLAnchorElement, color: string): void {
+        this._subscribeTemplate(
+            color,
+            (rendered: string): void => {
+                element.style.setProperty(
+                    CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR,
+                    rendered
+                );
+            }
+        );
     }
 
     private _subscribeIconColor(element: HTMLElement, variable: string, color: string): void {
@@ -354,12 +364,10 @@ class CustomSidebar {
         this._subscribeTemplate(
             color,
             (rendered: string): void => {
-                if (rendered.length) {
-                    element.style.setProperty(
-                        CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR,
-                        rendered
-                    );
-                }
+                element.style.setProperty(
+                    CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR,
+                    rendered
+                );
             }
         );
     }
@@ -575,137 +583,179 @@ class CustomSidebar {
         });
 
         // Process sidebar
-        this._sidebar
-            .selector
-            .$
-            .element
-            .then((sideBarShadowRoot) => {
+        Promise.all([
+            this._sidebar.element,
+            this._sidebar.selector.$.element,
+            this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element
+        ]).then(([sidebar, sideBarShadowRoot, paperListBox]: [HTMLElement, ShadowRoot, HTMLElement]) => {
 
-                const paperListBox = sideBarShadowRoot.querySelector<HTMLElement>(ELEMENT.PAPER_LISTBOX);
+            const menu = sideBarShadowRoot.querySelector<HTMLElement>(SELECTOR.MENU);
 
-                paperListBox.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
-                    if (
-                        event.key === KEY.ARROW_DOWN ||
-                        event.key === KEY.ARROW_UP
-                    ) {
-                        event.preventDefault();
-                        event.stopImmediatePropagation();
-                        this._focusItemByKeyboard(paperListBox, event.key === KEY.ARROW_DOWN);
+            if (this._configWithExceptions.title_color) {
+                this._subscribeTemplate(
+                    this._configWithExceptions.title_color,
+                    (rendered: string) => {
+                        menu.style.setProperty(
+                            CSS_VARIABLES.SIDEBAR_TITLE_COLOR,
+                            rendered
+                        );
                     }
-                }, true);
+                );
+            }
 
-                window.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
-                    if (
-                        event.key === KEY.TAB
-                    ) {
-                        const activePaperItem = this._getActivePaperIconElement();
-                        if (activePaperItem) {
-                            if (activePaperItem.nodeName === NODE_NAME.PAPER_ICON_ITEM) {
-                                const parentElement = activePaperItem.parentElement as HTMLElement;
-                                if (parentElement.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
-                                    event.preventDefault();
-                                    event.stopImmediatePropagation();
-                                    this._focusItemByTab(sideBarShadowRoot, parentElement, !event.shiftKey);
-                                }
-                            } else if (activePaperItem.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
+            if (this._configWithExceptions.sidebar_button_color) {
+                this._subscribeTemplate(
+                    this._configWithExceptions.sidebar_button_color,
+                    (rendered: string) => {
+                        menu.style.setProperty(
+                            CSS_VARIABLES.SIDEBAR_BUTTON_COLOR,
+                            rendered
+                        );
+                    }
+                );
+            }
+
+            if (this._configWithExceptions.sidebar_color) {
+                this._subscribeTemplate(
+                    this._configWithExceptions.sidebar_color,
+                    (rendered: string): void => {
+                        sidebar.style.setProperty(
+                            CSS_VARIABLES.SIDEBAR_BACKGROUND_COLOR,
+                            rendered
+                        );
+                    }
+                );
+            }
+
+            paperListBox.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                if (
+                    event.key === KEY.ARROW_DOWN ||
+                    event.key === KEY.ARROW_UP
+                ) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    this._focusItemByKeyboard(paperListBox, event.key === KEY.ARROW_DOWN);
+                }
+            }, true);
+
+            window.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                if (
+                    event.key === KEY.TAB
+                ) {
+                    const activePaperItem = this._getActivePaperIconElement();
+                    if (activePaperItem) {
+                        if (activePaperItem.nodeName === NODE_NAME.PAPER_ICON_ITEM) {
+                            const parentElement = activePaperItem.parentElement as HTMLElement;
+                            if (parentElement.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
                                 event.preventDefault();
                                 event.stopImmediatePropagation();
-                                this._focusItemByTab(sideBarShadowRoot, activePaperItem as HTMLElement, !event.shiftKey);
+                                this._focusItemByTab(sideBarShadowRoot, parentElement, !event.shiftKey);
+                            }
+                        } else if (activePaperItem.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            this._focusItemByTab(sideBarShadowRoot, activePaperItem as HTMLElement, !event.shiftKey);
+                        }
+                    }
+                }
+            }, true);
+
+            const commonNotificationStyles = `
+                background-color: var(${CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR}, var(--accent-color));
+                border-radius: 20px;
+                font-size: 0.65em;
+                overflow: hidden;
+                padding: 0px 5px;
+                text-overflow: ellipsis;
+                text-wrap: nowrap;
+            `;
+
+            addStyle(
+                `
+                ${ ELEMENT.PAPER_LISTBOX } {
+                    & > ${ SELECTOR.ITEM_SELECTED } {
+                        & > ${ ELEMENT.PAPER_ICON_ITEM } {
+                            &::before {
+                                background-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR }));
                             }
                         }
                     }
-                }, true);
-
-                const commonNotificationStyles = `
-                    border-radius: 20px;
-                    font-size: 0.65em;
-                    overflow: hidden;
-                    padding: 0px 5px;
-                    text-overflow: ellipsis;
-                    text-wrap: nowrap;
-                `;
-
-                addStyle(
-                    `
-                    ${ ELEMENT.PAPER_LISTBOX } {
-                        & > ${ SELECTOR.ITEM_SELECTED } {
+                    & > ${ SELECTOR.ITEM } {
+                        & > ${ ELEMENT.PAPER_ICON_ITEM } {
+                            & > ${ SELECTOR.NOTIFICATION_BADGE } {
+                                &:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
+                                    left: calc(var(--app-drawer-width, 248px) - 22px);
+                                    max-width: 80px;
+                                    transform: translateX(-100%);
+                                    ${commonNotificationStyles} 
+                                }
+                            }
+                            & > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
+                                bottom: 14px;
+                                left: 26px;
+                                max-width: 20px;
+                                ${commonNotificationStyles}
+                            }
+                            & > ${ SELECTOR.CONFIGURATION_BADGE } {
+                                background-color: var(${CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR}, var(--accent-color));
+                            }
+                        }
+                        &[${ ATTRIBUTE.WITH_NOTIFICATION }] {
                             & > ${ ELEMENT.PAPER_ICON_ITEM } {
-                                &::before {
-                                    background-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR }));
+                                & > ${ SELECTOR.ITEM_TEXT } {
+                                    max-width: calc(100% - 86px);
                                 }
                             }
                         }
+                    }
+                    :host([expanded]) & {
                         & > ${ SELECTOR.ITEM } {
                             & > ${ ELEMENT.PAPER_ICON_ITEM } {
-                                & > ${ SELECTOR.NOTIFICATION_BADGE } {
-                                    &:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
-                                        left: calc(var(--app-drawer-width, 248px) - 22px);
-                                        max-width: 80px;
-                                        transform: translateX(-100%);
-                                        ${commonNotificationStyles} 
-                                    }
-                                }
                                 & > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
-                                    bottom: 14px;
-                                    left: 26px;
-                                    max-width: 20px;
-                                    ${commonNotificationStyles}
+                                    opacity: 0;
                                 }
-                            }
-                            &[${ ATTRIBUTE.WITH_NOTIFICATION }] {
-                                & > ${ ELEMENT.PAPER_ICON_ITEM } {
-                                    & > ${ SELECTOR.ITEM_TEXT } {
-                                        max-width: calc(100% - 86px);
-                                    }
-                                }
-                            }
-                        }
-                        :host([expanded]) & {
-                            & > ${ SELECTOR.ITEM } {
-                                & > ${ ELEMENT.PAPER_ICON_ITEM } {
-                                    & > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
-                                        opacity: 0;
-                                    }
-                                    & > ${ SELECTOR.ITEM_TEXT } {
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: 2px;
+                                & > ${ SELECTOR.ITEM_TEXT } {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 2px;
+                                    line-height: 1;
+                                    &::after {
+                                        content: attr(data-info);
+                                        display: none;
+                                        font-size: 11px;
                                         line-height: 1;
-                                        &::after {
-                                            content: attr(data-info);
-                                            display: none;
-                                            font-size: 11px;
-                                            line-height: 1;
-                                        }
-                                        &[data-info]::after {
-                                            color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_TEXT_COLOR }));
-                                            display: block;
-                                        }
+                                    }
+                                    &[data-info]::after {
+                                        color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_TEXT_COLOR }));
+                                        display: block;
                                     }
                                 }
-                                &${ SELECTOR.ITEM_SELECTED } {
-                                    & > ${ ELEMENT.PAPER_ICON_ITEM } {
-                                        & > ${ SELECTOR.ITEM_TEXT } {
-                                            &[data-info]::after {
-                                                color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR }));
-                                            }
+                            }
+                            &${ SELECTOR.ITEM_SELECTED } {
+                                & > ${ ELEMENT.PAPER_ICON_ITEM } {
+                                    & > ${ SELECTOR.ITEM_TEXT } {
+                                        &[data-info]::after {
+                                            color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR }));
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                    ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] {
-                        pointer-events: none;
-                        & > ${ SELECTOR.HA_ICON_BUTTON } {
-                            pointer-events: all;
-                        }
+                }
+                ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] {
+                    pointer-events: none;
+                    & > ${ SELECTOR.HA_ICON_BUTTON } {
+                        pointer-events: all;
                     }
-                    ${ this._configWithExceptions.styles || '' }
-                    `.trim(),
-                    sideBarShadowRoot
-                );
-            });
+                }
+                ${ this._configWithExceptions.styles || '' }
+                `.trim(),
+                sideBarShadowRoot
+            );
+
+        });
+
     }
 
     private _rearrange(): void {
@@ -840,6 +890,13 @@ class CustomSidebar {
                             this._subscribeNotification(
                                 orderItem.element,
                                 orderItem.notification
+                            );
+                        }
+
+                        if (orderItem.notification_color) {
+                            this._subscribeNotificationColor(
+                                orderItem.element,
+                                orderItem.notification_color
                             );
                         }
 

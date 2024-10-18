@@ -20,13 +20,17 @@ const EXTENDABLE_ITEM_OPTIONS = [
     'text_color_selected',
     'selection_color',
     'info_color',
-    'info_color_selected'
+    'info_color_selected',
+    'notification_color'
 ] as const;
 
 const EXTENDABLE_OPTIONS = [
     'title',
     'sidebar_editable',
     'sidebar_mode',
+    'sidebar_color',
+    'title_color',
+    'sidebar_button_color',
     'styles',
     ...EXTENDABLE_ITEM_OPTIONS
 ] as const;

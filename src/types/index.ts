@@ -58,6 +58,7 @@ interface ColorConfig {
     selection_color?: string;
     info_color?: string;
     info_color_selected?: string;
+    notification_color?: string;
 }
 
 export interface ConfigItem extends ColorConfig {
@@ -91,6 +92,9 @@ interface BaseConfig extends ColorConfig {
     order: ConfigOrder[];
     sidebar_editable?: boolean | string;
     sidebar_mode?: `${SidebarMode}`;
+    title_color?: string;
+    sidebar_color?: string;
+    sidebar_button_color?: string;
     styles?: string;
 }
 
