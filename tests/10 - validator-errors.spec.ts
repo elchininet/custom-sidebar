@@ -103,29 +103,7 @@ test.describe('main options', () => {
 
     });
 
-    test('should throw an error if there is no order option', async ({ page }) => {
-
-        const errors: string[] = [];
-
-        await fulfillJson(page, {
-            title: 'Custom Title'
-        });
-
-        page.on('pageerror', error => {
-            errors.push(error.message);
-        });
-
-        await page.goto('/');
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        expect(errors).toEqual(
-            expect.arrayContaining([
-                `${ERROR_PREFIX}, "order" parameter is required`
-            ])
-        );
-
-    });
-
-    test('should throw an error if the order parameter is not an array', async ({ page }) => {
+    test('should throw an error if the order property is not an array', async ({ page }) => {
 
         const errors: string[] = [];
 
@@ -141,7 +119,7 @@ test.describe('main options', () => {
         await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
         expect(errors).toEqual(
             expect.arrayContaining([
-                `${ERROR_PREFIX}, "order" parameter should be an array`
+                `${ERROR_PREFIX}, "order" property should be an array`
             ])
         );
 

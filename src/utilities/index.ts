@@ -170,7 +170,7 @@ export const getConfigWithExceptions = (
                 ...configCommonProps,
                 order: flatConfigOrder(
                     [
-                        ...config.order,
+                        ...(config.order || []),
                         ...exceptionsOrder
                     ]
                 )
@@ -187,7 +187,7 @@ export const getConfigWithExceptions = (
     return {
         ...config,
         order: flatConfigOrder(
-            config.order
+            config.order || []
         )
     };
 };
