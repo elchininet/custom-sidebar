@@ -310,66 +310,24 @@ class CustomSidebar {
 
     }
 
-    private _subscribeNotificationColor(element: HTMLAnchorElement, color: string): void {
-        this._subscribeTemplate(
-            color,
-            (rendered: string): void => {
-                element.style.setProperty(
-                    CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR,
-                    rendered
+    private _subscribeTemplateColorChanges<T, K extends keyof T>(
+        config: T,
+        element: HTMLElement,
+        dictionary: [K, string][]
+    ): void {
+        dictionary.forEach(([option, cssVariable]) => {
+            if (config[option]) {
+                this._subscribeTemplate(
+                    config[option] as string,
+                    (rendered: string): void => {
+                        element.style.setProperty(
+                            cssVariable,
+                            rendered
+                        );
+                    }
                 );
             }
-        );
-    }
-
-    private _subscribeIconColor(element: HTMLElement, variable: string, color: string): void {
-        const iconElement = this._getIcon(element);
-        this._subscribeTemplate(
-            color,
-            (rendered: string): void => {
-                iconElement.style.setProperty(
-                    variable,
-                    rendered
-                );
-            }
-        );
-    }
-
-    private _subscribeTextColor(element: HTMLElement, variable: string, color: string): void {
-        const textElement = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
-        this._subscribeTemplate(
-            color,
-            (rendered: string): void => {
-                textElement.style.setProperty(
-                    variable,
-                    rendered
-                );
-            }
-        );
-    }
-
-    private _subscribeInfoColor(element: HTMLElement, variable: string, color: string) {
-        this._subscribeTemplate(
-            color,
-            (rendered: string): void => {
-                element.style.setProperty(
-                    variable,
-                    rendered
-                );
-            }
-        );
-    }
-
-    private _subscribeSelectionColor(element: HTMLElement, color: string): void {
-        this._subscribeTemplate(
-            color,
-            (rendered: string): void => {
-                element.style.setProperty(
-                    CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR,
-                    rendered
-                );
-            }
-        );
+        });
     }
 
     private _subscribeTemplate(template: string, callback: (rendered: string) => void): void {
@@ -589,43 +547,34 @@ class CustomSidebar {
             this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element
         ]).then(([sidebar, sideBarShadowRoot, paperListBox]: [HTMLElement, ShadowRoot, HTMLElement]) => {
 
+            const { styles = '' } = this._configWithExceptions;
+
             const menu = sideBarShadowRoot.querySelector<HTMLElement>(SELECTOR.MENU);
 
-            if (this._configWithExceptions.title_color) {
-                this._subscribeTemplate(
-                    this._configWithExceptions.title_color,
-                    (rendered: string) => {
-                        menu.style.setProperty(
-                            CSS_VARIABLES.SIDEBAR_TITLE_COLOR,
-                            rendered
-                        );
-                    }
-                );
-            }
+            this._subscribeTemplateColorChanges(
+                this._configWithExceptions,
+                menu,
+                [
+                    ['sidebar_button_color', CSS_VARIABLES.SIDEBAR_BUTTON_COLOR],
+                    ['title_color',          CSS_VARIABLES.SIDEBAR_TITLE_COLOR]
+                ]
+            );
 
-            if (this._configWithExceptions.sidebar_button_color) {
-                this._subscribeTemplate(
-                    this._configWithExceptions.sidebar_button_color,
-                    (rendered: string) => {
-                        menu.style.setProperty(
-                            CSS_VARIABLES.SIDEBAR_BUTTON_COLOR,
-                            rendered
-                        );
-                    }
-                );
-            }
-
-            if (this._configWithExceptions.sidebar_color) {
-                this._subscribeTemplate(
-                    this._configWithExceptions.sidebar_color,
-                    (rendered: string): void => {
-                        sidebar.style.setProperty(
-                            CSS_VARIABLES.SIDEBAR_BACKGROUND_COLOR,
-                            rendered
-                        );
-                    }
-                );
-            }
+            this._subscribeTemplateColorChanges(
+                this._configWithExceptions,
+                sidebar,
+                [
+                    ['sidebar_color',       CSS_VARIABLES.SIDEBAR_BACKGROUND_COLOR],
+                    ['icon_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_ICON_COLOR],
+                    ['icon_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR],
+                    ['text_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_TEXT_COLOR],
+                    ['text_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_TEXT_COLOR],
+                    ['selection_color',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR],
+                    ['info_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR],
+                    ['info_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR],
+                    ['notification_color',  CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR]
+                ]
+            );
 
             paperListBox.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
                 if (
@@ -672,32 +621,11 @@ class CustomSidebar {
 
             addStyle(
                 `
-                ${ ELEMENT.PAPER_LISTBOX } {
-                    & > ${ SELECTOR.ITEM_SELECTED } {
+                :host {
+                    & ${ SELECTOR.ITEM } {
                         & > ${ ELEMENT.PAPER_ICON_ITEM } {
                             &::before {
                                 background-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR }));
-                            }
-                        }
-                    }
-                    & > ${ SELECTOR.ITEM } {
-                        & > ${ ELEMENT.PAPER_ICON_ITEM } {
-                            & > ${ SELECTOR.NOTIFICATION_BADGE } {
-                                &:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
-                                    left: calc(var(--app-drawer-width, 248px) - 22px);
-                                    max-width: 80px;
-                                    transform: translateX(-100%);
-                                    ${commonNotificationStyles} 
-                                }
-                            }
-                            & > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
-                                bottom: 14px;
-                                left: 26px;
-                                max-width: 20px;
-                                ${commonNotificationStyles}
-                            }
-                            & > ${ SELECTOR.CONFIGURATION_BADGE } {
-                                background-color: var(${CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR}, var(--accent-color));
                             }
                         }
                         &[${ ATTRIBUTE.WITH_NOTIFICATION }] {
@@ -708,7 +636,44 @@ class CustomSidebar {
                             }
                         }
                     }
-                    :host([expanded]) & {
+                    & ${ SELECTOR.ITEM_SELECTED } {
+                        & > ${ ELEMENT.PAPER_ICON_ITEM } {
+                            & > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON }) {
+                                color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR }));
+                            }
+                            & > ${ SELECTOR.ITEM_TEXT } {
+                                color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_TEXT_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR }));
+                            }
+                        }
+                    }
+                    ${ ELEMENT.PAPER_ICON_ITEM } {
+                        & > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON }) {
+                            color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_ICON_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_ICON_COLOR }));
+                        }
+                        & > ${ SELECTOR.ITEM_TEXT } {
+                            color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_TEXT_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_TEXT_COLOR }));
+                        }
+                        & > ${ SELECTOR.NOTIFICATION_BADGE } {
+                            &:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
+                                left: calc(var(--app-drawer-width, 248px) - 22px);
+                                max-width: 80px;
+                                transform: translateX(-100%);
+                                ${commonNotificationStyles} 
+                            }
+                        }
+                        & > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
+                            bottom: 14px;
+                            left: 26px;
+                            max-width: 20px;
+                            ${commonNotificationStyles}
+                        }
+                        & > ${ SELECTOR.CONFIGURATION_BADGE } {
+                            background-color: var(${CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR}, var(--accent-color));
+                        }
+                    }
+                }
+                :host([expanded]) {
+                    ${ ELEMENT.PAPER_LISTBOX } {
                         & > ${ SELECTOR.ITEM } {
                             & > ${ ELEMENT.PAPER_ICON_ITEM } {
                                 & > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
@@ -717,7 +682,7 @@ class CustomSidebar {
                                 & > ${ SELECTOR.ITEM_TEXT } {
                                     display: flex;
                                     flex-direction: column;
-                                    gap: 2px;
+                                    gap: 5px;
                                     line-height: 1;
                                     &::after {
                                         content: attr(data-info);
@@ -749,7 +714,7 @@ class CustomSidebar {
                         pointer-events: all;
                     }
                 }
-                ${ this._configWithExceptions.styles || '' }
+                ${ styles }
                 `.trim(),
                 sideBarShadowRoot
             );
@@ -893,67 +858,34 @@ class CustomSidebar {
                             );
                         }
 
-                        if (orderItem.notification_color) {
-                            this._subscribeNotificationColor(
-                                orderItem.element,
-                                orderItem.notification_color
-                            );
-                        }
+                        this._subscribeTemplateColorChanges(
+                            orderItem,
+                            orderItem.element,
+                            [
+                                ['info_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR],
+                                ['info_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR],
+                                ['notification_color',  CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR],
+                                ['selection_color',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR]
+                            ]
+                        );
 
-                        if (orderItem.icon_color) {
-                            this._subscribeIconColor(
-                                orderItem.element,
-                                CSS_VARIABLES.SIDEBAR_ICON_COLOR,
-                                orderItem.icon_color
-                            );
-                        }
+                        this._subscribeTemplateColorChanges(
+                            orderItem,
+                            this._getIcon(orderItem.element),
+                            [
+                                ['icon_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_ICON_COLOR],
+                                ['icon_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR]
+                            ]
+                        );
 
-                        if (orderItem.icon_color_selected) {
-                            this._subscribeIconColor(
-                                orderItem.element,
-                                CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR,
-                                orderItem.icon_color_selected
-                            );
-                        }
-
-                        if (orderItem.text_color) {
-                            this._subscribeTextColor(
-                                orderItem.element,
-                                CSS_VARIABLES.SIDEBAR_TEXT_COLOR,
-                                orderItem.text_color
-                            );
-                        }
-
-                        if (orderItem.text_color_selected) {
-                            this._subscribeTextColor(
-                                orderItem.element,
-                                CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR,
-                                orderItem.text_color_selected
-                            );
-                        }
-
-                        if (orderItem.info_color) {
-                            this._subscribeInfoColor(
-                                orderItem.element,
-                                CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR,
-                                orderItem.info_color
-                            );
-                        }
-
-                        if (orderItem.info_color_selected) {
-                            this._subscribeInfoColor(
-                                orderItem.element,
-                                CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR,
-                                orderItem.info_color_selected
-                            );
-                        }
-
-                        if (orderItem.selection_color || orderItem.icon_color_selected) {
-                            this._subscribeSelectionColor(
-                                orderItem.element,
-                                orderItem.selection_color ?? orderItem.icon_color_selected
-                            );
-                        }
+                        this._subscribeTemplateColorChanges(
+                            orderItem,
+                            orderItem.element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT),
+                            [
+                                ['text_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_TEXT_COLOR],
+                                ['text_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_TEXT_COLOR]
+                            ]
+                        );
 
                         if (orderItem.new_item) {
 

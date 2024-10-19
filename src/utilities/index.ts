@@ -13,7 +13,14 @@ import {
 } from '@constants';
 import { version } from '../../package.json';
 
-const EXTENDABLE_ITEM_OPTIONS = [
+const EXTENDABLE_OPTIONS = [
+    'title',
+    'sidebar_editable',
+    'sidebar_mode',
+    'sidebar_color',
+    'title_color',
+    'sidebar_button_color',
+    'styles',
     'icon_color',
     'icon_color_selected',
     'text_color',
@@ -24,18 +31,6 @@ const EXTENDABLE_ITEM_OPTIONS = [
     'notification_color'
 ] as const;
 
-const EXTENDABLE_OPTIONS = [
-    'title',
-    'sidebar_editable',
-    'sidebar_mode',
-    'sidebar_color',
-    'title_color',
-    'sidebar_button_color',
-    'styles',
-    ...EXTENDABLE_ITEM_OPTIONS
-] as const;
-
-type ExetndableItemConfigOption = typeof EXTENDABLE_ITEM_OPTIONS[number];
 type ExtendableConfigOption = typeof EXTENDABLE_OPTIONS[number];
 type ExtendableConfigOptions = Partial<Pick<Config, ExtendableConfigOption>>;
 
@@ -70,18 +65,11 @@ const extendOptionsFromBase = (
 
 };
 
-const extendItemOptionsFromBase = (item: ConfigOrder, base: Partial<Config>): void => {
-    EXTENDABLE_ITEM_OPTIONS.forEach((option: ExetndableItemConfigOption): void => {
-        item[option] = item[option] ?? base[option];
-    });
-};
-
-const flatConfigOrder = (order: ConfigOrder[], base: Partial<Config>): ConfigOrder[] => {
+const flatConfigOrder = (order: ConfigOrder[]): ConfigOrder[] => {
 
     const orderMap = new Map<string, ConfigOrder>();
 
     order.forEach((orderItem: ConfigOrder): void => {
-        extendItemOptionsFromBase(orderItem, base);
         orderMap.set(orderItem.item, orderItem);
     });
 
@@ -184,8 +172,7 @@ export const getConfigWithExceptions = (
                     [
                         ...config.order,
                         ...exceptionsOrder
-                    ],
-                    configCommonProps
+                    ]
                 )
             };
         }
@@ -193,16 +180,14 @@ export const getConfigWithExceptions = (
         return {
             ...configCommonProps,
             order: flatConfigOrder(
-                exceptionsOrder,
-                configCommonProps
+                exceptionsOrder
             )
         };
     }
     return {
         ...config,
         order: flatConfigOrder(
-            config.order,
-            config
+            config.order
         )
     };
 };
