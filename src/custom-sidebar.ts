@@ -625,7 +625,7 @@ class CustomSidebar {
                     & ${ SELECTOR.ITEM } {
                         & > ${ ELEMENT.PAPER_ICON_ITEM } {
                             &::before {
-                                background-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR }));
+                                background-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR })));
                             }
                         }
                         &[${ ATTRIBUTE.WITH_NOTIFICATION }] {

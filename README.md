@@ -136,8 +136,11 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | ------------------ | ---------------------------------- | -------- | ----------- |
 | order              | Array of [items](#order-items-properties) | yes      | List of items to process |
 | title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
+| title_color<sup>\*</sup> | String                       | no       | Sets the color of the sidebar title |
+| sidebar_color<sup>\*</sup> | String                     | no       | Sets the color of the sidebar |
 | sidebar_editable<sup>\*</sup> | Boolean or String       | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
 | sidebar_mode       | String                             | no       | Defines the default status of the sidebar when Home Assistant is loaded. It has three possible values: "hidden" to make the sidebar hidden, "narrow" to make the sidebar visible in narrow state and "extended" to make sidebar visible in extended state. This option will show or hide the sidebar ignoring if it is a desktop or a mobile device or if the `Always hide the sidebar` switch in the profile page in on or off (depending on the value of this option, this switch will be switched on or off automatically) |
+| sidebar_button_color<sup>\*</sup> | String              | no       | Sets the color of the sidebar hamburger menu |
 | icon_color<sup>\*</sup> | String                        | no       | Sets the color of the sidebar icons |
 | icon_color_selected<sup>\*</sup> | String               | no       | Sets the icon color of the selected sidebar item |
 | text_color<sup>\*</sup> | String                        | no       | Sets the text color of the sidebar items |
@@ -145,7 +148,10 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | selection_color<sup>\*</sup> | String                   | no       | Sets the color of the selected item background. If it is not specified, the `icon_color_selected` will be used (this color has an opacity of 0.12) |
 | info_color<sup>\*</sup> | String                        | no       | Sets the color of the info texts of the sidebar items |
 | info_color_selected<sup>\*</sup> | String               | no       | Sets the color of the info text of the selected sidebar item |
+| notification_color<sup>\*</sup>  | String               | no       | Sets the color of the sidebar notifications |
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
+
+>\* These options allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
 
 #### Order items properties
 
@@ -164,6 +170,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | selection_color<sup>\*</sup> | String     | no  | Sets the color of the item background when it is selected. If it is not specified, the `icon_color_selected` will be used (this color has an opacity of 0.12 and it overrides the global `selection_color`) |
 | info_color<sup>\*</sup> | String | no           | Sets the color of the info text (it overrides the global `info_color`) |
 | info_color_selected<sup>\*</sup> | String | no  | Sets the color of the info text when the item is selected (it overrides the global `info_color_selected`) |
+| notification_color<sup>\*</sup>  | String | no  | Sets the notification color (it overrides the global `notification_color`) |
 | order                     | Number  | no        | Sets the order number of the sidebar item |
 | bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
 | hide                      | Boolean | no        | Setting this property to `true` will hide the sidebar item |
@@ -172,7 +179,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | icon                      | String  | no        | Specifies the icon of the sidebar item |
 | new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
 
->\* These options and item properties allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
+>\* These item properties allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
 
 Short example in `YAML` format:
 
@@ -236,7 +243,8 @@ Short example in `JSON` format:
 * If you use the `order` property, make sure either all items (except hidden ones) have this property, or none of them (otherwise order may be messed up)
 * All the items placed in the bottom will be moved to the top by default. If you want to have some items in the bottom you need to add them to the `config.order` and specify their `bottom` property on `true`.
 * Any items present in the Sidebar, but not in `config.order`, will be shown **on the bottom** of the top part of the list
-* Notifications and user account are not part of the sidebar items so they will not be processed by this plugin
+* Notifications and user account are not part of the main sidebar items so they cannot be targeted inside the `order` option to change their properties. On the other hand, global color properties will affect these items though.
+* The `style` option doesn't allow templates, it should be used only to override or correct some styles of the sidebar.
 
 ### Exceptions
 
@@ -246,8 +254,11 @@ You can define user-specific options using exceptions feature. Exceptions can be
 | ------------------- | ----------------- | -------- | ----------- |
 | order               | Array of [items](#order-items-properties) | no   | Defines the sidebar items order |
 | title<sup>\*</sup>             | String            | no       | Custom title to replace the `Home Assistant` title |
+| title_color<sup>\*</sup> | String       | no       | Sets the color of the sidebar title |
+| sidebar_color<sup>\*</sup> | String     | no       | Sets the color of the sidebar |
 | sidebar_editable<sup>\*</sup>  | Boolean or String | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
 | sidebar_mode       | String                             | no       | Defines the default status of the sidebar when Home Assistant is loaded. It has three possible values: "hidden" to make the sidebar hidden, "narrow" to make the sidebar visible in narrow state and "extended" to make sidebar visible in extended state. This option will show or hide the sidebar ignoring if it is a desktop or a mobile device or if the `Always hide the sidebar` switch in the profile page in on or off (depending on the value of this option, this switch will be switched on or off automatically) |
+| sidebar_button_color<sup>\*</sup> | String              | no       | Sets the color of the sidebar hamburger menu |
 | icon_color<sup>\*</sup> | String                        | no       | Sets the color of the sidebar icons |
 | icon_color_selected<sup>\*</sup> | String               | no       | Sets the icon color of the selected sidebar item |
 | text_color<sup>\*</sup> | String                        | no       | Sets the text color of the sidebar items |
@@ -255,6 +266,7 @@ You can define user-specific options using exceptions feature. Exceptions can be
 | selection_color<sup>\*</sup> | String                   | no       | Sets the color of the selected item background. If it is not specified, the `icon_color_selected` will be used (this color has an opacity of 0.12) |
 | info_color<sup>\*</sup> | String                        | no       | Sets the color of the info texts of the sidebar items |
 | info_color_selected<sup>\*</sup> | String               | no       | Sets the color of the info text of the selected sidebar item |
+| notification_color<sup>\*</sup>  | String               | no       | Sets the color of the sidebar notifications |
 | styles              | String            | no       | Custom styles that will be added to the styles block of the plugin |
 | extend_from_base    | Boolean           | no       | If true, the options will be extended with the root options. The property `order` will be merged with the base one, the rest of properties will use the base counterpart if they are not specified. If it is false, it will take into account only the options in the exception |
 | user       | String or String[] | no          | Home Assistant user name(s) you would like to display this order for |
