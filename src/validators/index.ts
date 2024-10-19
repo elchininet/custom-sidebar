@@ -112,9 +112,7 @@ const validateExceptionItem = (exception: ConfigException): void => {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "device" and "not_device" properties cannot be used together`);
     }
 
-    if (exception.order) {
-        exception.order.forEach(validateConfigItem);
-    }
+    exception.order?.forEach(validateConfigItem);
 };
 
 const validateExceptions = (exceptions: ConfigException[] | undefined): void => {
@@ -198,12 +196,12 @@ export const validateConfig = (config: Config): void => {
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`);
     }
-    if (typeof config.order === UNDEFINED_TYPE) {
-        throw new SyntaxError(`${ERROR_PREFIX}, "order" parameter is required`);
+    if (
+        typeof config.order !== UNDEFINED_TYPE &&
+        !Array.isArray(config.order)
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, "order" property should be an array`);
     }
-    if (!Array.isArray(config.order)) {
-        throw new SyntaxError(`${ERROR_PREFIX}, "order" parameter should be an array`);
-    }
-    config.order.forEach(validateConfigItem);
+    config.order?.forEach(validateConfigItem);
     validateExceptions(config.exceptions);
 };

@@ -910,7 +910,9 @@ class CustomSidebar {
 
                 });
 
-                processBottom();
+                if (configItems.length) {
+                    processBottom();
+                }
 
                 this._panelLoaded();
 
