@@ -426,6 +426,13 @@ Check out Home Assistant's native sidebar tools, maybe it will be enough for you
 * You can use Home Assistant's `Webpage dashboard` feature to add external URLs to Home Assistant's sidebar. Official [docs](https://www.home-assistant.io/dashboards/dashboards/#webpage-dashboard). If you use Home Assistant's `Webpage dashboard` feature to add some wepage dashboards to your sidebar, then you can modify them as the regular ones adding them to the `order` property.
 * You can click and hold the Home Assistant header on top of the sidebar and then it will allow you to add/remove and re-order some of the items (but not add new custom ones). This feature is also accessible from your profile settings (if you click on your username in the bottom left corner). The drawback of this feature is that it only works per device/session, so you need to log-in in the specific device and do these changes, but if you log-out, the changes will be lost.
 
+## Custom-sidebar extras
+
+* Do you have an idea or a question? Open [a discussion](https://github.com/elchininet/custom-sidebar/discussions)
+* Do you have an issue or have you encountered a bug? Open [an issue](https://github.com/elchininet/custom-sidebar/issues)
+* Do you need to discuss or to show and tell? visit the [`custom-sidebar` entry](https://community.home-assistant.io/t/custom-sidebar-manage-home-assistants-sidebar-items-per-user-or-device-basis/665800) in the Home Assistant Forum
+* [Video tutorial](https://www.youtube.com/watch?v=oecwBjPmlYo) about how to install the plugin (in Spanish) by @hectorzin
+
 ---
 
 ## Credits and huge thanks to:
