@@ -438,7 +438,7 @@ Check out Home Assistant's native sidebar tools, maybe it will be enough for you
 ## Credits and huge thanks to:
 
 * [Villhellm](https://github.com/Villhellm) | Original creator of custom-sidebar (R.I.P.).
-* [galloween](https://github.com/galloween) | forked the `original custom-sidebar` and maintained it for a while
+* [galloween](https://github.com/galloween) | forked the original `custom-sidebar` and maintained it for a while
 
 [HACS]: https://hacs.xyz
 [Home Assistant]: https://www.home-assistant.io
