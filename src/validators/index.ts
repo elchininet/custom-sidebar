@@ -58,9 +58,10 @@ const validateExceptionItem = (exception: ConfigException): void => {
             'info_color',
             'info_color_selected',
             'notification_color',
-            'sidebar_color',
+            'sidebar_background',
             'title_color',
             'sidebar_button_color',
+            'menu_background',
             'styles'
         ],
         `${ERROR_PREFIX}, exceptions`
@@ -176,9 +177,10 @@ export const validateConfig = (config: Config): void => {
             'info_color',
             'info_color_selected',
             'notification_color',
-            'sidebar_color',
+            'sidebar_background',
             'title_color',
             'sidebar_button_color',
+            'menu_background',
             'styles'
         ],
         `${ERROR_PREFIX},`

@@ -93,8 +93,9 @@ interface BaseConfig extends ColorConfig {
     sidebar_editable?: boolean | string;
     sidebar_mode?: `${SidebarMode}`;
     title_color?: string;
-    sidebar_color?: string;
+    sidebar_background?: string;
     sidebar_button_color?: string;
+    menu_background?: string;
     styles?: string;
 }
 
