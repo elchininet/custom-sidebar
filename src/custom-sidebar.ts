@@ -564,15 +564,16 @@ class CustomSidebar {
                 this._configWithExceptions,
                 sidebar,
                 [
-                    ['sidebar_color',       CSS_VARIABLES.SIDEBAR_BACKGROUND_COLOR],
-                    ['icon_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_ICON_COLOR],
-                    ['icon_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR],
-                    ['text_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_TEXT_COLOR],
-                    ['text_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_TEXT_COLOR],
-                    ['selection_color',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR],
-                    ['info_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR],
-                    ['info_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR],
-                    ['notification_color',  CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR]
+                    ['sidebar_background',    CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND],
+                    ['menu_background',       CSS_VARIABLES.CUSTOM_SIDEBAR_MENU_BACKGROUND],
+                    ['icon_color',            CSS_VARIABLES.CUSTOM_SIDEBAR_ICON_COLOR],
+                    ['icon_color_selected',   CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR],
+                    ['text_color',            CSS_VARIABLES.CUSTOM_SIDEBAR_TEXT_COLOR],
+                    ['text_color_selected',   CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_TEXT_COLOR],
+                    ['selection_color',       CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR],
+                    ['info_color',            CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR],
+                    ['info_color_selected',   CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR],
+                    ['notification_color',    CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR]
                 ]
             );
 
@@ -622,6 +623,10 @@ class CustomSidebar {
             addStyle(
                 `
                 :host {
+                    background: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND }, var(${ CSS_VARIABLES.SIDEBAR_BACKGROUND_COLOR })) !important;
+                    & ${ SELECTOR.MENU } {
+                        background: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_MENU_BACKGROUND }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND }, var(${ CSS_VARIABLES.SIDEBAR_MENU_BUTTON_BACKGROUND_COLOR }, var(${ CSS_VARIABLES.PRIMARY_BACKGROUND_COLOR }))));
+                    }
                     & ${ SELECTOR.ITEM } {
                         & > ${ ELEMENT.PAPER_ICON_ITEM } {
                             &::before {

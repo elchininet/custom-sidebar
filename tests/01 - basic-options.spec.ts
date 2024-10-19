@@ -219,16 +219,67 @@ test('should hide items properly', async ({ page }) => {
 
 });
 
-test('should set the sidebar_color', async ({ page }) => {
+test('should set the sidebar_background as a color', async ({ page }) => {
 
     await addJsonExtendedRoute(page, {
-        sidebar_color: 'red'
+        sidebar_background: 'red'
     });
 
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('05-sidebar-color.png', {
+    await expect(page).toHaveScreenshot('05-sidebar-background-color.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
+test('should set the sidebar_background as a background', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        sidebar_background: 'url(/local/background.jpg)',
+        title_color: 'white',
+        icon_color: 'white',
+        text_color: 'white',
+        sidebar_button_color: 'white'
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('06-sidebar-background-image.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
+test('should set the menu_background as a color', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        menu_background: 'red'
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('07-sidebar-menu-background-color.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
+test('should set the menu_background as a background', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        menu_background: 'url(/local/background.jpg)',
+        title_color: 'white',
+        sidebar_button_color: 'white'
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('08-sidebar-menu-background-image.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -243,7 +294,7 @@ test('should set the sidebar_button_color', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('06-sidebar-button-color.png', {
+    await expect(page).toHaveScreenshot('09-sidebar-button-color.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -258,7 +309,7 @@ test('should change the title', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('07-sidebar-custom-title.png', {
+    await expect(page).toHaveScreenshot('10-sidebar-custom-title.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -273,7 +324,7 @@ test('should set the title_color', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('08-sidebar-title-color.png', {
+    await expect(page).toHaveScreenshot('11-sidebar-title-color.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -288,7 +339,7 @@ test('should set the notification_color', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('09-sidebar-notification-color.png', {
+    await expect(page).toHaveScreenshot('12-sidebar-notification-color.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -306,7 +357,7 @@ test('If sidebar_mode is set to "narrow" the sidebar should be visible in narrow
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
-    await expect(page).toHaveScreenshot('10-sidebar-mode-narrow.png', {
+    await expect(page).toHaveScreenshot('13-sidebar-mode-narrow.png', {
         clip: SIDEBAR_NARROW_CLIP
     });
 
@@ -324,7 +375,7 @@ test('If sidebar_mode is set to "extended" the sidebar should be visible in exte
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
-    await expect(page).toHaveScreenshot('11-sidebar-mode-extended.png', {
+    await expect(page).toHaveScreenshot('14-sidebar-mode-extended.png', {
         clip: {
             ...SIDEBAR_NARROW_CLIP,
             width: 255
@@ -364,7 +415,7 @@ test('If info is set in one item it should add the secondary text', async ({ pag
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('12-sidebar-item-info.png', {
+    await expect(page).toHaveScreenshot('15-sidebar-item-info.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -379,7 +430,7 @@ test('If icon_color is set the icons should change their color', async ({ page }
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('13-sidebar-icon-color.png', {
+    await expect(page).toHaveScreenshot('16-sidebar-icon-color.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -394,7 +445,7 @@ test('If icon_color_selected is set the icons of the selected item should change
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('14-sidebar-icon-color-selected.png', {
+    await expect(page).toHaveScreenshot('17-sidebar-icon-color-selected.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -409,7 +460,7 @@ test('If text_color is set the texts should change their color', async ({ page }
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('15-sidebar-text-color.png', {
+    await expect(page).toHaveScreenshot('18-sidebar-text-color.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -424,7 +475,7 @@ test('If text_color_selected is set the text of the selected item should change 
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('16-sidebar-text-color-selected.png', {
+    await expect(page).toHaveScreenshot('19-sidebar-text-color-selected.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -439,7 +490,7 @@ test('If selection_color is set the background of the selected item should chang
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('17-sidebar-selection-color.png', {
+    await expect(page).toHaveScreenshot('20-sidebar-selection-color.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -463,7 +514,7 @@ test('If info_color is set the color of the secondary text of the item should ch
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('18-sidebar-info-color.png', {
+    await expect(page).toHaveScreenshot('21-sidebar-info-color.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -484,7 +535,7 @@ test('If info_color_selected is set the color of the secondary text of the selec
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('19-sidebar-info-color-selected.png', {
+    await expect(page).toHaveScreenshot('22-sidebar-info-color-selected.png', {
         clip: SIDEBAR_CLIP
     });
 
@@ -499,7 +550,7 @@ test('should apply custom styles', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('20-sidebar-custom-styles.png', {
+    await expect(page).toHaveScreenshot('23-sidebar-custom-styles.png', {
         clip: SIDEBAR_CLIP
     });
 
