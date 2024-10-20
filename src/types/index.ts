@@ -56,6 +56,7 @@ interface ColorConfig {
     text_color?: string;
     text_color_selected?: string;
     selection_color?: string;
+    selection_opacity?: number | string;
     info_color?: string;
     info_color_selected?: string;
     notification_color?: string;

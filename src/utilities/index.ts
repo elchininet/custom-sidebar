@@ -29,7 +29,8 @@ const EXTENDABLE_OPTIONS = [
     'selection_color',
     'info_color',
     'info_color_selected',
-    'notification_color'
+    'notification_color',
+    'selection_opacity'
 ] as const;
 
 type ExtendableConfigOption = typeof EXTENDABLE_OPTIONS[number];
@@ -50,7 +51,7 @@ const extendOptionsFromBase = (
     extendFromBase: boolean
 ): ExtendableConfigOptions => {
 
-    const configCommonProps: Record<string, string | boolean> = {};
+    const configCommonProps: Record<string, string | boolean | number> = {};
 
     EXTENDABLE_OPTIONS.forEach((option: ExtendableConfigOption): void => {
         const lasExceptionValue = lastException?.[option];

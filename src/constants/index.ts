@@ -11,6 +11,7 @@ export const FLUSH_PROMISE_DELAY = 1;
 export const BOOLEAN_TYPE = 'boolean';
 export const STRING_TYPE = 'string';
 export const UNDEFINED_TYPE = 'undefined';
+export const NUMBER_TYPE = 'number';
 
 export const BLOCKED_PROPERTY = 'data-blocked';
 
@@ -61,6 +62,7 @@ export enum CSS_VARIABLES {
     CUSTOM_SIDEBAR_INFO_COLOR = '--custom-sidebar-info-color',
     CUSTOM_SIDEBAR_SELECTED_INFO_COLOR = '--custom-sidebar-selected-info-color',
     CUSTOM_SIDEBAR_NOTIFICATION_COLOR = '--custom-sidebar-notification-color',
+    CUSTOM_SIDEBAR_SELECTION_OPACITY = '--custom-sidebar-selection-opacity'
 }
 
 export enum CLASS {
