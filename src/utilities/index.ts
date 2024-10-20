@@ -30,7 +30,8 @@ const EXTENDABLE_OPTIONS = [
     'info_color',
     'info_color_selected',
     'notification_color',
-    'selection_opacity'
+    'selection_opacity',
+    'divider_color'
 ] as const;
 
 type ExtendableConfigOption = typeof EXTENDABLE_OPTIONS[number];
