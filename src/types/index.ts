@@ -60,6 +60,7 @@ interface ColorConfig {
     info_color?: string;
     info_color_selected?: string;
     notification_color?: string;
+    notification_text_color?: string;
 }
 
 export interface ConfigItem extends ColorConfig {

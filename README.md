@@ -151,6 +151,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | info_color<sup>\*</sup> | String                        | no       | Sets the color of the info texts of the sidebar items |
 | info_color_selected<sup>\*</sup> | String               | no       | Sets the color of the info text of the selected sidebar item |
 | notification_color<sup>\*</sup>  | String               | no       | Sets the color of the sidebar notifications |
+| notification_text_color<sup>\*</sup>  | String          | no       | Sets the color of the sidebar notifications texts |
 | divider_color<sup>\*</sup>       | String               | no       | Sets the color of the sidebar dividers |
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
 
@@ -175,6 +176,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | info_color<sup>\*</sup> | String | no           | Sets the color of the info text (it overrides the global `info_color`) |
 | info_color_selected<sup>\*</sup> | String | no  | Sets the color of the info text when the item is selected (it overrides the global `info_color_selected`) |
 | notification_color<sup>\*</sup>  | String | no  | Sets the notification color (it overrides the global `notification_color`) |
+| notification_text_color<sup>\*</sup>  | String  | no       | Sets the color of the sidebar notification text (it overrides the global `notification_text_color`) |
 | order                     | Number  | no        | Sets the order number of the sidebar item |
 | bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
 | hide                      | Boolean | no        | Setting this property to `true` will hide the sidebar item |

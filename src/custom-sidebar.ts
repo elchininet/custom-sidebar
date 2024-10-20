@@ -564,18 +564,19 @@ class CustomSidebar {
                 this._configWithExceptions,
                 sidebar,
                 [
-                    ['sidebar_background',    CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND],
-                    ['menu_background',       CSS_VARIABLES.CUSTOM_SIDEBAR_MENU_BACKGROUND],
-                    ['icon_color',            CSS_VARIABLES.CUSTOM_SIDEBAR_ICON_COLOR],
-                    ['icon_color_selected',   CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR],
-                    ['text_color',            CSS_VARIABLES.CUSTOM_SIDEBAR_TEXT_COLOR],
-                    ['text_color_selected',   CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_TEXT_COLOR],
-                    ['selection_color',       CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR],
-                    ['info_color',            CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR],
-                    ['info_color_selected',   CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR],
-                    ['notification_color',    CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR],
-                    ['selection_opacity',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_OPACITY],
-                    ['divider_color',         CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR]
+                    ['sidebar_background',      CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND],
+                    ['menu_background',         CSS_VARIABLES.CUSTOM_SIDEBAR_MENU_BACKGROUND],
+                    ['icon_color',              CSS_VARIABLES.CUSTOM_SIDEBAR_ICON_COLOR],
+                    ['icon_color_selected',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR],
+                    ['text_color',              CSS_VARIABLES.CUSTOM_SIDEBAR_TEXT_COLOR],
+                    ['text_color_selected',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_TEXT_COLOR],
+                    ['selection_color',         CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR],
+                    ['info_color',              CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR],
+                    ['info_color_selected',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR],
+                    ['notification_color',      CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR],
+                    ['notification_text_color', CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR],
+                    ['selection_opacity',       CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_OPACITY],
+                    ['divider_color',           CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR]
                 ]
             );
 
@@ -615,6 +616,7 @@ class CustomSidebar {
             const commonNotificationStyles = `
                 background-color: var(${CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR}, var(--accent-color));
                 border-radius: 20px;
+                color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR }, var(${ CSS_VARIABLES.TEXT_ACCENT_COLOR }, var(${ CSS_VARIABLES.TEXT_PRIMARY_COLOR })));
                 font-size: 0.65em;
                 overflow: hidden;
                 padding: 0px 5px;
@@ -678,6 +680,7 @@ class CustomSidebar {
                         }
                         & > ${ SELECTOR.CONFIGURATION_BADGE } {
                             background-color: var(${CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR}, var(--accent-color));
+                            color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR }, var(${ CSS_VARIABLES.TEXT_ACCENT_COLOR }, var(${ CSS_VARIABLES.TEXT_PRIMARY_COLOR })));
                         }
                     }
                     & ${ SELECTOR.DIVIDER }::before {

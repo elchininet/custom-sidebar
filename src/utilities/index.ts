@@ -30,6 +30,7 @@ const EXTENDABLE_OPTIONS = [
     'info_color',
     'info_color_selected',
     'notification_color',
+    'notification_text_color',
     'selection_opacity',
     'divider_color'
 ] as const;
