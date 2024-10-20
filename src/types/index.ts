@@ -97,6 +97,7 @@ interface BaseConfig extends ColorConfig {
     sidebar_background?: string;
     sidebar_button_color?: string;
     menu_background?: string;
+    divider_color?: string;
     styles?: string;
 }
 

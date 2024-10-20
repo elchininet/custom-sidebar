@@ -151,6 +151,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | info_color<sup>\*</sup> | String                        | no       | Sets the color of the info texts of the sidebar items |
 | info_color_selected<sup>\*</sup> | String               | no       | Sets the color of the info text of the selected sidebar item |
 | notification_color<sup>\*</sup>  | String               | no       | Sets the color of the sidebar notifications |
+| divider_color<sup>\*</sup>       | String               | no       | Sets the color of the sidebar dividers |
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
 
 >\* These options allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.

@@ -39,6 +39,7 @@ export enum SELECTOR {
     SIDEBAR_NOTIFICATIONS = '.notifications',
     PROFILE = '.profile',
     MENU = '.menu',
+    DIVIDER = '.divider',
     HA_ICON_BUTTON = 'ha-icon-button'
 }
 
@@ -52,6 +53,7 @@ export enum CSS_VARIABLES {
     SIDEBAR_BUTTON_COLOR = '--sidebar-icon-color',
     SIDEBAR_MENU_BUTTON_BACKGROUND_COLOR = '--sidebar-menu-button-background-color',
     PRIMARY_BACKGROUND_COLOR = '--primary-background-color',
+    DIVIDER_COLOR = '--divider-color',
     CUSTOM_SIDEBAR_BACKGROUND = '--custom-sidebar-background',
     CUSTOM_SIDEBAR_MENU_BACKGROUND = '--custom-sidebar-menu-background',
     CUSTOM_SIDEBAR_TEXT_COLOR = '--custom-sidebar-text-color',
@@ -62,7 +64,8 @@ export enum CSS_VARIABLES {
     CUSTOM_SIDEBAR_INFO_COLOR = '--custom-sidebar-info-color',
     CUSTOM_SIDEBAR_SELECTED_INFO_COLOR = '--custom-sidebar-selected-info-color',
     CUSTOM_SIDEBAR_NOTIFICATION_COLOR = '--custom-sidebar-notification-color',
-    CUSTOM_SIDEBAR_SELECTION_OPACITY = '--custom-sidebar-selection-opacity'
+    CUSTOM_SIDEBAR_SELECTION_OPACITY = '--custom-sidebar-selection-opacity',
+    CUSTOM_SIDEBAR_DIVIDER_COLOR = '--custom-sidebar-divider-color'
 }
 
 export enum CLASS {
