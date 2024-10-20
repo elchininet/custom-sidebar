@@ -8,6 +8,7 @@ import {
     BOOLEAN_TYPE,
     STRING_TYPE,
     UNDEFINED_TYPE,
+    NUMBER_TYPE,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR
 } from '@constants';
 
@@ -100,6 +101,14 @@ const validateExceptionItem = (exception: ConfigException): void => {
     }
 
     if (
+        typeof exception.selection_opacity !== UNDEFINED_TYPE &&
+        typeof exception.selection_opacity !== NUMBER_TYPE &&
+        typeof exception.selection_opacity !== STRING_TYPE
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "selection_opacity" property should be a number or a template string`);
+    }
+
+    if (
         exception.user &&
         exception.not_user
     ) {
@@ -149,6 +158,14 @@ const validateConfigItem = (configItem: ConfigItem): void => {
         `${ERROR_PREFIX} in ${configItem.item},`
     );
 
+    if (
+        typeof configItem.selection_opacity !== UNDEFINED_TYPE &&
+        typeof configItem.selection_opacity !== NUMBER_TYPE &&
+        typeof configItem.selection_opacity !== STRING_TYPE
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, "selection_opacity" property should be a number or a template string`);
+    }
+
     if (configItem.new_item) {
         validateStringOptions(
             configItem,
@@ -185,6 +202,13 @@ export const validateConfig = (config: Config): void => {
         ],
         `${ERROR_PREFIX},`
     );
+    if (
+        typeof config.selection_opacity !== UNDEFINED_TYPE &&
+        typeof config.selection_opacity !== NUMBER_TYPE &&
+        typeof config.selection_opacity !== STRING_TYPE
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, "selection_opacity" property should be a number or a template string`);
+    }
     if (
         typeof config.sidebar_editable !== UNDEFINED_TYPE &&
         typeof config.sidebar_editable !== BOOLEAN_TYPE &&

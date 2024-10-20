@@ -12,8 +12,7 @@ test.describe('main options', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            title: ['Custom Title'],
-            order: {}
+            title: ['Custom Title']
         });
 
         page.on('pageerror', error => {
@@ -35,7 +34,6 @@ test.describe('main options', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             sidebar_editable: { editable: true }
         });
 
@@ -58,7 +56,6 @@ test.describe('main options', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: {},
             sidebar_mode: 'non_valid'
         });
 
@@ -76,12 +73,33 @@ test.describe('main options', () => {
 
     });
 
+    test('should throw an error if it has a malformed selection_opacity option', async ({ page }) => {
+
+        const errors: string[] = [];
+
+        await fulfillJson(page, {
+            selection_opacity: [100]
+        });
+
+        page.on('pageerror', error => {
+            errors.push(error.message);
+        });
+
+        await page.goto('/');
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        expect(errors).toEqual(
+            expect.arrayContaining([
+                `${ERROR_PREFIX}, "selection_opacity" property should be a number or a template string`
+            ])
+        );
+
+    });
+
     test('should throw an error if it has a malformed styles option', async ({ page }) => {
 
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: {},
             styles: {
                 body: {
                     color: 'red'
@@ -279,6 +297,33 @@ test.describe('order item property', () => {
 
     });
 
+    test('should throw an error if the "selection_opacity" of an item is not a number or a string', async ({ page }) => {
+
+        const errors: string[] = [];
+
+        await fulfillJson(page, {
+            order: [
+                {
+                    item: 'config',
+                    selection_opacity: { opacity: 1 }
+                }
+            ]
+        });
+
+        page.on('pageerror', error => {
+            errors.push(error.message);
+        });
+
+        await page.goto('/');
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        expect(errors).toEqual(
+            expect.arrayContaining([
+                `${ERROR_PREFIX} in config, "selection_opacity" property should be a number or a template string`
+            ])
+        );
+
+    });
+
     test('should throw an error if the "icon" property of a new icon is not a string', async ({ page }) => {
 
         const errors: string[] = [];
@@ -320,7 +365,6 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: {}
         });
 
@@ -343,7 +387,6 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
                     order: 100,
@@ -371,7 +414,6 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
                     title: ['Invalid title']
@@ -398,7 +440,6 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
                     sidebar_mode: 'non-valid'
@@ -425,7 +466,6 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
                     sidebar_editable: NaN
@@ -447,12 +487,37 @@ test.describe('exceptions', () => {
 
     });
 
+    test('should throw an error if it has an invalid "selection_opacity" option', async ({ page }) => {
+
+        const errors: string[] = [];
+
+        await fulfillJson(page, {
+            exceptions: [
+                {
+                    selection_opacity: /opacity/
+                }
+            ]
+        });
+
+        page.on('pageerror', error => {
+            errors.push(error.message);
+        });
+
+        await page.goto('/');
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        expect(errors).toEqual(
+            expect.arrayContaining([
+                `${ERROR_PREFIX}, exceptions "selection_opacity" property should be a number or a template string`
+            ])
+        );
+
+    });
+
     test('should throw an error if it has an invalid "styles" option', async ({ page }) => {
 
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
                     styles: { body: 'display: none' }
@@ -479,10 +544,8 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
-                    order: [],
                     user: {}
                 }
             ]
@@ -507,10 +570,8 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
-                    order: [],
                     not_user: {}
                 }
             ]
@@ -535,10 +596,8 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
-                    order: [],
                     device: 5
                 }
             ]
@@ -563,10 +622,8 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
-                    order: [],
                     not_device: NaN
                 }
             ]
@@ -591,10 +648,8 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
-                    order: [],
                     user: 'ElChiniNet',
                     not_user: 'Palaus'
                 }
@@ -620,10 +675,8 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
-                    order: [],
                     device: ['iPhone'],
                     not_device: ['Android']
                 }
@@ -649,7 +702,6 @@ test.describe('exceptions', () => {
         const errors: string[] = [];
 
         await fulfillJson(page, {
-            order: [],
             exceptions: [
                 {
                     order: [

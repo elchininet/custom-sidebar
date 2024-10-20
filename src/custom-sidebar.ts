@@ -573,7 +573,8 @@ class CustomSidebar {
                     ['selection_color',       CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR],
                     ['info_color',            CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR],
                     ['info_color_selected',   CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR],
-                    ['notification_color',    CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR]
+                    ['notification_color',    CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR],
+                    ['selection_opacity',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_OPACITY]
                 ]
             );
 
@@ -631,6 +632,7 @@ class CustomSidebar {
                         & > ${ ELEMENT.PAPER_ICON_ITEM } {
                             &::before {
                                 background-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR })));
+                                opacity: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_OPACITY }, 0.12);
                             }
                         }
                         &[${ ATTRIBUTE.WITH_NOTIFICATION }] {

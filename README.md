@@ -146,7 +146,8 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | icon_color_selected<sup>\*</sup> | String               | no       | Sets the icon color of the selected sidebar item |
 | text_color<sup>\*</sup> | String                        | no       | Sets the text color of the sidebar items |
 | text_color_selected<sup>\*</sup> | String               | no       | Sets the text color of the selected sidebar item |
-| selection_color<sup>\*</sup> | String                   | no       | Sets the color of the selected item background. If it is not specified, the `icon_color_selected` will be used (this color has an opacity of 0.12) |
+| selection_color<sup>\*</sup> | String                   | no       | Sets the color of the selected item background. If it is not specified, the `icon_color_selected` will be used |
+| selection_opacity<sup>\*</sup> | Number or String       | no       | Sets the opacity of the selected item background. If it is not specified, the default 0.12 will be used |
 | info_color<sup>\*</sup> | String                        | no       | Sets the color of the info texts of the sidebar items |
 | info_color_selected<sup>\*</sup> | String               | no       | Sets the color of the info text of the selected sidebar item |
 | notification_color<sup>\*</sup>  | String               | no       | Sets the color of the sidebar notifications |
@@ -168,7 +169,8 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | icon_color_selected<sup>\*</sup> | String | no  | Sets the icon color of the item when it is selected (it overrides the global `icon_color_selected`) |
 | text_color<sup>\*</sup> | String    | no        | Sets the text color of the item (it overrides the global `text_color`) |
 | text_color_selected<sup>\*</sup> | String | no  | Sets the text color of the item when it is selected (it overrides the global `text_color_selected`) |
-| selection_color<sup>\*</sup> | String     | no  | Sets the color of the item background when it is selected. If it is not specified, the `icon_color_selected` will be used (this color has an opacity of 0.12 and it overrides the global `selection_color`) |
+| selection_color<sup>\*</sup> | String     | no  | Sets the color of the item background when it is selected. If it is not specified, the `icon_color_selected` will be used (it overrides the global `selection_color`) |
+| selection_opacity<sup>\*</sup> | Number or String | no       | Sets the opacity of the item background when it is selected. If it is not specified, the default 0.12 will be used (it overrides the global `selection_opacity`) |
 | info_color<sup>\*</sup> | String | no           | Sets the color of the info text (it overrides the global `info_color`) |
 | info_color_selected<sup>\*</sup> | String | no  | Sets the color of the info text when the item is selected (it overrides the global `info_color_selected`) |
 | notification_color<sup>\*</sup>  | String | no  | Sets the notification color (it overrides the global `notification_color`) |
