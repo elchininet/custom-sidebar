@@ -8,7 +8,7 @@
 
 [![Home Assistant Nightly Beta Tests](https://github.com/elchininet/custom-sidebar/actions/workflows/ha-beta-tests.yaml/badge.svg)](https://github.com/elchininet/custom-sidebar/actions/workflows/ha-beta-tests.yaml)
 
-Custom [HACS] plugin that allows you to manage [Home Assistant]'s sidebar items per user or device basis.
+Custom [HACS] plugin that allows you to personalise the [Home Assistant]'s sidebar per user or device basis
 
 <table>
   <thead>
