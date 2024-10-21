@@ -58,7 +58,7 @@ You can install the plugin manually or through [HACS], not both. If you install 
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js?v1.0.0
+    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js?v6.1.1
 ```
 
 #### If you want to use a `JSON` configuration
@@ -66,10 +66,10 @@ frontend:
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v1.0.0
+    - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v6.1.1
 ```
 
-6. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
+6. Make sure you add the correct version at the end of the URL (e.g. `?v=6.1.1`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
 7. Restart Home Assistant
 
 ### Through old HACS versions (< v2)
@@ -85,7 +85,7 @@ frontend:
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js?v1.0.0
+    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js?v6.1.1
 ```
 
 #### If you want to use a `JSON` configuration
@@ -93,10 +93,10 @@ frontend:
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v1.0.0
+    - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v6.1.1
 ```
 
-6. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
+6. Make sure you add the correct version at the end of the URL (e.g. `?v=6.1.1`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
 7. Restart Home Assistant
 
 ### Manual installation
@@ -110,7 +110,7 @@ frontend:
 ```yaml
 frontend:
   extra_module_url:
-    - /local/custom-sidebar-yaml.js?v1.0.0
+    - /local/custom-sidebar-yaml.js?v6.1.1
 ```
 
 #### If you want to use a `JSON` configuration
@@ -118,10 +118,10 @@ frontend:
 ```yaml
 frontend:
   extra_module_url:
-    - /local/custom-sidebar-json.js?v1.0.0
+    - /local/custom-sidebar-json.js?v6.1.1
 ```
 
-4. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
+4. Make sure you add the correct version at the end of the URL (e.g. `?v=6.1.1`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
 5. Restart Home Assistant
 
 ## Configuration
