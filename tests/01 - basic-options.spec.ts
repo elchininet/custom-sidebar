@@ -123,6 +123,29 @@ test('a new item with notification should be added properly', async ({ page }) =
 
 });
 
+test('notification as a number should be added corretcly', async ({ page }) => {
+
+    await fulfillJson(page, {
+        order: [
+            {
+                new_item: true,
+                item: 'Integrations',
+                href: '/config/integrations',
+                icon: 'mdi:puzzle',
+                notification: 2
+            }
+        ]
+    });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('03-sidebar-new-item-notification.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+});
+
 test('a new item with notification should behave propely when the sidebar is collapsed', async ({ page }) => {
 
     await fulfillJson(page, {

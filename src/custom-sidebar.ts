@@ -176,6 +176,31 @@ class CustomSidebar {
         return a;
     }
 
+    private _getTemplateString(template: unknown): string {
+        let rendered = '';
+        if (
+            typeof template === 'string' ||
+            (
+                typeof template === 'number' &&
+                !Number.isNaN(template)
+            ) ||
+            typeof template === 'boolean' ||
+            typeof template === 'object'
+        ) {
+            if (typeof template === 'string') {
+                rendered = template.trim();
+            } else if (
+                typeof template === 'number' ||
+                typeof template === 'boolean'
+            ) {
+                rendered = template.toString();
+            } else {
+                rendered = JSON.stringify(template);
+            }
+        }
+        return rendered;
+    }
+
     private _updateIcon(element: HTMLAnchorElement, icon: string): void {
         const iconElement = this._getIcon(element);
         if (iconElement) {
@@ -342,7 +367,9 @@ class CustomSidebar {
                 callback
             );
         } else {
-            callback(template);
+            callback(
+                this._getTemplateString(template)
+            );
         }
     }
 
@@ -354,28 +381,9 @@ class CustomSidebar {
         this._renderer.trackTemplate(
             code,
             (result: unknown): void => {
-                let rendered = '';
-                if (
-                    typeof result === 'string' ||
-                    (
-                        typeof result === 'number' &&
-                        !Number.isNaN(result)
-                    ) ||
-                    typeof result === 'boolean' ||
-                    typeof result === 'object'
-                ) {
-                    if (typeof result === 'string') {
-                        rendered = result.trim();
-                    } else if (
-                        typeof result === 'number' ||
-                        typeof result === 'boolean'
-                    ) {
-                        rendered = result.toString();
-                    } else {
-                        rendered = JSON.stringify(result);
-                    }
-                }
-                extraCallback(rendered);
+                extraCallback(
+                    this._getTemplateString(result)
+                );
             }
         );
 
