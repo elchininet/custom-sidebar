@@ -25,6 +25,8 @@ export enum ELEMENT {
 }
 
 export enum SELECTOR {
+    HOST = ':host',
+    HOST_EXPANDED = ':host([expanded])',
     SCOPE = ':scope',
     TITLE = '.title',
     ITEM = 'a[role="option"]',
