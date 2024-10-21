@@ -43,7 +43,7 @@ This is a refactor of [custom-sidebar-v2] by @galloween, which unfortunatelly is
 
 You can install the plugin manually or through [HACS], not both. If you install the plugin using the two installations methods you could have issues or errors.
 
-### Through HACS (v2 or greather)
+### Through HACS (v2 or greater)
 
 >Note: if your version of `HACS` is lower than `v2` consult the section [Through old HACS versions (< v2)](#through-old-hacs-versions--v2)
 
