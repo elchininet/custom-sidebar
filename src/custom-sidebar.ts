@@ -279,8 +279,7 @@ class CustomSidebar {
                     if (haSvgIcon) {
                         haSvgIcon.replaceWith(haIcon);
                     } else {
-                        const paperIconElement = element.querySelector(ELEMENT.PAPER_ICON_ITEM);
-                        paperIconElement.insertBefore(haIcon, paperIconElement.firstElementChild);
+                        element.querySelector(ELEMENT.PAPER_ICON_ITEM).prepend(haIcon);
                     }
                 }
                 haIcon.setAttribute('icon', rendered);
@@ -306,7 +305,7 @@ class CustomSidebar {
             badge.classList.add(CLASS.NOTIFICATIONS_BADGE);
             element
                 .querySelector(ELEMENT.PAPER_ICON_ITEM)
-                .appendChild(badge);
+                .append(badge);
         }
         if (!badgeCollapsed) {
             badgeCollapsed = document.createElement('span');
@@ -799,7 +798,7 @@ class CustomSidebar {
 
                         const newItem = this._buildNewItem(orderItem);
                         newItem.style.order = `${orderIndex}`;
-                        paperListBox.appendChild(newItem);
+                        paperListBox.append(newItem);
 
                         orderItem.element = newItem;
 
