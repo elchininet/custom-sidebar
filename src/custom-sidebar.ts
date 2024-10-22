@@ -627,7 +627,7 @@ class CustomSidebar {
                     background: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND }, var(${ CSS_VARIABLES.SIDEBAR_BACKGROUND_COLOR })) !important;
                 }
                 ${ SELECTOR.HOST } ${ SELECTOR.MENU } {
-                    background: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_MENU_BACKGROUND }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND }, var(${ CSS_VARIABLES.SIDEBAR_MENU_BUTTON_BACKGROUND_COLOR }, var(${ CSS_VARIABLES.PRIMARY_BACKGROUND_COLOR }))));
+                    background: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_MENU_BACKGROUND }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND }, var(${ CSS_VARIABLES.SIDEBAR_MENU_BUTTON_BACKGROUND_COLOR }, ${ CSS_VARIABLES.PRIMARY_BACKGROUND_COLOR })));
                     border-bottom: 1px solid var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR }, var(${ CSS_VARIABLES.DIVIDER_COLOR }));
                 }
                 ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] {
@@ -856,14 +856,16 @@ class CustomSidebar {
                             orderItem,
                             orderItem.element,
                             [
-                                ['info_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR],
-                                ['info_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR],
-                                ['notification_color',  CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR],
-                                ['selection_color',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR],
-                                ['icon_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_ICON_COLOR],
-                                ['icon_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR],
-                                ['text_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_TEXT_COLOR],
-                                ['text_color_selected', CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_TEXT_COLOR]
+                                ['icon_color',              CSS_VARIABLES.CUSTOM_SIDEBAR_ICON_COLOR],
+                                ['icon_color_selected',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR],
+                                ['text_color',              CSS_VARIABLES.CUSTOM_SIDEBAR_TEXT_COLOR],
+                                ['text_color_selected',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_TEXT_COLOR],
+                                ['selection_color',         CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR],
+                                ['selection_opacity',       CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_OPACITY],
+                                ['info_color',              CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR],
+                                ['info_color_selected',     CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR],
+                                ['notification_color',      CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR],
+                                ['notification_text_color', CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR]
                             ]
                         );
 
