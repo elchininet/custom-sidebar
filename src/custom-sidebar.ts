@@ -134,15 +134,6 @@ class CustomSidebar {
         return navigator.userAgent.toLowerCase();
     }
 
-    private _getIcon(element: HTMLElement): HTMLElement | null {
-        return element.querySelector(
-            [
-                ELEMENT.HA_SVG_ICON,
-                ELEMENT.HA_ICON
-            ].join(',')
-        );
-    }
-
     private _buildNewItem(configItem: ConfigNewItem): HTMLAnchorElement {
 
         const a = document.createElement('a');
@@ -160,11 +151,6 @@ class CustomSidebar {
                 ${ATTRIBUTE.ROLE}="option"
                 ${ATTRIBUTE.ARIA_DISABLED}="false"
             >
-                <ha-icon
-                    slot="item-icon"
-                    icon="${configItem.icon}"
-                >
-                </ha-icon>
                 <span class="${CLASS.NOTIFICATIONS_BADGE} ${CLASS.NOTIFICATIONS_BADGE_COLLAPSED}"></span>
                 <span class="item-text">
                     ${ configItem.item }
@@ -199,16 +185,6 @@ class CustomSidebar {
             }
         }
         return rendered;
-    }
-
-    private _updateIcon(element: HTMLAnchorElement, icon: string): void {
-        const iconElement = this._getIcon(element);
-        if (iconElement) {
-            const haIcon = document.createElement(ELEMENT.HA_ICON);
-            haIcon.setAttribute('icon', icon);
-            haIcon.setAttribute('slot', 'item-icon');
-            iconElement.replaceWith(haIcon);
-        }
     }
 
     private _subscribeTitle(): void {
@@ -287,6 +263,27 @@ class CustomSidebar {
             name,
             (rendered: string): void => {
                 itemText.innerHTML = rendered;
+            }
+        );
+    }
+
+    private _subscribeIcon(element: HTMLAnchorElement, icon: string): void {
+        this._subscribeTemplate(
+            icon,
+            (rendered: string): void => {
+                let haIcon = element.querySelector(ELEMENT.HA_ICON);
+                if (!haIcon) {
+                    haIcon = document.createElement(ELEMENT.HA_ICON);
+                    haIcon.setAttribute('slot', 'item-icon');
+                    const haSvgIcon = element.querySelector(ELEMENT.HA_SVG_ICON);
+                    if (haSvgIcon) {
+                        haSvgIcon.replaceWith(haIcon);
+                    } else {
+                        const paperIconElement = element.querySelector(ELEMENT.PAPER_ICON_ITEM);
+                        paperIconElement.insertBefore(haIcon, paperIconElement.firstElementChild);
+                    }
+                }
+                haIcon.setAttribute('icon', rendered);
             }
         );
     }
@@ -815,10 +812,6 @@ class CustomSidebar {
                             element.style.display = 'none';
                         }
 
-                        if (orderItem.icon) {
-                            this._updateIcon(element, orderItem.icon);
-                        }
-
                         if (orderItem.href) {
                             element.href = orderItem.href;
                         }
@@ -835,6 +828,13 @@ class CustomSidebar {
                             this._subscribeName(
                                 orderItem.element,
                                 orderItem.name
+                            );
+                        }
+
+                        if (orderItem.icon) {
+                            this._subscribeIcon(
+                                orderItem.element,
+                                orderItem.icon
                             );
                         }
 
