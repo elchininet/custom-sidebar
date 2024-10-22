@@ -30,6 +30,7 @@ export const SELECTORS = {
     HUI_VIEW: 'hui-view',
     PAPER_LIST_BOX: 'paper-listbox',
     TOOLTIP: '.tooltip',
+    HA_ICON: 'ha-icon',
     SIDEBAR_ITEMS,
     SIDEBAR_PAPER_ICON_ITEMS
 };

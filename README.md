@@ -164,7 +164,10 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | item                      | String  | yes       | This is a string that will be used to match each sidebar item by its text, its `data-panel` attribute or its `href`. If the `exact` property is not set, it is case insensitive and it can be a substring such as `developer` instead of `Developer Tools` or `KITCHEN` instead of `kitchen-lights`. |
 | match                     | String  | no        | This property will define which string will be used to match the `item` property. It has three possible values "text" (default) to match the text content of the element, "data-panel" to match the `data-panel` attribute of the element, or "href", to match the `href` attribute of the element |
 | exact                     | Boolean | no        | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`). |
+| order                     | Number  | no        | Sets the order number of the sidebar item |
+| hide                      | Boolean | no        | Setting this property to `true` will hide the sidebar item |
 | name<sup>\*</sup>         | String  | no        | Changes the name of the sidebar item |
+| icon<sup>\*</sup>         | String  | no        | Specifies the icon of the sidebar item |
 | info<sup>\*</sup>         | String  | no        | Sets the content of the info text (a smaller secondary text below the main item text) |
 | notification<sup>\*</sup> | String  | no        | Add a notification badge to the sidebar item |
 | icon_color<sup>\*</sup>   | String  | no        | Sets the color of the icon (it overrides the global `icon_color`) |
@@ -177,12 +180,9 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | info_color_selected<sup>\*</sup> | String | no  | Sets the color of the info text when the item is selected (it overrides the global `info_color_selected`) |
 | notification_color<sup>\*</sup>  | String | no  | Sets the notification color (it overrides the global `notification_color`) |
 | notification_text_color<sup>\*</sup>  | String  | no       | Sets the color of the sidebar notification text (it overrides the global `notification_text_color`) |
-| order                     | Number  | no        | Sets the order number of the sidebar item |
 | bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
-| hide                      | Boolean | no        | Setting this property to `true` will hide the sidebar item |
 | href                      | String  | no        | Specifies the `href` of the sidebar item |
 | target                    | String  | no        | Specifies the [target property] of the sidebar item |
-| icon                      | String  | no        | Specifies the icon of the sidebar item |
 | new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
 
 >\* These item properties allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
