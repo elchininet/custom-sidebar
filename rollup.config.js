@@ -1,4 +1,4 @@
-import ts from 'rollup-plugin-ts';
+import typescript from '@rollup/plugin-typescript';
 import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -11,31 +11,11 @@ const CONFIG_REPLACER = '%CONFIG%';
 const bundlePlugins = [
     nodeResolve(),
     json(),
-    ts({
-        browserslist: false
-    }),
+    typescript(),
     terser({
         output: {
             comments: false
         }
-    })
-];
-
-const testBundlePlugins = [
-    nodeResolve(),
-    json(),
-    ts({
-        browserslist: false,
-        tsconfig: resolvedConfig => ({
-            ...resolvedConfig,
-            removeComments: false
-        })
-    }),
-    istanbul({
-        exclude: [
-            'node_modules/**/*',
-            'package.json'
-        ]
     })
 ];
 
@@ -93,7 +73,20 @@ export default [
                 preventAssignment: true,
                 delimiters: ['', '']
             }),
-            ...testBundlePlugins
+            nodeResolve(),
+            json(),
+            typescript({
+                compilerOptions: {
+                    removeComments: false,
+                    outDir: undefined
+                }
+            }),
+            istanbul({
+                exclude: [
+                    'node_modules/**/*',
+                    'package.json'
+                ]
+            })
         ],
         input: 'src/custom-sidebar.ts',
         output: {

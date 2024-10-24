@@ -39,6 +39,7 @@
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-replace": "^6.0.1",
     "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.1",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "22.8.1",
     "dotenv-cli": "^7.4.2",
@@ -48,7 +49,6 @@
     "playwright-test-coverage": "^1.2.12",
     "rollup": "^4.24.2",
     "rollup-plugin-istanbul": "^5.0.0",
-    "rollup-plugin-ts": "^3.4.5",
     "tslib": "^2.8.0",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.11.0"
