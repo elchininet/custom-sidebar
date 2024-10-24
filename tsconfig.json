@@ -10,6 +10,7 @@
       "noImplicitAny": true,
       "removeComments": true,
       "baseUrl": "./src",
+      "rootDir": "src",
       "paths": {
         "@types": ["types"],
         "@constants": ["constants"],
