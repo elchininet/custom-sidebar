@@ -5,10 +5,10 @@ import {
 } from '@types';
 import {
     NAMESPACE,
+    TYPE,
     MAX_ATTEMPTS,
     RETRY_DELAY,
     FLUSH_PROMISE_DELAY,
-    UNDEFINED_TYPE,
     CSS_CLEANER_REGEXP
 } from '@constants';
 import { version } from '../../package.json';
@@ -35,8 +35,14 @@ const EXTENDABLE_OPTIONS = [
     'divider_color'
 ] as const;
 
+const ONLY_CONFIG_OPTIONS = [
+    'js_variables',
+    'jinja_variables'
+] as const;
+
 type ExtendableConfigOption = typeof EXTENDABLE_OPTIONS[number];
-type ExtendableConfigOptions = Partial<Pick<Config, ExtendableConfigOption>>;
+type OnlyConfigOption = typeof ONLY_CONFIG_OPTIONS[number];
+type OptionsFromBase = Record<string, Config[ExtendableConfigOption | OnlyConfigOption]>;
 
 export const randomId = (): string => Math.random().toString(16).slice(2);
 
@@ -51,18 +57,22 @@ const extendOptionsFromBase = (
     config: Config,
     lastException: ConfigException | null,
     extendFromBase: boolean
-): ExtendableConfigOptions => {
+): OptionsFromBase => {
 
-    const configCommonProps: Record<string, string | boolean | number> = {};
+    const configCommonProps: OptionsFromBase = {};
 
     EXTENDABLE_OPTIONS.forEach((option: ExtendableConfigOption): void => {
         const lasExceptionValue = lastException?.[option];
         const value = extendFromBase
             ? lasExceptionValue ?? config[option]
             : lasExceptionValue;
-        if (typeof value !== UNDEFINED_TYPE) {
+        if (typeof value !== TYPE.UNDEFINED) {
             configCommonProps[option] = value;
         }
+    });
+
+    ONLY_CONFIG_OPTIONS.forEach((option: OnlyConfigOption) => {
+        configCommonProps[option] = config[option];
     });
 
     return configCommonProps;
@@ -86,13 +96,13 @@ const flatConfigOrder = (order: ConfigOrder[]): ConfigOrder[] => {
                 : -1;
         }
         if (
-            typeof orderItemA.order === UNDEFINED_TYPE ||
-            typeof orderItemB.order === UNDEFINED_TYPE
+            typeof orderItemA.order === TYPE.UNDEFINED ||
+            typeof orderItemB.order === TYPE.UNDEFINED
         ) {
             if (orderItemA.order === orderItemB.order) {
                 return 0;
             }
-            return typeof orderItemA.order === UNDEFINED_TYPE
+            return typeof orderItemA.order === TYPE.UNDEFINED
                 ? 1
                 : -1;
         }

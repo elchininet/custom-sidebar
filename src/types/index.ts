@@ -1,5 +1,7 @@
 import { HomeAssistant, Hass } from 'home-assistant-javascript-templates';
 
+type Primitive = string | number | boolean;
+
 export enum SidebarMode {
     HIDDEN = 'hidden',
     NARROW = 'narrow',
@@ -133,6 +135,8 @@ export type ConfigException = ConfigExceptionUser & ConfigExceptionDevice;
 
 export interface Config extends BaseConfig {
     id?: string;
+    js_variables?: Record<string, Primitive>;
+    jinja_variables?: Record<string, Primitive>;
     exceptions?: ConfigException[];
 }
 
