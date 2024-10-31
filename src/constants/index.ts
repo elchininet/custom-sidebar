@@ -8,10 +8,14 @@ export const MAX_ATTEMPTS = 100;
 export const RETRY_DELAY = 50;
 export const FLUSH_PROMISE_DELAY = 1;
 
-export const BOOLEAN_TYPE = 'boolean';
-export const STRING_TYPE = 'string';
-export const UNDEFINED_TYPE = 'undefined';
-export const NUMBER_TYPE = 'number';
+export enum TYPE {
+    BOOLEAN = 'boolean',
+    STRING = 'string',
+    UNDEFINED = 'undefined',
+    NUMBER = 'number'
+}
+
+export const OBJECT_TO_STRING = '[object Object]';
 
 export const BLOCKED_PROPERTY = 'data-blocked';
 

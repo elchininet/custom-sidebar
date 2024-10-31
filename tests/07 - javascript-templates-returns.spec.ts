@@ -17,13 +17,12 @@ const TEXT_SELECTOR = 'paper-listbox > a[data-panel="check"] .item-text';
 const NOTIFICATION_SELECTOR_1 = 'paper-listbox > a[data-panel="check"] .notification-badge-collapsed';
 const NOTIFICATION_SELECTOR_2 = 'paper-listbox > a[data-panel="check"] .notification-badge:not(.notification-badge-collapsed)';
 
-test.describe('title templates', () => {
+test.describe('title template returns', () => {
 
     test('if it returns undefined an empty string is used', async ({ page }) => {
 
         await fulfillJson(page, {
-            title: '[[[ const title = "Custom"; return titles; ]]]',
-            order: []
+            title: '[[[ const title = "Custom"; return titles; ]]]'
         });
 
         page.on('console', message => {
@@ -41,8 +40,7 @@ test.describe('title templates', () => {
     test('if it returns an empty string it should be used', async ({ page }) => {
 
         await fulfillJson(page, {
-            title: '[[[ return ""; ]]]',
-            order: []
+            title: '[[[ return ""; ]]]'
         });
 
         await pageVisit(page);
@@ -54,8 +52,7 @@ test.describe('title templates', () => {
     test('if it returns a number it should be used as string', async ({ page }) => {
 
         await fulfillJson(page, {
-            title: '[[[ return 5; ]]]',
-            order: []
+            title: '[[[ return 5; ]]]'
         });
 
         await pageVisit(page);
@@ -67,8 +64,7 @@ test.describe('title templates', () => {
     test('if it returns a boolean it should be used as string', async ({ page }) => {
 
         await fulfillJson(page, {
-            title: '[[[ return false; ]]]',
-            order: []
+            title: '[[[ return false; ]]]'
         });
 
         await pageVisit(page);
@@ -80,8 +76,7 @@ test.describe('title templates', () => {
     test('if it returns an array it should be stringified as JSON', async ({ page }) => {
 
         await fulfillJson(page, {
-            title: '[[[ const title = "Custom"; return [ title ]; ]]]',
-            order: []
+            title: '[[[ const title = "Custom"; return [ title ]; ]]]'
         });
 
         await pageVisit(page);
@@ -93,8 +88,7 @@ test.describe('title templates', () => {
     test('if it is updated and it returns an empty string, it should be used', async ({ page }) => {
 
         await fulfillJson(page, {
-            title: '[[[ return states("input_boolean.my_switch") === "on" ? "" : "My Home" ]]]',
-            order: []
+            title: '[[[ return states("input_boolean.my_switch") === "on" ? "" : "My Home" ]]]'
         });
 
         await pageVisit(page);
@@ -111,15 +105,34 @@ test.describe('title templates', () => {
 
     });
 
+    test('if the template returns a promise it should wait until it is resolved and show its result', async ({ page }) => {
+
+        await fulfillJson(page, {
+            title: `
+                [[[
+                    new Promise((resolve) => {
+                        setTimeout(() => {
+                            resolve('Promise title');
+                        }, 100);
+                    });
+                ]]]
+            `
+        });
+
+        await pageVisit(page);
+
+        await expect(page.locator(SELECTORS.TITLE)).toHaveText('Promise title', { useInnerText: true });
+
+    });
+
 });
 
-test.describe('sidebar_editable templates', () => {
+test.describe('sidebar_editable template returns', () => {
 
     test('if it does not return true or false it should be ignored', async ({ page }) => {
 
         await fulfillJson(page, {
-            sidebar_editable: '[[[ const array = [1, 2, 3]; return array.length; ]]]',
-            order: []
+            sidebar_editable: '[[[ const array = [1, 2, 3]; return array.length; ]]]'
         });
 
         await pageVisit(page);
@@ -129,9 +142,30 @@ test.describe('sidebar_editable templates', () => {
 
     });
 
+    test('if it returns a promise it should be resolved and applied correctly', async ({ page }) => {
+
+        await fulfillJson(page, {
+            sidebar_editable: `
+                [[[
+                    const isEditable = async () => {
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        return false;
+                    };
+                    return isEditable();
+                ]]]
+            `
+        });
+
+        await pageVisit(page);
+
+        await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
+        await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
+
+    });
+
 });
 
-test.describe('name template', () => {
+test.describe('name template returns', () => {
 
     test('if it returns undefined a empty string should be used', async ({ page }) => {
 
@@ -257,7 +291,7 @@ test.describe('name template', () => {
 
 });
 
-test.describe('notification template', () => {
+test.describe('notification template returns', () => {
 
     test('if it returns undefined and empty string should be used', async ({ page }) => {
 
@@ -391,6 +425,33 @@ test.describe('notification template', () => {
 
         await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('{}');
         await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('{}');
+
+    });
+
+    test('if it returns a promise it should be resolved and return its result', async ({ page }) => {
+
+        await fulfillJson(page, {
+            order: [{
+                new_item: true,
+                item: 'Check',
+                icon: 'mdi:bullseye-arrow',
+                href: '/check',
+                notification: `
+                    [[[
+                        new Promise((resolve) => {
+                            setTimeout(() => {
+                                resolve(10);
+                            }, 200);
+                        });
+                    ]]]
+                `
+            }]
+        });
+
+        await pageVisit(page);
+
+        await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('10');
+        await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('10');
 
     });
 

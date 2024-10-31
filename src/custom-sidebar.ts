@@ -162,9 +162,10 @@ class CustomSidebar {
         return a;
     }
 
-    private _getTemplateString(template: unknown): string {
+    private async _getTemplateString(template: unknown): Promise<string> {
         let rendered = '';
         if (
+            template instanceof Promise ||
             typeof template === 'string' ||
             (
                 typeof template === 'number' &&
@@ -180,6 +181,9 @@ class CustomSidebar {
                 typeof template === 'boolean'
             ) {
                 rendered = template.toString();
+            } else if (template instanceof Promise) {
+                const result = await template;
+                rendered = await this._getTemplateString(result);
             } else {
                 rendered = JSON.stringify(template);
             }
@@ -363,23 +367,25 @@ class CustomSidebar {
                 callback
             );
         } else {
-            callback(
-                this._getTemplateString(template)
-            );
+            this._getTemplateString(template)
+                .then((result: string) => {
+                    callback(result);
+                });
         }
     }
 
     private _createJsTemplateSubscription(
         code: string,
-        extraCallback: (result: string) => void
+        callback: (result: string) => void
     ): void {
 
         this._renderer.trackTemplate(
             code,
             (result: unknown): void => {
-                extraCallback(
-                    this._getTemplateString(result)
-                );
+                this._getTemplateString(result)
+                    .then((templateResult: string) => {
+                        callback(templateResult);
+                    });
             }
         );
 
@@ -401,7 +407,8 @@ class CustomSidebar {
                         user_name: this._ha.hass.user.name,
                         user_is_admin: this._ha.hass.user.is_admin,
                         user_is_owner: this._ha.hass.user.is_owner,
-                        user_agent: window.navigator.userAgent
+                        user_agent: window.navigator.userAgent,
+                        ...(this._configWithExceptions.jinja_variables)
                     }
                 }
             );
@@ -743,6 +750,10 @@ class CustomSidebar {
 
                                 const matchText = (
                                     (!!exact && item === text) ||
+                                    // for non-admins, data-panel is not present in the config item
+                                    // due to this, text will be undefined in those cases
+                                    // as the tests run against an admin account, this cannot be covered
+                                    /* istanbul ignore next */
                                     (!exact && !!text?.toLowerCase().includes(itemLowerCase))
                                 );
 
@@ -1012,6 +1023,7 @@ class CustomSidebar {
                         this._renderer = renderer;
                         this._getConfigWithExceptions()
                             .then(() => {
+                                this._renderer.variables = this._configWithExceptions.js_variables ?? {};
                                 this._processSidebar();
                                 this._subscribeTitle();
                                 this._subscribeSideBarEdition();

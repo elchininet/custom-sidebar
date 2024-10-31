@@ -139,7 +139,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | title_color<sup>\*</sup> | String                       | no       | Sets the color of the sidebar title |
 | sidebar_background<sup>\*</sup> | String                | no       | Sets the background of the sidebar. It could be a color or [a background declaration](https://developer.mozilla.org/en-US/docs/Web/CSS/background) |
 | menu_background<sup>\*</sup>    | String                | no       | Sets the background of the sidebar menu area (the one containing the menu button and the title). If it is not set, the `sidebar_background` option will be used. It could be a color or [a background declaration](https://developer.mozilla.org/en-US/docs/Web/CSS/background) |
-| sidebar_editable<sup>\*</sup> | Boolean or String       | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns `true` or `false` |
+| sidebar_editable<sup>\*</sup> | Boolean or String       | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns a boolean or a promise that resolves in a boolean |
 | sidebar_mode       | String                             | no       | Defines the default status of the sidebar when Home Assistant is loaded. It has three possible values: "hidden" to make the sidebar hidden, "narrow" to make the sidebar visible in narrow state and "extended" to make sidebar visible in extended state. This option will show or hide the sidebar ignoring if it is a desktop or a mobile device or if the `Always hide the sidebar` switch in the profile page in on or off (depending on the value of this option, this switch will be switched on or off automatically) |
 | sidebar_button_color<sup>\*</sup> | String              | no       | Sets the color of the sidebar hamburger menu |
 | icon_color<sup>\*</sup> | String                        | no       | Sets the color of the sidebar icons |
@@ -154,6 +154,8 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | notification_text_color<sup>\*</sup>  | String          | no       | Sets the color of the sidebar notifications texts |
 | divider_color<sup>\*</sup>       | String               | no       | Sets the color of the sidebar dividers |
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
+| js_variables       | Object                             | no       | An object containing variales that will be used in [JavaScript templates](#javascript-templates). The variables cannot be templates and they must be strings, numbers or booleans |
+| jinja_variables       | Object                          | no       | An object containing variales that will be used in [Jinja templates](#jinja-templates). The variables cannot be templates and they must be strings, numbers or booleans |
 
 >\* These options allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
 
@@ -303,7 +305,7 @@ Short example in `JSON` format:
 
 ## Templates
 
-Some config options and item properties, as `title`, `sidebar_editable`, `name` `notification`, and `info`, admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main difference between the two templating systems (apart from the syntax) is that `JavaScript` can access client side data like DOM APIs meanwhile `Jinja` templates are agnostic to the device in which `Home Assistant` is being executed.
+Some config options and item properties, as `title`, `sidebar_editable`, `name` `notification`, and `info`, admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main difference between the two templating systems (apart from the syntax) is that `JavaScript` can access client side data like DOM APIs and can return [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), and `Jinja` templates are mostly agnostic to the device in which `Home Assistant` is being executed.
 
 ### JavaScript templates
 
@@ -311,16 +313,27 @@ This templating system IS NOT [the same that Home Assistant implements](https://
 
 The `JavaScript` code will be taken as something that you want to return, but if you have a more complex logic, you can create your own variables and return the desired result at the end.
 
-The entities and domains used in the templates will be stored so if the state of these entities change, it will update the templates used in the configuration.
+The entities and domains used in the templates will be stored, so if the state of an stored entity changes, all the templates that use this entity will be reevaluated. On top of this, if the variable `panel_url` is used in a template, the template will be reevaluated every time that a new panel or a new view is loaded.
 
 #### JavaScript templates example
 
-The next example will set the title of the sidebar as "My Home" followed by the current time. It will also add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed. And it also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses and the Operating System version in the info text.
+The next example will set the next options:
+
+1. Sets the title of the sidebar as "My Home" followed by the current time.
+2. Sets the background of the sidebar `red` when the panel config is selected and `green` otherwise.
+3. Adds the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed.
+4. Creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses and the Operating System version in the info text.
 
 ##### in `YAML` format:
 
 ```yaml
 title: '[[[ "My Home " + new Date(states("sensor.date_time_iso")).toLocaleTimeString().slice(0, 5) ]]]'
+sidebar_background: |
+  [[[
+    return panel_url === '/config/dashboard'
+      ? 'red'
+      : 'green';
+  ]]]
 order:
   - item: hacs
     notification: |
@@ -343,6 +356,7 @@ order:
 ```json5
 {
   "title": "[[[ 'My Home ' + new Date(states('sensor.date_time_iso')).toLocaleTimeString().slice(0, 5) ]]]",
+  "sidebar_background": "[[[ return panel_url === '/config/dashboard' ? 'red' : 'green' ]]]",
   "order": [
     {
       "item": "hacs",
@@ -375,7 +389,11 @@ When the entities and domains used in a templates change, it will trigger an upd
 
 #### Jinja templates example
 
-The next example will set the title of the sidebar as "My Home" followed by the current time. It will also add the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed. And it also creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version between parentheses and the Operating System version in the info text.
+The next example will set the next options:
+
+1. Sets the title of the sidebar as "My Home" followed by the current time.
+2. Adds the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed.
+3. Creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version between parentheses and the Operating System version in the info text.
 
 ##### in `YAML` format:
 

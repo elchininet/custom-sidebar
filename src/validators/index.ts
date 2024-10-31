@@ -5,11 +5,11 @@ import {
     SidebarMode
 } from '@types';
 import {
-    BOOLEAN_TYPE,
-    STRING_TYPE,
-    UNDEFINED_TYPE,
-    NUMBER_TYPE,
-    SIDEBAR_MODE_TO_DOCKED_SIDEBAR
+    TYPE,
+    OBJECT_TO_STRING,
+    SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
+    JS_TEMPLATE_REG,
+    JINJA_TEMPLATE_REG
 } from '@constants';
 
 const ERROR_PREFIX = 'Invalid configuration';
@@ -17,8 +17,8 @@ const ERROR_PREFIX = 'Invalid configuration';
 const validateStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
     props.forEach((prop: K): void => {
         if (
-            typeof obj[prop] !== UNDEFINED_TYPE &&
-            typeof obj[prop] !== STRING_TYPE
+            typeof obj[prop] !== TYPE.UNDEFINED &&
+            typeof obj[prop] !== TYPE.STRING
         ) {
             throw new SyntaxError(`${prefix} "${String(prop)}" property should be a string`);
         }
@@ -35,14 +35,41 @@ const validateStringOrArrayOfStringsOptions = <T extends [string, undefined | st
 };
 
 const validateStringOrArrayOfStrings = (value: undefined | string | string[]): boolean => {
-    if (typeof value === UNDEFINED_TYPE) return true;
+    if (typeof value === TYPE.UNDEFINED) return true;
     return (
-        typeof value === STRING_TYPE ||
+        typeof value === TYPE.STRING ||
         (
             Array.isArray(value) &&
-            value.some((item: string): boolean => typeof item === STRING_TYPE)
+            value.some((item: string): boolean => typeof item === TYPE.STRING)
         )
     );
+};
+
+const validateVariables = (name: string, variables: Record<string, unknown> | undefined): void => {
+    if (typeof variables !== TYPE.UNDEFINED) {
+        if (Object.prototype.toString.call(variables) !== OBJECT_TO_STRING) {
+            throw new SyntaxError(`${ERROR_PREFIX}, "${name}" property should be an object`);
+        }
+        Object.entries(variables).forEach((entry) => {
+            const [prop, value] = entry;
+            if (
+                typeof value !== TYPE.STRING &&
+                typeof value !== TYPE.NUMBER &&
+                typeof value !== TYPE.BOOLEAN
+            ) {
+                throw new SyntaxError(`${ERROR_PREFIX}, "${name}" property should contain only strings, numbers or booleans. Property ${prop} has the wrong type`);
+            }
+            if (
+                typeof value === 'string' &&
+                (
+                    JS_TEMPLATE_REG.test(value) ||
+                    JINJA_TEMPLATE_REG.test(value)
+                )
+            ) {
+                console.warn(`"${name}" property should not have templates. Property ${prop} seems to be a template`);
+            }
+        });
+    }
 };
 
 const validateExceptionItem = (exception: ConfigException): void => {
@@ -81,31 +108,31 @@ const validateExceptionItem = (exception: ConfigException): void => {
     );
 
     if (
-        typeof exception.order !== UNDEFINED_TYPE &&
+        typeof exception.order !== TYPE.UNDEFINED &&
         !Array.isArray(exception.order)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "order" property should be an array`);
     }
 
     if (
-        typeof exception.sidebar_editable !== UNDEFINED_TYPE &&
-        typeof exception.sidebar_editable !== BOOLEAN_TYPE &&
-        typeof exception.sidebar_editable !== STRING_TYPE
+        typeof exception.sidebar_editable !== TYPE.UNDEFINED &&
+        typeof exception.sidebar_editable !== TYPE.BOOLEAN &&
+        typeof exception.sidebar_editable !== TYPE.STRING
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "sidebar_editable" property should be a boolean or a template string`);
     }
 
     if (
-        typeof exception.sidebar_mode !== UNDEFINED_TYPE &&
+        typeof exception.sidebar_mode !== TYPE.UNDEFINED &&
         !(exception.sidebar_mode in SIDEBAR_MODE_TO_DOCKED_SIDEBAR)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`);
     }
 
     if (
-        typeof exception.selection_opacity !== UNDEFINED_TYPE &&
-        typeof exception.selection_opacity !== NUMBER_TYPE &&
-        typeof exception.selection_opacity !== STRING_TYPE
+        typeof exception.selection_opacity !== TYPE.UNDEFINED &&
+        typeof exception.selection_opacity !== TYPE.NUMBER &&
+        typeof exception.selection_opacity !== TYPE.STRING
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "selection_opacity" property should be a number or a template string`);
     }
@@ -128,7 +155,7 @@ const validateExceptionItem = (exception: ConfigException): void => {
 };
 
 const validateExceptions = (exceptions: ConfigException[] | undefined): void => {
-    if (typeof exceptions === UNDEFINED_TYPE) {
+    if (typeof exceptions === TYPE.UNDEFINED) {
         return;
     }
     if (!Array.isArray(exceptions)) {
@@ -162,9 +189,9 @@ const validateConfigItem = (configItem: ConfigItem): void => {
     );
 
     if (
-        typeof configItem.selection_opacity !== UNDEFINED_TYPE &&
-        typeof configItem.selection_opacity !== NUMBER_TYPE &&
-        typeof configItem.selection_opacity !== STRING_TYPE
+        typeof configItem.selection_opacity !== TYPE.UNDEFINED &&
+        typeof configItem.selection_opacity !== TYPE.NUMBER &&
+        typeof configItem.selection_opacity !== TYPE.STRING
     ) {
         throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, "selection_opacity" property should be a number or a template string`);
     }
@@ -208,31 +235,33 @@ export const validateConfig = (config: Config): void => {
         `${ERROR_PREFIX},`
     );
     if (
-        typeof config.selection_opacity !== UNDEFINED_TYPE &&
-        typeof config.selection_opacity !== NUMBER_TYPE &&
-        typeof config.selection_opacity !== STRING_TYPE
+        typeof config.selection_opacity !== TYPE.UNDEFINED &&
+        typeof config.selection_opacity !== TYPE.NUMBER &&
+        typeof config.selection_opacity !== TYPE.STRING
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, "selection_opacity" property should be a number or a template string`);
     }
     if (
-        typeof config.sidebar_editable !== UNDEFINED_TYPE &&
-        typeof config.sidebar_editable !== BOOLEAN_TYPE &&
-        typeof config.sidebar_editable !== STRING_TYPE
+        typeof config.sidebar_editable !== TYPE.UNDEFINED &&
+        typeof config.sidebar_editable !== TYPE.BOOLEAN &&
+        typeof config.sidebar_editable !== TYPE.STRING
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, "sidebar_editable" property should be a boolean or a template string`);
     }
     if (
-        typeof config.sidebar_mode !== UNDEFINED_TYPE &&
+        typeof config.sidebar_mode !== TYPE.UNDEFINED &&
         !(config.sidebar_mode in SIDEBAR_MODE_TO_DOCKED_SIDEBAR)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`);
     }
     if (
-        typeof config.order !== UNDEFINED_TYPE &&
+        typeof config.order !== TYPE.UNDEFINED &&
         !Array.isArray(config.order)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, "order" property should be an array`);
     }
+    validateVariables('js_variables', config.js_variables);
+    validateVariables('jinja_variables', config.jinja_variables);
     config.order?.forEach(validateConfigItem);
     validateExceptions(config.exceptions);
 };
