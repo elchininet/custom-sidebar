@@ -156,6 +156,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
 | js_variables       | Object                             | no       | An object containing variales that will be used in [JavaScript templates](#javascript-templates). The variables cannot be templates and they must be strings, numbers or booleans |
 | jinja_variables       | Object                          | no       | An object containing variales that will be used in [Jinja templates](#jinja-templates). The variables cannot be templates and they must be strings, numbers or booleans |
+| partials              | Object                          | no       | An object containing fragments of code that can be included in your templates. Consult [the partial section](#partials) for more info |
 
 >\* These options allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
 
@@ -434,6 +435,112 @@ order:
       "item": "info",
       "name": "Info ({{ state_attr('update.home_assistant_supervisor_update', 'latest_version') }})",
       "info": "OS {{ state_attr('update.home_assistant_operating_system_update', 'latest_version') }}",
+      "href": "/config/info",
+      "icon": "mdi:information-outline"
+    }
+  ]
+}
+```
+
+### Partials
+
+Partials are fragments of code that can be included in your templates. They can be inserted in [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates and any entity used in them will make the template in which the partial is inserted to be reevaluated when the entity changes its state. Partials can also use variables set in the `js_variables` or `jinja_variables` (depending on the kind of template in which they are inserted).
+
+#### Partials example with a JavaScript template
+
+##### in `YAML` format:
+
+```yaml
+js_variables:
+  supervisor_update: update.home_assistant_supervisor_update
+  os_update: update.home_assistant_operating_system_update
+partials:
+  updates: |
+    const supervisorVersion = state_attr(supervisor_update, "latest_version");
+    const osVersion = state_attr(os_update, "latest_version");
+order:
+  - new_item: true
+    item: info
+    name: |
+      [[[
+        @partial updates
+        return `Info ${supervisorVersion}`;
+      ]]]
+    info: |
+      [[[
+        @partial updates
+        return `OS ${ osVersion }`
+      ]]]
+    href: '/config/info'
+    icon: mdi:information-outline
+```
+
+##### in `JSON` format:
+
+```json5
+{
+  "js_variables": {
+    "supervisor_update": "update.home_assistant_supervisor_update",
+    "os_update": "update.home_assistant_operating_system_update"
+  },
+  "partials": {
+    "updates": "const supervisorVersion = state_attr(supervisor_update, 'latest_version'); const osVersion = state_attr(os_update, 'latest_version');"
+  },
+  "order": [
+    {
+      "new_item": true,
+      "item": "info",
+      "name": "[[[ @partial updates return `Info ${supervisorVersion}`; ]]]",
+      "info": "[[[ @partial updates return `OS ${ osVersion }`; ]]]",
+      "href": "/config/info",
+      "icon": "mdi:information-outline"
+    }
+  ]
+}
+```
+
+#### Partials example with a Jinja template
+
+##### in `YAML` format:
+
+```yaml
+jinja_variables:
+  supervisor_update: update.home_assistant_supervisor_update
+  os_update: update.home_assistant_operating_system_update
+partials:
+  updates: |
+    {% set supervisorVersion = state_attr(supervisor_update, "latest_version") %}
+    {% set osVersion = state_attr(os_update, "latest_version") %}
+order:
+  - new_item: true
+    item: info
+    name: |
+        @partial updates
+        Info {{ supervisorVersion }}
+    info: |
+        @partial updates
+        OS {{ osVersion }}
+    href: '/config/info'
+    icon: mdi:information-outline
+```
+
+##### in `JSON` format:
+
+```json5
+{
+  "jinja_variables": {
+    "supervisor_update": "update.home_assistant_supervisor_update",
+    "os_update": "update.home_assistant_operating_system_update"
+  },
+  "partials": {
+    "updates": "{% set supervisorVersion = state_attr(supervisor_update, 'latest_version') %} {% set osVersion = state_attr(os_update, 'latest_version') %}"
+  },
+  "order": [
+    {
+      "new_item": true,
+      "item": "info",
+      "name": "@partial updates Info {{ supervisorVersion }}",
+      "info": "@partial updates OS {{ osVersion }}",
       "href": "/config/info",
       "icon": "mdi:information-outline"
     }

@@ -9,7 +9,8 @@ import {
     MAX_ATTEMPTS,
     RETRY_DELAY,
     FLUSH_PROMISE_DELAY,
-    CSS_CLEANER_REGEXP
+    CSS_CLEANER_REGEXP,
+    PARTIAL_REGEXP
 } from '@constants';
 import { version } from '../../package.json';
 
@@ -37,7 +38,8 @@ const EXTENDABLE_OPTIONS = [
 
 const ONLY_CONFIG_OPTIONS = [
     'js_variables',
-    'jinja_variables'
+    'jinja_variables',
+    'partials'
 ] as const;
 
 type ExtendableConfigOption = typeof EXTENDABLE_OPTIONS[number];
@@ -220,4 +222,17 @@ export const addStyle = (css: string, elem: ShadowRoot): void => {
     style.setAttribute('id', `${NAMESPACE}_${name}`);
     elem.appendChild(style);
     style.innerHTML = css.replace(CSS_CLEANER_REGEXP, '$2');
+};
+
+export const getTemplateWithPartials = (template: string, partials: Record<string, string> | undefined): string => {
+    if (!partials) {
+        return template;
+    }
+    return template.replace(PARTIAL_REGEXP, (__match: string, partial: string): string => {
+        if (partials[partial]) {
+            return partials[partial].trim();
+        }
+        console.warn(`${NAMESPACE}: partial ${partial} doesn't exist`);
+        return '';
+    });
 };

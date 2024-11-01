@@ -137,6 +137,7 @@ export interface Config extends BaseConfig {
     id?: string;
     js_variables?: Record<string, Primitive>;
     jinja_variables?: Record<string, Primitive>;
+    partials?: Record<string, string>;
     exceptions?: ConfigException[];
 }
 
