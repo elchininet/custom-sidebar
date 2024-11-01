@@ -5,7 +5,8 @@ import {
     haConfigRequest,
     haSwitchStateRequest,
     haSelectStateRequest,
-    getSidebarItemSelector
+    getSidebarItemSelector,
+    fulfillJson
 } from './utilities';
 import { SELECTORS } from './selectors';
 
@@ -110,5 +111,119 @@ test('notifications using a template should update if one of its entities change
 
     await expect(page.locator(FAN_ITEM_NOTIFICATION_COLLAPSED)).toContainText('1');
     await expect(page.locator(FAN_ITEM_NOTIFICATION)).toContainText('1');
+
+});
+
+test('variables should be included in the templates', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            jinja_variables: {
+                my_switch: 'input_boolean.my_switch',
+                on: true,
+                off: false,
+                variable: 123
+            },
+            title: `
+                {% if is_state(my_switch, "on") %}
+                    {{ on }} {{ variable }}
+                {% else %}
+                    {{ off }} {{ variable }}
+                {% endif %}
+            `
+        }
+    );
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('False 123');
+
+    await haSwitchStateRequest(true);
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('True 123');
+
+    await haSwitchStateRequest(false);
+
+});
+
+test('partials should be included in the templates', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            partials: {
+                my_partial: `
+                    {% set my_switch = 'input_boolean.my_switch' %}
+                    {% set on = True %}
+                    {% set off = False %}
+                    {% set variable = 123 %}
+                `
+            },
+            title: `
+                @partial my_partial
+                {% if is_state(my_switch, "on") %}
+                    {{ on }} {{ variable }}
+                {% else %}
+                    {{ off }} {{ variable }}
+                {% endif %}
+            `
+        }
+    );
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('False 123');
+
+    await haSwitchStateRequest(true);
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('True 123');
+
+    await haSwitchStateRequest(false);
+
+});
+
+test('@testing partials should use variables in jinja_variables', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            jinja_variables: {
+                my_switch: 'input_boolean.my_switch'
+            },
+            partials: {
+                my_partial: `
+                    {% set isOn = is_state(my_switch, "on") %}
+                    {% set on = True %}
+                    {% set off = False %}
+                    {% set variable = 123 %}
+                `
+            },
+            title: `
+                @partial my_partial
+                {% if isOn %}
+                    {{ on }} {{ variable }}
+                {% else %}
+                    {{ off }} {{ variable }}
+                {% endif %}
+            `
+        }
+    );
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('False 123');
+
+    await haSwitchStateRequest(true);
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('True 123');
+
+    await haSwitchStateRequest(false);
 
 });

@@ -260,6 +260,17 @@ export const validateConfig = (config: Config): void => {
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, "order" property should be an array`);
     }
+    if (typeof config.partials !== TYPE.UNDEFINED) {
+        if (Object.prototype.toString.call(config.partials) !== OBJECT_TO_STRING) {
+            throw new SyntaxError(`${ERROR_PREFIX}, "partials" property should be an object`);
+        }
+        Object.entries(config.partials).forEach((entry) => {
+            const [partial, value] = entry;
+            if (typeof value !== TYPE.STRING) {
+                throw new SyntaxError(`${ERROR_PREFIX}, "partials" should be an object with strings. The partial ${partial} is not a string`);
+            }
+        });
+    }
     validateVariables('js_variables', config.js_variables);
     validateVariables('jinja_variables', config.jinja_variables);
     config.order?.forEach(validateConfigItem);

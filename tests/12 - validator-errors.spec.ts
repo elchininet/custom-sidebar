@@ -36,6 +36,7 @@ const runErrorTests = (tests: TestSuit[]): void => {
             await page.goto('/');
 
             await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+            await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
             if (error) {
                 expect(errors).toEqual(
@@ -157,6 +158,49 @@ test.describe('main options', () => {
                 }
             },
             warning: '"jinja_variables" property should not have templates. Property TEST_1 seems to be a template'
+        },
+        {
+            title: 'should throw an error if the partials property is not an object',
+            json: {
+                partials: ['partial']
+            },
+            error: `${ERROR_PREFIX}, "partials" property should be an object`
+        },
+        {
+            title: 'should throw an error if a partial inside the partials property is not a string',
+            json: {
+                partials: {
+                    partial_1: 'partial_1',
+                    partial_2: 100
+                }
+            },
+            error: `${ERROR_PREFIX}, "partials" should be an object with strings. The partial partial_2 is not a string`
+        },
+        {
+            title: 'should warn about a non existent partial with a JavaScript template',
+            json: {
+                partials: {
+                    my_partial: 'const title = "Title"'
+                },
+                title: `[[[
+                    @partial your_partial
+                    return 'Title';
+                ]]]`
+            },
+            warning: 'custom-sidebar: partial your_partial doesn\'t exist'
+        },
+        {
+            title: 'should warn about a non existent partial with a Jinja template',
+            json: {
+                partials: {
+                    my_partial: '{% set title = "Title" %}'
+                },
+                title: `
+                    @partial your_partial
+                    {{ title }}
+                `
+            },
+            warning: 'custom-sidebar: partial your_partial doesn\'t exist'
         }
     ]);
 

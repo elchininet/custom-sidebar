@@ -45,6 +45,7 @@ import {
     getPromisableElement,
     getConfigWithExceptions,
     flushPromise,
+    getTemplateWithPartials,
     addStyle
 } from '@utilities';
 import { fetchConfig } from '@fetchers/json';
@@ -375,12 +376,14 @@ class CustomSidebar {
     }
 
     private _createJsTemplateSubscription(
-        code: string,
+        template: string,
         callback: (result: string) => void
     ): void {
-
         this._renderer.trackTemplate(
-            code,
+            getTemplateWithPartials(
+                template,
+                this._configWithExceptions.partials
+            ),
             (result: unknown): void => {
                 this._getTemplateString(result)
                     .then((templateResult: string) => {
@@ -402,7 +405,10 @@ class CustomSidebar {
                 },
                 {
                     type: EVENT.RENDER_TEMPLATE,
-                    template,
+                    template: getTemplateWithPartials(
+                        template,
+                        this._configWithExceptions.partials
+                    ),
                     variables: {
                         user_name: this._ha.hass.user.name,
                         user_is_admin: this._ha.hass.user.is_admin,
