@@ -114,11 +114,10 @@ test('notifications using a template should update if one of its entities change
 
 });
 
-test('variables should be included in the templates', async ({ page }) => {
-
-    await fulfillJson(
-        page,
-        {
+[
+    {
+        title: 'variables should be included in the templates',
+        json: {
             js_variables: {
                 my_switch: 'input_boolean.my_switch',
                 on: true,
@@ -134,27 +133,10 @@ test('variables should be included in the templates', async ({ page }) => {
                 ]]]
             `
         }
-    );
-
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-
-    await expect(page.locator(SELECTORS.TITLE)).toContainText('false 123');
-
-    await haSwitchStateRequest(true);
-
-    await expect(page.locator(SELECTORS.TITLE)).toContainText('true 123');
-
-    await haSwitchStateRequest(false);
-
-});
-
-test('partials should be included in the templates', async ({ page }) => {
-
-    await fulfillJson(
-        page,
-        {
+    },
+    {
+        title: 'partials should be included in the templates',
+        json: {
             partials: {
                 my_partial: `
                     const my_switch = 'input_boolean.my_switch';
@@ -173,27 +155,10 @@ test('partials should be included in the templates', async ({ page }) => {
                 ]]]
             `
         }
-    );
-
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-
-    await expect(page.locator(SELECTORS.TITLE)).toContainText('false 123');
-
-    await haSwitchStateRequest(true);
-
-    await expect(page.locator(SELECTORS.TITLE)).toContainText('true 123');
-
-    await haSwitchStateRequest(false);
-
-});
-
-test('partials should use variables in js_variables', async ({ page }) => {
-
-    await fulfillJson(
-        page,
-        {
+    },
+    {
+        title: 'partials should use variables in js_variables',
+        json: {
             js_variables: {
                 my_switch: 'input_boolean.my_switch'
             },
@@ -215,18 +180,52 @@ test('partials should use variables in js_variables', async ({ page }) => {
                 ]]]
             `
         }
-    );
+    },
+    {
+        title: 'partials should import other partials',
+        json: {
+            partials: {
+                my_switch: `
+                    const my_switch = 'input_boolean.my_switch';
+                `,
+                my_booleans: `
+                    @partial my_switch
+                    const on = true;
+                    const off = false;
+                `,
+                my_partial: `
+                    @partial my_booleans
+                    const variable = 123;
+                `
+            },
+            title: `
+                [[[
+                    @partial my_partial
+                    if (is_state(my_switch, "on")) {
+                        return on.toString() + " " + variable
+                    }
+                    return off.toString() + " " + variable
+                ]]]
+            `
+        }
+    }
+].forEach(({ title, json }) => {
 
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    test(title, async ({ page }) => {
 
-    await expect(page.locator(SELECTORS.TITLE)).toContainText('false 123');
+        await fulfillJson(page, json);
 
-    await haSwitchStateRequest(true);
+        await page.goto('/');
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await expect(page.locator(SELECTORS.TITLE)).toContainText('true 123');
+        await expect(page.locator(SELECTORS.TITLE)).toContainText('false 123');
 
-    await haSwitchStateRequest(false);
+        await haSwitchStateRequest(true);
+
+        await expect(page.locator(SELECTORS.TITLE)).toContainText('true 123');
+
+        await haSwitchStateRequest(false);
+    });
 
 });
