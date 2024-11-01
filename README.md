@@ -444,7 +444,9 @@ order:
 
 ### Partials
 
-Partials are fragments of code that can be included in your templates. They can be inserted in [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates and any entity used in them will make the template in which the partial is inserted to be reevaluated when the entity changes its state. Partials can also use variables set in the `js_variables` or `jinja_variables` (depending on the kind of template in which they are inserted).
+Partials are fragments of code that can be included in your templates. They can be inserted in [JavaScript](#javascript-templates), [Jinja](#jinja-templates) templates or inside another partial. Any entity used in them will make the template in which the partial is inserted to be reevaluated when the entity changes its state.
+
+>Note: Partials will automatically use the variables set in the `js_variables` or `jinja_variables` (depending on the kind of template in which they are inserted).
 
 #### Partials example with a JavaScript template
 
@@ -455,8 +457,10 @@ js_variables:
   supervisor_update: update.home_assistant_supervisor_update
   os_update: update.home_assistant_operating_system_update
 partials:
-  updates: |
+  supervisor_version: |
     const supervisorVersion = state_attr(supervisor_update, "latest_version");
+  updates: |
+    @partial supervisor_version
     const osVersion = state_attr(os_update, "latest_version");
 order:
   - new_item: true
@@ -484,7 +488,8 @@ order:
     "os_update": "update.home_assistant_operating_system_update"
   },
   "partials": {
-    "updates": "const supervisorVersion = state_attr(supervisor_update, 'latest_version'); const osVersion = state_attr(os_update, 'latest_version');"
+    "supervisor_version": "const supervisorVersion = state_attr(supervisor_update, 'latest_version');",
+    "updates": "@partial supervisor_version const osVersion = state_attr(os_update, 'latest_version');"
   },
   "order": [
     {
@@ -508,8 +513,10 @@ jinja_variables:
   supervisor_update: update.home_assistant_supervisor_update
   os_update: update.home_assistant_operating_system_update
 partials:
-  updates: |
+  supervisor_version: |
     {% set supervisorVersion = state_attr(supervisor_update, "latest_version") %}
+  updates: |
+    @partial supervisor_version
     {% set osVersion = state_attr(os_update, "latest_version") %}
 order:
   - new_item: true
@@ -533,7 +540,8 @@ order:
     "os_update": "update.home_assistant_operating_system_update"
   },
   "partials": {
-    "updates": "{% set supervisorVersion = state_attr(supervisor_update, 'latest_version') %} {% set osVersion = state_attr(os_update, 'latest_version') %}"
+    "supervisor_version": "{% set supervisorVersion = state_attr(supervisor_update, 'latest_version') %}",
+    "updates": "@partial supervisor_version {% set osVersion = state_attr(os_update, 'latest_version') %}"
   },
   "order": [
     {

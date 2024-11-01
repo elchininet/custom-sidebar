@@ -190,6 +190,26 @@ test.describe('main options', () => {
             warning: 'custom-sidebar: partial your_partial doesn\'t exist'
         },
         {
+            title: 'should throw an error if there is a circular partial dependency in a JavaScript template',
+            json: {
+                partials: {
+                    my_title: `
+                        @partial my_partial
+                        const title = "Title"
+                    `,
+                    my_partial: `
+                        @partial my_title
+                        const myTitle = title.toUpperCase();
+                    `
+                },
+                title: `[[[
+                    @partial my_partial
+                    return myTitle;
+                ]]]`
+            },
+            error: `custom-sidebar: circular partials dependency my_partial > my_title > my_partial`
+        },
+        {
             title: 'should warn about a non existent partial with a Jinja template',
             json: {
                 partials: {
@@ -201,6 +221,26 @@ test.describe('main options', () => {
                 `
             },
             warning: 'custom-sidebar: partial your_partial doesn\'t exist'
+        },
+        {
+            title: 'should throw an error if there is a circular partial dependency in a Jinja template',
+            json: {
+                partials: {
+                    my_title: `
+                        @partial my_partial
+                        {% set title = "Title" %}
+                    `,
+                    my_partial: `
+                        @partial my_title
+                        {% set myTitle = title | upper %};
+                    `
+                },
+                title: `
+                    @partial my_partial
+                    {{ myTitle }}
+                `
+            },
+            error: `custom-sidebar: circular partials dependency my_partial > my_title > my_partial`
         }
     ]);
 

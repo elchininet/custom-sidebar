@@ -224,13 +224,24 @@ export const addStyle = (css: string, elem: ShadowRoot): void => {
     style.innerHTML = css.replace(CSS_CLEANER_REGEXP, '$2');
 };
 
-export const getTemplateWithPartials = (template: string, partials: Record<string, string> | undefined): string => {
+export const getTemplateWithPartials = (
+    template: string,
+    partials: Record<string, string> | undefined,
+    tree: string[] = []
+): string => {
     if (!partials) {
         return template;
     }
     return template.replace(PARTIAL_REGEXP, (__match: string, partial: string): string => {
         if (partials[partial]) {
-            return partials[partial].trim();
+            if (tree.includes(partial)) {
+                throw new SyntaxError(`${NAMESPACE}: circular partials dependency ${tree.join(' > ')} > ${ partial }`);
+            }
+            return getTemplateWithPartials(
+                partials[partial].trim(),
+                partials,
+                [...tree, partial]
+            );
         }
         console.warn(`${NAMESPACE}: partial ${partial} doesn't exist`);
         return '';
