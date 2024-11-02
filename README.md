@@ -258,7 +258,7 @@ Short example in `JSON` format:
 ### Exceptions
 
 You can define user-specific options using exceptions feature. Exceptions can be used if you would like to define different options for a specific user/device.
-In an exception you can define all the options available in [the main configuration options](#configuration-options) including the next ones:
+In an exception you can define almost all the options available in [the main configuration options](#configuration-options) (excluding `js_variables`, `jinja_variables` and `partials`). And on top of those options, the next ones will be available:
 
 | Property            | Type              | Required | Description |
 | ------------------- | ----------------- | -------- | ----------- |
@@ -444,7 +444,7 @@ order:
 
 ### Partials
 
-Partials are fragments of code that can be included in your templates. They can be inserted in [JavaScript](#javascript-templates), [Jinja](#jinja-templates) templates or inside another partial. Any entity used in them will make the template in which the partial is inserted to be reevaluated when the entity changes its state.
+Partials are fragments of code that can be included in your templates. They can be inserted in [JavaScript](#javascript-templates), [Jinja](#jinja-templates) templates or inside another partial. Any entity used in them will make the template in which the partial is inserted to be reevaluated when the entity changes its state, so it is not recommended to use a bloated partial using multiple entities that have no context with each other because that will provoke that the templates in which that partial is used get reevaluated when anyone of the entities used in it change.
 
 >Note: Partials will automatically use the variables set in the `js_variables` or `jinja_variables` (depending on the kind of template in which they are inserted).
 
