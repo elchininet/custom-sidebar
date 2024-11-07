@@ -8,6 +8,7 @@ import HomeAssistantJavaScriptTemplates, {
     HomeAssistantJavaScriptTemplatesRenderer,
     HassConnection
 } from 'home-assistant-javascript-templates';
+import { HomeAssistantStylesManager } from 'home-assistant-styles-manager';
 import {
     HomeAsssistantExtended,
     HomeAssistantMain,
@@ -45,8 +46,7 @@ import {
     getPromisableElement,
     getConfigWithExceptions,
     flushPromise,
-    getTemplateWithPartials,
-    addStyle
+    getTemplateWithPartials
 } from '@utilities';
 import { fetchConfig } from '@fetchers/json';
 
@@ -76,6 +76,12 @@ class CustomSidebar {
 
         selector.listen();
 
+        this._styleManager = new HomeAssistantStylesManager({
+            prefix: NAMESPACE,
+            namespace: NAMESPACE,
+            throwWarnings: false
+        });
+
         this._items = [];
         this._sidebarScroll = 0;
         this._isSidebarEditable = undefined;
@@ -96,6 +102,7 @@ class CustomSidebar {
     private _sidebarScroll: number;
     private _isSidebarEditable: boolean | undefined;
     private _renderer: HomeAssistantJavaScriptTemplatesRenderer;
+    private _styleManager: HomeAssistantStylesManager;
     private _items: ConfigOrderWithItem[];
     private _itemTouchedBinded: () => Promise<void>;
     private _mouseEnterBinded: (event: MouseEvent) => void;
@@ -630,7 +637,7 @@ class CustomSidebar {
                 text-wrap: nowrap;
             `;
 
-            addStyle(
+            this._styleManager.addStyle(
                 `
                 ${ SELECTOR.HOST } {
                     background: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND }, var(${ CSS_VARIABLES.SIDEBAR_BACKGROUND_COLOR })) !important;
