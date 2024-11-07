@@ -56,6 +56,7 @@
   "dependencies": {
     "home-assistant-javascript-templates": "^5.4.0",
     "home-assistant-query-selector": "^4.2.0",
+    "home-assistant-styles-manager": "^3.0.0",
     "js-yaml": "^4.1.0"
   }
 }

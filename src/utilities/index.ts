@@ -9,7 +9,6 @@ import {
     MAX_ATTEMPTS,
     RETRY_DELAY,
     FLUSH_PROMISE_DELAY,
-    CSS_CLEANER_REGEXP,
     PARTIAL_REGEXP
 } from '@constants';
 import { version } from '../../package.json';
@@ -211,18 +210,6 @@ export const getConfigWithExceptions = (
 export const flushPromise = () => new Promise((resolve) => {
     setTimeout(resolve, FLUSH_PROMISE_DELAY);
 });
-
-const getElementName = (elem: ShadowRoot): string => {
-    return elem.host.localName;
-};
-
-export const addStyle = (css: string, elem: ShadowRoot): void => {
-    const name = getElementName(elem);
-    const style = document.createElement('style');
-    style.setAttribute('id', `${NAMESPACE}_${name}`);
-    elem.appendChild(style);
-    style.innerHTML = css.replace(CSS_CLEANER_REGEXP, '$2');
-};
 
 export const getTemplateWithPartials = (
     template: string,
