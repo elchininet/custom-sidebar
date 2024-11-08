@@ -229,3 +229,81 @@ test('notifications using a template should update if one of its entities change
     });
 
 });
+
+test('if there are no partials and a partial statement is used, it should throw a warning', async ({ page }) => {
+
+    const warnings: string[] = [];
+
+    page.on('console', message => {
+        if (message.type() === 'warning') {
+            warnings.push(message.text());
+        }
+    });
+
+    await fulfillJson(
+        page,
+        {
+            title: `
+                [[[
+                    @partial my_partial
+                    if (is_state(my_switch, "on")) {
+                        return on.toString() + " " + variable
+                    }
+                    return off.toString() + " " + variable
+                ]]]
+            `
+        }
+    );
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    expect(warnings).toEqual(
+        expect.arrayContaining(['custom-sidebar: partial my_partial doesn\'t exist'])
+    );
+
+});
+
+test('if a partial doesn\'t exist it should throw a warning', async ({ page }) => {
+
+    const warnings: string[] = [];
+
+    page.on('console', message => {
+        if (message.type() === 'warning') {
+            warnings.push(message.text());
+        }
+    });
+
+    await fulfillJson(
+        page,
+        {
+            partials: {
+                not_my_partial: `
+                    const my_switch = 'input_boolean.my_switch';
+                    const on = true;
+                    const off = false;
+                    const variable = 123;
+                `
+            },
+            title: `
+                [[[
+                    @partial my_partial
+                    if (is_state(my_switch, "on")) {
+                        return on.toString() + " " + variable
+                    }
+                    return off.toString() + " " + variable
+                ]]]
+            `
+        }
+    );
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    expect(warnings).toEqual(
+        expect.arrayContaining(['custom-sidebar: partial my_partial doesn\'t exist'])
+    );
+
+});

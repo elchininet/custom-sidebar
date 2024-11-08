@@ -216,11 +216,8 @@ export const getTemplateWithPartials = (
     partials: Record<string, string> | undefined,
     tree: string[] = []
 ): string => {
-    if (!partials) {
-        return template;
-    }
     return template.replace(PARTIAL_REGEXP, (__match: string, partial: string): string => {
-        if (partials[partial]) {
+        if (partials?.[partial]) {
             if (tree.includes(partial)) {
                 throw new SyntaxError(`${NAMESPACE}: circular partials dependency ${tree.join(' > ')} > ${ partial }`);
             }
