@@ -6,8 +6,6 @@ import {
 import {
     NAMESPACE,
     TYPE,
-    MAX_ATTEMPTS,
-    RETRY_DELAY,
     FLUSH_PROMISE_DELAY,
     PARTIAL_REGEXP
 } from '@constants';
@@ -117,32 +115,6 @@ export const logVersionToConsole = () => {
         'font-weight: bold; background: #EEEEEE; color: #666666; padding: 2px 5px;',
         'font-weight: normal; background: #E87A24; color: #FFFFFF; padding: 2px 5px'
     );
-};
-
-export const getPromisableElement = <T>(
-    getElement: () => T,
-    check: (element: T) => boolean
-): Promise<T> => {
-    return new Promise<T>((resolve) => {
-        let attempts = 0;
-        const select = () => {
-            const element: T = getElement();
-            if (element && check(element)) {
-                resolve(element);
-            } else {
-                attempts++;
-                // The else clause is an edge case that should not happen
-                // Very hard to reproduce so it cannot be covered
-                /* istanbul ignore else */
-                if (attempts < MAX_ATTEMPTS) {
-                    setTimeout(select, RETRY_DELAY);
-                } else {
-                    resolve(element);
-                }
-            }
-        };
-        select();
-    });
 };
 
 export const getConfigWithExceptions = (

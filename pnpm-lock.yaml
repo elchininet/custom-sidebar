@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      get-promisable-result:
+        specifier: ^1.0.1
+        version: 1.0.1
       home-assistant-javascript-templates:
         specifier: ^5.4.0
         version: 5.4.0
@@ -932,6 +935,9 @@ packages:
   get-package-type@0.1.0:
     resolution: {integrity: sha512-pjzuKtY64GYfWizNAJ0fr9VqttZkNiK2iS430LtIHzjBEr6bX8Am2zm4sW4Ro5wjWW5cAlRL1qAMTcXbjNAO2Q==}
     engines: {node: '>=8.0.0'}
+
+  get-promisable-result@1.0.1:
+    resolution: {integrity: sha512-hUUKs/s8qoeH4gk3NPcKjCWaCjOv0S+kyT3oTuJXneEWYzwmyfEJHESU2ES7pMZNVHTjMt7X8hpmThFfggTVtg==}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -2439,6 +2445,8 @@ snapshots:
   get-caller-file@2.0.5: {}
 
   get-package-type@0.1.0: {}
+
+  get-promisable-result@1.0.1: {}
 
   glob-parent@5.1.2:
     dependencies:

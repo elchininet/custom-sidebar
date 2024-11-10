@@ -1,3 +1,4 @@
+import { getPromisableResult } from 'get-promisable-result';
 import {
     HAQuerySelector,
     HAQuerySelectorEvent,
@@ -39,11 +40,12 @@ import {
     PROFILE_PATH,
     PROFILE_GENERAL_PATH,
     BLOCKED_PROPERTY,
-    SIDEBAR_MODE_TO_DOCKED_SIDEBAR
+    SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
+    MAX_ATTEMPTS,
+    RETRY_DELAY
 } from '@constants';
 import {
     logVersionToConsole,
-    getPromisableElement,
     getConfigWithExceptions,
     flushPromise,
     getTemplateWithPartials
@@ -121,19 +123,26 @@ class CustomSidebar {
     }
 
     private async _getElements(): Promise<[HTMLElement, NodeListOf<HTMLAnchorElement>, HTMLElement]> {
+        const promisableResultOptions = {
+            retries: MAX_ATTEMPTS,
+            delay: RETRY_DELAY,
+            shouldReject: false
+        };
         const paperListBox = (await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element) as HTMLElement;
-        const spacer = await getPromisableElement<HTMLElement>(
+        const spacer = await getPromisableResult<HTMLElement>(
             () => paperListBox.querySelector<HTMLElement>(`:scope > ${SELECTOR.SPACER}`),
-            (spacer: HTMLElement): boolean => !! spacer
+            (spacer: HTMLElement): boolean => !! spacer,
+            promisableResultOptions
         );
-        const items = await getPromisableElement<NodeListOf<HTMLAnchorElement>>(
+        const items = await getPromisableResult<NodeListOf<HTMLAnchorElement>>(
             () => paperListBox.querySelectorAll<HTMLAnchorElement>(`:scope > ${SELECTOR.ITEM}`),
             (elements: NodeListOf<HTMLAnchorElement>): boolean => {
                 return Array.from(elements).every((element: HTMLAnchorElement): boolean => {
                     const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
                     return text.length > 0;
                 });
-            }
+            },
+            promisableResultOptions
         );
         return [paperListBox, items, spacer];
     }
