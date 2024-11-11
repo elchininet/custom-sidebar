@@ -316,7 +316,7 @@ This templating system IS NOT [the same that Home Assistant implements](https://
 
 The `JavaScript` code will be taken as something that you want to return, but if you have a more complex logic, you can create your own variables and return the desired result at the end.
 
-The entities and domains used in the templates will be stored, so if the state of an stored entity changes, all the templates that use this entity will be reevaluated. On top of this, if the variable `panel_url` is used in a template, the template will be reevaluated every time that a new panel or a new view is loaded.
+The entities used in the templates will be stored, so if the state of an stored entity changes, all the templates that use this entity will be reevaluated snd rerendered. On top of this, if the variable `panel_url` is used in a template, the template will be reevaluated every time that a new panel or a new view is loaded.
 
 #### JavaScript templates example
 
@@ -381,14 +381,14 @@ order:
 
 ### Jinja templates
 
-This templating system is [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). You can use the majority of the template methods and objects. The entire template will be processed, rendered and the result will be used as the inner html of the element. If you don‘t want to display anything in certain scenarios, you should return an empty string in those cases. The next client side varianles will be available in `Jinja templates`:
+This templating system is [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). You can use the majority of the template methods and objects. The entire template will be processed, rendered and the result will be used as the desired option. If you don‘t want to display anything in certain scenarios, you should return an empty string in those cases. The next client side varianles will be available in `Jinja templates`:
 
 * `user_name`: String with the logged user's name
 * `user_is_admin`: Bolean value than indicates if the logged user is admin or not
 * `user_is_owner`: Bolean value than indicates if the logged user is the owner or not
 * `user_agent`: User agent of the browser in which Home Assistant is being executed
 
-When the entities and domains used in a templates change, it will trigger an update and the updated result of the template will be rendered.
+When the entities used in a templates change their state, it will trigger an update and the updated result of the template will be rendered.
 
 #### Jinja templates example
 
