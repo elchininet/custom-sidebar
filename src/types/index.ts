@@ -93,10 +93,12 @@ export type ConfigOrderWithItem = ConfigOrder & { element?: HTMLAnchorElement };
 
 interface BaseConfig extends ColorConfig {
     title?: string;
+    subtitle?: string;
     order?: ConfigOrder[];
     sidebar_editable?: boolean | string;
     sidebar_mode?: `${SidebarMode}`;
     title_color?: string;
+    subtitle_color?: string;
     sidebar_background?: string;
     sidebar_button_color?: string;
     menu_background?: string;

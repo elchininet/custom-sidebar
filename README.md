@@ -14,9 +14,9 @@ Custom [HACS] plugin that allows you to personalise the [Home Assistant]'s sideb
   <thead>
     <tr>
       <th width="25%">Default sidebar</th>
-      <th width="25%">Hide some items</th>
-      <th width="25%">Add new items</th>
+      <th width="25%">Hide/add some items</th>
       <th width="25%">Reorder items</th>
+      <th width="25%">Personalise</th>
     </tr>
   </thead>
   <tbody>
@@ -25,13 +25,13 @@ Custom [HACS] plugin that allows you to personalise the [Home Assistant]'s sideb
         <img src="https://raw.githubusercontent.com/elchininet/custom-sidebar/master/images/default-sidebar.png" alt="default sidebar" />
       </td>
       <td>
-        <img src="https://raw.githubusercontent.com/elchininet/custom-sidebar/master/images/hide-items.png" alt="hide items" />
-      </td>
-      <td>
-        <img src="https://raw.githubusercontent.com/elchininet/custom-sidebar/master/images/new-items.png" alt="new items" />
+        <img src="https://raw.githubusercontent.com/elchininet/custom-sidebar/master/images/new-items.png" alt="hide and new items" />
       </td>
       <td>
         <img src="https://raw.githubusercontent.com/elchininet/custom-sidebar/master/images/reorder-items.png" alt="reorder items" />
+      </td>
+      <td>
+        <img src="https://raw.githubusercontent.com/elchininet/custom-sidebar/master/images/personalise.png" alt="personalise" />
       </td>
     </tr>
   </tbody>
@@ -137,6 +137,8 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | order              | Array of [items](#order-items-properties) | no| List of items to process |
 | title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
 | title_color<sup>\*</sup> | String                       | no       | Sets the color of the sidebar title |
+| subtitle<sup>\*</sup> | String                          | no       | Sets a custom subtitle below the `Home Assistant` title |
+| subtitle_color<sup>\*</sup> | String                     | no      | Sets the color of the sidebar subtitle |
 | sidebar_background<sup>\*</sup> | String                | no       | Sets the background of the sidebar. It could be a color or [a background declaration](https://developer.mozilla.org/en-US/docs/Web/CSS/background) |
 | menu_background<sup>\*</sup>    | String                | no       | Sets the background of the sidebar menu area (the one containing the menu button and the title). If it is not set, the `sidebar_background` option will be used. It could be a color or [a background declaration](https://developer.mozilla.org/en-US/docs/Web/CSS/background) |
 | sidebar_editable<sup>\*</sup> | Boolean or String       | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns a boolean or a promise that resolves in a boolean |

@@ -223,6 +223,14 @@ class CustomSidebar {
                         }
                     );
                 }
+                if (this._configWithExceptions.subtitle) {
+                    this._subscribeTemplate(
+                        this._configWithExceptions.subtitle,
+                        (rendered: string) => {
+                            titleElement.dataset.subtitle = rendered;
+                        }
+                    );
+                }
             });
     }
 
@@ -585,6 +593,7 @@ class CustomSidebar {
                 sidebar,
                 [
                     ['title_color',             CSS_VARIABLES.CUSTOM_SIDEBAR_TITLE_COLOR],
+                    ['subtitle_color',          CSS_VARIABLES.CUSTOM_SIDEBAR_SUBTITLE_COLOR],
                     ['sidebar_button_color',    CSS_VARIABLES.CUSTOM_SIDEBAR_BUTTON_COLOR],
                     ['sidebar_background',      CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND],
                     ['menu_background',         CSS_VARIABLES.CUSTOM_SIDEBAR_MENU_BACKGROUND],
@@ -664,6 +673,13 @@ class CustomSidebar {
                 ${ SELECTOR.HOST } ${ SELECTOR.MENU } > ${ SELECTOR.TITLE } {
                     color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_TITLE_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_TITLE_COLOR }, var(${ CSS_VARIABLES.PRIMARY_TEXT_COLOR })));
                 }  
+                ${ SELECTOR.HOST } ${ SELECTOR.MENU } > ${ SELECTOR.TITLE }::after {
+                    content: attr(data-subtitle);
+                    color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SUBTITLE_COLOR }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_TITLE_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_TITLE_COLOR }, var(${ CSS_VARIABLES.PRIMARY_TEXT_COLOR }))));
+                    display: block;
+                    font-size: 12px;
+                    line-height: 1.5;
+                }
                 ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] > ${ SELECTOR.HA_ICON_BUTTON } {
                     pointer-events: all;
                 }
