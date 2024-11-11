@@ -66,6 +66,7 @@ export enum CSS_VARIABLES {
     CUSTOM_SIDEBAR_BACKGROUND = '--custom-sidebar-background',
     CUSTOM_SIDEBAR_MENU_BACKGROUND = '--custom-sidebar-menu-background',
     CUSTOM_SIDEBAR_TITLE_COLOR = '--custom-sidebar-title-color',
+    CUSTOM_SIDEBAR_SUBTITLE_COLOR = '--custom-sidebar-subtitle-color',
     CUSTOM_SIDEBAR_BUTTON_COLOR = '--custom-sidebar-button-color',
     CUSTOM_SIDEBAR_TEXT_COLOR = '--custom-sidebar-text-color',
     CUSTOM_SIDEBAR_SELECTED_TEXT_COLOR = '--custom-sidebar-selected-text-color',

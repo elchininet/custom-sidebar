@@ -13,10 +13,12 @@ import { version } from '../../package.json';
 
 const EXTENDABLE_OPTIONS = [
     'title',
+    'subtitle',
     'sidebar_editable',
     'sidebar_mode',
     'sidebar_background',
     'title_color',
+    'subtitle_color',
     'sidebar_button_color',
     'menu_background',
     'styles',

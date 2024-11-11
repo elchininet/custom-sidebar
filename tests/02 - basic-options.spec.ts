@@ -89,6 +89,19 @@ test.beforeAll(async () => {
         screenshot: '09-sidebar-title-color.png'
     },
     {
+        title: 'should set the subtitle',
+        json: { subtitle: 'Custom subtitle' },
+        screenshot: '10-sidebar-custom-subtitle.png'
+    },
+    {
+        title: 'should set the subtitle color',
+        json: {
+            subtitle: 'Custom subtitle',
+            subtitle_color: 'red'
+        },
+        screenshot: '11-sidebar-custom-subtitle-color.png'
+    },
+    {
         title: 'should set notification_color',
         json: {
             notification_color: 'red',
@@ -99,7 +112,7 @@ test.beforeAll(async () => {
                 }
             ]
         },
-        screenshot: '10-sidebar-notification-color.png'
+        screenshot: '12-sidebar-notification-color.png'
     },
     {
         title: 'If info is set in one item it should add the secondary text',
@@ -114,32 +127,32 @@ test.beforeAll(async () => {
                 }
             ]
         },
-        screenshot: '11-sidebar-item-info.png'
+        screenshot: '13-sidebar-item-info.png'
     },
     {
         title: 'If icon_color is set the icons should change their color',
         json: { icon_color: 'red' },
-        screenshot: '12-sidebar-icon-color.png'
+        screenshot: '14-sidebar-icon-color.png'
     },
     {
         title: 'If icon_color_selected is set the icons of the selected item should change its color',
         json: { icon_color_selected: 'red' },
-        screenshot: '13-sidebar-icon-color-selected.png'
+        screenshot: '15-sidebar-icon-color-selected.png'
     },
     {
         title: 'If text_color is set the texts should change their color',
         json: { text_color: 'red' },
-        screenshot: '14-sidebar-text-color.png'
+        screenshot: '16-sidebar-text-color.png'
     },
     {
         title: 'If text_color_selected is set the text of the selected item should change its color',
         json: { text_color_selected: 'red' },
-        screenshot: '15-sidebar-text-color-selected.png'
+        screenshot: '17-sidebar-text-color-selected.png'
     },
     {
         title: 'If selection_color is set the background of the selected item should change its color',
         json: { selection_color: 'red' },
-        screenshot: '16-sidebar-selection-color.png'
+        screenshot: '18-sidebar-selection-color.png'
     },
     {
         title: 'If info_color is set the color of the secondary text of the item should change its color',
@@ -155,7 +168,7 @@ test.beforeAll(async () => {
                 }
             ]
         },
-        screenshot: '17-sidebar-info-color.png'
+        screenshot: '19-sidebar-info-color.png'
     },
     {
         title: 'If info_color_selected is set the color of the secondary text of the selected item should change its color',
@@ -168,7 +181,7 @@ test.beforeAll(async () => {
                 }
             ]
         },
-        screenshot: '18-sidebar-info-color-selected.png'
+        screenshot: '20-sidebar-info-color-selected.png'
     },
     {
         title: 'should apply custom styles',
@@ -182,7 +195,7 @@ test.beforeAll(async () => {
                 }
             `
         },
-        screenshot: '19-sidebar-custom-styles.png'
+        screenshot: '21-sidebar-custom-styles.png'
     }
 ].forEach(({ title, json, screenshot }): void => {
 

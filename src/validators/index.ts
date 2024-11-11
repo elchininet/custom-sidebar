@@ -78,6 +78,7 @@ const validateExceptionItem = (exception: ConfigException): void => {
         exception,
         [
             'title',
+            'subtitle',
             'icon_color',
             'icon_color_selected',
             'text_color',
@@ -89,6 +90,7 @@ const validateExceptionItem = (exception: ConfigException): void => {
             'notification_text_color',
             'sidebar_background',
             'title_color',
+            'subtitle_color',
             'sidebar_button_color',
             'menu_background',
             'divider_color',
@@ -216,6 +218,7 @@ export const validateConfig = (config: Config): void => {
         config,
         [
             'title',
+            'subtitle',
             'icon_color',
             'icon_color_selected',
             'text_color',
@@ -227,6 +230,7 @@ export const validateConfig = (config: Config): void => {
             'notification_text_color',
             'sidebar_background',
             'title_color',
+            'subtitle_color',
             'sidebar_button_color',
             'menu_background',
             'divider_color',
