@@ -45,7 +45,8 @@ You can install the plugin manually or through [HACS], not both. If you install 
 
 ### Through HACS (v2 or greater)
 
->Note: if your version of `HACS` is lower than `v2` consult the section [Through old HACS versions (< v2)](#through-old-hacs-versions--v2)
+>[!NOTE]
+>If your version of `HACS` is lower than `v2` consult the section [Through old HACS versions (< v2)](#through-old-hacs-versions--v2)
 
 1. Go to `HACS` dashboard
 2. Search for `custom-sidebar` and click on it
@@ -160,6 +161,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | jinja_variables       | Object                          | no       | An object containing variales that will be used in [Jinja templates](#jinja-templates). The variables cannot be templates and they must be strings, numbers or booleans |
 | partials              | Object                          | no       | An object containing fragments of code that can be included in your templates. Consult [the partial section](#partials) for more info |
 
+>[!TIP]
 >\* These options allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
 
 #### Order items properties
@@ -190,6 +192,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | target                    | String  | no        | Specifies the [target property] of the sidebar item |
 | new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
 
+>[!TIP]
 >\* These item properties allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
 
 Short example in `YAML` format:
@@ -246,16 +249,15 @@ Short example in `JSON` format:
  }
 ```
 
-#### Notes
-
-* All items in `config.order` should have a unique `item` property
-* Avoid an `item` property that could match multiple elements. If you find that an item property matches with multiple elements, try to use the `match` and `exact` properties to match the specific item that you want to match.
-* The items will be ordered according to their `order` property OR in the order of appearance
-* If you use the `order` property in at least one item, make sure either all items (except hidden ones) have this property, or none of them (otherwise order may be messed up)
-* All the items placed in the bottom will be moved to the top by default. If you want to have some items in the bottom you need to add them to the `config.order` and specify their `bottom` property on `true`.
-* Any items present in the Sidebar, but not in `config.order`, will be shown **on the bottom** of the top part of the list
-* Notifications and user account are not part of the main sidebar items so they cannot be targeted inside the `order` option to change their properties. On the other hand, global color properties will affect these items though.
-* The `style` option doesn't allow templates, it should be used only to override or correct some styles of the sidebar.
+> [!IMPORTANT]
+>* All items in `config.order` should have a unique `item` property
+>* Avoid an `item` property that could match multiple elements. If you find that an item property matches with multiple elements, try to use the `match` and `exact` properties to match the specific item that you want to match.
+>* The items will be ordered according to their `order` property OR in the order of appearance
+>* If you use the `order` property in at least one item, make sure either all items (except hidden ones) have this property, or none of them (otherwise order may be messed up)
+>* All the items placed in the bottom will be moved to the top by default. If you want to have some items in the bottom you need to add them to the `config.order` and specify their `bottom` property on `true`.
+>* Any items present in the Sidebar, but not in `config.order`, will be shown **on the bottom** of the top part of the list
+>* Notifications and user account are not part of the main sidebar items so they cannot be targeted inside the `order` option to change their properties. On the other hand, global color properties will affect these items though.
+>* The `style` option doesn't allow templates, it should be used only to override or correct some styles of the sidebar.
 
 ### Exceptions
 
@@ -300,11 +302,10 @@ Short example in `JSON` format:
 }
 ```
 
-#### Notes
-
-* You cannot use `user` and `not_user` at the same time, doing so will end in an error
-* You cannot use `device` and `not_device` at the same time, doing so will end in an error
-* Pay attention to `extend_from_base` property. If it's set to `false` (default value), the main `config` will be ignored, leaving you with default sidebar modified only by the exception's options
+> [!IMPORTANT]
+>* You cannot use `user` and `not_user` at the same time, doing so will end in an error
+>* You cannot use `device` and `not_device` at the same time, doing so will end in an error
+>* Pay attention to `extend_from_base` property. If it's set to `false` (default value), the main `config` will be ignored, leaving you with default sidebar modified only by the exception's options
 
 ## Templates
 
@@ -377,7 +378,8 @@ order:
 }
 ```
 
->Note: `Custom Sidebar` uses [Home Assistant Javascript Templates] for the `JavaScript` templating system. To know all the objects, variables and methods available in the `JavaScript` templates, consult the [proper section](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#objects-and-methods-available-in-the-templates) in the repository.
+> [!TIP]
+`Custom Sidebar` uses [Home Assistant Javascript Templates] for the `JavaScript` templating system. To know all the objects, variables and methods available in the `JavaScript` templates, consult the [proper section](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#objects-and-methods-available-in-the-templates) in the repository.
 
 ### Jinja templates
 
@@ -448,7 +450,8 @@ order:
 
 Partials are fragments of code that can be included in your templates. They can be inserted in [JavaScript](#javascript-templates), [Jinja](#jinja-templates) templates or inside another partial. Any entity used in them will make the template in which the partial is inserted to be reevaluated when the entity changes its state, so it is not recommended to use a bloated partial using multiple entities that have no context with each other because that will provoke that the templates in which that partial is used get reevaluated when anyone of the entities used in it change.
 
->Note: Partials will automatically use the variables set in the `js_variables` or `jinja_variables` (depending on the kind of template in which they are inserted).
+> [!TIP]
+>Partials will automatically use the variables set in the `js_variables` or `jinja_variables` (depending on the kind of template in which they are inserted).
 
 #### Partials example with a JavaScript template
 
