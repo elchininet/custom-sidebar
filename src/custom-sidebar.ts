@@ -63,6 +63,7 @@ class CustomSidebar {
             (event: CustomEvent<OnListenDetail>) => {
                 this._homeAssistant = event.detail.HOME_ASSISTANT;
                 this._main = event.detail.HOME_ASSISTANT_MAIN;
+                this._haDrawer = event.detail.HA_DRAWER;
                 this._sidebar = event.detail.HA_SIDEBAR;
                 this._partialPanelResolver = event.detail.PARTIAL_PANEL_RESOLVER;
             },
@@ -98,6 +99,7 @@ class CustomSidebar {
     private _configWithExceptions: Config;
     private _homeAssistant: HAElement;
     private _main: HAElement;
+    private _haDrawer: HAElement;
     private _ha: HomeAsssistantExtended;
     private _partialPanelResolver: HAElement;
     private _sidebar: HAElement;
@@ -583,10 +585,11 @@ class CustomSidebar {
 
         // Process sidebar
         Promise.all([
+            this._haDrawer.selector.$.query(SELECTOR.MC_DRAWER).element,
             this._sidebar.element,
             this._sidebar.selector.$.element,
             this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element
-        ]).then(([sidebar, sideBarShadowRoot, paperListBox]: [HTMLElement, ShadowRoot, HTMLElement]) => {
+        ]).then(([mcDrawer, sidebar, sideBarShadowRoot, paperListBox]: [HTMLElement, HTMLElement, ShadowRoot, HTMLElement]) => {
 
             this._subscribeTemplateColorChanges(
                 this._configWithExceptions,
@@ -608,6 +611,14 @@ class CustomSidebar {
                     ['notification_text_color', CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR],
                     ['selection_opacity',       CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_OPACITY],
                     ['divider_color',           CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR]
+                ]
+            );
+
+            this._subscribeTemplateColorChanges(
+                this._configWithExceptions,
+                mcDrawer,
+                [
+                    ['sidebar_border_color',        CSS_VARIABLES.CUSTOM_SIDEBAR_BORDER_COLOR]
                 ]
             );
 
@@ -654,6 +665,15 @@ class CustomSidebar {
                 text-overflow: ellipsis;
                 text-wrap: nowrap;
             `;
+
+            this._styleManager.addStyle(
+                `
+                ${ SELECTOR.HOST } > ${SELECTOR.MC_DRAWER} {
+                    border-color: var(${CSS_VARIABLES.CUSTOM_SIDEBAR_BORDER_COLOR}, var(${ CSS_VARIABLES.DIVIDER_COLOR }, rgba(0,0,0,.12)));
+                }
+                `,
+                mcDrawer
+            );
 
             this._styleManager.addStyle(
                 `

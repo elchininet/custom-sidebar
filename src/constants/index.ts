@@ -46,6 +46,7 @@ export enum SELECTOR {
     PROFILE = '.profile',
     MENU = '.menu',
     DIVIDER = '.divider',
+    MC_DRAWER = '.mdc-drawer',
     HA_ICON_BUTTON = 'ha-icon-button'
 }
 
@@ -64,6 +65,7 @@ export enum CSS_VARIABLES {
     PRIMARY_TEXT_COLOR = '--primary-text-color',
     DIVIDER_COLOR = '--divider-color',
     CUSTOM_SIDEBAR_BACKGROUND = '--custom-sidebar-background',
+    CUSTOM_SIDEBAR_BORDER_COLOR = '--custom-sidebar-border-color',
     CUSTOM_SIDEBAR_MENU_BACKGROUND = '--custom-sidebar-menu-background',
     CUSTOM_SIDEBAR_TITLE_COLOR = '--custom-sidebar-title-color',
     CUSTOM_SIDEBAR_SUBTITLE_COLOR = '--custom-sidebar-subtitle-color',
