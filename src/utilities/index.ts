@@ -20,6 +20,7 @@ const EXTENDABLE_OPTIONS = [
     'title_color',
     'subtitle_color',
     'sidebar_button_color',
+    'sidebar_border_color',
     'menu_background',
     'styles',
     'icon_color',

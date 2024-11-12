@@ -42,6 +42,11 @@ export const SIDEBAR_CLIP = {
     height: 598
 };
 
+export const SIDEBAR_CLIP_WITH_BORDER = {
+    ...SIDEBAR_CLIP,
+    width: 256
+};
+
 export const SIDEBAR_NARROW_CLIP = {
     x: 0,
     y: 0,

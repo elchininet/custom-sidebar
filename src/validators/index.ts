@@ -92,6 +92,7 @@ const validateExceptionItem = (exception: ConfigException): void => {
             'title_color',
             'subtitle_color',
             'sidebar_button_color',
+            'sidebar_border_color',
             'menu_background',
             'divider_color',
             'styles'
@@ -232,6 +233,7 @@ export const validateConfig = (config: Config): void => {
             'title_color',
             'subtitle_color',
             'sidebar_button_color',
+            'sidebar_border_color',
             'menu_background',
             'divider_color',
             'styles'

@@ -67,6 +67,34 @@ test.describe('main options', () => {
             error: `${ERROR_PREFIX}, "title" property should be a string`
         },
         {
+            title: 'should throw an error if it has a malformed title_color option',
+            json: {
+                title_color: 0xFF0000
+            },
+            error: `${ERROR_PREFIX}, "title_color" property should be a string`
+        },
+        {
+            title: 'should throw an error if it has a malformed subtitle option',
+            json: {
+                subtitle: /Subtitle/
+            },
+            error: `${ERROR_PREFIX}, "subtitle" property should be a string`
+        },
+        {
+            title: 'should throw an error if it has a malformed subtitle_color option',
+            json: {
+                subtitle_color: 981234
+            },
+            error: `${ERROR_PREFIX}, "subtitle_color" property should be a string`
+        },
+        {
+            title: 'should throw an error if it has a malformed sidebar_border_color option',
+            json: {
+                sidebar_border_color: false
+            },
+            error: `${ERROR_PREFIX}, "sidebar_border_color" property should be a string`
+        },
+        {
             title: 'should throw an error if it has an invalid "sidebar_editable" option',
             json: {
                 sidebar_editable: { editable: true }

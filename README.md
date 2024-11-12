@@ -141,6 +141,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | subtitle<sup>\*</sup> | String                          | no       | Sets a custom subtitle below the `Home Assistant` title |
 | subtitle_color<sup>\*</sup> | String                     | no      | Sets the color of the sidebar subtitle |
 | sidebar_background<sup>\*</sup> | String                | no       | Sets the background of the sidebar. It could be a color or [a background declaration](https://developer.mozilla.org/en-US/docs/Web/CSS/background) |
+| sidebar_border_color<sup>\*</sup> | String              | no       | Sets the border-right color of the sidebar |
 | menu_background<sup>\*</sup>    | String                | no       | Sets the background of the sidebar menu area (the one containing the menu button and the title). If it is not set, the `sidebar_background` option will be used. It could be a color or [a background declaration](https://developer.mozilla.org/en-US/docs/Web/CSS/background) |
 | sidebar_editable<sup>\*</sup> | Boolean or String       | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns a boolean or a promise that resolves in a boolean |
 | sidebar_mode       | String                             | no       | Defines the default status of the sidebar when Home Assistant is loaded. It has three possible values: "hidden" to make the sidebar hidden, "narrow" to make the sidebar visible in narrow state and "extended" to make sidebar visible in extended state. This option will show or hide the sidebar ignoring if it is a desktop or a mobile device or if the `Always hide the sidebar` switch in the profile page in on or off (depending on the value of this option, this switch will be switched on or off automatically) |
@@ -378,7 +379,7 @@ order:
 }
 ```
 
-> [!TIP]
+>[!TIP]
 `Custom Sidebar` uses [Home Assistant Javascript Templates] for the `JavaScript` templating system. To know all the objects, variables and methods available in the `JavaScript` templates, consult the [proper section](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#objects-and-methods-available-in-the-templates) in the repository.
 
 ### Jinja templates
