@@ -11,7 +11,21 @@ import {
 } from '@constants';
 import { version } from '../../package.json';
 
+const EXTENDABLE_ITEM_OPTIONS = [
+    'icon_color',
+    'icon_color_selected',
+    'text_color',
+    'text_color_selected',
+    'selection_color',
+    'selection_opacity',
+    'info_color',
+    'info_color_selected',
+    'notification_color',
+    'notification_text_color'
+] as const;
+
 const EXTENDABLE_OPTIONS = [
+    ...EXTENDABLE_ITEM_OPTIONS,
     'title',
     'subtitle',
     'sidebar_editable',
@@ -23,16 +37,6 @@ const EXTENDABLE_OPTIONS = [
     'sidebar_border_color',
     'menu_background',
     'styles',
-    'icon_color',
-    'icon_color_selected',
-    'text_color',
-    'text_color_selected',
-    'selection_color',
-    'info_color',
-    'info_color_selected',
-    'notification_color',
-    'notification_text_color',
-    'selection_opacity',
     'divider_color'
 ] as const;
 
@@ -42,6 +46,7 @@ const ONLY_CONFIG_OPTIONS = [
     'partials'
 ] as const;
 
+type ExtendableItemConfigOption = typeof EXTENDABLE_ITEM_OPTIONS[number];
 type ExtendableConfigOption = typeof EXTENDABLE_OPTIONS[number];
 type OnlyConfigOption = typeof ONLY_CONFIG_OPTIONS[number];
 type OptionsFromBase = Record<string, Config[ExtendableConfigOption | OnlyConfigOption]>;
@@ -81,12 +86,27 @@ const extendOptionsFromBase = (
 
 };
 
-const flatConfigOrder = (order: ConfigOrder[]): ConfigOrder[] => {
+const flatConfigOrder = (order: ConfigOrder[], config: Config): ConfigOrder[] => {
 
     const orderMap = new Map<string, ConfigOrder>();
 
     order.forEach((orderItem: ConfigOrder): void => {
         orderMap.set(orderItem.item, orderItem);
+    });
+
+    orderMap.forEach((orderItem: ConfigOrder): void => {
+        EXTENDABLE_ITEM_OPTIONS.forEach((option: ExtendableItemConfigOption): void => {
+            if (
+                orderItem[option] === undefined &&
+                config[option] !== undefined
+            ) {
+                if (option === 'selection_opacity') {
+                    orderItem.selection_opacity = config.selection_opacity;
+                } else {
+                    orderItem[option] = config[option];
+                }
+            }
+        });
     });
 
     const flatOrder = Array.from(orderMap.values());
@@ -162,7 +182,8 @@ export const getConfigWithExceptions = (
                     [
                         ...(config.order || []),
                         ...exceptionsOrder
-                    ]
+                    ],
+                    configCommonProps
                 )
             };
         }
@@ -170,14 +191,16 @@ export const getConfigWithExceptions = (
         return {
             ...configCommonProps,
             order: flatConfigOrder(
-                exceptionsOrder
+                exceptionsOrder,
+                configCommonProps
             )
         };
     }
     return {
         ...config,
         order: flatConfigOrder(
-            config.order || []
+            config.order || [],
+            config
         )
     };
 };
