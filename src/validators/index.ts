@@ -95,6 +95,7 @@ const validateExceptionItem = (exception: ConfigException): void => {
             'sidebar_border_color',
             'menu_background',
             'divider_color',
+            'scrollbar_thumb_color',
             'styles'
         ],
         `${ERROR_PREFIX}, exceptions`
@@ -236,6 +237,7 @@ export const validateConfig = (config: Config): void => {
             'sidebar_border_color',
             'menu_background',
             'divider_color',
+            'scrollbar_thumb_color',
             'styles'
         ],
         `${ERROR_PREFIX},`

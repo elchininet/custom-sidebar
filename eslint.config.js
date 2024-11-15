@@ -35,5 +35,11 @@ module.exports = [
             'comma-spacing': ['error'],
             '@typescript-eslint/no-var-requires': 'off'
         }
+    },
+    {
+        files: ['**/*.js'],
+        rules: {
+            '@typescript-eslint/no-require-imports': 'off'
+        }
     }
 ];

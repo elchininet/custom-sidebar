@@ -104,6 +104,7 @@ interface BaseConfig extends ColorConfig {
     sidebar_border_color?: string;
     menu_background?: string;
     divider_color?: string;
+    scrollbar_thumb_color?: string;
     styles?: string;
 }
 

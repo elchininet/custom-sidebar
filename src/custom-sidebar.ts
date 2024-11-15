@@ -28,6 +28,7 @@ import {
     NAMESPACE,
     ELEMENT,
     SELECTOR,
+    PSEUDO_SELECTOR,
     ATTRIBUTE,
     CSS_VARIABLES,
     KEY,
@@ -610,7 +611,8 @@ class CustomSidebar {
                     ['notification_color',      CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR],
                     ['notification_text_color', CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR],
                     ['selection_opacity',       CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_OPACITY],
-                    ['divider_color',           CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR]
+                    ['divider_color',           CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR],
+                    ['scrollbar_thumb_color',   CSS_VARIABLES.CUSTOM_SIDEBAR_SCROLLBAR_THUMB_COLOR]
                 ]
             );
 
@@ -680,6 +682,12 @@ class CustomSidebar {
                 ${ SELECTOR.HOST } {
                     background: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND }, var(${ CSS_VARIABLES.SIDEBAR_BACKGROUND_COLOR })) !important;
                 }
+                ${ SELECTOR.HOST } ${ ELEMENT.PAPER_LISTBOX }${ SELECTOR.HA_SCROLLBAR } {
+                    scrollbar-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SCROLLBAR_THUMB_COLOR }, var(${ CSS_VARIABLES.SCROLLBAR_THUMB_COLOR })) transparent;
+                }
+                ${ SELECTOR.HOST } ${ ELEMENT.PAPER_LISTBOX }${ SELECTOR.HA_SCROLLBAR }${ PSEUDO_SELECTOR.WEBKIT_SCROLLBAR_THUMB } {
+                    background: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SCROLLBAR_THUMB_COLOR }, var(${ CSS_VARIABLES.SCROLLBAR_THUMB_COLOR }));
+                }
                 ${ SELECTOR.HOST } ${ SELECTOR.MENU } {
                     background: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_MENU_BACKGROUND }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND }, var(${ CSS_VARIABLES.SIDEBAR_MENU_BUTTON_BACKGROUND_COLOR }, ${ CSS_VARIABLES.PRIMARY_BACKGROUND_COLOR })));
                     border-bottom: 1px solid var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR }, var(${ CSS_VARIABLES.DIVIDER_COLOR }));
@@ -687,23 +695,23 @@ class CustomSidebar {
                 ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] {
                     pointer-events: none;
                 }
-                ${ SELECTOR.HOST } ${ SELECTOR.MENU } > ${ SELECTOR.HA_ICON_BUTTON } {
+                ${ SELECTOR.HOST } ${ SELECTOR.MENU } > ${ ELEMENT.HA_ICON_BUTTON } {
                     color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_BUTTON_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_ICON_COLOR }));
                 }
                 ${ SELECTOR.HOST } ${ SELECTOR.MENU } > ${ SELECTOR.TITLE } {
                     color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_TITLE_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_TITLE_COLOR }, var(${ CSS_VARIABLES.PRIMARY_TEXT_COLOR })));
                 }  
-                ${ SELECTOR.HOST } ${ SELECTOR.MENU } > ${ SELECTOR.TITLE }::after {
+                ${ SELECTOR.HOST } ${ SELECTOR.MENU } > ${ SELECTOR.TITLE }${ PSEUDO_SELECTOR.AFTER } {
                     content: attr(data-subtitle);
                     color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SUBTITLE_COLOR }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_TITLE_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_TITLE_COLOR }, var(${ CSS_VARIABLES.PRIMARY_TEXT_COLOR }))));
                     display: block;
                     font-size: 12px;
                     line-height: 1.5;
                 }
-                ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] > ${ SELECTOR.HA_ICON_BUTTON } {
+                ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] > ${ ELEMENT.HA_ICON_BUTTON } {
                     pointer-events: all;
                 }
-                ${ SELECTOR.HOST } ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM }::before {
+                ${ SELECTOR.HOST } ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM }${ PSEUDO_SELECTOR.BEFORE } {
                     background-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_COLOR }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_ICON_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR })));
                     opacity: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_OPACITY }, 0.12);
                 }
@@ -738,7 +746,7 @@ class CustomSidebar {
                     background-color: var(${CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_COLOR}, var(--accent-color));
                     color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR }, var(${ CSS_VARIABLES.TEXT_ACCENT_COLOR }, var(${ CSS_VARIABLES.TEXT_PRIMARY_COLOR })));
                 }
-                ${ SELECTOR.HOST } ${ SELECTOR.DIVIDER }::before {
+                ${ SELECTOR.HOST } ${ SELECTOR.DIVIDER }${ PSEUDO_SELECTOR.BEFORE } {
                     background-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR }, var(${ CSS_VARIABLES.DIVIDER_COLOR }));
                 }
                 ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
@@ -750,7 +758,7 @@ class CustomSidebar {
                     gap: 5px;
                     line-height: 1;
                 }
-                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }::after {
+                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ PSEUDO_SELECTOR.AFTER } {
                     content: attr(data-info);
                     display: none;
                     font-size: 11px;
@@ -759,14 +767,14 @@ class CustomSidebar {
                     text-overflow: ellipsis;
                     white-space: nowrap;
                 }
-                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }[data-info]::after {
+                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER } {
                     color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_INFO_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_TEXT_COLOR }));
                     display: block;
                 }
                 ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
                     z-index: 1;
                 }
-                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }[data-info]::after {
+                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER } {
                     color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTED_INFO_COLOR }, var(${ CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR }));
                 }
                 ${ this._configWithExceptions.styles || '' }
