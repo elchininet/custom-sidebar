@@ -47,7 +47,14 @@ export enum SELECTOR {
     MENU = '.menu',
     DIVIDER = '.divider',
     MC_DRAWER = '.mdc-drawer',
-    HA_ICON_BUTTON = 'ha-icon-button'
+    HA_SCROLLBAR = '.ha-scrollbar',
+    DATA_INFO = '[data-info]'
+}
+
+export enum PSEUDO_SELECTOR {
+    AFTER = '::after',
+    BEFORE = '::before',
+    WEBKIT_SCROLLBAR_THUMB = '::-webkit-scrollbar-thumb'
 }
 
 export enum CSS_VARIABLES {
@@ -64,6 +71,7 @@ export enum CSS_VARIABLES {
     PRIMARY_BACKGROUND_COLOR = '--primary-background-color',
     PRIMARY_TEXT_COLOR = '--primary-text-color',
     DIVIDER_COLOR = '--divider-color',
+    SCROLLBAR_THUMB_COLOR = '--scrollbar-thumb-color',
     CUSTOM_SIDEBAR_BACKGROUND = '--custom-sidebar-background',
     CUSTOM_SIDEBAR_BORDER_COLOR = '--custom-sidebar-border-color',
     CUSTOM_SIDEBAR_MENU_BACKGROUND = '--custom-sidebar-menu-background',
@@ -80,7 +88,8 @@ export enum CSS_VARIABLES {
     CUSTOM_SIDEBAR_NOTIFICATION_COLOR = '--custom-sidebar-notification-color',
     CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR = '--custom-sidebar-notification-text-color',
     CUSTOM_SIDEBAR_SELECTION_OPACITY = '--custom-sidebar-selection-opacity',
-    CUSTOM_SIDEBAR_DIVIDER_COLOR = '--custom-sidebar-divider-color'
+    CUSTOM_SIDEBAR_DIVIDER_COLOR = '--custom-sidebar-divider-color',
+    CUSTOM_SIDEBAR_SCROLLBAR_THUMB_COLOR = '--custom-sidebar-scrollbar-thumb-color'
 }
 
 export enum CLASS {

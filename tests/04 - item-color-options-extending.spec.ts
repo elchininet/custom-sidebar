@@ -65,7 +65,7 @@ const pageVisit = async (page: Page): Promise<void> => {
         screenshot: '03-selection-color-from-text-color.png'
     },
     {
-        title: '@testing should set global selection_opacity',
+        title: 'should set global selection_opacity',
         json: getSelectedOrderItemExtendingColorOption(
             {
                 option: 'selection_opacity',
