@@ -14,6 +14,31 @@ import {
 
 const ERROR_PREFIX = 'Invalid configuration';
 
+const BASE_CONFIG_OPTIONS = [
+    'title',
+    'subtitle',
+    'icon_color',
+    'icon_color_selected',
+    'text_color',
+    'text_color_selected',
+    'selection_color',
+    'info_color',
+    'info_color_selected',
+    'notification_color',
+    'notification_text_color',
+    'sidebar_background',
+    'title_color',
+    'subtitle_color',
+    'sidebar_button_color',
+    'sidebar_border_color',
+    'menu_background',
+    'divider_color',
+    'divider_top_color',
+    'divider_bottom_color',
+    'scrollbar_thumb_color',
+    'styles'
+] as const;
+
 const validateStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
     props.forEach((prop: K): void => {
         if (
@@ -77,26 +102,7 @@ const validateExceptionItem = (exception: ConfigException): void => {
     validateStringOptions(
         exception,
         [
-            'title',
-            'subtitle',
-            'icon_color',
-            'icon_color_selected',
-            'text_color',
-            'text_color_selected',
-            'selection_color',
-            'info_color',
-            'info_color_selected',
-            'notification_color',
-            'notification_text_color',
-            'sidebar_background',
-            'title_color',
-            'subtitle_color',
-            'sidebar_button_color',
-            'sidebar_border_color',
-            'menu_background',
-            'divider_color',
-            'scrollbar_thumb_color',
-            'styles'
+            ...BASE_CONFIG_OPTIONS
         ],
         `${ERROR_PREFIX}, exceptions`
     );
@@ -219,26 +225,7 @@ export const validateConfig = (config: Config): void => {
     validateStringOptions(
         config,
         [
-            'title',
-            'subtitle',
-            'icon_color',
-            'icon_color_selected',
-            'text_color',
-            'text_color_selected',
-            'selection_color',
-            'info_color',
-            'info_color_selected',
-            'notification_color',
-            'notification_text_color',
-            'sidebar_background',
-            'title_color',
-            'subtitle_color',
-            'sidebar_button_color',
-            'sidebar_border_color',
-            'menu_background',
-            'divider_color',
-            'scrollbar_thumb_color',
-            'styles'
+            ...BASE_CONFIG_OPTIONS
         ],
         `${ERROR_PREFIX},`
     );

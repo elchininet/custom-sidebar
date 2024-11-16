@@ -612,6 +612,8 @@ class CustomSidebar {
                     ['notification_text_color', CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR],
                     ['selection_opacity',       CSS_VARIABLES.CUSTOM_SIDEBAR_SELECTION_OPACITY],
                     ['divider_color',           CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR],
+                    ['divider_top_color',       CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_TOP_COLOR],
+                    ['divider_bottom_color',    CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_BOTTOM_COLOR],
                     ['scrollbar_thumb_color',   CSS_VARIABLES.CUSTOM_SIDEBAR_SCROLLBAR_THUMB_COLOR]
                 ]
             );
@@ -690,7 +692,7 @@ class CustomSidebar {
                 }
                 ${ SELECTOR.HOST } ${ SELECTOR.MENU } {
                     background: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_MENU_BACKGROUND }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_BACKGROUND }, var(${ CSS_VARIABLES.SIDEBAR_MENU_BUTTON_BACKGROUND_COLOR }, ${ CSS_VARIABLES.PRIMARY_BACKGROUND_COLOR })));
-                    border-bottom: 1px solid var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR }, var(${ CSS_VARIABLES.DIVIDER_COLOR }));
+                    border-bottom: 1px solid var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_TOP_COLOR }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR }, var(${ CSS_VARIABLES.DIVIDER_COLOR })));
                 }
                 ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] {
                     pointer-events: none;
@@ -747,7 +749,7 @@ class CustomSidebar {
                     color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR }, var(${ CSS_VARIABLES.TEXT_ACCENT_COLOR }, var(${ CSS_VARIABLES.TEXT_PRIMARY_COLOR })));
                 }
                 ${ SELECTOR.HOST } ${ SELECTOR.DIVIDER }${ PSEUDO_SELECTOR.BEFORE } {
-                    background-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR }, var(${ CSS_VARIABLES.DIVIDER_COLOR }));
+                    background-color: var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_BOTTOM_COLOR }, var(${ CSS_VARIABLES.CUSTOM_SIDEBAR_DIVIDER_COLOR }, var(${ CSS_VARIABLES.DIVIDER_COLOR })));
                 }
                 ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
                     opacity: 0;

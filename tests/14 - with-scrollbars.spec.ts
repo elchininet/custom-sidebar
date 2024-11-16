@@ -1,5 +1,5 @@
 import { test, expect } from 'playwright-test-coverage';
-import { CONFIG_FILES, SIDEBAR_CLIP_WITH_BORDER } from './constants';
+import { CONFIG_FILES, SIDEBAR_CLIP_WITH_DIVIDERS } from './constants';
 import { haConfigRequest, addJsonExtendedRoute } from './utilities';
 import { SELECTORS } from './selectors';
 
@@ -35,8 +35,8 @@ test('should set scrollbar_thumb_color', async ({ page }) => {
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
     await expect(page).toHaveScreenshot('01-sidebar-scrollbar-thumb-color.png', {
         clip: {
-            ...SIDEBAR_CLIP_WITH_BORDER,
-            height: 500
+            ...SIDEBAR_CLIP_WITH_DIVIDERS,
+            height: 429
         }
     });
 

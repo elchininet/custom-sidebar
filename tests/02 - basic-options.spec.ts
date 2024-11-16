@@ -1,5 +1,5 @@
 import { test, expect } from 'playwright-test-coverage';
-import { CONFIG_FILES, SIDEBAR_CLIP_WITH_BORDER } from './constants';
+import { CONFIG_FILES, SIDEBAR_CLIP_WITH_DIVIDERS } from './constants';
 import { haConfigRequest, fulfillJson } from './utilities';
 import { SELECTORS } from './selectors';
 
@@ -189,6 +189,29 @@ test.beforeAll(async () => {
         screenshot: '21-sidebar-info-color-selected.png'
     },
     {
+        title: 'If divider_color is set it should set all the dividers in that color',
+        json: {
+            divider_color: 'red'
+        },
+        screenshot: '22-sidebar-divider-color.png'
+    },
+    {
+        title: 'If divider_top_color is set it should override divider_color',
+        json: {
+            divider_color: 'red',
+            divider_top_color: 'green'
+        },
+        screenshot: '23-sidebar-divider-top-color.png'
+    },
+    {
+        title: 'If divider_bottom_color is set it should override divider_color',
+        json: {
+            divider_color: 'red',
+            divider_bottom_color: 'green'
+        },
+        screenshot: '24-sidebar-divider-bottom-color.png'
+    },
+    {
         title: 'should apply custom styles',
         json: {
             styles: `
@@ -200,7 +223,7 @@ test.beforeAll(async () => {
                 }
             `
         },
-        screenshot: '22-sidebar-custom-styles.png'
+        screenshot: '25-sidebar-custom-styles.png'
     }
 ].forEach(({ title, json, screenshot }): void => {
 
@@ -211,7 +234,7 @@ test.beforeAll(async () => {
         await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
         await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
         await expect(page).toHaveScreenshot(screenshot, {
-            clip: SIDEBAR_CLIP_WITH_BORDER
+            clip: SIDEBAR_CLIP_WITH_DIVIDERS
         });
 
     });
