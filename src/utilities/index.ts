@@ -37,6 +37,8 @@ const EXTENDABLE_OPTIONS = [
     'sidebar_border_color',
     'menu_background',
     'divider_color',
+    'divider_top_color',
+    'divider_bottom_color',
     'scrollbar_thumb_color',
     'styles'
 ] as const;

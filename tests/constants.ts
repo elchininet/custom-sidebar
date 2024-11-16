@@ -42,9 +42,11 @@ export const SIDEBAR_CLIP = {
     height: 598
 };
 
-export const SIDEBAR_CLIP_WITH_BORDER = {
-    ...SIDEBAR_CLIP,
-    width: 256
+export const SIDEBAR_CLIP_WITH_DIVIDERS = {
+    x: 0,
+    y: 0,
+    width: 256,
+    height: 599
 };
 
 export const SIDEBAR_NARROW_CLIP = {

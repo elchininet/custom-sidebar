@@ -89,6 +89,8 @@ export enum CSS_VARIABLES {
     CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR = '--custom-sidebar-notification-text-color',
     CUSTOM_SIDEBAR_SELECTION_OPACITY = '--custom-sidebar-selection-opacity',
     CUSTOM_SIDEBAR_DIVIDER_COLOR = '--custom-sidebar-divider-color',
+    CUSTOM_SIDEBAR_DIVIDER_TOP_COLOR = '--custom-sidebar-divider-top-color',
+    CUSTOM_SIDEBAR_DIVIDER_BOTTOM_COLOR = '--custom-sidebar-divider-bottom-color',
     CUSTOM_SIDEBAR_SCROLLBAR_THUMB_COLOR = '--custom-sidebar-scrollbar-thumb-color'
 }
 
