@@ -158,7 +158,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | notification_text_color<sup>\*</sup>  | String          | no       | Sets the color of the sidebar notifications texts |
 | divider_color<sup>\*</sup>       | String               | no       | Sets the color of both sidebar dividers |
 | divider_top_color<sup>\*</sup>   | String               | no       | Sets the color of the top sidebar divider. It overrides `divider_color` for this divider if it is set |
-| divider_botom_color<sup>\*</sup> | String               | no       | Sets the color of the bottom sidebar divider. It overrides `divider_color` for this divider if it is set |
+| divider_bottom_color<sup>\*</sup> | String               | no       | Sets the color of the bottom sidebar divider. It overrides `divider_color` for this divider if it is set |
 | scrollbar_thumb_color<sup>\*</sup>| String              | no       | Sets the color of the sidebar scrollbar (This option uses non-baseline CSS styles and it could not work in some browsers) |
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
 | js_variables       | Object                             | no       | An object containing variales that will be used in [JavaScript templates](#javascript-templates). The variables cannot be templates and they must be strings, numbers or booleans |
