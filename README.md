@@ -70,8 +70,10 @@ frontend:
     - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v1.0.0
 ```
 
-6. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
-7. Restart Home Assistant
+6. Restart Home Assistant
+
+>[!TIP]
+>It is recomendable that you add the plugin's version at the end of the URL as a parameter (e.g. `?v=1.0.0`) to force Home Assistant to load the new version instead of a version stored in cache. This step is not mandatory, but if you start suffering from caching issues, this would be one of the first steps to perform.
 
 ### Through old HACS versions (< v2)
 
@@ -97,8 +99,10 @@ frontend:
     - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v1.0.0
 ```
 
-6. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
-7. Restart Home Assistant
+6. Restart Home Assistant
+
+>[!TIP]
+>It is recomendable that you add the plugin's version at the end of the URL as a parameter (e.g. `?v=1.0.0`) to force Home Assistant to load the new version instead of a version stored in cache. This step is not mandatory, but if you start suffering from caching issues, this would be one of the first steps to perform.
 
 ### Manual installation
 
@@ -129,7 +133,9 @@ frontend:
 
 Depending on the file that you have added to [extra_module_url], you will need to add your configuration in `YAML` or `JSON` format. If you used `custom-sidebar-yaml.js` you need to provide the configuration in `YAML` format. If you have used `custom-sidebar-json.js` you need to provide the configuration in `JSON` format.
 
-Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<config directory>/www/` directory. It could be easier if you copy the [example sidebar-config.yaml] or the [example sidebar-config.json] file, delete the `id` parameter, and edit it to match your needs.
+Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<config directory>/www/` directory. It is recomendable that you copy the [example sidebar-config.yaml] or the [example sidebar-config.json] file, delete the `id` parameter, and modify it to match your needs. It is recommended to start with the simplest configuration and start to extend it step by step, in that way if you suffer any issue, it is easy to indentify with which code block it started. If you want to check an extensive sidebar configuration which uses custom styles, variables and templates, check @Mariusthvdb's [sidebar-config.yaml](https://gist.github.com/Mariusthvdb/e41957dc6f66d9764e0480030c9bd386).
+
+
 
 ### Configuration options
 
