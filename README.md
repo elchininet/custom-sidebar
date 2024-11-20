@@ -126,8 +126,10 @@ frontend:
     - /local/custom-sidebar-json.js?v1.0.0
 ```
 
-4. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
-5. Restart Home Assistant
+4. Restart Home Assistant
+
+>[!TIP]
+>It is recomendable that you add the plugin's version at the end of the URL as a parameter (e.g. `?v=1.0.0`) to force Home Assistant to load the new version instead of a version stored in cache. This step is not mandatory, but if you start suffering from caching issues, this would be one of the first steps to perform.
 
 ## Configuration
 
