@@ -1,5 +1,6 @@
 import{
-    ColorConfig,
+    ItemColorConfig,
+    SidebarColorConfig,
     SidebarMode,
     DockedSidebar
 } from '@types';
@@ -93,16 +94,42 @@ export enum CUSTOM_SIDEBAR_CSS_VARIABLES {
     SCROLLBAR_THUMB_COLOR = '--custom-sidebar-scrollbar-thumb-color',
 
     ICON_COLOR = '--custom-sidebar-icon-color',
+    ICON_COLOR_SELECTED = '--custom-sidebar-icon-color-selected',
     TEXT_COLOR = '--custom-sidebar-text-color',
-    SELECTED_TEXT_COLOR = '--custom-sidebar-selected-text-color',
-    SELECTED_ICON_COLOR = '--custom-sidebar-selected-icon-color',
+    TEXT_COLOR_SELECTED = '--custom-sidebar-text-color-selected',
     SELECTION_COLOR = '--custom-sidebar-selection-color',
     SELECTION_OPACITY = '--custom-sidebar-selection-opacity',
     INFO_COLOR = '--custom-sidebar-info-color',
-    SELECTED_INFO_COLOR = '--custom-sidebar-selected-info-color',
+    INFO_COLOR_SELECTED = '--custom-sidebar-info-color-selected',
     NOTIFICATION_COLOR = '--custom-sidebar-notification-color',
     NOTIFICATION_TEXT_COLOR = '--custom-sidebar-notification-text-color'
 }
+
+export const ITEM_OPTIONS_VARIABLES_MAP: [keyof ItemColorConfig, string][] = [
+    ['icon_color',                    CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR],
+    ['icon_color_selected',           CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED],
+    ['text_color',                    CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR],
+    ['text_color_selected',           CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR_SELECTED],
+    ['selection_color',               CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_COLOR],
+    ['selection_opacity',             CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_OPACITY],
+    ['info_color',                    CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR],
+    ['info_color_selected',           CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR_SELECTED],
+    ['notification_color',            CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR],
+    ['notification_text_color',       CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR]
+];
+
+export const SIDEBAR_OPTIONS_VARIABLES_MAP: [keyof SidebarColorConfig, string][] = [
+    ['title_color',                   CUSTOM_SIDEBAR_CSS_VARIABLES.TITLE_COLOR],
+    ['subtitle_color',                CUSTOM_SIDEBAR_CSS_VARIABLES.SUBTITLE_COLOR],
+    ['sidebar_button_color',          CUSTOM_SIDEBAR_CSS_VARIABLES.BUTTON_COLOR],
+    ['sidebar_background',            CUSTOM_SIDEBAR_CSS_VARIABLES.BACKGROUND],
+    ['menu_background',               CUSTOM_SIDEBAR_CSS_VARIABLES.MENU_BACKGROUND],
+    ['scrollbar_thumb_color',         CUSTOM_SIDEBAR_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR],
+    ['divider_color',                 CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR],
+    ['divider_top_color',             CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_TOP_COLOR],
+    ['divider_bottom_color',          CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_BOTTOM_COLOR],
+    ...ITEM_OPTIONS_VARIABLES_MAP
+];
 
 export enum CLASS {
     NOTIFICATIONS_BADGE = 'notification-badge',
@@ -122,7 +149,7 @@ export enum ATTRIBUTE {
     STYLE = 'style'
 }
 
-export const ITEM_TEMPLATE_STRING_OPTIONS: (keyof ColorConfig)[] = [
+export const ITEM_TEMPLATE_STRING_OPTIONS: (keyof ItemColorConfig)[] = [
     'icon_color',
     'icon_color_selected',
     'text_color',
@@ -134,7 +161,7 @@ export const ITEM_TEMPLATE_STRING_OPTIONS: (keyof ColorConfig)[] = [
     'notification_text_color'
 ];
 
-export const ITEM_TEMPLATE_NUMBER_OPTIONS: (keyof ColorConfig)[] = [
+export const ITEM_TEMPLATE_NUMBER_OPTIONS: (keyof ItemColorConfig)[] = [
     'selection_opacity'
 ];
 
