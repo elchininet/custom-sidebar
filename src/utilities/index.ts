@@ -6,26 +6,19 @@ import {
 import {
     NAMESPACE,
     TYPE,
+    ITEM_TEMPLATE_STRING_OPTIONS,
+    ITEM_TEMPLATE_NUMBER_OPTIONS,
     FLUSH_PROMISE_DELAY,
     PARTIAL_REGEXP
 } from '@constants';
 import { version } from '../../package.json';
 
-const EXTENDABLE_ITEM_OPTIONS = [
-    'icon_color',
-    'icon_color_selected',
-    'text_color',
-    'text_color_selected',
-    'selection_color',
-    'selection_opacity',
-    'info_color',
-    'info_color_selected',
-    'notification_color',
-    'notification_text_color'
-] as const;
+const ITEM_TEMPLATE_OPTIONS = [
+    ...ITEM_TEMPLATE_STRING_OPTIONS,
+    ...ITEM_TEMPLATE_NUMBER_OPTIONS
+];
 
 const EXTENDABLE_OPTIONS = [
-    ...EXTENDABLE_ITEM_OPTIONS,
     'title',
     'subtitle',
     'sidebar_editable',
@@ -40,7 +33,8 @@ const EXTENDABLE_OPTIONS = [
     'divider_top_color',
     'divider_bottom_color',
     'scrollbar_thumb_color',
-    'styles'
+    'styles',
+    ...ITEM_TEMPLATE_OPTIONS
 ] as const;
 
 const ONLY_CONFIG_OPTIONS = [
@@ -49,7 +43,7 @@ const ONLY_CONFIG_OPTIONS = [
     'partials'
 ] as const;
 
-type ExtendableItemConfigOption = typeof EXTENDABLE_ITEM_OPTIONS[number];
+type ExtendableItemConfigOption = typeof ITEM_TEMPLATE_OPTIONS[number];
 type ExtendableConfigOption = typeof EXTENDABLE_OPTIONS[number];
 type OnlyConfigOption = typeof ONLY_CONFIG_OPTIONS[number];
 type OptionsFromBase = Record<string, Config[ExtendableConfigOption | OnlyConfigOption]>;
@@ -98,7 +92,7 @@ const flatConfigOrder = (order: ConfigOrder[], config: Config): ConfigOrder[] =>
     });
 
     orderMap.forEach((orderItem: ConfigOrder): void => {
-        EXTENDABLE_ITEM_OPTIONS.forEach((option: ExtendableItemConfigOption): void => {
+        ITEM_TEMPLATE_OPTIONS.forEach((option: ExtendableItemConfigOption): void => {
             if (
                 orderItem[option] === undefined &&
                 config[option] !== undefined

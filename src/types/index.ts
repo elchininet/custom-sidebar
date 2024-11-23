@@ -52,7 +52,7 @@ export enum Match {
     HREF = 'href'
 }
 
-interface ColorConfig {
+export interface ColorConfig {
     icon_color?: string;
     icon_color_selected?: string;
     text_color?: string;
