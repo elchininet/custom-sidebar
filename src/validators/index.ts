@@ -8,6 +8,8 @@ import {
     TYPE,
     OBJECT_TO_STRING,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
+    ITEM_TEMPLATE_STRING_OPTIONS,
+    ITEM_TEMPLATE_NUMBER_OPTIONS,
     JS_TEMPLATE_REG,
     JINJA_TEMPLATE_REG
 } from '@constants';
@@ -17,15 +19,6 @@ const ERROR_PREFIX = 'Invalid configuration';
 const BASE_CONFIG_OPTIONS = [
     'title',
     'subtitle',
-    'icon_color',
-    'icon_color_selected',
-    'text_color',
-    'text_color_selected',
-    'selection_color',
-    'info_color',
-    'info_color_selected',
-    'notification_color',
-    'notification_text_color',
     'sidebar_background',
     'title_color',
     'subtitle_color',
@@ -36,7 +29,8 @@ const BASE_CONFIG_OPTIONS = [
     'divider_top_color',
     'divider_bottom_color',
     'scrollbar_thumb_color',
-    'styles'
+    'styles',
+    ...ITEM_TEMPLATE_STRING_OPTIONS
 ] as const;
 
 const validateStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
@@ -46,6 +40,18 @@ const validateStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix:
             typeof obj[prop] !== TYPE.STRING
         ) {
             throw new SyntaxError(`${prefix} "${String(prop)}" property should be a string`);
+        }
+    });
+};
+
+const validateStringOrNumberOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
+    props.forEach((prop: K): void => {
+        if (
+            typeof obj[prop] !== TYPE.UNDEFINED &&
+            typeof obj[prop] !== TYPE.STRING &&
+            typeof obj[prop] !== TYPE.NUMBER
+        ) {
+            throw new SyntaxError(`${prefix} "${String(prop)}" property should be a number or a string`);
         }
     });
 };
@@ -107,6 +113,14 @@ const validateExceptionItem = (exception: ConfigException): void => {
         `${ERROR_PREFIX}, exceptions`
     );
 
+    validateStringOrNumberOptions(
+        exception,
+        [
+            ...ITEM_TEMPLATE_NUMBER_OPTIONS
+        ],
+        `${ERROR_PREFIX}, exceptions`
+    );
+
     validateStringOrArrayOfStringsOptions(
         [
             ['user', exception.user],
@@ -137,14 +151,6 @@ const validateExceptionItem = (exception: ConfigException): void => {
         !(exception.sidebar_mode in SIDEBAR_MODE_TO_DOCKED_SIDEBAR)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`);
-    }
-
-    if (
-        typeof exception.selection_opacity !== TYPE.UNDEFINED &&
-        typeof exception.selection_opacity !== TYPE.NUMBER &&
-        typeof exception.selection_opacity !== TYPE.STRING
-    ) {
-        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "selection_opacity" property should be a number or a template string`);
     }
 
     if (
@@ -185,26 +191,18 @@ const validateConfigItem = (configItem: ConfigItem): void => {
         [
             'item',
             'info',
-            'icon_color',
-            'icon_color_selected',
-            'text_color',
-            'text_color_selected',
-            'selection_color',
-            'info_color',
-            'info_color_selected',
-            'notification_color',
-            'notification_text_color'
+            ...ITEM_TEMPLATE_STRING_OPTIONS
         ],
         `${ERROR_PREFIX} in ${configItem.item},`
     );
 
-    if (
-        typeof configItem.selection_opacity !== TYPE.UNDEFINED &&
-        typeof configItem.selection_opacity !== TYPE.NUMBER &&
-        typeof configItem.selection_opacity !== TYPE.STRING
-    ) {
-        throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, "selection_opacity" property should be a number or a template string`);
-    }
+    validateStringOrNumberOptions(
+        configItem,
+        [
+            ...ITEM_TEMPLATE_NUMBER_OPTIONS
+        ],
+        `${ERROR_PREFIX} in ${configItem.item},`
+    );
 
     if (configItem.new_item) {
         validateStringOptions(
@@ -229,13 +227,13 @@ export const validateConfig = (config: Config): void => {
         ],
         `${ERROR_PREFIX},`
     );
-    if (
-        typeof config.selection_opacity !== TYPE.UNDEFINED &&
-        typeof config.selection_opacity !== TYPE.NUMBER &&
-        typeof config.selection_opacity !== TYPE.STRING
-    ) {
-        throw new SyntaxError(`${ERROR_PREFIX}, "selection_opacity" property should be a number or a template string`);
-    }
+    validateStringOrNumberOptions(
+        config,
+        [
+            ...ITEM_TEMPLATE_NUMBER_OPTIONS
+        ],
+        `${ERROR_PREFIX},`
+    );
     if (
         typeof config.sidebar_editable !== TYPE.UNDEFINED &&
         typeof config.sidebar_editable !== TYPE.BOOLEAN &&

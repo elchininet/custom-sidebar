@@ -113,7 +113,7 @@ test.describe('main options', () => {
             json: {
                 selection_opacity: [100]
             },
-            error: `${ERROR_PREFIX}, "selection_opacity" property should be a number or a template string`
+            error: `${ERROR_PREFIX}, "selection_opacity" property should be a number or a string`
         },
         {
             title: 'should throw an error if it has a malformed styles option',
@@ -362,7 +362,7 @@ test.describe('order item property', () => {
                     }
                 ]
             },
-            error: `${ERROR_PREFIX} in config, "selection_opacity" property should be a number or a template string`
+            error: `${ERROR_PREFIX} in config, "selection_opacity" property should be a number or a string`
         },
         {
             title: 'should throw an error if the "icon" property of a new icon is not a string',
@@ -449,7 +449,7 @@ test.describe('exceptions', () => {
                     }
                 ]
             },
-            error: `${ERROR_PREFIX}, exceptions "selection_opacity" property should be a number or a template string`
+            error: `${ERROR_PREFIX}, exceptions "selection_opacity" property should be a number or a string`
         },
         {
             title: 'should throw an error if it has an invalid "styles" option',

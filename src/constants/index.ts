@@ -1,4 +1,8 @@
-import{ SidebarMode, DockedSidebar } from '@types';
+import{
+    ColorConfig,
+    SidebarMode,
+    DockedSidebar
+} from '@types';
 
 export const NAMESPACE = 'custom-sidebar';
 export const LOCAL_PATH = '/local/';
@@ -57,41 +61,47 @@ export enum PSEUDO_SELECTOR {
     WEBKIT_SCROLLBAR_THUMB = '::-webkit-scrollbar-thumb'
 }
 
-export enum CSS_VARIABLES {
-    SIDEBAR_ICON_COLOR = '--sidebar-icon-color',
-    SIDEBAR_SELECTED_ICON_COLOR= '--sidebar-selected-icon-color',
-    SIDEBAR_TEXT_COLOR = '--sidebar-text-color',
-    SIDEBAR_SELECTED_TEXT_COLOR = '--sidebar-selected-text-color',
+export enum HA_CSS_VARIABLES {
+    PRIMARY_BACKGROUND_COLOR = '--primary-background-color',
     SIDEBAR_BACKGROUND_COLOR = '--sidebar-background-color',
     SIDEBAR_TITLE_COLOR = '--sidebar-menu-button-text-color',
     SIDEBAR_BUTTON_COLOR = '--sidebar-icon-color',
     SIDEBAR_MENU_BUTTON_BACKGROUND_COLOR = '--sidebar-menu-button-background-color',
+
+    SIDEBAR_ICON_COLOR = '--sidebar-icon-color',
+    SIDEBAR_SELECTED_ICON_COLOR= '--sidebar-selected-icon-color',
+    SIDEBAR_TEXT_COLOR = '--sidebar-text-color',
+    SIDEBAR_SELECTED_TEXT_COLOR = '--sidebar-selected-text-color',
+    ACCENT_COLOR = '--accent-color',
     TEXT_ACCENT_COLOR = '--text-accent-color',
     TEXT_PRIMARY_COLOR = '--text-primary-color',
-    PRIMARY_BACKGROUND_COLOR = '--primary-background-color',
     PRIMARY_TEXT_COLOR = '--primary-text-color',
     DIVIDER_COLOR = '--divider-color',
-    SCROLLBAR_THUMB_COLOR = '--scrollbar-thumb-color',
-    CUSTOM_SIDEBAR_BACKGROUND = '--custom-sidebar-background',
-    CUSTOM_SIDEBAR_BORDER_COLOR = '--custom-sidebar-border-color',
-    CUSTOM_SIDEBAR_MENU_BACKGROUND = '--custom-sidebar-menu-background',
-    CUSTOM_SIDEBAR_TITLE_COLOR = '--custom-sidebar-title-color',
-    CUSTOM_SIDEBAR_SUBTITLE_COLOR = '--custom-sidebar-subtitle-color',
-    CUSTOM_SIDEBAR_BUTTON_COLOR = '--custom-sidebar-button-color',
-    CUSTOM_SIDEBAR_TEXT_COLOR = '--custom-sidebar-text-color',
-    CUSTOM_SIDEBAR_SELECTED_TEXT_COLOR = '--custom-sidebar-selected-text-color',
-    CUSTOM_SIDEBAR_ICON_COLOR = '--custom-sidebar-icon-color',
-    CUSTOM_SIDEBAR_SELECTED_ICON_COLOR = '--custom-sidebar-selected-icon-color',
-    CUSTOM_SIDEBAR_SELECTION_COLOR = '--custom-sidebar-selection-color',
-    CUSTOM_SIDEBAR_INFO_COLOR = '--custom-sidebar-info-color',
-    CUSTOM_SIDEBAR_SELECTED_INFO_COLOR = '--custom-sidebar-selected-info-color',
-    CUSTOM_SIDEBAR_NOTIFICATION_COLOR = '--custom-sidebar-notification-color',
-    CUSTOM_SIDEBAR_NOTIFICATION_TEXT_COLOR = '--custom-sidebar-notification-text-color',
-    CUSTOM_SIDEBAR_SELECTION_OPACITY = '--custom-sidebar-selection-opacity',
-    CUSTOM_SIDEBAR_DIVIDER_COLOR = '--custom-sidebar-divider-color',
-    CUSTOM_SIDEBAR_DIVIDER_TOP_COLOR = '--custom-sidebar-divider-top-color',
-    CUSTOM_SIDEBAR_DIVIDER_BOTTOM_COLOR = '--custom-sidebar-divider-bottom-color',
-    CUSTOM_SIDEBAR_SCROLLBAR_THUMB_COLOR = '--custom-sidebar-scrollbar-thumb-color'
+    SCROLLBAR_THUMB_COLOR = '--scrollbar-thumb-color'
+}
+
+export enum CUSTOM_SIDEBAR_CSS_VARIABLES {
+    BACKGROUND = '--custom-sidebar-background',
+    BORDER_COLOR = '--custom-sidebar-border-color',
+    MENU_BACKGROUND = '--custom-sidebar-menu-background',
+    TITLE_COLOR = '--custom-sidebar-title-color',
+    SUBTITLE_COLOR = '--custom-sidebar-subtitle-color',
+    BUTTON_COLOR = '--custom-sidebar-button-color',
+    DIVIDER_COLOR = '--custom-sidebar-divider-color',
+    DIVIDER_TOP_COLOR = '--custom-sidebar-divider-top-color',
+    DIVIDER_BOTTOM_COLOR = '--custom-sidebar-divider-bottom-color',
+    SCROLLBAR_THUMB_COLOR = '--custom-sidebar-scrollbar-thumb-color',
+
+    ICON_COLOR = '--custom-sidebar-icon-color',
+    TEXT_COLOR = '--custom-sidebar-text-color',
+    SELECTED_TEXT_COLOR = '--custom-sidebar-selected-text-color',
+    SELECTED_ICON_COLOR = '--custom-sidebar-selected-icon-color',
+    SELECTION_COLOR = '--custom-sidebar-selection-color',
+    SELECTION_OPACITY = '--custom-sidebar-selection-opacity',
+    INFO_COLOR = '--custom-sidebar-info-color',
+    SELECTED_INFO_COLOR = '--custom-sidebar-selected-info-color',
+    NOTIFICATION_COLOR = '--custom-sidebar-notification-color',
+    NOTIFICATION_TEXT_COLOR = '--custom-sidebar-notification-text-color'
 }
 
 export enum CLASS {
@@ -111,6 +121,22 @@ export enum ATTRIBUTE {
     HREF = 'href',
     STYLE = 'style'
 }
+
+export const ITEM_TEMPLATE_STRING_OPTIONS: (keyof ColorConfig)[] = [
+    'icon_color',
+    'icon_color_selected',
+    'text_color',
+    'text_color_selected',
+    'selection_color',
+    'info_color',
+    'info_color_selected',
+    'notification_color',
+    'notification_text_color'
+];
+
+export const ITEM_TEMPLATE_NUMBER_OPTIONS: (keyof ColorConfig)[] = [
+    'selection_opacity'
+];
 
 export enum EVENT {
     MOUSEDOWN = 'mousedown',
