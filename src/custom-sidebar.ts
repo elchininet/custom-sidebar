@@ -32,6 +32,8 @@ import {
     ATTRIBUTE,
     HA_CSS_VARIABLES,
     CUSTOM_SIDEBAR_CSS_VARIABLES,
+    ITEM_OPTIONS_VARIABLES_MAP,
+    SIDEBAR_OPTIONS_VARIABLES_MAP,
     KEY,
     CLASS,
     EVENT,
@@ -596,27 +598,7 @@ class CustomSidebar {
             this._subscribeTemplateColorChanges(
                 this._configWithExceptions,
                 sidebar,
-                [
-                    ['title_color',             CUSTOM_SIDEBAR_CSS_VARIABLES.TITLE_COLOR],
-                    ['subtitle_color',          CUSTOM_SIDEBAR_CSS_VARIABLES.SUBTITLE_COLOR],
-                    ['sidebar_button_color',    CUSTOM_SIDEBAR_CSS_VARIABLES.BUTTON_COLOR],
-                    ['sidebar_background',      CUSTOM_SIDEBAR_CSS_VARIABLES.BACKGROUND],
-                    ['menu_background',         CUSTOM_SIDEBAR_CSS_VARIABLES.MENU_BACKGROUND],
-                    ['icon_color',              CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR],
-                    ['icon_color_selected',     CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTED_ICON_COLOR],
-                    ['text_color',              CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR],
-                    ['text_color_selected',     CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTED_TEXT_COLOR],
-                    ['selection_color',         CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_COLOR],
-                    ['info_color',              CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR],
-                    ['info_color_selected',     CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTED_INFO_COLOR],
-                    ['notification_color',      CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR],
-                    ['notification_text_color', CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR],
-                    ['selection_opacity',       CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_OPACITY],
-                    ['divider_color',           CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR],
-                    ['divider_top_color',       CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_TOP_COLOR],
-                    ['divider_bottom_color',    CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_BOTTOM_COLOR],
-                    ['scrollbar_thumb_color',   CUSTOM_SIDEBAR_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR]
-                ]
+                SIDEBAR_OPTIONS_VARIABLES_MAP
             );
 
             this._subscribeTemplateColorChanges(
@@ -715,17 +697,17 @@ class CustomSidebar {
                     pointer-events: all;
                 }
                 ${ SELECTOR.HOST } ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM }${ PSEUDO_SELECTOR.BEFORE } {
-                    background-color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_COLOR }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTED_ICON_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR })));
+                    background-color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_COLOR }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR })));
                     opacity: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_OPACITY }, 0.12);
                 }
                 ${ SELECTOR.HOST } ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_NOTIFICATION }] > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
                     max-width: calc(100% - 100px);
                 }
                 ${ SELECTOR.HOST } ${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON }) {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTED_ICON_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR }));
+                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR }));
                 }
                 ${ SELECTOR.HOST } ${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTED_TEXT_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR }));
+                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR_SELECTED }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR }));
                 }
                 ${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON }) {
                     color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_ICON_COLOR }));
@@ -778,7 +760,7 @@ class CustomSidebar {
                     z-index: 1;
                 }
                 ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER } {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTED_INFO_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR }));
+                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR_SELECTED }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR }));
                 }
                 ${ this._configWithExceptions.styles || '' }
                 `.trim(),
@@ -934,18 +916,7 @@ class CustomSidebar {
                         this._subscribeTemplateColorChanges(
                             orderItem,
                             orderItem.element,
-                            [
-                                ['icon_color',              CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR],
-                                ['icon_color_selected',     CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTED_ICON_COLOR],
-                                ['text_color',              CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR],
-                                ['text_color_selected',     CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTED_TEXT_COLOR],
-                                ['selection_color',         CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_COLOR],
-                                ['selection_opacity',       CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_OPACITY],
-                                ['info_color',              CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR],
-                                ['info_color_selected',     CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTED_INFO_COLOR],
-                                ['notification_color',      CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR],
-                                ['notification_text_color', CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR]
-                            ]
+                            ITEM_OPTIONS_VARIABLES_MAP
                         );
 
                         if (orderItem.new_item) {
