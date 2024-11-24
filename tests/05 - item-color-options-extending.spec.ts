@@ -54,15 +54,15 @@ const pageVisit = async (page: Page): Promise<void> => {
         screenshot: '02-text-color-selected-from-text-color.png'
     },
     {
-        title: 'should set global selection_color getting the value of text_color',
+        title: 'should set global selection_background getting the value of text_color',
         json: getSelectedOrderItemExtendingColorOption(
             {
-                option: 'selection_color',
+                option: 'selection_background',
                 value: 'var(--custom-sidebar-text-color)'
             },
             'text_color'
         ),
-        screenshot: '03-selection-color-from-text-color.png'
+        screenshot: '03-selection-background-from-text-color.png'
     },
     {
         title: 'should set global selection_opacity',
@@ -71,7 +71,7 @@ const pageVisit = async (page: Page): Promise<void> => {
                 option: 'selection_opacity',
                 value: '1'
             },
-            'selection_color'
+            'selection_background'
         ),
         screenshot: '04-global-selection-opacity.png'
     }

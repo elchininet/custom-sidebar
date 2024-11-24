@@ -62,9 +62,9 @@ const pageVisit = async (page: Page): Promise<void> => {
         screenshot: '04-color-overriding-text-color-selected.png'
     },
     {
-        title: 'should override the global selection_color option',
-        json: getSelectedOrderItemWithColorOption('selection_color'),
-        screenshot: '05-color-overriding-selection-color.png'
+        title: 'should override the global selection_background option',
+        json: getSelectedOrderItemWithColorOption('selection_background'),
+        screenshot: '05-color-overriding-selection-background.png'
     },
     {
         title: 'should override the global info_color option',
