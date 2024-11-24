@@ -152,22 +152,31 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | title_color<sup>\*</sup> | String                       | no       | Sets the color of the sidebar title |
 | subtitle<sup>\*</sup> | String                          | no       | Sets a custom subtitle below the `Home Assistant` title |
 | subtitle_color<sup>\*</sup> | String                     | no      | Sets the color of the sidebar subtitle |
-| sidebar_background<sup>\*</sup> | String                | no       | Sets the background of the sidebar. It could be a color or [a background declaration](https://developer.mozilla.org/en-US/docs/Web/CSS/background) |
+| sidebar_background<sup>\*</sup> | String                | no       | Sets the background of the sidebar. It could be a color or [a background declaration] |
 | sidebar_border_color<sup>\*</sup> | String              | no       | Sets the border-right color of the sidebar |
-| menu_background<sup>\*</sup>    | String                | no       | Sets the background of the sidebar menu area (the one containing the menu button and the title). If it is not set, the `sidebar_background` option will be used. It could be a color or [a background declaration](https://developer.mozilla.org/en-US/docs/Web/CSS/background) |
+| menu_background<sup>\*</sup>    | String                | no       | Sets the background of the sidebar menu area (the one containing the menu button and the title). If it is not set, the `sidebar_background` option will be used. It could be a color or [a background declaration] |
 | sidebar_editable<sup>\*</sup> | Boolean or String       | no       | If it is set to false, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns a boolean or a promise that resolves in a boolean |
 | sidebar_mode       | String                             | no       | Defines the default status of the sidebar when Home Assistant is loaded. It has three possible values: "hidden" to make the sidebar hidden, "narrow" to make the sidebar visible in narrow state and "extended" to make sidebar visible in extended state. This option will show or hide the sidebar ignoring if it is a desktop or a mobile device or if the `Always hide the sidebar` switch in the profile page in on or off (depending on the value of this option, this switch will be switched on or off automatically) |
 | sidebar_button_color<sup>\*</sup> | String              | no       | Sets the color of the sidebar hamburger menu |
+| item_background<sup>\*</sup> | String                   | no       | Sets the background of the sidebar items. It could be a color or [a background declaration] |
+| item_background_hover<sup>\*</sup> | String             | no       | Sets the background of the sidebar items in a hover state. It could be a color or [a background declaration] |
 | icon_color<sup>\*</sup> | String                        | no       | Sets the color of the sidebar icons |
 | icon_color_selected<sup>\*</sup> | String               | no       | Sets the icon color of the selected sidebar item |
+| icon_color_hover<sup>\*</sup> | String                  | no       | Sets the icon color of the sidebar items in a hover state |
 | text_color<sup>\*</sup> | String                        | no       | Sets the text color of the sidebar items |
 | text_color_selected<sup>\*</sup> | String               | no       | Sets the text color of the selected sidebar item |
-| selection_background<sup>\*</sup> | String              | no       | Sets the background of the selected item. It could be a color or [a background declaration](https://developer.mozilla.org/en-US/docs/Web/CSS/background). If it is not specified, the `icon_color_selected` will be used |
+| text_color_hover<sup>\*</sup> | String                  | no       | Sets the text color of the sidebar items in a hover state |
+| selection_background<sup>\*</sup> | String              | no       | Sets the background of the selected item. It could be a color or [a background declaration]. If it is not specified, the `icon_color_selected` will be used |
 | selection_opacity<sup>\*</sup> | Number or String       | no       | Sets the opacity of the selected item background. It should be a number between `0` (fully transparent) and `1` (fully opaque). If it is not specified, the default `0.12` will be used |
 | info_color<sup>\*</sup> | String                        | no       | Sets the color of the info texts of the sidebar items |
 | info_color_selected<sup>\*</sup> | String               | no       | Sets the color of the info text of the selected sidebar item |
+| info_color_hover<sup>\*</sup> | String                  | no       | Sets the color of the info texts in a hover state |
 | notification_color<sup>\*</sup>  | String               | no       | Sets the color of the sidebar notifications |
+| notification_color_selected<sup>\*</sup>  | String      | no       | Sets the color of the sidebar notification of the selected sidebar item |
+| notification_color_hover<sup>\*</sup>  | String         | no       | Sets the color of the sidebar notification when the item is in hover state |
 | notification_text_color<sup>\*</sup>  | String          | no       | Sets the color of the sidebar notifications texts |
+| notification_text_color_selected<sup>\*</sup>  | String | no       | Sets the color of the sidebar notification texts of the selected sidebar item |
+| notification_text_color_hover<sup>\*</sup>  | String    | no       | Sets the color of the sidebar notifications texts when the item is in hover state |
 | divider_color<sup>\*</sup>       | String               | no       | Sets the color of both sidebar dividers |
 | divider_top_color<sup>\*</sup>   | String               | no       | Sets the color of the top sidebar divider. It overrides `divider_color` for this divider if it is set |
 | divider_bottom_color<sup>\*</sup> | String               | no       | Sets the color of the bottom sidebar divider. It overrides `divider_color` for this divider if it is set |
@@ -193,16 +202,25 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | icon<sup>\*</sup>         | String  | no        | Specifies the icon of the sidebar item |
 | info<sup>\*</sup>         | String  | no        | Sets the content of the info text (a smaller secondary text below the main item text) |
 | notification<sup>\*</sup> | String  | no        | Add a notification badge to the sidebar item |
+| item_background<sup>\*</sup> | String | no      | Sets the background of the items. It could be a color or [a background declaration] (it overrides the global `item_background`) |
+| item_background_hover<sup>\*</sup> | String  | no | Sets the background of the items in a hover state. It could be a color or [a background declaration] (it overrides the global `item_background_hover`) |
 | icon_color<sup>\*</sup>   | String  | no        | Sets the color of the icon (it overrides the global `icon_color`) |
 | icon_color_selected<sup>\*</sup> | String | no  | Sets the icon color of the item when it is selected (it overrides the global `icon_color_selected`) |
+| icon_color_hover<sup>\*</sup> | String | no     | Sets the item icon color in a hover state (it overrides the global `icon_color_hover`) |
 | text_color<sup>\*</sup> | String    | no        | Sets the text color of the item (it overrides the global `text_color`) |
 | text_color_selected<sup>\*</sup> | String | no  | Sets the text color of the item when it is selected (it overrides the global `text_color_selected`) |
-| selection_background<sup>\*</sup> | String      | no  | Sets the background of the item when it is selected. It could be a color or [a background declaration](https://developer.mozilla.org/en-US/docs/Web/CSS/background). If it is not specified, the `icon_color_selected` will be used |
+| text_color_hover<sup>\*</sup> | String | no     | Sets the item text color in a hover state (it overrides the global `text_color_hover`) |
+| selection_background<sup>\*</sup> | String      | no  | Sets the background of the item when it is selected. It could be a color or [a background declaration]. If it is not specified, the `icon_color_selected` will be used |
 | selection_opacity<sup>\*</sup> | Number or String | no       | Sets the opacity of the item background when it is selected. It should be a number between `0` (fully transparent) and `1` (fully opaque). If it is not specified, the default `0.12` will be used (it overrides the global `selection_opacity`) |
 | info_color<sup>\*</sup> | String | no           | Sets the color of the info text (it overrides the global `info_color`) |
 | info_color_selected<sup>\*</sup> | String | no  | Sets the color of the info text when the item is selected (it overrides the global `info_color_selected`) |
+| info_color_hover<sup>\*</sup> | String | no     | Sets the color of the info text in a hover state (it overrides the global `info_color_hover`) |
 | notification_color<sup>\*</sup>  | String | no  | Sets the notification color (it overrides the global `notification_color`) |
-| notification_text_color<sup>\*</sup>  | String  | no       | Sets the color of the sidebar notification text (it overrides the global `notification_text_color`) |
+| notification_color_selected<sup>\*</sup>  | String  | no | Sets the color of the item notification when it is selected (it overrides the global `notification_color_selected`) |
+| notification_color_hover<sup>\*</sup>  | String | no | Sets the color of the item notification in hover state (it overrides the global `notification_color_hover`) |
+| notification_text_color<sup>\*</sup>  | String  | no       | Sets the color of the notification text (it overrides the global `notification_text_color`) |
+| notification_text_color_selected<sup>\*</sup>  | String | no | Sets the color of the notification text when it is selected (it overrides the global `notification_text_color_selected`) |
+| notification_text_color_hover<sup>\*</sup>  | String | no | Sets the color of the notifications text in hover state (it overrides the global `notification_text_color_hover`) |
 | bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
 | href                      | String  | no        | Specifies the `href` of the sidebar item |
 | target                    | String  | no        | Specifies the [target property] of the sidebar item |
@@ -612,3 +630,4 @@ Check out Home Assistant's native sidebar tools, maybe it will be enough for you
 [user-agent]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
 [Home Assistant Javascript Templates]: https://github.com/elchininet/home-assistant-javascript-templates
 [websocket call]: https://developers.home-assistant.io/docs/api/websocket
+[a background declaration]: https://developer.mozilla.org/en-US/docs/Web/CSS/background

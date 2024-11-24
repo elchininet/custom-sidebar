@@ -643,7 +643,7 @@ class CustomSidebar {
             }, true);
 
             const commonNotificationStyles = `
-                background-color: var(${CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR}, var(${ HA_CSS_VARIABLES.ACCENT_COLOR }));
+                background-color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR }, var(${ HA_CSS_VARIABLES.ACCENT_COLOR }));
                 border-radius: 20px;
                 color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR }, var(${ HA_CSS_VARIABLES.TEXT_ACCENT_COLOR }, var(${ HA_CSS_VARIABLES.TEXT_PRIMARY_COLOR })));
                 font-size: 0.65em;
@@ -699,7 +699,7 @@ class CustomSidebar {
                 ${ SELECTOR.HOST } ${ SELECTOR.ITEM }:not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM } {
                     background: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND }, none);
                 }
-                ${ SELECTOR.HOST } ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM }${ PSEUDO_SELECTOR.BEFORE } {
+                ${ SELECTOR.HOST } :is(${ SELECTOR.ITEM }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER }) > ${ ELEMENT.PAPER_ICON_ITEM }${ PSEUDO_SELECTOR.BEFORE } {
                     background: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_BACKGROUND }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR })));
                     opacity: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_OPACITY }, 0.12);
                 }
@@ -732,6 +732,10 @@ class CustomSidebar {
                 }
                 ${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.CONFIGURATION_BADGE } {
                     ${commonNotificationStyles}
+                }
+                ${ SELECTOR.HOST } ${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ SELECTOR.NOTIFICATION_BADGE }, ${ SELECTOR.CONFIGURATION_BADGE }) {
+                    background-color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR_SELECTED }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR }, var(${ HA_CSS_VARIABLES.ACCENT_COLOR })));
+                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_SELECTED }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR }, var(${ HA_CSS_VARIABLES.TEXT_ACCENT_COLOR }, var(${ HA_CSS_VARIABLES.TEXT_PRIMARY_COLOR }))));
                 }
                 ${ SELECTOR.HOST } ${ SELECTOR.DIVIDER }${ PSEUDO_SELECTOR.BEFORE } {
                     background-color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_BOTTOM_COLOR }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR }, var(${ HA_CSS_VARIABLES.DIVIDER_COLOR })));
