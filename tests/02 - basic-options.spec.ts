@@ -127,6 +127,32 @@ test.beforeAll(async () => {
         screenshot: '14-sidebar-notification-color.png'
     },
     {
+        title: 'should set notification_color_selected',
+        json: {
+            notification_color_selected: 'red',
+            order: [
+                {
+                    item: 'overview',
+                    notification: 3
+                }
+            ]
+        },
+        screenshot: '15-sidebar-notification-color-selected.png'
+    },
+    {
+        title: 'should set notification_text_color_selected',
+        json: {
+            notification_text_color_selected: 'red',
+            order: [
+                {
+                    item: 'overview',
+                    notification: 3
+                }
+            ]
+        },
+        screenshot: '16-sidebar-notification-text-color-selected.png'
+    },
+    {
         title: 'If info is set in one item it should add the secondary text',
         json: {
             order: [
@@ -139,32 +165,32 @@ test.beforeAll(async () => {
                 }
             ]
         },
-        screenshot: '15-sidebar-item-info.png'
+        screenshot: '17-sidebar-item-info.png'
     },
     {
         title: 'If icon_color is set the icons should change their color',
         json: { icon_color: 'red' },
-        screenshot: '16-sidebar-icon-color.png'
+        screenshot: '18-sidebar-icon-color.png'
     },
     {
         title: 'If icon_color_selected is set the icons of the selected item should change its color',
         json: { icon_color_selected: 'red' },
-        screenshot: '17-sidebar-icon-color-selected.png'
+        screenshot: '19-sidebar-icon-color-selected.png'
     },
     {
         title: 'If text_color is set the texts should change their color',
         json: { text_color: 'red' },
-        screenshot: '18-sidebar-text-color.png'
+        screenshot: '20-sidebar-text-color.png'
     },
     {
         title: 'If text_color_selected is set the text of the selected item should change its color',
         json: { text_color_selected: 'red' },
-        screenshot: '19-sidebar-text-color-selected.png'
+        screenshot: '21-sidebar-text-color-selected.png'
     },
     {
         title: 'If selection_background is set the background of the selected item should change its color',
         json: { selection_background: 'red' },
-        screenshot: '20-sidebar-selection-background.png'
+        screenshot: '22-sidebar-selection-background.png'
     },
     {
         title: 'If info_color is set the color of the secondary text of the item should change its color',
@@ -180,7 +206,7 @@ test.beforeAll(async () => {
                 }
             ]
         },
-        screenshot: '21-sidebar-info-color.png'
+        screenshot: '23-sidebar-info-color.png'
     },
     {
         title: 'If info_color_selected is set the color of the secondary text of the selected item should change its color',
@@ -193,14 +219,14 @@ test.beforeAll(async () => {
                 }
             ]
         },
-        screenshot: '22-sidebar-info-color-selected.png'
+        screenshot: '24-sidebar-info-color-selected.png'
     },
     {
         title: 'If divider_color is set it should set all the dividers in that color',
         json: {
             divider_color: 'red'
         },
-        screenshot: '23-sidebar-divider-color.png'
+        screenshot: '25-sidebar-divider-color.png'
     },
     {
         title: 'If divider_top_color is set it should override divider_color',
@@ -208,7 +234,7 @@ test.beforeAll(async () => {
             divider_color: 'red',
             divider_top_color: 'green'
         },
-        screenshot: '24-sidebar-divider-top-color.png'
+        screenshot: '26-sidebar-divider-top-color.png'
     },
     {
         title: 'If divider_bottom_color is set it should override divider_color',
@@ -216,7 +242,7 @@ test.beforeAll(async () => {
             divider_color: 'red',
             divider_bottom_color: 'green'
         },
-        screenshot: '25-sidebar-divider-bottom-color.png'
+        screenshot: '27-sidebar-divider-bottom-color.png'
     },
     {
         title: 'should apply custom styles',
@@ -230,7 +256,7 @@ test.beforeAll(async () => {
                 }
             `
         },
-        screenshot: '26-sidebar-custom-styles.png'
+        screenshot: '28-sidebar-custom-styles.png'
     }
 ].forEach(({ title, json, screenshot }): void => {
 

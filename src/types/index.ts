@@ -67,8 +67,10 @@ export interface ItemColorConfig {
     info_color_selected?: string;
     info_color_hover?: string;
     notification_color?: string;
+    notification_color_selected?: string;
     notification_color_hover?: string;
     notification_text_color?: string;
+    notification_text_color_selected?: string;
     notification_text_color_hover?: string;
 }
 
