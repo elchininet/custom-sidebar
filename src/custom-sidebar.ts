@@ -28,9 +28,7 @@ import {
     NAMESPACE,
     ELEMENT,
     SELECTOR,
-    PSEUDO_SELECTOR,
     ATTRIBUTE,
-    HA_CSS_VARIABLES,
     CUSTOM_SIDEBAR_CSS_VARIABLES,
     ITEM_OPTIONS_VARIABLES_MAP,
     SIDEBAR_OPTIONS_VARIABLES_MAP,
@@ -54,6 +52,7 @@ import {
     flushPromise,
     getTemplateWithPartials
 } from '@utilities';
+import * as STYLES from '@styles';
 import { fetchConfig } from '@fetchers/json';
 
 class CustomSidebar {
@@ -642,148 +641,36 @@ class CustomSidebar {
                 }
             }, true);
 
-            const commonNotificationStyles = `
-                background-color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR }, var(${ HA_CSS_VARIABLES.ACCENT_COLOR }));
-                border-radius: 20px;
-                color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR }, var(${ HA_CSS_VARIABLES.TEXT_ACCENT_COLOR }, var(${ HA_CSS_VARIABLES.TEXT_PRIMARY_COLOR })));
-                font-size: 0.65em;
-                overflow: hidden;
-                padding: 0px 5px;
-                text-overflow: ellipsis;
-                text-wrap: nowrap;
-            `;
-
             this._styleManager.addStyle(
-                `
-                ${ SELECTOR.HOST } > ${SELECTOR.MC_DRAWER} {
-                    border-color: var(${CUSTOM_SIDEBAR_CSS_VARIABLES.BORDER_COLOR}, var(${ HA_CSS_VARIABLES.DIVIDER_COLOR }, rgba(0,0,0,.12)));
-                }
-                `,
+                STYLES.SIDEBAR_BORDER_COLOR,
                 mcDrawer
             );
 
             this._styleManager.addStyle(
                 `
-                ${ SELECTOR.HOST } {
-                    background: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.BACKGROUND }, var(${ HA_CSS_VARIABLES.SIDEBAR_BACKGROUND_COLOR })) !important;
-                }
-                ${ SELECTOR.HOST } ${ ELEMENT.PAPER_LISTBOX }${ SELECTOR.HA_SCROLLBAR } {
-                    scrollbar-color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR }, var(${ HA_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR })) transparent;
-                }
-                ${ SELECTOR.HOST } ${ ELEMENT.PAPER_LISTBOX }${ SELECTOR.HA_SCROLLBAR }${ PSEUDO_SELECTOR.WEBKIT_SCROLLBAR_THUMB } {
-                    background: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR }, var(${ HA_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR }));
-                }
-                ${ SELECTOR.HOST } ${ SELECTOR.MENU } {
-                    background: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.MENU_BACKGROUND }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.BACKGROUND }, var(${ HA_CSS_VARIABLES.SIDEBAR_MENU_BUTTON_BACKGROUND_COLOR }, ${ HA_CSS_VARIABLES.PRIMARY_BACKGROUND_COLOR })));
-                    border-bottom: 1px solid var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_TOP_COLOR }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR }, var(${ HA_CSS_VARIABLES.DIVIDER_COLOR })));
-                }
-                ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] {
-                    pointer-events: none;
-                }
-                ${ SELECTOR.HOST } ${ SELECTOR.MENU } > ${ ELEMENT.HA_ICON_BUTTON } {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.BUTTON_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_ICON_COLOR }));
-                }
-                ${ SELECTOR.HOST } ${ SELECTOR.MENU } > ${ SELECTOR.TITLE } {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.TITLE_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_TITLE_COLOR }, var(${ HA_CSS_VARIABLES.PRIMARY_TEXT_COLOR })));
-                }  
-                ${ SELECTOR.HOST } ${ SELECTOR.MENU } > ${ SELECTOR.TITLE }${ PSEUDO_SELECTOR.AFTER } {
-                    content: attr(data-subtitle);
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SUBTITLE_COLOR }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.TITLE_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_TITLE_COLOR }, var(${ HA_CSS_VARIABLES.PRIMARY_TEXT_COLOR }))));
-                    display: block;
-                    font-size: 12px;
-                    line-height: 1.5;
-                }
-                ${ SELECTOR.MENU }[${ BLOCKED_PROPERTY }] > ${ ELEMENT.HA_ICON_BUTTON } {
-                    pointer-events: all;
-                }
-                ${ SELECTOR.HOST } ${ SELECTOR.ITEM }:not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM } {
-                    background: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND }, none);
-                }
-                ${ SELECTOR.HOST } :is(${ SELECTOR.ITEM }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER }) > ${ ELEMENT.PAPER_ICON_ITEM }${ PSEUDO_SELECTOR.BEFORE } {
-                    background: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_BACKGROUND }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR })));
-                    opacity: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_OPACITY }, 0.12);
-                }
-                ${ SELECTOR.HOST } ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_NOTIFICATION }] > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
-                    max-width: calc(100% - 100px);
-                }
-                ${ SELECTOR.HOST } ${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON }) {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR }));
-                }
-                ${ SELECTOR.HOST } ${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR_SELECTED }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR }));
-                }
-                ${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON }) {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_ICON_COLOR }));
-                }
-                ${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_TEXT_COLOR }));
-                }
-                ${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }) {
-                    left: calc(var(--app-drawer-width, 248px) - 22px);
-                    max-width: 80px;
-                    transform: translateX(-100%);
-                    ${commonNotificationStyles}
-                }
-                ${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
-                    bottom: 14px;
-                    left: 26px;
-                    max-width: 20px;
-                    ${commonNotificationStyles}
-                }
-                ${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.CONFIGURATION_BADGE } {
-                    ${commonNotificationStyles}
-                }
-                ${ SELECTOR.HOST } ${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ SELECTOR.NOTIFICATION_BADGE }, ${ SELECTOR.CONFIGURATION_BADGE }) {
-                    background-color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR_SELECTED }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR }, var(${ HA_CSS_VARIABLES.ACCENT_COLOR })));
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_SELECTED }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR }, var(${ HA_CSS_VARIABLES.TEXT_ACCENT_COLOR }, var(${ HA_CSS_VARIABLES.TEXT_PRIMARY_COLOR }))));
-                }
-                ${ SELECTOR.HOST } ${ SELECTOR.DIVIDER }${ PSEUDO_SELECTOR.BEFORE } {
-                    background-color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_BOTTOM_COLOR }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR }, var(${ HA_CSS_VARIABLES.DIVIDER_COLOR })));
-                }
-                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED } {
-                    opacity: 0;
-                }
-                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 5px;
-                    line-height: 1;
-                }
-                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ PSEUDO_SELECTOR.AFTER } {
-                    content: attr(data-info);
-                    display: none;
-                    font-size: 11px;
-                    line-height: 1;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
-                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER } {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_TEXT_COLOR }));
-                    display: block;
-                }
-                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
-                    z-index: 1;
-                }
-                ${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER } {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR_SELECTED }, var(${ HA_CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR }));
-                }
-                ${ SELECTOR.HOST } :is(${ SELECTOR.ITEM_HOVER }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER }):not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM } {
-                    background: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND }), none);
-                }
-                ${ SELECTOR.HOST } :is(${ SELECTOR.ITEM_HOVER }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER }):not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT } {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR_HOVER }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_TEXT_COLOR })));
-                }
-                ${ SELECTOR.HOST } :is(${ SELECTOR.ITEM_HOVER }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER }):not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON }) {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_HOVER }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_ICON_COLOR })));
-                }
-                ${ SELECTOR.HOST } :is(${ SELECTOR.ITEM_HOVER }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER }):not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ SELECTOR.NOTIFICATION_BADGE }, ${ SELECTOR.CONFIGURATION_BADGE }) {
-                    background-color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR_HOVER }, var(${CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR}, var(${ HA_CSS_VARIABLES.ACCENT_COLOR })));
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_HOVER }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR }, var(${ HA_CSS_VARIABLES.TEXT_ACCENT_COLOR }, var(${ HA_CSS_VARIABLES.TEXT_PRIMARY_COLOR }))));
-                }
-                ${ SELECTOR.HOST_EXPANDED } :is(${ SELECTOR.ITEM_HOVER }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER }):not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER } {
-                    color: var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR_HOVER }, var(${ CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR }, var(${ HA_CSS_VARIABLES.SIDEBAR_TEXT_COLOR })));
-                }
+                ${ STYLES.FUNCTIONALITY }
+                ${ STYLES.TITLE_COLOR }
+                ${ STYLES.SUBTITLE_COLOR }
+                ${ STYLES.SIDEBAR_BUTTON_COLOR }
+                ${ STYLES.SIDEBAR_BACKGROUND }
+                ${ STYLES.MENU_BACKGROUND_DIVIDER_TOP_COLOR }
+                ${ STYLES.DIVIDER_BOTTOM_COLOR_DIVIDER_COLOR }
+                ${ STYLES.SCROLL_THUMB_COLOR }
+                ${ STYLES.SIDEBAR_EDITABLE }
+                ${ STYLES.ITEM_BACKGROUND }
+                ${ STYLES.ITEM_BACKGROUND_HOVER }
+                ${ STYLES.ICON_COLOR }
+                ${ STYLES.ICON_COLOR_SELECTED }
+                ${ STYLES.ICON_COLOR_HOVER }
+                ${ STYLES.TEXT_COLOR }
+                ${ STYLES.TEXT_COLOR_SELECTED }
+                ${ STYLES.TEXT_COLOR_HOVER }
+                ${ STYLES.SELECTION_BACKGROUND_SELECTION_OPACITY }
+                ${ STYLES.INFO_COLOR }
+                ${ STYLES.INFO_COLOR_SELECTED }
+                ${ STYLES.INFO_COLOR_HOVER }
+                ${ STYLES.NOTIFICATION_COLOR_SELECTED_NOTIFICATION_TEXT_COLOR_SELECTED }
+                ${ STYLES.NOTIFICATION_COLOR_HOVER_NOTIFICATION_TEXT_COLOR_HOVER }
                 ${ this._configWithExceptions.styles || '' }
                 `.trim(),
                 sideBarShadowRoot
