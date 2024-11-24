@@ -236,15 +236,15 @@ test.describe('extending from the base', () => {
 
         });
 
-        test('should override the selection_color option from the base', async ({ page }) => {
+        test('should override the selection_background option from the base', async ({ page }) => {
 
             await addJsonExtendedRoute(page, {
-                selection_color: 'blue',
+                selection_background: 'blue',
                 exceptions: [
                     {
                         user: 'Test',
                         order: json.order,
-                        selection_color: 'red',
+                        selection_background: 'red',
                         extend_from_base: true
                     }
                 ]
@@ -252,7 +252,7 @@ test.describe('extending from the base', () => {
 
             await pageVisit(page);
 
-            await expect(page).toHaveScreenshot('09-sidebar-exceptions-sidebar-selection-color-override.png', {
+            await expect(page).toHaveScreenshot('09-sidebar-exceptions-sidebar-selection-background-override.png', {
                 clip: SIDEBAR_CLIP
             });
 
@@ -534,10 +534,10 @@ test.describe('extending from the base', () => {
 
         });
 
-        test('should take the selection_color option from the base', async ({ page }) => {
+        test('should take the selection_background option from the base', async ({ page }) => {
 
             await addJsonExtendedRoute(page, {
-                selection_color: 'red',
+                selection_background: 'red',
                 exceptions: [
                     {
                         user: 'Test',
@@ -549,7 +549,7 @@ test.describe('extending from the base', () => {
 
             await pageVisit(page);
 
-            await expect(page).toHaveScreenshot('20-sidebar-exceptions-extend-selection-color-from-base.png', {
+            await expect(page).toHaveScreenshot('20-sidebar-exceptions-extend-selection-background-from-base.png', {
                 clip: SIDEBAR_CLIP
             });
 

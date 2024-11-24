@@ -53,16 +53,23 @@ export enum Match {
 }
 
 export interface ItemColorConfig {
+    item_background?: string;
+    item_background_hover?: string;
     icon_color?: string;
     icon_color_selected?: string;
+    icon_color_hover?: string;
     text_color?: string;
     text_color_selected?: string;
-    selection_color?: string;
+    text_color_hover?: string;
+    selection_background?: string;
     selection_opacity?: number | string;
     info_color?: string;
     info_color_selected?: string;
+    info_color_hover?: string;
     notification_color?: string;
+    notification_color_hover?: string;
     notification_text_color?: string;
+    notification_text_color_hover?: string;
 }
 
 export interface SidebarColorConfig extends ItemColorConfig {
@@ -149,6 +156,9 @@ export interface Config extends BaseConfig {
     partials?: Record<string, string>;
     exceptions?: ConfigException[];
 }
+
+export type ItemColorConfigKeys = keyof ItemColorConfig;
+export type SidebarColorConfigKeys = keyof SidebarColorConfig;
 
 export interface SubscriberTemplate {
     result: string;
