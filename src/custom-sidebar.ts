@@ -647,32 +647,32 @@ class CustomSidebar {
             );
 
             this._styleManager.addStyle(
-                `
-                ${ STYLES.FUNCTIONALITY }
-                ${ STYLES.TITLE_COLOR }
-                ${ STYLES.SUBTITLE_COLOR }
-                ${ STYLES.SIDEBAR_BUTTON_COLOR }
-                ${ STYLES.SIDEBAR_BACKGROUND }
-                ${ STYLES.MENU_BACKGROUND_DIVIDER_TOP_COLOR }
-                ${ STYLES.DIVIDER_BOTTOM_COLOR_DIVIDER_COLOR }
-                ${ STYLES.SCROLL_THUMB_COLOR }
-                ${ STYLES.SIDEBAR_EDITABLE }
-                ${ STYLES.ITEM_BACKGROUND }
-                ${ STYLES.ITEM_BACKGROUND_HOVER }
-                ${ STYLES.ICON_COLOR }
-                ${ STYLES.ICON_COLOR_SELECTED }
-                ${ STYLES.ICON_COLOR_HOVER }
-                ${ STYLES.TEXT_COLOR }
-                ${ STYLES.TEXT_COLOR_SELECTED }
-                ${ STYLES.TEXT_COLOR_HOVER }
-                ${ STYLES.SELECTION_BACKGROUND_SELECTION_OPACITY }
-                ${ STYLES.INFO_COLOR }
-                ${ STYLES.INFO_COLOR_SELECTED }
-                ${ STYLES.INFO_COLOR_HOVER }
-                ${ STYLES.NOTIFICATION_COLOR_SELECTED_NOTIFICATION_TEXT_COLOR_SELECTED }
-                ${ STYLES.NOTIFICATION_COLOR_HOVER_NOTIFICATION_TEXT_COLOR_HOVER }
-                ${ this._configWithExceptions.styles || '' }
-                `.trim(),
+                [
+                    STYLES.FUNCTIONALITY,
+                    STYLES.TITLE_COLOR,
+                    STYLES.SUBTITLE_COLOR,
+                    STYLES.SIDEBAR_BUTTON_COLOR,
+                    STYLES.SIDEBAR_BACKGROUND,
+                    STYLES.MENU_BACKGROUND_DIVIDER_TOP_COLOR,
+                    STYLES.DIVIDER_BOTTOM_COLOR_DIVIDER_COLOR,
+                    STYLES.SCROLL_THUMB_COLOR,
+                    STYLES.SIDEBAR_EDITABLE,
+                    STYLES.ITEM_BACKGROUND,
+                    STYLES.ITEM_BACKGROUND_HOVER,
+                    STYLES.ICON_COLOR,
+                    STYLES.ICON_COLOR_SELECTED,
+                    STYLES.ICON_COLOR_HOVER,
+                    STYLES.TEXT_COLOR,
+                    STYLES.TEXT_COLOR_SELECTED,
+                    STYLES.TEXT_COLOR_HOVER,
+                    STYLES.SELECTION_BACKGROUND_SELECTION_OPACITY,
+                    STYLES.INFO_COLOR,
+                    STYLES.INFO_COLOR_SELECTED,
+                    STYLES.INFO_COLOR_HOVER,
+                    STYLES.NOTIFICATION_COLOR_SELECTED_NOTIFICATION_TEXT_COLOR_SELECTED,
+                    STYLES.NOTIFICATION_COLOR_HOVER_NOTIFICATION_TEXT_COLOR_HOVER,
+                    this._configWithExceptions.styles || ''
+                ],
                 sideBarShadowRoot
             );
 
