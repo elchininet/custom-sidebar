@@ -36,6 +36,7 @@ jobs:
         with:
           name: pr-bundle
           run-id: ${{ github.event.workflow_run.id }}
+          path: ${{ github.workspace }}/.hass/config/www/custom-sidebar.js
           github-token: ${{ github.token }}
       - name: E2E tests
         run: |
