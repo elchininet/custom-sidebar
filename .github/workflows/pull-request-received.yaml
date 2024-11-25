@@ -24,4 +24,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: pr-bundle
-          path: .hass/config/www/custom-sidebar.js
+          path: .hass
+          retention-days: 15
