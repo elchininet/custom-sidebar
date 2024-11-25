@@ -5,7 +5,7 @@ on:
     branches:
       - master
   workflow_run:
-    workflows: ["PR Created"]
+    workflows: [PR Created]
     types:
       - completed
 
