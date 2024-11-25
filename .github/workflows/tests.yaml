@@ -4,16 +4,10 @@ on:
   push:
     branches:
       - master
-  workflow_run:
-    workflows:
-      - PR Created
-    types:
-      - completed
 
 jobs:      
   test:
     runs-on: ubuntu-22.04
-    if: (github.event_name == 'push') || (github.event.workflow_run.conclusion == 'success')
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,14 +23,6 @@ jobs:
           cache: 'pnpm'
       - name: Install
         run: pnpm install
-      - name: Download bundle from artifact
-        if: github.event.workflow_run.conclusion == 'success'
-        uses: actions/download-artifact@v4
-        with:
-          name: pr-bundle
-          run-id: ${{ github.event.workflow_run.id }}
-          path: ${{ github.workspace }}/.hass/config/www/
-          github-token: ${{ github.token }}
       - name: E2E tests
         run: |
           touch .env

@@ -1,0 +1,74 @@
+name: Test PR
+
+  workflow_run:
+    workflows:
+      - PR Created
+    types:
+      - completed
+
+jobs:      
+  test:
+    runs-on: ubuntu-22.04
+    if: github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Set initial status for tests
+        uses: LouisBrunner/checks-action@v2.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: test
+          check_id: test
+          sha: ${{ github.event.workflow_run.head_sha }}
+          status: in_progress
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install
+        run: pnpm install
+      - name: Download bundle from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pr-bundle
+          run-id: ${{ github.event.workflow_run.id }}
+          path: ${{ github.workspace }}/.hass/config/www/
+          github-token: ${{ github.token }}
+      - name: E2E tests
+        id: tests
+        run: |
+          touch .env
+          echo HA_TOKEN=${{ secrets.HA_TOKEN }} >> .env
+          pnpm test:all
+      - name: Create coverage
+        run: pnpm coverage:report
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          git-branch: ${{ github.event.workflow_run.head_branch }}
+          git-commit: ${{ github.event.workflow_run.head_sha }}
+          debug: true
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-report
+          path: |
+            playwright-report/
+            coverage/
+          retention-days: 30
+      - name: Set final status for tests
+        uses: LouisBrunner/checks-action@v2.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: test
+          check_id: test
+          sha: ${{ github.event.workflow_run.head_sha }}
+          status: completed
+          conclusion: ${{ job.status }}
