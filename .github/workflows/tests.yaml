@@ -11,7 +11,7 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     steps:
-      - name: Check access
+      - name: Stop the workflow if no access
         if: ${{ github.event_name != 'push' && github.event.pull_request.author_association != 'COLLABORATOR' && github.event.pull_request.author_association != 'OWNER' }}
         run: |
           echo "No authorized to run this workflow!"
