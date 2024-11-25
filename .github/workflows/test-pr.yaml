@@ -1,10 +1,11 @@
 name: Test PR
 
-workflow_run:
-  workflows:
-    - PR Created
-  types:
-    - completed
+on:
+  workflow_run:
+    workflows:
+      - PR Created
+    types:
+      - completed
 
 jobs:      
   test-pr:
