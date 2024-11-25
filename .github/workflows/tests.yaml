@@ -4,12 +4,17 @@ on:
   push:
     branches:
       - master
-  pull_request:
+  pull_request_target:
 
 jobs:      
   test:
     runs-on: ubuntu-22.04
     steps:
+      - name: Stop the workflow if no access
+        if: ${{ github.event_name != 'push' && github.event.pull_request.author_association != 'COLLABORATOR' && github.event.pull_request.author_association != 'OWNER' }}
+        run: |
+          echo "No authorized to run this workflow!"
+          exit 1
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install pnpm

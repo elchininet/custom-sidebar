@@ -2,6 +2,8 @@ name: HACS Action
 
 on:
   push:
+    branches:
+      - master
   pull_request:
   schedule:
     - cron: "0 0 * * *"
@@ -12,7 +14,8 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
-      - name: HACS Action
+      - if: github.repository == 'elchininet/custom-sidebar'
+        name: HACS Action
         uses: "hacs/action@main"
         with:
           category: "plugin"
