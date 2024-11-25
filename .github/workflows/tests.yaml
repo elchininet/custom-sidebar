@@ -28,7 +28,6 @@ jobs:
           node-version: 20
           cache: 'pnpm'
       - name: Install
-        if: github.event_name == 'push'
         run: pnpm install
       - name: Download bundle from artifact
         if: github.event.workflow_run.conclusion == 'success'
