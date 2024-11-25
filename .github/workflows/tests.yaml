@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Check access
-        if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request_target' && github.event.pull_request.author_association != 'COLLABORATOR' && github.event.pull_request.author_association != 'OWNER') }}
+        if: ${{ github.event_name != 'push' && github.event.pull_request.author_association != 'COLLABORATOR' && github.event.pull_request.author_association != 'OWNER' }}
         run: |
           echo "No authorized to run this workflow!"
           exit 1
