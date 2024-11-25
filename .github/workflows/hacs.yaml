@@ -10,6 +10,7 @@ jobs:
   hacs:
     name: HACS Action
     runs-on: "ubuntu-latest"
+    if: github.repository == 'elchininet/custom-sidebar'
     steps:
       - uses: "actions/checkout@v3"
       - name: HACS Action
