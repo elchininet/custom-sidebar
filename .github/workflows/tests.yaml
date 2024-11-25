@@ -4,17 +4,16 @@ on:
   push:
     branches:
       - master
-  pull_request_target:
+  workflow_run:
+    workflows: ["PR Created"]
+    types:
+      - completed
 
 jobs:      
   test:
     runs-on: ubuntu-22.04
+    if: ${{ github.event_name == 'push' || (github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success') }}
     steps:
-      - name: Stop the workflow if no access
-        if: ${{ github.event_name != 'push' && github.event.pull_request.author_association != 'COLLABORATOR' && github.event.pull_request.author_association != 'OWNER' }}
-        run: |
-          echo "No authorized to run this workflow!"
-          exit 1
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install pnpm
@@ -25,10 +24,18 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 20
           cache: 'pnpm'
       - name: Install
+        if: ${{ github.event_name == 'push' }}
         run: pnpm install
+      - name: Download bundle from artifact
+        if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: "pr-bundle"
+          path: ${{ github.workspace }}/.hass/config/www/custom-sidebar.js
+          run-id: ${{ github.event.workflow_run.id }}
       - name: E2E tests
         run: |
           touch .env
