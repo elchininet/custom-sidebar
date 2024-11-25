@@ -12,14 +12,6 @@ jobs:
     runs-on: ubuntu-22.04
     if: github.event.workflow_run.conclusion == 'success'
     steps:
-      - name: Set initial status for tests
-        uses: LouisBrunner/checks-action@v2.0.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: test
-          check_id: test
-          sha: ${{ github.event.workflow_run.head_sha }}
-          status: in_progress
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install pnpm
@@ -69,7 +61,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: test
-          check_id: test
           sha: ${{ github.event.workflow_run.head_sha }}
           status: completed
           conclusion: ${{ job.status }}
