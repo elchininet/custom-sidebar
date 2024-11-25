@@ -19,7 +19,7 @@ jobs:
           name: test
           sha: ${{ github.event.workflow_run.head_sha }}
           status: in_progress
-      - name: Set initial status for tests
+      - name: Set initial status for coverage
         uses: LouisBrunner/checks-action@v2.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -59,8 +59,8 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          #git-branch: ${{ github.event.workflow_run.head_branch }}
-          #git-commit: ${{ github.event.workflow_run.head_sha }}
+          git-branch: ${{ github.event.workflow_run.head_branch }}
+          git-commit: ${{ github.event.workflow_run.head_sha }}
           #debug: true
       - uses: actions/upload-artifact@v3
         if: always()
@@ -76,7 +76,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: test
-          check_id: test
           sha: ${{ github.event.workflow_run.head_sha }}
           status: completed
           conclusion: ${{ job.status }}
