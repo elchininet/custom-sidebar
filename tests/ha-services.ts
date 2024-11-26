@@ -32,9 +32,6 @@ export const haConfigRequest = async (browser: Browser, file: string) => {
 };
 
 export const haSwitchStateRequest = async (page: Page, state: boolean) => {
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
     await page.evaluate(async (state: boolean) => {
         const homeAssistant = document.querySelector('home-assistant') as HomeAssistant;
         await homeAssistant.hass.callService(
@@ -48,9 +45,6 @@ export const haSwitchStateRequest = async (page: Page, state: boolean) => {
 };
 
 export const haSelectStateRequest = async (page: Page, state: 1 | 2 | 3) => {
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
     await page.evaluate(async (state: number) => {
         const homeAssistant = document.querySelector('home-assistant') as HomeAssistant;
         await homeAssistant.hass.callService(
