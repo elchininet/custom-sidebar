@@ -13,6 +13,7 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Set initial status for tests
+        id: test_check
         uses: LouisBrunner/checks-action@v2.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -60,7 +61,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-branch: ${{ github.event.workflow_run.head_branch }}
-          git-commit: ${{ github.event.workflow_run.head_sha }}
+          git-commit: ${{ github.event.workflow_run.head_commit.id }}
           #debug: true
       - uses: actions/upload-artifact@v3
         if: always()
@@ -75,7 +76,7 @@ jobs:
         if: always()
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: test
+          check_id: ${{ steps.test_check.outputs.check_id }}
           sha: ${{ github.event.workflow_run.head_sha }}
           status: completed
           conclusion: ${{ job.status }}
