@@ -1,7 +1,8 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import { CONFIG_FILES, SIDEBAR_CLIP } from './constants';
-import { haConfigRequest, fulfillJson } from './utilities';
+import { haConfigRequest } from './ha-services';
+import { fulfillJson } from './utilities';
 import { SELECTORS } from './selectors';
 
 const getOrderItemWithColorOption = (option: string, extraOptions: Record<string, string> = {}) => ({
@@ -30,8 +31,8 @@ const getSelectedOrderItemWithColorOption = (option: string, extraOptions: Recor
     ]
 });
 
-test.beforeAll(async () => {
-    await haConfigRequest(CONFIG_FILES.BASIC);
+test.beforeAll(async ({ browser }) => {
+    await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
 
 const pageVisit = async (page: Page): Promise<void> => {

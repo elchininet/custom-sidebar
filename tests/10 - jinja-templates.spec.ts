@@ -4,10 +4,9 @@ import { CONFIG_FILES, SIDEBAR_CLIP } from './constants';
 import {
     haConfigRequest,
     haSwitchStateRequest,
-    haSelectStateRequest,
-    getSidebarItemSelector,
-    fulfillJson
-} from './utilities';
+    haSelectStateRequest
+} from './ha-services';
+import { getSidebarItemSelector, fulfillJson } from './utilities';
 import { SELECTORS } from './selectors';
 
 const ENERGY_ITEM = getSidebarItemSelector('energy');
@@ -18,8 +17,8 @@ const FAN_ITEM = getSidebarItemSelector('fan');
 const FAN_ITEM_NOTIFICATION_COLLAPSED = `${FAN_ITEM} ${SELECTORS.ITEM_NOTIFICATION_COLLAPSED}`;
 const FAN_ITEM_NOTIFICATION = `${FAN_ITEM} ${SELECTORS.ITEM_NOTIFICATION}`;
 
-test.beforeAll(async () => {
-    await haConfigRequest(CONFIG_FILES.JINJA_TEMPLATES);
+test.beforeAll(async ({ browser }) => {
+    await haConfigRequest(browser, CONFIG_FILES.JINJA_TEMPLATES);
 });
 
 const pageVisit = async (page: Page): Promise<void> => {
@@ -51,7 +50,7 @@ test('name and title using templates should update if one of their entities chan
     await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
     await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
 
-    await haSwitchStateRequest(true);
+    await haSwitchStateRequest(page, true);
 
     await expect(page).toHaveScreenshot('02-sidebar-templates-name-title.png', {
         clip: SIDEBAR_CLIP
@@ -67,7 +66,7 @@ test('name and title using templates should update if one of their entities chan
     await expect(page.locator(FAN_ITEM_NOTIFICATION_COLLAPSED)).toContainText('1');
     await expect(page.locator(FAN_ITEM_NOTIFICATION)).toContainText('1');
 
-    await haSwitchStateRequest(false);
+    await haSwitchStateRequest(page, false);
 
     await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
     await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
@@ -85,7 +84,7 @@ test('notifications using a template should update if one of its entities change
 
     await pageVisit(page);
 
-    await haSelectStateRequest(2);
+    await haSelectStateRequest(page, 2);
 
     await expect(page.locator(ENERGY_ITEM_TEXT)).toContainText('Energy (off)');
     await expect(page.locator(ENERGY_ITEM_NOTIFICATION_COLLAPSED)).toContainText('4');
@@ -94,7 +93,7 @@ test('notifications using a template should update if one of its entities change
     await expect(page.locator(FAN_ITEM_NOTIFICATION_COLLAPSED)).toContainText('2');
     await expect(page.locator(FAN_ITEM_NOTIFICATION)).toContainText('2');
 
-    await haSelectStateRequest(3);
+    await haSelectStateRequest(page, 3);
 
     await expect(page.locator(ENERGY_ITEM_TEXT)).toContainText('Energy (off)');
     await expect(page.locator(ENERGY_ITEM_NOTIFICATION_COLLAPSED)).toContainText('6');
@@ -103,7 +102,7 @@ test('notifications using a template should update if one of its entities change
     await expect(page.locator(FAN_ITEM_NOTIFICATION_COLLAPSED)).toContainText('3');
     await expect(page.locator(FAN_ITEM_NOTIFICATION)).toContainText('3');
 
-    await haSelectStateRequest(1);
+    await haSelectStateRequest(page, 1);
 
     await expect(page.locator(ENERGY_ITEM_TEXT)).toContainText('Energy (off)');
     await expect(page.locator(ENERGY_ITEM_NOTIFICATION_COLLAPSED)).toContainText('2');
@@ -217,11 +216,11 @@ test('notifications using a template should update if one of its entities change
 
         await expect(page.locator(SELECTORS.TITLE)).toContainText('False 123');
 
-        await haSwitchStateRequest(true);
+        await haSwitchStateRequest(page, true);
 
         await expect(page.locator(SELECTORS.TITLE)).toContainText('True 123');
 
-        await haSwitchStateRequest(false);
+        await haSwitchStateRequest(page, false);
 
     });
 

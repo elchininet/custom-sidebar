@@ -1,10 +1,7 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import {
-    fulfillJson,
-    haSwitchStateRequest,
-    haSelectStateRequest
-} from './utilities';
+import { haSwitchStateRequest, haSelectStateRequest } from './ha-services';
+import { fulfillJson } from './utilities';
 import { SELECTORS } from './selectors';
 
 const pageVisit = async (page: Page): Promise<void> => {
@@ -95,11 +92,11 @@ test.describe('title template returns', () => {
 
         await expect(page.locator(SELECTORS.TITLE)).toHaveText('My Home', { useInnerText: true });
 
-        await haSwitchStateRequest(true);
+        await haSwitchStateRequest(page, true);
 
         await expect(page.locator(SELECTORS.TITLE)).toBeEmpty();
 
-        await haSwitchStateRequest(false);
+        await haSwitchStateRequest(page, false);
 
         await expect(page.locator(SELECTORS.TITLE)).toHaveText('My Home', { useInnerText: true });
 
@@ -261,11 +258,11 @@ test.describe('name template returns', () => {
 
         await expect(page.locator(TEXT_SELECTOR)).toHaveText('Check', { useInnerText: true });
 
-        await haSwitchStateRequest(true);
+        await haSwitchStateRequest(page, true);
 
         await expect(page.locator(TEXT_SELECTOR)).toBeEmpty();
 
-        await haSwitchStateRequest(false);
+        await haSwitchStateRequest(page, false);
 
         await expect(page.locator(TEXT_SELECTOR)).toHaveText('Check', { useInnerText: true });
 
@@ -392,17 +389,17 @@ test.describe('notification template returns', () => {
         await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('1', { useInnerText: true });
         await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('1', { useInnerText: true });
 
-        await haSelectStateRequest(2);
+        await haSelectStateRequest(page, 2);
 
         await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('2', { useInnerText: true });
         await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('2', { useInnerText: true });
 
-        await haSelectStateRequest(3);
+        await haSelectStateRequest(page, 3);
 
         await expect(page.locator(NOTIFICATION_SELECTOR_1)).toBeEmpty();
         await expect(page.locator(NOTIFICATION_SELECTOR_2)).toBeEmpty();
 
-        await haSelectStateRequest(1);
+        await haSelectStateRequest(page, 1);
 
         await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('1', { useInnerText: true });
         await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('1', { useInnerText: true });

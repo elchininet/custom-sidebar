@@ -4,15 +4,12 @@ import {
     SIDEBAR_CLIP,
     SIDEBAR_NARROW_CLIP
 } from './constants';
-import {
-    haConfigRequest,
-    fulfillJson,
-    changeToMobileViewport
-} from './utilities';
+import { haConfigRequest } from './ha-services';
+import { fulfillJson, changeToMobileViewport } from './utilities';
 import { SELECTORS } from './selectors';
 
-test.beforeAll(async () => {
-    await haConfigRequest(CONFIG_FILES.BASIC);
+test.beforeAll(async ({ browser }) => {
+    await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
 
 test('a new item with notification should behave propely when the sidebar is collapsed', async ({ page }) => {
