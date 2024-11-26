@@ -6,15 +6,12 @@ import {
     SIDEBAR_NARROW_CLIP,
     ATTRIBUTES
 } from './constants';
-import {
-    haConfigRequest,
-    addJsonExtendedRoute,
-    changeToMobileViewport
-} from './utilities';
+import { haConfigRequest } from './ha-services';
+import { addJsonExtendedRoute, changeToMobileViewport } from './utilities';
 import { SELECTORS } from './selectors';
 
-test.beforeAll(async () => {
-    await haConfigRequest(CONFIG_FILES.BASIC);
+test.beforeAll(async ({ browser }) => {
+    await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
 
 const pageVisit = async (page: Page): Promise<void> => {

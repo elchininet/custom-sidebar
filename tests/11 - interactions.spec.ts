@@ -5,17 +5,14 @@ import {
     SIDEBAR_CLIP,
     ATTRIBUTES
 } from './constants';
-import {
-    haConfigRequest,
-    addJsonExtendedRoute,
-    changeToMobileViewport
-} from './utilities';
+import { haConfigRequest } from './ha-services';
+import { addJsonExtendedRoute, changeToMobileViewport } from './utilities';
 import { SELECTORS } from './selectors';
 
 const SELECTED_CLASSNAME = /(^|\s)iron-selected(\s|$)/;
 
-test.beforeAll(async () => {
-    await haConfigRequest(CONFIG_FILES.BASIC);
+test.beforeAll(async ({ browser }) => {
+    await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
 
 const visitHome = async (page: Page): Promise<void> => {

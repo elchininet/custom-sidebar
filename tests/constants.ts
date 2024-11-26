@@ -1,6 +1,4 @@
 export const BASE_URL = 'http://host.docker.internal:8123';
-export const MAXIMUM_RETRIES = 10;
-export const RETRY_DELAY = 200;
 export const JSON_PATH = 'local/sidebar-config.json*';
 
 export const PANELS = {
