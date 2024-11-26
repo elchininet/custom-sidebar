@@ -2,6 +2,8 @@ name: HACS Action
 
 on:
   push:
+    branches:
+      - master
   pull_request:
   schedule:
     - cron: "0 0 * * *"
@@ -13,6 +15,7 @@ jobs:
     steps:
       - uses: "actions/checkout@v3"
       - name: HACS Action
+        if: github.event_name != 'pull_request'
         uses: "hacs/action@main"
         with:
           category: "plugin"
