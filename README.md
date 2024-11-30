@@ -77,7 +77,7 @@ frontend:
 6. Restart Home Assistant
 
 >[!TIP]
->It is recomendable that you add the plugin's version at the end of the URL as a parameter (e.g. `?v=1.0.0`) to force Home Assistant to load the new version instead of a version stored in cache. This step is not mandatory, but if you start suffering from caching issues, this would be one of the first steps to perform.
+>It is recommended that you add the plugin's version at the end of the URL as a parameter (e.g. `?v=1.0.0`) to force Home Assistant to load the new version instead of a version stored in cache. This step is not mandatory, but if you start suffering from caching issues, this would be one of the first steps to perform.
 
 ### Through old HACS versions (< v2)
 
@@ -106,7 +106,7 @@ frontend:
 6. Restart Home Assistant
 
 >[!TIP]
->It is recomendable that you add the plugin's version at the end of the URL as a parameter (e.g. `?v=1.0.0`) to force Home Assistant to load the new version instead of a version stored in cache. This step is not mandatory, but if you start suffering from caching issues, this would be one of the first steps to perform.
+>It is recommended that you add the plugin's version at the end of the URL as a parameter (e.g. `?v=1.0.0`) to force Home Assistant to load the new version instead of a version stored in cache. This step is not mandatory, but if you start suffering from caching issues, this would be one of the first steps to perform.
 
 ### Manual installation
 
