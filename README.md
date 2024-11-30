@@ -63,7 +63,7 @@ You can install the plugin manually or through [HACS], not both. If you install 
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js?v1.0.0
+    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js
 ```
 
 #### If you want to use a `JSON` configuration
@@ -71,13 +71,10 @@ frontend:
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v1.0.0
+    - /hacsfiles/custom-sidebar/custom-sidebar-json.js
 ```
 
 6. Restart Home Assistant
-
->[!TIP]
->It is recommended that you add the plugin's version at the end of the URL as a parameter (e.g. `?v=1.0.0`) to force Home Assistant to load the new version instead of a version stored in cache. This step is not mandatory, but if you start suffering from caching issues, this would be one of the first steps to perform.
 
 ### Through old HACS versions (< v2)
 
@@ -92,7 +89,7 @@ frontend:
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js?v1.0.0
+    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js
 ```
 
 #### If you want to use a `JSON` configuration
@@ -100,13 +97,10 @@ frontend:
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-json.js?v1.0.0
+    - /hacsfiles/custom-sidebar/custom-sidebar-json.js
 ```
 
 6. Restart Home Assistant
-
->[!TIP]
->It is recommended that you add the plugin's version at the end of the URL as a parameter (e.g. `?v=1.0.0`) to force Home Assistant to load the new version instead of a version stored in cache. This step is not mandatory, but if you start suffering from caching issues, this would be one of the first steps to perform.
 
 ### Manual installation
 
@@ -142,8 +136,10 @@ Depending on the file that you have added to [extra_module_url], you will need t
 >[!TIP]
 >In principle, using a `YAML` or a `JSON` configuration  is a matter of taste and preference. If you don't plan to use templates, there is no advantage of one over the other, but if you plan to use templates, specially complex ones, `YAML` is recommended because you can write code blocks in multiple lines. As `JSON` doesn't allow line breaks, you would need to write the complete template in a single line.
 
-Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<config directory>/www/` directory. It is recomendable that you copy the [example sidebar-config.yaml] or the [example sidebar-config.json] file, delete the `id` parameter, and modify it to match your needs. It is recommended to start with the simplest configuration and start to extend it step by step, in that way if you suffer any issue, it is easy to identify with which code block it started. If you want to check an extensive sidebar configuration which uses custom styles, variables and templates, check [@Mariusthvdb](https://gist.github.com/Mariusthvdb)'s [sidebar-config.yaml](https://gist.github.com/Mariusthvdb/e41957dc6f66d9764e0480030c9bd386).
+Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<config directory>/www/` directory. It is recomendable that you copy the [example sidebar-config.yaml] or the [example sidebar-config.json] file, delete the `id` parameter, and modify it to match your needs. It is recommended to start with the simplest configuration and start to extend it step by step, in that way if you suffer any issue, it is easy to identify with which code block it started.
 
+>[!TIP]
+>If you want to check an extensive sidebar configuration which uses custom styles, variables and templates, check [@Mariusthvdb](https://gist.github.com/Mariusthvdb)'s [sidebar-config.yaml](https://gist.github.com/Mariusthvdb/e41957dc6f66d9764e0480030c9bd386).
 
 
 ### Configuration options
@@ -295,6 +291,7 @@ Short example in `JSON` format:
 >* Any items present in the Sidebar, but not in `config.order`, will be shown **on the bottom** of the top part of the list
 >* Notifications and user account are not part of the main sidebar items so they cannot be targeted inside the `order` option to change their properties. On the other hand, global color properties will affect these items though.
 >* The `style` option doesn't allow templates, it should be used only to override or correct some styles of the sidebar.
+>* If you use `custom-sidebar` to set the order or to hide items from the sidebar, it is recommended that you don't use Home Assistant functionality to reorder/hide items, because it will conflict with the functionality of the plugin.
 
 ### Exceptions
 
