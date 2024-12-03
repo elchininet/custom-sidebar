@@ -684,7 +684,7 @@ class CustomSidebar {
         this._getElements()
             .then((elements) => {
 
-                const { order } = this._configWithExceptions;
+                const { order, hide_all } = this._configWithExceptions;
                 const [paperListBox, items, spacer] = elements;
 
                 let orderIndex = 0;
@@ -692,6 +692,12 @@ class CustomSidebar {
 
                 const itemsArray = Array.from(items) as HTMLAnchorElement[];
                 const matched: Set<Element> = new Set();
+
+                if (hide_all) {
+                    itemsArray.forEach((element: HTMLAnchorElement): void => {
+                        element.style.display = 'none';
+                    });
+                }
 
                 const configItems: ConfigOrderWithItem[] = order.reduce(
                     (acc: ConfigOrderWithItem[], orderItem: ConfigOrder): ConfigOrderWithItem[] => {
@@ -780,6 +786,8 @@ class CustomSidebar {
 
                         if (orderItem.hide) {
                             element.style.display = 'none';
+                        } else {
+                            element.style.removeProperty('display');
                         }
 
                         if (orderItem.href) {

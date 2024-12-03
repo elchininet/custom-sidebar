@@ -223,11 +223,26 @@ test.beforeAll(async ({ browser }) => {
         screenshot: '24-sidebar-info-color-selected.png'
     },
     {
+        title: 'if hide_all is set it should hide all the sidebar items',
+        json: {
+            hide_all: true,
+            order: [
+                {
+                    new_item: true,
+                    item: 'Integrations',
+                    href: '/config/integrations',
+                    icon: 'mdi:puzzle'
+                }
+            ]
+        },
+        screenshot: '25-sidebar-hide-all.png'
+    },
+    {
         title: 'If divider_color is set it should set all the dividers in that color',
         json: {
             divider_color: 'red'
         },
-        screenshot: '25-sidebar-divider-color.png'
+        screenshot: '26-sidebar-divider-color.png'
     },
     {
         title: 'If divider_top_color is set it should override divider_color',
@@ -235,7 +250,7 @@ test.beforeAll(async ({ browser }) => {
             divider_color: 'red',
             divider_top_color: 'green'
         },
-        screenshot: '26-sidebar-divider-top-color.png'
+        screenshot: '27-sidebar-divider-top-color.png'
     },
     {
         title: 'If divider_bottom_color is set it should override divider_color',
@@ -243,7 +258,7 @@ test.beforeAll(async ({ browser }) => {
             divider_color: 'red',
             divider_bottom_color: 'green'
         },
-        screenshot: '27-sidebar-divider-bottom-color.png'
+        screenshot: '28-sidebar-divider-bottom-color.png'
     },
     {
         title: 'should apply custom styles',
@@ -257,7 +272,7 @@ test.beforeAll(async ({ browser }) => {
                 }
             `
         },
-        screenshot: '28-sidebar-custom-styles.png'
+        screenshot: '29-sidebar-custom-styles.png'
     }
 ].forEach(({ title, json, screenshot }): void => {
 
