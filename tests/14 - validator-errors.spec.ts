@@ -99,7 +99,7 @@ test.describe('main options', () => {
             json: {
                 sidebar_editable: { editable: true }
             },
-            error: `${ERROR_PREFIX}, "sidebar_editable" property should be a boolean or a template string`
+            error: `${ERROR_PREFIX}, "sidebar_editable" property should be a boolean or a string`
         },
         {
             title: 'should throw an error if it has wrong sidebar_mode option',
@@ -114,6 +114,13 @@ test.describe('main options', () => {
                 selection_opacity: [100]
             },
             error: `${ERROR_PREFIX}, "selection_opacity" property should be a number or a string`
+        },
+        {
+            title: 'should throw an error if the "hide_all" property is not a boolean',
+            json: {
+                hide_all: 'true'
+            },
+            error: `${ERROR_PREFIX}, "hide_all" property should be a boolean`
         },
         {
             title: 'should throw an error if it has a malformed styles option',
@@ -438,7 +445,7 @@ test.describe('exceptions', () => {
                     }
                 ]
             },
-            error: `${ERROR_PREFIX}, exceptions "sidebar_editable" property should be a boolean or a template string`
+            error: `${ERROR_PREFIX}, exceptions "sidebar_editable" property should be a boolean or a string`
         },
         {
             title: 'should throw an error if it has an invalid "selection_opacity" option',
@@ -529,6 +536,18 @@ test.describe('exceptions', () => {
                 ]
             },
             error: `${ERROR_PREFIX}, exceptions "device" and "not_device" properties cannot be used together`
+        },
+        {
+            title: 'should throw an error if the "hide_all" property is not a boolean',
+            json: {
+                exceptions: [
+                    {
+                        hide_all: 'true',
+                        user: 'ElChiniNet'
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, exceptions "hide_all" property should be a boolean`
         },
         {
             title: 'should throw an error if it not every item in "order" property has an "item" property',

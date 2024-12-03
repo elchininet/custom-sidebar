@@ -56,6 +56,29 @@ const validateStringOrNumberOptions = <T, K extends keyof T>(obj: T, props: K[],
     });
 };
 
+const validateBooleanOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
+    props.forEach((prop: K): void => {
+        if (
+            typeof obj[prop] !== TYPE.UNDEFINED &&
+            typeof obj[prop] !== TYPE.BOOLEAN
+        ) {
+            throw new SyntaxError(`${prefix} "${String(prop)}" property should be a boolean`);
+        }
+    });
+};
+
+const validateBooleanOrStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
+    props.forEach((prop: K): void => {
+        if (
+            typeof obj[prop] !== TYPE.UNDEFINED &&
+            typeof obj[prop] !== TYPE.BOOLEAN &&
+            typeof obj[prop] !== TYPE.STRING
+        ) {
+            throw new SyntaxError(`${prefix} "${String(prop)}" property should be a boolean or a string`);
+        }
+    });
+};
+
 const validateStringOrArrayOfStringsOptions = <T extends [string, undefined | string | string[]]>(dictionary: T[], prefix: string): void => {
     dictionary.forEach((entry): void => {
         const [prop, value] = entry;
@@ -138,13 +161,17 @@ const validateExceptionItem = (exception: ConfigException): void => {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "order" property should be an array`);
     }
 
-    if (
-        typeof exception.sidebar_editable !== TYPE.UNDEFINED &&
-        typeof exception.sidebar_editable !== TYPE.BOOLEAN &&
-        typeof exception.sidebar_editable !== TYPE.STRING
-    ) {
-        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "sidebar_editable" property should be a boolean or a template string`);
-    }
+    validateBooleanOrStringOptions(
+        exception,
+        ['sidebar_editable'],
+        `${ERROR_PREFIX}, exceptions`
+    );
+
+    validateBooleanOptions(
+        exception,
+        ['hide_all'],
+        `${ERROR_PREFIX}, exceptions`
+    );
 
     if (
         typeof exception.sidebar_mode !== TYPE.UNDEFINED &&
@@ -220,6 +247,7 @@ const validateConfigItem = (configItem: ConfigItem): void => {
 };
 
 export const validateConfig = (config: Config): void => {
+
     validateStringOptions(
         config,
         [
@@ -227,6 +255,7 @@ export const validateConfig = (config: Config): void => {
         ],
         `${ERROR_PREFIX},`
     );
+
     validateStringOrNumberOptions(
         config,
         [
@@ -234,25 +263,33 @@ export const validateConfig = (config: Config): void => {
         ],
         `${ERROR_PREFIX},`
     );
-    if (
-        typeof config.sidebar_editable !== TYPE.UNDEFINED &&
-        typeof config.sidebar_editable !== TYPE.BOOLEAN &&
-        typeof config.sidebar_editable !== TYPE.STRING
-    ) {
-        throw new SyntaxError(`${ERROR_PREFIX}, "sidebar_editable" property should be a boolean or a template string`);
-    }
+
+    validateBooleanOrStringOptions(
+        config,
+        ['sidebar_editable'],
+        `${ERROR_PREFIX},`
+    );
+
+    validateBooleanOptions(
+        config,
+        ['hide_all'],
+        `${ERROR_PREFIX},`
+    );
+
     if (
         typeof config.sidebar_mode !== TYPE.UNDEFINED &&
         !(config.sidebar_mode in SIDEBAR_MODE_TO_DOCKED_SIDEBAR)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`);
     }
+
     if (
         typeof config.order !== TYPE.UNDEFINED &&
         !Array.isArray(config.order)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, "order" property should be an array`);
     }
+
     if (typeof config.partials !== TYPE.UNDEFINED) {
         if (Object.prototype.toString.call(config.partials) !== OBJECT_TO_STRING) {
             throw new SyntaxError(`${ERROR_PREFIX}, "partials" property should be an object`);
@@ -264,6 +301,7 @@ export const validateConfig = (config: Config): void => {
             }
         });
     }
+
     validateVariables('js_variables', config.js_variables);
     validateVariables('jinja_variables', config.jinja_variables);
     config.order?.forEach(validateConfigItem);

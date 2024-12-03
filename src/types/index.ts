@@ -116,6 +116,7 @@ export type ConfigOrderWithItem = ConfigOrder & { element?: HTMLAnchorElement };
 interface BaseConfig extends SidebarColorConfig {
     title?: string;
     subtitle?: string;
+    hide_all?: boolean;
     order?: ConfigOrder[];
     sidebar_editable?: boolean | string;
     sidebar_mode?: `${SidebarMode}`;

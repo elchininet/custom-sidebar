@@ -21,6 +21,7 @@ const ITEM_TEMPLATE_OPTIONS = [
 const EXTENDABLE_OPTIONS = [
     'title',
     'subtitle',
+    'hide_all',
     'sidebar_editable',
     'sidebar_mode',
     'sidebar_background',
@@ -104,6 +105,13 @@ const flatConfigOrder = (order: ConfigOrder[], config: Config): ConfigOrder[] =>
                 }
             }
         });
+        if (
+            !orderItem.new_item &&
+            orderItem.hide === undefined &&
+            config.hide_all !== undefined
+        ) {
+            orderItem.hide = config.hide_all;
+        }
     });
 
     const flatOrder = Array.from(orderMap.values());
