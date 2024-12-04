@@ -147,7 +147,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | Property           | Type                               | Required | Description |
 | ------------------ | ---------------------------------- | -------- | ----------- |
 | order              | Array of [items](#order-items-properties) | no| List of items to process |
-| hide_all           | Boolean                            | no       | Hides all items of the sidebar by default, useful if one wants to hide everything and just show a few items. (This options doesn't make any effect in item with the property `new_item` in `true`) |
+| hide_all           | Boolean                            | no       | Hides all items of the sidebar by default, useful if one wants to hide everything and just show a few items. (This options doesn't make any effect in an item with the property `new_item` in `true`) |
 | title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
 | title_color<sup>\*</sup> | String                       | no       | Sets the color of the sidebar title |
 | subtitle<sup>\*</sup> | String                          | no       | Sets a custom subtitle below the `Home Assistant` title |
