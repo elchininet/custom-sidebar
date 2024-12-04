@@ -124,6 +124,7 @@ interface BaseConfig extends SidebarColorConfig {
 }
 
 interface ConfigExceptionBase extends BaseConfig {
+    is_admin?: boolean;
     extend_from_base?: boolean;
 }
 

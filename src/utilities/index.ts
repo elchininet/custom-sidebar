@@ -1,3 +1,4 @@
+import { Hass } from 'home-assistant-javascript-templates';
 import {
     Config,
     ConfigOrder,
@@ -146,30 +147,42 @@ export const logVersionToConsole = () => {
 };
 
 export const getConfigWithExceptions = (
-    currentUser: string,
-    currentDevice: string,
+    user: Hass['user'],
+    device: string,
     config: Config
 ): Config => {
     if (config.exceptions) {
 
+        const userName = user.name.toLocaleLowerCase();
+
         const filteredExceptions = config.exceptions.filter((exception: ConfigException): boolean => {
             return (
                 (
-                    exception.user &&
-                    getArray(exception.user).includes(currentUser)
-                ) ||
+                    (
+                        exception.user &&
+                        getArray(exception.user).includes(userName)
+                    ) ||
+                    (
+                        exception.not_user &&
+                        !getArray(exception.not_user).includes(userName)
+                    ) ||
+                    (
+                        exception.device &&
+                        getArray(exception.device).some((device: string) => device.includes(device))
+                    ) ||
+                    (
+                        exception.not_device &&
+                        !getArray(exception.not_device).some((device: string) => device.includes(device))
+                    )
+                ) &&
                 (
-                    exception.not_user &&
-                    !getArray(exception.not_user).includes(currentUser)
-                ) ||
-                (
-                    exception.device &&
-                    getArray(exception.device).some((device: string) => currentDevice.includes(device))
-                ) ||
-                (
-                    exception.not_device &&
-                    !getArray(exception.not_device).some((device: string) => currentDevice.includes(device))
+                    exception.is_admin === undefined ||
+                    exception.is_admin === user.is_admin
                 )
+            ) ||
+            (
+                exception.is_admin !== undefined &&
+                exception.is_admin === user.is_admin
             );
         });
         const lastException = filteredExceptions.length

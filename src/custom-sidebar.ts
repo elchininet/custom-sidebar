@@ -116,12 +116,11 @@ class CustomSidebar {
     private _mouseLeaveBinded: () => void;
 
     private async _getConfigWithExceptions(): Promise<void> {
-        const device = this._getCurrentDevice();
         this._configWithExceptions = await this._configPromise
             .then((config: Config) => {
                 return getConfigWithExceptions(
-                    this._ha.hass.user.name.toLocaleLowerCase(),
-                    device,
+                    this._ha.hass.user,
+                    navigator.userAgent.toLowerCase(),
                     config
                 );
             });
@@ -150,10 +149,6 @@ class CustomSidebar {
             promisableResultOptions
         );
         return [paperListBox, items, spacer];
-    }
-
-    private _getCurrentDevice(): string {
-        return navigator.userAgent.toLowerCase();
     }
 
     private _buildNewItem(configItem: ConfigNewItem): HTMLAnchorElement {
