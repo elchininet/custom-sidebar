@@ -9,7 +9,7 @@ const pageVisit = async (page: Page): Promise<void> => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('01-sidebar.png', {
+    await expect(page).toHaveScreenshot('sidebar.png', {
         clip: SIDEBAR_CLIP
     });
 };

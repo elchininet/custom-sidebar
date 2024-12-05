@@ -77,7 +77,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '01-sidebar-exceptions-item-override.png'
+                snapshot: 'sidebar-exceptions-item-override.png'
             },
             {
                 title: 'should override the title option from the base',
@@ -91,7 +91,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '03-sidebar-exceptions-title-override.png'
+                snapshot: 'sidebar-exceptions-title-override.png'
             },
             {
                 title: 'should override the icon_color option from the base',
@@ -106,7 +106,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '05-sidebar-exceptions-sidebar-icon-color-override.png'
+                snapshot: 'sidebar-exceptions-sidebar-icon-color-override.png'
             },
             {
                 title: 'should override the icon_color_selected option from the base',
@@ -121,7 +121,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '06-sidebar-exceptions-sidebar-icon-color-selected-override.png'
+                snapshot: 'sidebar-exceptions-sidebar-icon-color-selected-override.png'
             },
             {
                 title: 'should override the text_color option from the base',
@@ -136,7 +136,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '07-sidebar-exceptions-sidebar-text-color-override.png'
+                snapshot: 'sidebar-exceptions-sidebar-text-color-override.png'
             },
             {
                 title: 'should override the text_color_selected option from the base',
@@ -151,7 +151,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '08-sidebar-exceptions-sidebar-text-color-selected-override.png'
+                snapshot: 'sidebar-exceptions-sidebar-text-color-selected-override.png'
             },
             {
                 title: 'should override the selection_background option from the base',
@@ -166,7 +166,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '09-sidebar-exceptions-sidebar-selection-background-override.png'
+                snapshot: 'sidebar-exceptions-sidebar-selection-background-override.png'
             },
             {
                 title: 'should override the info_color option from the base',
@@ -191,7 +191,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '10-sidebar-exceptions-sidebar-info-color-override.png'
+                snapshot: 'sidebar-exceptions-sidebar-info-color-override.png'
             },
             {
                 title: 'should override the info_color_selected option from the base',
@@ -216,7 +216,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '11-sidebar-exceptions-sidebar-info-color-selected-override.png'
+                snapshot: 'sidebar-exceptions-sidebar-info-color-selected-override.png'
             },
             {
                 title: 'should override the style option from the base',
@@ -239,7 +239,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '12-sidebar-exceptions-style-override.png'
+                snapshot: 'sidebar-exceptions-style-override.png'
             },
             {
                 title: 'should override the hide_all option from the base',
@@ -254,7 +254,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '13-sidebar-exceptions-hide-all-override.png'
+                snapshot: 'sidebar-exceptions-hide-all-override.png'
             }
         ].forEach(runTest);
 
@@ -281,7 +281,7 @@ test.describe('extending from the base', () => {
 
             await pageVisit(page);
 
-            await expect(page).toHaveScreenshot('02-sidebar-exceptions-new-item-override.png', {
+            await expect(page).toHaveScreenshot('sidebar-exceptions-new-item-override.png', {
                 clip: SIDEBAR_CLIP
             });
 
@@ -313,7 +313,7 @@ test.describe('extending from the base', () => {
 
             await pageVisit(page);
 
-            await expect(page).toHaveScreenshot('04-sidebar-exceptions-sidebar-mode-override.png', {
+            await expect(page).toHaveScreenshot('sidebar-exceptions-sidebar-mode-override.png', {
                 clip: SIDEBAR_NARROW_CLIP
             });
 
@@ -361,7 +361,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '14-sidebar-exceptions-no-order-from-base.png'
+                snapshot: 'sidebar-exceptions-no-order-from-base.png'
             },
             {
                 title: 'should take the style option from the base',
@@ -379,7 +379,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '15-sidebar-exceptions-extend-style-from-base.png'
+                snapshot: 'sidebar-exceptions-extend-style-from-base.png'
             },
             {
                 title: 'should take the icon_color option from the base',
@@ -393,7 +393,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '17-sidebar-exceptions-extend-icon-color-from-base.png'
+                snapshot: 'sidebar-exceptions-extend-icon-color-from-base.png'
             },
             {
                 title: 'should take the icon_color_selected option from the base',
@@ -407,7 +407,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '18-sidebar-exceptions-extend-icon-color-selected-from-base.png'
+                snapshot: 'sidebar-exceptions-extend-icon-color-selected-from-base.png'
             },
             {
                 title: 'should take the text_color option from the base',
@@ -421,7 +421,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '19-sidebar-exceptions-extend-text-color-from-base.png'
+                snapshot: 'sidebar-exceptions-extend-text-color-from-base.png'
             },
             {
                 title: 'should take the text_color_selected option from the base',
@@ -435,7 +435,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '20-sidebar-exceptions-extend-text-color-selected-from-base.png'
+                snapshot: 'sidebar-exceptions-extend-text-color-selected-from-base.png'
             },
             {
                 title: 'should take the selection_background option from the base',
@@ -449,7 +449,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '21-sidebar-exceptions-extend-selection-background-from-base.png'
+                snapshot: 'sidebar-exceptions-extend-selection-background-from-base.png'
             },
             {
                 title: 'should take the info_color option from the base',
@@ -473,7 +473,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '22-sidebar-exceptions-extend-info-color-from-base.png'
+                snapshot: 'sidebar-exceptions-extend-info-color-from-base.png'
             },
             {
                 title: 'should take the info_color_selected option from the base',
@@ -497,7 +497,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '23-sidebar-exceptions-extend-info-color-selected-from-base.png'
+                snapshot: 'sidebar-exceptions-extend-info-color-selected-from-base.png'
             },
             {
                 title: 'should take the hide_all option from the base',
@@ -511,7 +511,7 @@ test.describe('extending from the base', () => {
                         }
                     ]
                 },
-                snapshot: '13-sidebar-exceptions-hide-all-override.png'
+                snapshot: 'sidebar-exceptions-hide-all-override.png'
             }
         ].forEach(runTest);
 
@@ -532,7 +532,7 @@ test.describe('extending from the base', () => {
 
             await pageVisit(page);
 
-            await expect(page).toHaveScreenshot('16-sidebar-exceptions-extend-sidebar-mode-from-base.png', {
+            await expect(page).toHaveScreenshot('sidebar-exceptions-extend-sidebar-mode-from-base.png', {
                 clip: SIDEBAR_NARROW_CLIP
             });
 
@@ -591,7 +591,7 @@ test.describe('without extending from the base', () => {
                     }
                 ]
             },
-            snapshot: '24-sidebar-exceptions-few-changes.png'
+            snapshot: 'sidebar-exceptions-few-changes.png'
         },
         {
             title: 'should take the title option from the exception',
@@ -604,7 +604,7 @@ test.describe('without extending from the base', () => {
                     }
                 ]
             },
-            snapshot: '25-sidebar-exceptions-title-from-exception.png'
+            snapshot: 'sidebar-exceptions-title-from-exception.png'
         },
         {
             title: 'should take the hide_all option from the exception',
@@ -617,7 +617,7 @@ test.describe('without extending from the base', () => {
                     }
                 ]
             },
-            snapshot: '26-sidebar-exceptions-hide-all-from-exception.png'
+            snapshot: 'sidebar-exceptions-hide-all-from-exception.png'
         },
         {
             title: 'should take the style from the exception',
@@ -639,7 +639,7 @@ test.describe('without extending from the base', () => {
                     }
                 ]
             },
-            snapshot: '28-sidebar-exceptions-style-from-exception.png'
+            snapshot: 'sidebar-exceptions-style-from-exception.png'
         },
         {
             title: 'if no options there should be no changes',
@@ -650,7 +650,7 @@ test.describe('without extending from the base', () => {
                     }
                 ]
             },
-            snapshot: '30-sidebar-exceptions-no-options-default-sidebar.png'
+            snapshot: 'sidebar-exceptions-no-options-default-sidebar.png'
         }
     ].forEach(runTest);
 
@@ -671,7 +671,7 @@ test.describe('without extending from the base', () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('27-sidebar-exceptions-sidebar-mode-from-exception.png', {
+        await expect(page).toHaveScreenshot('sidebar-exceptions-sidebar-mode-from-exception.png', {
             clip: SIDEBAR_NARROW_CLIP
         });
 
@@ -760,7 +760,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a user using the user option and it is an admin',
@@ -773,7 +773,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'shuld match a user if it is included in the user option as an array',
@@ -785,7 +785,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'shuld match a user if it is included in the user option as an array and it is an admin',
@@ -798,7 +798,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a user if it is not equal to the not_user option',
@@ -810,7 +810,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a user if it is not equal to the not_user option and it is an admin',
@@ -823,7 +823,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match an user if it is not included in the not_user option as an array',
@@ -835,7 +835,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match an user if it is not included in the not_user option as an array and it is an admin',
@@ -848,7 +848,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device using the device option',
@@ -860,7 +860,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device using the device option if it is an admin',
@@ -873,7 +873,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device if it is included in the device option as an array',
@@ -885,7 +885,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device if it is included in the device option as an array and it is an admin',
@@ -898,7 +898,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device if it is not equal to the not_device option',
@@ -910,7 +910,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device if it is not equal to the not_device option and it is an admin',
@@ -923,7 +923,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device if it is not included in the not_device option as an array',
@@ -935,7 +935,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device if it is not included in the not_device option as an array and it is an admin',
@@ -948,7 +948,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: '31-sidebar-exceptions-match-success.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         }
     ].forEach(runTest);
 
@@ -969,7 +969,7 @@ test.describe('exceptions that do not match', async () => {
                     }
                 ]
             },
-            snapshot: '32-sidebar-exceptions-no-match-title-from-base.png'
+            snapshot: 'sidebar-exceptions-no-match-title-from-base.png'
         },
         {
             title: 'hide_all option should be taken from the base',
@@ -983,7 +983,7 @@ test.describe('exceptions that do not match', async () => {
                     }
                 ]
             },
-            snapshot: '33-sidebar-exceptions-no-match-hide-all-from-base.png'
+            snapshot: 'sidebar-exceptions-no-match-hide-all-from-base.png'
         },
         {
             title: 'style option should be take from the base',
@@ -1006,7 +1006,7 @@ test.describe('exceptions that do not match', async () => {
                     }
                 ]
             },
-            snapshot: '35-sidebar-exceptions-no-match-style-from-base.png'
+            snapshot: 'sidebar-exceptions-no-match-style-from-base.png'
         },
         {
             title: 'no options everything from base is taken',
@@ -1017,7 +1017,7 @@ test.describe('exceptions that do not match', async () => {
                     }
                 ]
             },
-            snapshot: '36-sidebar-exceptions-no-match-everything-from-base.png'
+            snapshot: 'sidebar-exceptions-no-match-everything-from-base.png'
         }
     ].forEach(runTest);
 
@@ -1038,7 +1038,7 @@ test.describe('exceptions that do not match', async () => {
 
         await pageVisit(page);
 
-        await expect(page).toHaveScreenshot('34-sidebar-exceptions-no-match-sidebar-mode-from-base.png', {
+        await expect(page).toHaveScreenshot('sidebar-exceptions-no-match-sidebar-mode-from-base.png', {
             clip: SIDEBAR_NARROW_CLIP
         });
 

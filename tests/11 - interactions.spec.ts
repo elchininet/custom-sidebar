@@ -19,7 +19,7 @@ const visitHome = async (page: Page): Promise<void> => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('01-sidebar.png', {
+    await expect(page).toHaveScreenshot('sidebar.png', {
         clip: SIDEBAR_CLIP
     });
 };
@@ -123,7 +123,7 @@ test('the scroll should be restored after clicking on an element', async ({ page
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('02-sidebar-small-viewport.png', {
+    await expect(page).toHaveScreenshot('sidebar-small-viewport.png', {
         clip: {
             ...SIDEBAR_CLIP,
             height: 378
@@ -149,7 +149,7 @@ test('the scroll should be restored after pressing Enter with an element focused
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('02-sidebar-small-viewport.png', {
+    await expect(page).toHaveScreenshot('sidebar-small-viewport.png', {
         clip: {
             ...SIDEBAR_CLIP,
             height: 378

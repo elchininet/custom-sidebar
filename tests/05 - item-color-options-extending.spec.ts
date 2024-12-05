@@ -41,7 +41,7 @@ const pageVisit = async (page: Page): Promise<void> => {
             },
             'icon_color'
         ),
-        screenshot: '01-icon-color-selected-from-icon-color.png'
+        screenshot: 'icon-color-selected-from-icon-color.png'
     },
     {
         title: 'should set global text_color_selected getting the value of text_color',
@@ -52,7 +52,7 @@ const pageVisit = async (page: Page): Promise<void> => {
             },
             'text_color'
         ),
-        screenshot: '02-text-color-selected-from-text-color.png'
+        screenshot: 'text-color-selected-from-text-color.png'
     },
     {
         title: 'should set global selection_background getting the value of text_color',
@@ -63,7 +63,7 @@ const pageVisit = async (page: Page): Promise<void> => {
             },
             'text_color'
         ),
-        screenshot: '03-selection-background-from-text-color.png'
+        screenshot: 'selection-background-from-text-color.png'
     },
     {
         title: 'should set global selection_opacity',
@@ -74,7 +74,7 @@ const pageVisit = async (page: Page): Promise<void> => {
             },
             'selection_background'
         ),
-        screenshot: '04-global-selection-opacity.png'
+        screenshot: 'global-selection-opacity.png'
     }
 ].forEach(({ title, json, screenshot }) => {
 

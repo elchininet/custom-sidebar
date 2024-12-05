@@ -12,7 +12,7 @@ test.beforeAll(async ({ browser }) => {
     {
         title: 'if there is no order option the sidebar should remain intact',
         json: {},
-        screenshot: '01-sidebar-no-changes.png'
+        screenshot: 'sidebar-no-changes.png'
     },
     {
         title: 'a new item with notification should be added properly',
@@ -27,7 +27,7 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '02-sidebar-new-item-notification.png'
+        screenshot: 'sidebar-new-item-notification.png'
     },
     {
         title: 'notification as a number should be added corretcly',
@@ -42,12 +42,12 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '02-sidebar-new-item-notification.png'
+        screenshot: 'sidebar-new-item-notification.png'
     },
     {
         title: 'should set the sidebar_background as a color',
         json: { sidebar_background: 'red' },
-        screenshot: '03-sidebar-background-color.png'
+        screenshot: 'sidebar-background-color.png'
     },
     {
         title: 'should set the sidebar_background as a background',
@@ -58,12 +58,12 @@ test.beforeAll(async ({ browser }) => {
             text_color: 'white',
             sidebar_button_color: 'white'
         },
-        screenshot: '04-sidebar-background-image.png'
+        screenshot: 'sidebar-background-image.png'
     },
     {
         title: 'should set the menu_background as a color',
         json: { menu_background: 'red' },
-        screenshot: '05-sidebar-menu-background-color.png'
+        screenshot: 'sidebar-menu-background-color.png'
     },
     {
         title: 'should set the menu_background as a background',
@@ -72,32 +72,32 @@ test.beforeAll(async ({ browser }) => {
             title_color: 'white',
             sidebar_button_color: 'white'
         },
-        screenshot: '06-sidebar-menu-background-image.png'
+        screenshot: 'sidebar-menu-background-image.png'
     },
     {
         title: 'should set the sidebar_button_color',
         json: { sidebar_button_color: 'red' },
-        screenshot: '07-sidebar-button-color.png'
+        screenshot: 'sidebar-button-color.png'
     },
     {
         title: 'should set the sidebar_border_color',
         json: { sidebar_border_color: 'red' },
-        screenshot: '08-sidebar-border-color.png'
+        screenshot: 'sidebar-border-color.png'
     },
     {
         title: 'should set the title',
         json: { title: 'My Home' },
-        screenshot: '09-sidebar-custom-title.png'
+        screenshot: 'sidebar-custom-title.png'
     },
     {
         title: 'should set title_color',
         json: { title_color: 'red' },
-        screenshot: '10-sidebar-title-color.png'
+        screenshot: 'sidebar-title-color.png'
     },
     {
         title: 'should set the subtitle',
         json: { subtitle: 'Custom subtitle' },
-        screenshot: '11-sidebar-custom-subtitle.png'
+        screenshot: 'sidebar-custom-subtitle.png'
     },
     {
         title: 'should set the subtitle color',
@@ -105,14 +105,14 @@ test.beforeAll(async ({ browser }) => {
             subtitle: 'Custom subtitle',
             subtitle_color: 'red'
         },
-        screenshot: '12-sidebar-custom-subtitle-color.png'
+        screenshot: 'sidebar-custom-subtitle-color.png'
     },
     {
         title: 'should set item_background',
         json: {
             item_background: 'linear-gradient(#e66465, #9198e5)'
         },
-        screenshot: '13-sidebar-item-background.png'
+        screenshot: 'sidebar-item-background.png'
     },
     {
         title: 'should set notification_color',
@@ -125,7 +125,7 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '14-sidebar-notification-color.png'
+        screenshot: 'sidebar-notification-color.png'
     },
     {
         title: 'should set notification_color_selected',
@@ -138,7 +138,7 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '15-sidebar-notification-color-selected.png'
+        screenshot: 'sidebar-notification-color-selected.png'
     },
     {
         title: 'should set notification_text_color_selected',
@@ -151,7 +151,7 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '16-sidebar-notification-text-color-selected.png'
+        screenshot: 'sidebar-notification-text-color-selected.png'
     },
     {
         title: 'If info is set in one item it should add the secondary text',
@@ -166,32 +166,32 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '17-sidebar-item-info.png'
+        screenshot: 'sidebar-item-info.png'
     },
     {
         title: 'If icon_color is set the icons should change their color',
         json: { icon_color: 'red' },
-        screenshot: '18-sidebar-icon-color.png'
+        screenshot: 'sidebar-icon-color.png'
     },
     {
         title: 'If icon_color_selected is set the icons of the selected item should change its color',
         json: { icon_color_selected: 'red' },
-        screenshot: '19-sidebar-icon-color-selected.png'
+        screenshot: 'sidebar-icon-color-selected.png'
     },
     {
         title: 'If text_color is set the texts should change their color',
         json: { text_color: 'red' },
-        screenshot: '20-sidebar-text-color.png'
+        screenshot: 'sidebar-text-color.png'
     },
     {
         title: 'If text_color_selected is set the text of the selected item should change its color',
         json: { text_color_selected: 'red' },
-        screenshot: '21-sidebar-text-color-selected.png'
+        screenshot: 'sidebar-text-color-selected.png'
     },
     {
         title: 'If selection_background is set the background of the selected item should change its color',
         json: { selection_background: 'red' },
-        screenshot: '22-sidebar-selection-background.png'
+        screenshot: 'sidebar-selection-background.png'
     },
     {
         title: 'If info_color is set the color of the secondary text of the item should change its color',
@@ -207,7 +207,7 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '23-sidebar-info-color.png'
+        screenshot: 'sidebar-info-color.png'
     },
     {
         title: 'If info_color_selected is set the color of the secondary text of the selected item should change its color',
@@ -220,7 +220,7 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '24-sidebar-info-color-selected.png'
+        screenshot: 'sidebar-info-color-selected.png'
     },
     {
         title: 'if hide_all is set it should hide all the sidebar items',
@@ -235,14 +235,14 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '25-sidebar-hide-all.png'
+        screenshot: 'sidebar-hide-all.png'
     },
     {
         title: 'If divider_color is set it should set all the dividers in that color',
         json: {
             divider_color: 'red'
         },
-        screenshot: '26-sidebar-divider-color.png'
+        screenshot: 'sidebar-divider-color.png'
     },
     {
         title: 'If divider_top_color is set it should override divider_color',
@@ -250,7 +250,7 @@ test.beforeAll(async ({ browser }) => {
             divider_color: 'red',
             divider_top_color: 'green'
         },
-        screenshot: '27-sidebar-divider-top-color.png'
+        screenshot: 'sidebar-divider-top-color.png'
     },
     {
         title: 'If divider_bottom_color is set it should override divider_color',
@@ -258,7 +258,7 @@ test.beforeAll(async ({ browser }) => {
             divider_color: 'red',
             divider_bottom_color: 'green'
         },
-        screenshot: '28-sidebar-divider-bottom-color.png'
+        screenshot: 'sidebar-divider-bottom-color.png'
     },
     {
         title: 'should apply custom styles',
@@ -272,7 +272,7 @@ test.beforeAll(async ({ browser }) => {
                 }
             `
         },
-        screenshot: '29-sidebar-custom-styles.png'
+        screenshot: 'sidebar-custom-styles.png'
     }
 ].forEach(({ title, json, screenshot }): void => {
 

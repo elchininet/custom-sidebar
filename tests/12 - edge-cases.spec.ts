@@ -36,7 +36,7 @@ test('if multiple items match the same element the last one should be used', asy
 
     await pageVisit(page);
 
-    await expect(page).toHaveScreenshot('01-multiple-matches.png', {
+    await expect(page).toHaveScreenshot('multiple-matches.png', {
         clip: SIDEBAR_CLIP
     });
 
