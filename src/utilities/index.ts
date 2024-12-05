@@ -148,7 +148,7 @@ export const logVersionToConsole = () => {
 
 export const getConfigWithExceptions = (
     user: Hass['user'],
-    device: string,
+    userAgent: string,
     config: Config
 ): Config => {
     if (config.exceptions) {
@@ -168,11 +168,11 @@ export const getConfigWithExceptions = (
                     ) ||
                     (
                         exception.device &&
-                        getArray(exception.device).some((device: string) => device.includes(device))
+                        getArray(exception.device).some((device: string) => userAgent.includes(device))
                     ) ||
                     (
                         exception.not_device &&
-                        !getArray(exception.not_device).some((device: string) => device.includes(device))
+                        !getArray(exception.not_device).some((device: string) => userAgent.includes(device))
                     )
                 ) &&
                 (
