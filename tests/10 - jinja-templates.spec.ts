@@ -25,7 +25,7 @@ const pageVisit = async (page: Page): Promise<void> => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('01-sidebar-templates.png', {
+    await expect(page).toHaveScreenshot('sidebar-templates.png', {
         clip: SIDEBAR_CLIP
     });
 };
@@ -52,7 +52,7 @@ test('name and title using templates should update if one of their entities chan
 
     await haSwitchStateRequest(page, true);
 
-    await expect(page).toHaveScreenshot('02-sidebar-templates-name-title.png', {
+    await expect(page).toHaveScreenshot('sidebar-templates-name-title.png', {
         clip: SIDEBAR_CLIP
     });
 

@@ -45,27 +45,27 @@ const pageVisit = async (page: Page): Promise<void> => {
     {
         title: 'should override the global icon_color option',
         json: getOrderItemWithColorOption('icon_color'),
-        screenshot: '01-color-overriding-icon-color.png'
+        screenshot: 'color-overriding-icon-color.png'
     },
     {
         title: 'should override the global icon_color_selected option',
         json: getSelectedOrderItemWithColorOption('icon_color_selected'),
-        screenshot: '02-color-overriding-icon-color-selected.png'
+        screenshot: 'color-overriding-icon-color-selected.png'
     },
     {
         title: 'should override the global text_color option',
         json: getOrderItemWithColorOption('text_color'),
-        screenshot: '03-color-overriding-text-color.png'
+        screenshot: 'color-overriding-text-color.png'
     },
     {
         title: 'should override the global text_color_selected option',
         json: getSelectedOrderItemWithColorOption('text_color_selected'),
-        screenshot: '04-color-overriding-text-color-selected.png'
+        screenshot: 'color-overriding-text-color-selected.png'
     },
     {
         title: 'should override the global selection_background option',
         json: getSelectedOrderItemWithColorOption('selection_background'),
-        screenshot: '05-color-overriding-selection-background.png'
+        screenshot: 'color-overriding-selection-background.png'
     },
     {
         title: 'should override the global info_color option',
@@ -73,7 +73,7 @@ const pageVisit = async (page: Page): Promise<void> => {
             'info_color',
             { info: 'Some info' }
         ),
-        screenshot: '06-color-overriding-info-color.png'
+        screenshot: 'color-overriding-info-color.png'
     },
     {
         title: 'should override the global info_color_selected option',
@@ -81,7 +81,7 @@ const pageVisit = async (page: Page): Promise<void> => {
             'info_color_selected',
             { info: 'Some info' }
         ),
-        screenshot: '07-color-overriding-info-color-selected.png'
+        screenshot: 'color-overriding-info-color-selected.png'
     },
     {
         title: 'should override the global notification_color option',
@@ -89,7 +89,7 @@ const pageVisit = async (page: Page): Promise<void> => {
             'notification_color',
             { notification: '2' }
         ),
-        screenshot: '08-color-overriding-notification-color.png'
+        screenshot: 'color-overriding-notification-color.png'
     },
     {
         title: 'should override the global notification_text_color option',
@@ -97,7 +97,7 @@ const pageVisit = async (page: Page): Promise<void> => {
             'notification_text_color',
             { notification: '2' }
         ),
-        screenshot: '09-color-overriding-notification-text-color.png'
+        screenshot: 'color-overriding-notification-text-color.png'
     }
 ].forEach(({ title, json, screenshot }) => {
 
@@ -129,7 +129,7 @@ test('should override the global selection_opacity option', async ({ page }) => 
         }
     );
     await pageVisit(page);
-    await expect(page).toHaveScreenshot('10-color-overriding-selection-opacity.png', {
+    await expect(page).toHaveScreenshot('color-overriding-selection-opacity.png', {
         clip: SIDEBAR_CLIP
     });
 

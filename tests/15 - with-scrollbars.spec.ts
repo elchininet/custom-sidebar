@@ -34,7 +34,7 @@ test('should set scrollbar_thumb_color', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await expect(page).toHaveScreenshot('01-sidebar-scrollbar-thumb-color.png', {
+    await expect(page).toHaveScreenshot('sidebar-scrollbar-thumb-color.png', {
         clip: {
             ...SIDEBAR_CLIP_WITH_DIVIDERS,
             height: 429

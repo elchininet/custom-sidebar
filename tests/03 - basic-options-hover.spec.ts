@@ -16,21 +16,21 @@ test.beforeAll(async ({ browser }) => {
                                     linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%),
                                     linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%)`
         },
-        screenshot: '01-sidebar-item-background-hover.png'
+        screenshot: 'sidebar-item-background-hover.png'
     },
     {
         title: 'should set icon_color_hover',
         json: {
             icon_color_hover: 'red'
         },
-        screenshot: '02-sidebar-icon-color-hover.png'
+        screenshot: 'sidebar-icon-color-hover.png'
     },
     {
         title: 'should set text_color_hover',
         json: {
             text_color_hover: 'red'
         },
-        screenshot: '03-sidebar-text-color-hover.png'
+        screenshot: 'sidebar-text-color-hover.png'
     },
     {
         title: 'should set info_color_hover',
@@ -43,7 +43,7 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '04-sidebar-info-color-hover.png'
+        screenshot: 'sidebar-info-color-hover.png'
     },
     {
         title: 'should set notification_color_hover',
@@ -56,7 +56,7 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '05-sidebar-notification-color-hover.png'
+        screenshot: 'sidebar-notification-color-hover.png'
     },
     {
         title: 'should set notification_text_color_hover',
@@ -69,7 +69,7 @@ test.beforeAll(async ({ browser }) => {
                 }
             ]
         },
-        screenshot: '06-sidebar-notification-text-color-hover.png'
+        screenshot: 'sidebar-notification-text-color-hover.png'
     }
 ].forEach(({ title, json, screenshot }): void => {
 

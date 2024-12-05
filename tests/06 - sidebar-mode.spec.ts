@@ -32,7 +32,7 @@ test('a new item with notification should behave propely when the sidebar is col
 
     await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
 
-    await expect(page).toHaveScreenshot('01-sidebar-new-item-notification-collapsed.png', {
+    await expect(page).toHaveScreenshot('sidebar-new-item-notification-collapsed.png', {
         clip: {
             ...SIDEBAR_CLIP,
             width: 55
@@ -55,7 +55,7 @@ test('If sidebar_mode is set to "narrow" the sidebar should be visible in narrow
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
-    await expect(page).toHaveScreenshot('02-sidebar-mode-narrow.png', {
+    await expect(page).toHaveScreenshot('sidebar-mode-narrow.png', {
         clip: SIDEBAR_NARROW_CLIP
     });
 
@@ -73,7 +73,7 @@ test('If sidebar_mode is set to "extended" the sidebar should be visible in exte
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
-    await expect(page).toHaveScreenshot('03-sidebar-mode-extended.png', {
+    await expect(page).toHaveScreenshot('sidebar-mode-extended.png', {
         clip: {
             ...SIDEBAR_NARROW_CLIP,
             width: 255
