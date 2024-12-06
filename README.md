@@ -306,6 +306,7 @@ In an exception you can define almost all the options available in [the main con
 | not_user   | String or String[] | no          | Home Assistant user name(s) you wouldn't like to display this order for |
 | device     | String or String[] | no          | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
 | not_device | String or String[] | no          | Device(s) you wouldn't like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
+| is_admin   | Boolean            | no          | Checks if the user is admin or not. This option can be set alone or combined with `user`, `not_user`, `device` or `not_device` |
 
 Short example in `YAML` format:
 
@@ -315,7 +316,17 @@ exceptions:
   - user:
     - Jim Hawkins
     - Long John Silver
+    extend_from_base: true
     title: My Home
+    order:
+      ...
+  - not_user:
+    - John Doe
+    - Jack Sparrow
+    is_admin: true
+    order:
+      ...
+  - not_device: Android
     order:
       ...
 ```
@@ -328,9 +339,23 @@ Short example in `JSON` format:
   "exceptions": [
     {
       "user": ["Jim Hawkins", "Long John Silver"],
+      "extend_from_base": true,
       "title": "My Home",
       "order": [
-          ...
+        ...
+      ]
+    },
+    {
+      "not_user": ["John Doe", "Jack Sparrow"],
+      "is_admin": true,
+      "order": [
+        ...
+      ]
+    },
+    {
+      "not_device": "Android",
+      "order": [
+        ...
       ]
     }
   ]  
