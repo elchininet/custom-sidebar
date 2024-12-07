@@ -123,7 +123,7 @@ interface BaseConfig extends SidebarColorConfig {
     styles?: string;
 }
 
-interface ConfigExceptionBase extends BaseConfig {
+export interface ConfigExceptionBase extends BaseConfig {
     is_admin?: boolean;
     extend_from_base?: boolean;
 }
