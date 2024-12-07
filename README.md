@@ -363,6 +363,7 @@ Short example in `JSON` format:
 ```
 
 > [!IMPORTANT]
+>* If multiple exeptions match, the last match rules so their options will be the ones used. There is a special treatment for the `order` option, if multiple exceptions match, the order of all of them will be merged, but if an item is repeated in more than one order, then the last one will rule.
 >* You cannot use `user` and `not_user` at the same time, doing so will end in an error
 >* You cannot use `device` and `not_device` at the same time, doing so will end in an error
 >* Pay attention to `extend_from_base` property. If it's set to `false` (default value), the main `config` will be ignored, leaving you with default sidebar modified only by the exception's options

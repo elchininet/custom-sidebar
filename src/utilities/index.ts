@@ -2,7 +2,8 @@ import { Hass } from 'home-assistant-javascript-templates';
 import {
     Config,
     ConfigOrder,
-    ConfigException
+    ConfigException,
+    ConfigExceptionBase
 } from '@types';
 import {
     NAMESPACE,
@@ -54,24 +55,23 @@ export const randomId = (): string => Math.random().toString(16).slice(2);
 
 const getArray = (value: string | string[]): string[] => {
     if (Array.isArray(value)) {
-        return value.map((val: string) => val.toLocaleLowerCase());
+        return value.map((val: string) => val.toLowerCase());
     }
     return value.toLowerCase().split(/\s*,\s*/);
 };
 
 const extendOptionsFromBase = (
     config: Config,
-    lastException: ConfigException | null,
-    extendFromBase: boolean
+    exception: ConfigException
 ): OptionsFromBase => {
 
     const configCommonProps: OptionsFromBase = {};
 
     EXTENDABLE_OPTIONS.forEach((option: ExtendableConfigOption): void => {
-        const lasExceptionValue = lastException?.[option];
-        const value = extendFromBase
-            ? lasExceptionValue ?? config[option]
-            : lasExceptionValue;
+        const exceptionValue = exception[option];
+        const value = exception.extend_from_base
+            ? exceptionValue ?? config[option]
+            : exceptionValue;
         if (typeof value !== TYPE.UNDEFINED) {
             configCommonProps[option] = value;
         }
@@ -179,39 +179,53 @@ export const getConfigWithExceptions = (
                 exception.is_admin === user.is_admin
             );
         });
-        const lastException = filteredExceptions.length
-            ? filteredExceptions[filteredExceptions.length -1]
-            : null;
-        const exceptionsOrder = filteredExceptions.flatMap((exception: ConfigException): ConfigOrder[] => exception.order || []);
-        const extendsBaseConfig = !filteredExceptions.some((exception: ConfigException): boolean => !exception.extend_from_base);
 
-        const configCommonProps = extendOptionsFromBase(config, lastException, extendsBaseConfig);
+        if (filteredExceptions.length) {
 
-        if (extendsBaseConfig) {
+            const flattenException = filteredExceptions.reduce((mergedExceptions: ConfigExceptionBase, exception: ConfigExceptionBase): ConfigException => {
+                const mergedOrder = mergedExceptions.order ?? [];
+                const order = exception.order ?? [];
+                return {
+                    ...mergedExceptions,
+                    ...exception,
+                    order: [
+                        ...mergedOrder,
+                        ...order
+                    ]
+                };
+            }, {});
+
+            const configCommonProps = extendOptionsFromBase(config, flattenException);
+
+            if (flattenException.extend_from_base) {
+                return {
+                    ...configCommonProps,
+                    order: flatConfigOrder(
+                        [
+                            ...(config.order ?? []),
+                            ...flattenException.order
+                        ],
+                        configCommonProps
+                    )
+                };
+            }
+
             return {
                 ...configCommonProps,
                 order: flatConfigOrder(
-                    [
-                        ...(config.order || []),
-                        ...exceptionsOrder
-                    ],
+                    flattenException.order,
                     configCommonProps
                 )
             };
+
         }
 
-        return {
-            ...configCommonProps,
-            order: flatConfigOrder(
-                exceptionsOrder,
-                configCommonProps
-            )
-        };
     }
+
     return {
         ...config,
         order: flatConfigOrder(
-            config.order || [],
+            config.order ?? [],
             config
         )
     };
