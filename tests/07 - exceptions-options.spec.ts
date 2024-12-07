@@ -763,7 +763,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should match a user using the user option and it is an admin',
+            title: 'it should match the user name regardless of is_admin being true',
             json: {
                 exceptions: [
                     {
@@ -776,7 +776,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should not match a user using the user option if is_admin doesn\'t match',
+            title: 'it should match the user name regardless of is_admin being false',
             json: {
                 exceptions: [
                     {
@@ -786,7 +786,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: 'sidebar-exceptions-no-match-admin-false.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'shuld match a user if it is included in the user option as an array',
@@ -801,7 +801,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'shuld match a user if it is included in the user option as an array and it is an admin',
+            title: 'should match a user included in an user option as an array regardless of is_admin being true',
             json: {
                 exceptions: [
                     {
@@ -814,7 +814,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'shuld not match a user if it is included in the user option as an array but is_admin doesn\'t match',
+            title: 'should match a user included in an user option as an array regardless of is_admin being false',
             json: {
                 exceptions: [
                     {
@@ -824,7 +824,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: 'sidebar-exceptions-no-match-admin-false.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a user if it is not equal to the not_user option',
@@ -839,7 +839,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should match a user if it is not equal to the not_user option and it is an admin',
+            title: 'should match a user if the user name doesn\'t match with not_user regardless of is_admin being true',
             json: {
                 exceptions: [
                     {
@@ -852,7 +852,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should not match a user if it is not equal to the not_user option but is_admin doesn\'t match',
+            title: 'should match a user if the user name doesn\'t match with not_user regardless of is_admin being false',
             json: {
                 exceptions: [
                     {
@@ -862,7 +862,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: 'sidebar-exceptions-no-match-admin-false.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match an user if it is not included in the not_user option as an array',
@@ -877,7 +877,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should match an user if it is not included in the not_user option as an array and it is an admin',
+            title: 'should match an user if it is not included in the not_user option as an array regardless of is_admin being true',
             json: {
                 exceptions: [
                     {
@@ -890,7 +890,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should not match an user if it is not included in the not_user option but is_admin doesn\'t match',
+            title: 'should match an user if it is not included in the not_user option as an array regardless of is_admin being false',
             json: {
                 exceptions: [
                     {
@@ -900,7 +900,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: 'sidebar-exceptions-no-match-admin-false.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device using the device option',
@@ -915,7 +915,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should match a device using the device option if it is an admin',
+            title: 'should match a device regardless of is_admin being true',
             json: {
                 exceptions: [
                     {
@@ -928,7 +928,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should not match a device using the device option if is_admin doesn\'t match',
+            title: 'should match a device regardless of is_admin being false',
             json: {
                 exceptions: [
                     {
@@ -938,7 +938,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: 'sidebar-exceptions-no-match-admin-false.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device if it is included in the device option as an array',
@@ -953,7 +953,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should match a device if it is included in the device option as an array and it is an admin',
+            title: 'should match a device if it is included in the device option as an array regardless of is_admin being true',
             json: {
                 exceptions: [
                     {
@@ -966,7 +966,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should not match a device if it is included in the device option as an array but is_admin doesn\'t match',
+            title: 'should match a device if it is included in the device option as an array regardless of is_admin being false',
             json: {
                 exceptions: [
                     {
@@ -976,7 +976,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: 'sidebar-exceptions-no-match-admin-false.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device if it is not equal to the not_device option',
@@ -991,7 +991,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should match a device if it is not equal to the not_device option and it is an admin',
+            title: 'should match a device if it is not equal to the not_device regardless of is_admin being true',
             json: {
                 exceptions: [
                     {
@@ -1004,7 +1004,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should not match a device if it is not equal to the not_device option but is_admin doesn\t match',
+            title: 'should match a device if it is not equal to the not_device regardless of is_admin being false',
             json: {
                 exceptions: [
                     {
@@ -1014,7 +1014,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: 'sidebar-exceptions-no-match-admin-false.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match a device if it is not included in the not_device option as an array',
@@ -1029,7 +1029,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should match a device if it is not included in the not_device option as an array and it is an admin',
+            title: 'should match a device if it is not included in the not_device option as an array regardless of is_admin being true',
             json: {
                 exceptions: [
                     {
@@ -1042,7 +1042,7 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
-            title: 'should not match a device if it is not included in the not_device option as an array but is_admin doesn\'t match',
+            title: 'should match a device if it is not included in the not_device option as an array regardless of is_admin being false',
             json: {
                 exceptions: [
                     {
@@ -1052,7 +1052,7 @@ test.describe('user and device matchers', () => {
                     }
                 ]
             },
-            snapshot: 'sidebar-exceptions-no-match-admin-false.png'
+            snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
             title: 'should match an admin user if is_admin is true',

@@ -158,26 +158,20 @@ export const getConfigWithExceptions = (
         const filteredExceptions = config.exceptions.filter((exception: ConfigException): boolean => {
             return (
                 (
-                    (
-                        exception.user &&
-                        getArray(exception.user).includes(userName)
-                    ) ||
-                    (
-                        exception.not_user &&
-                        !getArray(exception.not_user).includes(userName)
-                    ) ||
-                    (
-                        exception.device &&
-                        getArray(exception.device).some((device: string) => userAgent.includes(device))
-                    ) ||
-                    (
-                        exception.not_device &&
-                        !getArray(exception.not_device).some((device: string) => userAgent.includes(device))
-                    )
-                ) &&
+                    exception.user &&
+                    getArray(exception.user).includes(userName)
+                ) ||
                 (
-                    exception.is_admin === undefined ||
-                    exception.is_admin === user.is_admin
+                    exception.not_user &&
+                    !getArray(exception.not_user).includes(userName)
+                ) ||
+                (
+                    exception.device &&
+                    getArray(exception.device).some((device: string) => userAgent.includes(device))
+                ) ||
+                (
+                    exception.not_device &&
+                    !getArray(exception.not_device).some((device: string) => userAgent.includes(device))
                 )
             ) ||
             (

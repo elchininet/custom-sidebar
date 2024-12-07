@@ -302,11 +302,11 @@ In an exception you can define almost all the options available in [the main con
 | Property            | Type              | Required | Description |
 | ------------------- | ----------------- | -------- | ----------- |
 | extend_from_base    | Boolean           | no       | If true, the options will be extended with the root options. The property `order` will be merged with the base one, the rest of properties will use the base counterpart if they are not specified. If it is false, it will take into account only the options in the exception |
-| user       | String or String[] | no          | Home Assistant user name(s) you would like to display this order for |
-| not_user   | String or String[] | no          | Home Assistant user name(s) you wouldn't like to display this order for |
-| device     | String or String[] | no          | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
-| not_device | String or String[] | no          | Device(s) you wouldn't like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]) |
-| is_admin   | Boolean            | no          | Checks if the user is admin or not. This option can be set alone or combined with `user`, `not_user`, `device` or `not_device` |
+| user       | String or String[] | no          | Home Assistant user name(s) you would like to display this order for. This option can be set alone or combined with `device`, `not_device` or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
+| not_user   | String or String[] | no          | Home Assistant user name(s) you wouldn't like to display this order for. This option can be set alone or combined with `device`, `not_device` or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
+| device     | String or String[] | no          | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]). This option can be set alone or combined with `user`, `not_user` or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
+| not_device | String or String[] | no          | Device(s) you wouldn't like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]). This option can be set alone or combined with `user`, `not_user` or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
+| is_admin   | Boolean            | no          | Checks if the user is admin or not. This option can be set alone or combined with `user`, `not_user`, `device` or `not_device`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
 
 Short example in `YAML` format:
 
