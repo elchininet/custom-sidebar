@@ -302,7 +302,6 @@ test.describe('extending from the base', () => {
                 exceptions: [
                     {
                         user: 'Test',
-                        order: json.order,
                         sidebar_mode: 'narrow',
                         extend_from_base: true
                     }
@@ -326,7 +325,6 @@ test.describe('extending from the base', () => {
                 exceptions: [
                     {
                         user: 'Test',
-                        order: json.order,
                         sidebar_editable: false,
                         extend_from_base: true
                     }
@@ -1082,7 +1080,133 @@ test.describe('user and device matchers', () => {
 
 });
 
-test.describe('exceptions that do not match', async () => {
+test.describe('multiple matchers that match', () => {
+
+    [
+        {
+            title: 'the last matching exception should rule',
+            json: {
+                title: 'Root title',
+                exceptions: [
+                    {
+                        user: 'Test',
+                        title: 'User match title'
+                    },
+                    {
+                        device: 'Chrome',
+                        title: 'Device match title'
+                    },
+                    {
+                        is_admin: true,
+                        title: 'Admin match title'
+                    },
+                    {
+                        not_user: 'Test',
+                        title: 'User not-matching title'
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-multiple-matchers-matching-last-one-used.png'
+        },
+        {
+            title: 'all the matching exception items should be merged',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: [
+                            {
+                                new_item: true,
+                                item: 'Check User',
+                                icon: 'mdi:bullseye-arrow',
+                                href: '/check_user',
+                                order: 10
+                            }
+                        ]
+                    },
+                    {
+                        is_admin: true,
+                        order: [
+                            {
+                                new_item: true,
+                                item: 'Check Admin',
+                                icon: 'mdi:bullseye-arrow',
+                                href: '/check_admin',
+                                order: 11
+                            }
+                        ]
+                    },
+                    {
+                        device: 'Chrome',
+                        order: [
+                            {
+                                new_item: true,
+                                item: 'Check Device',
+                                icon: 'mdi:bullseye-arrow',
+                                href: '/check_device',
+                                order: 12
+                            }
+                        ]
+                    },
+                    {
+                        is_admin: false,
+                        order: [
+                            {
+                                new_item: true,
+                                item: 'Check Non-Admin',
+                                icon: 'mdi:bullseye-arrow',
+                                href: '/check_non_admin',
+                                order: 13
+                            }
+                        ]
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-multiple-matchers-merged-orders.png'
+        },
+        {
+            title: '@testing if the same item is in multiple orders, the last one rules',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: [
+                            {
+                                new_item: true,
+                                item: 'Check',
+                                icon: 'mdi:bullseye-arrow',
+                                icon_color: 'blue',
+                                href: '/check'
+                            }
+                        ]
+                    },
+                    {
+                        is_admin: true,
+                        order: [
+                            {
+                                new_item: true,
+                                item: 'Admin',
+                                icon: 'mdi:account-key',
+                                href: '/admin_page'
+                            },
+                            {
+                                new_item: true,
+                                item: 'Check',
+                                icon: 'mdi:check-bold',
+                                icon_color: 'red',
+                                href: '/check'
+                            }
+                        ]
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-multiple-matchers-merged-orders-repeated-items.png'
+        }
+    ].forEach(runTest);
+
+});
+
+test.describe('exceptions that do not match', () => {
 
     [
         {
@@ -1091,7 +1215,6 @@ test.describe('exceptions that do not match', async () => {
                 exceptions: [
                     {
                         user: 'ElChiniNet',
-                        order: json.order,
                         title: 'Exception Title',
                         extend_from_base: true
                     }
@@ -1106,7 +1229,6 @@ test.describe('exceptions that do not match', async () => {
                 exceptions: [
                     {
                         user: 'ElChiniNet',
-                        order: json.order,
                         hide_all: false
                     }
                 ]
@@ -1124,7 +1246,6 @@ test.describe('exceptions that do not match', async () => {
                 exceptions: [
                     {
                         user: 'ElChiniNet',
-                        order: json.order,
                         extend_from_base: true,
                         styles: `
                             .item-text {
@@ -1179,7 +1300,6 @@ test.describe('exceptions that do not match', async () => {
             exceptions: [
                 {
                     user: 'ElChiniNet',
-                    order: json.order,
                     sidebar_editable: false,
                     extend_from_base: true
                 }
