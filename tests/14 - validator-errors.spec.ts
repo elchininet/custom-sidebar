@@ -1,5 +1,6 @@
 import { test, expect } from 'playwright-test-coverage';
 import { SidebarMode } from '../src/types';
+import { EXTEND_FROM_BASE } from './constants';
 import { fulfillJson } from './utilities';
 import { SELECTORS } from './selectors';
 
@@ -408,7 +409,7 @@ test.describe('exceptions', () => {
                 exceptions: [
                     {
                         order: 100,
-                        extend_from_base: false
+                        extend_from: EXTEND_FROM_BASE
                     }
                 ]
             },
