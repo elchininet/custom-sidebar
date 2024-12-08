@@ -5,7 +5,7 @@ import {
     SIDEBAR_CLIP,
     SIDEBAR_NARROW_CLIP,
     ATTRIBUTES,
-    EXTEND_FROM_BASE
+    BASE_NAME
 } from './constants';
 import { haConfigRequest } from './ha-services';
 import { addJsonExtendedRoute, changeToMobileViewport } from './utilities';
@@ -22,7 +22,7 @@ const pageVisit = async (page: Page): Promise<void> => {
 };
 
 const json = {
-    extend_from: EXTEND_FROM_BASE,
+    extend_from: BASE_NAME,
     order: [
         {
             new_item: true,
@@ -67,7 +67,7 @@ test.describe('extending from the base', () => {
                     exceptions: [
                         {
                             user: 'Test',
-                            extend_from: EXTEND_FROM_BASE,
+                            extend_from: BASE_NAME,
                             order: [
                                 {
                                     item: 'developer tools',
@@ -88,7 +88,7 @@ test.describe('extending from the base', () => {
                             user: 'Test',
                             order: json.order,
                             title: 'Exception Title',
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -103,7 +103,7 @@ test.describe('extending from the base', () => {
                             user: 'Test',
                             order: json.order,
                             icon_color: 'red',
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -118,7 +118,7 @@ test.describe('extending from the base', () => {
                             user: 'Test',
                             order: json.order,
                             icon_color_selected: 'red',
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -133,7 +133,7 @@ test.describe('extending from the base', () => {
                             user: 'Test',
                             order: json.order,
                             text_color: 'red',
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -148,7 +148,7 @@ test.describe('extending from the base', () => {
                             user: 'Test',
                             order: json.order,
                             text_color_selected: 'red',
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -163,7 +163,7 @@ test.describe('extending from the base', () => {
                             user: 'Test',
                             order: json.order,
                             selection_background: 'red',
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -188,7 +188,7 @@ test.describe('extending from the base', () => {
                                 }
                             ],
                             info_color: 'red',
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -213,7 +213,7 @@ test.describe('extending from the base', () => {
                                 }
                             ],
                             info_color_selected: 'red',
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -236,7 +236,7 @@ test.describe('extending from the base', () => {
                                     color: red !important;
                                 }
                             `,
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -251,7 +251,7 @@ test.describe('extending from the base', () => {
                             user: 'Test',
                             order: json.order,
                             hide_all: true,
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -265,7 +265,7 @@ test.describe('extending from the base', () => {
                 exceptions: [
                     {
                         user: 'Test',
-                        extend_from: EXTEND_FROM_BASE,
+                        extend_from: BASE_NAME,
                         order: [
                             {
                                 new_item: true,
@@ -303,7 +303,7 @@ test.describe('extending from the base', () => {
                     {
                         user: 'Test',
                         sidebar_mode: 'narrow',
-                        extend_from: EXTEND_FROM_BASE
+                        extend_from: BASE_NAME
                     }
                 ]
             });
@@ -326,7 +326,7 @@ test.describe('extending from the base', () => {
                     {
                         user: 'Test',
                         sidebar_editable: false,
-                        extend_from: EXTEND_FROM_BASE
+                        extend_from: BASE_NAME
                     }
                 ]
             });
@@ -354,7 +354,7 @@ test.describe('extending from the base', () => {
                     exceptions: [
                         {
                             user: 'Test',
-                            extend_from: EXTEND_FROM_BASE,
+                            extend_from: BASE_NAME,
                             order: json.order
                         }
                     ]
@@ -373,7 +373,7 @@ test.describe('extending from the base', () => {
                         {
                             user: 'Test',
                             order: json.order,
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -387,7 +387,7 @@ test.describe('extending from the base', () => {
                         {
                             user: 'Test',
                             order: json.order,
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -401,7 +401,7 @@ test.describe('extending from the base', () => {
                         {
                             user: 'Test',
                             order: json.order,
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -415,7 +415,7 @@ test.describe('extending from the base', () => {
                         {
                             user: 'Test',
                             order: json.order,
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -429,7 +429,7 @@ test.describe('extending from the base', () => {
                         {
                             user: 'Test',
                             order: json.order,
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -443,7 +443,7 @@ test.describe('extending from the base', () => {
                         {
                             user: 'Test',
                             order: json.order,
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -467,7 +467,7 @@ test.describe('extending from the base', () => {
                                     info: 'Some info'
                                 }
                             ],
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -491,7 +491,7 @@ test.describe('extending from the base', () => {
                                     info: 'Some info'
                                 }
                             ],
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -505,7 +505,7 @@ test.describe('extending from the base', () => {
                         {
                             user: 'Test',
                             order: json.order,
-                            extend_from: EXTEND_FROM_BASE
+                            extend_from: BASE_NAME
                         }
                     ]
                 },
@@ -521,7 +521,7 @@ test.describe('extending from the base', () => {
                     {
                         user: 'Test',
                         order: json.order,
-                        extend_from: EXTEND_FROM_BASE
+                        extend_from: BASE_NAME
                     }
                 ]
             });
@@ -544,7 +544,7 @@ test.describe('extending from the base', () => {
                     {
                         user: 'Test',
                         order: json.order,
-                        extend_from: EXTEND_FROM_BASE
+                        extend_from: BASE_NAME
                     }
                 ]
             });
@@ -1215,7 +1215,7 @@ test.describe('exceptions that do not match', () => {
                     {
                         user: 'ElChiniNet',
                         title: 'Exception Title',
-                        extend_from: EXTEND_FROM_BASE
+                        extend_from: BASE_NAME
                     }
                 ]
             },
@@ -1245,7 +1245,7 @@ test.describe('exceptions that do not match', () => {
                 exceptions: [
                     {
                         user: 'ElChiniNet',
-                        extend_from: EXTEND_FROM_BASE,
+                        extend_from: BASE_NAME,
                         styles: `
                             .item-text {
                                 color: red !important;
@@ -1300,7 +1300,7 @@ test.describe('exceptions that do not match', () => {
                 {
                     user: 'ElChiniNet',
                     sidebar_editable: false,
-                    extend_from: EXTEND_FROM_BASE
+                    extend_from: BASE_NAME
                 }
             ]
         });

@@ -121,7 +121,7 @@ export interface BaseConfig extends SidebarColorConfig {
     sidebar_editable?: boolean | string;
     sidebar_mode?: `${SidebarMode}`;
     styles?: string;
-    extend_from?: string;
+    extend_from?: string | string[];
 }
 
 export interface ConfigExceptionBase extends BaseConfig {
