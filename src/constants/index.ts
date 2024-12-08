@@ -12,7 +12,7 @@ export const CONFIG_PATH = `${LOCAL_PATH}${CONFIG_NAME}`;
 export const MAX_ATTEMPTS = 100;
 export const RETRY_DELAY = 50;
 export const FLUSH_PROMISE_DELAY = 1;
-export const EXTEND_FROM_BASE = 'base';
+export const BASE_NAME = 'base';
 
 export enum TYPE {
     BOOLEAN = 'boolean',

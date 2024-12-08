@@ -134,6 +134,30 @@ test('notifications using a template should update if one of its entities change
         }
     },
     {
+        title: 'variables should be included in exceptions templates',
+        json: {
+            js_variables: {
+                my_switch: 'input_boolean.my_switch',
+                on: true,
+                off: false,
+                variable: 123
+            },
+            exceptions: [
+                {
+                    user: 'Test',
+                    title: `
+                        [[[
+                            if (is_state(my_switch, "on")) {
+                                return on.toString() + " " + variable
+                            }
+                            return off.toString() + " " + variable
+                        ]]]
+                    `
+                }
+            ]
+        }
+    },
+    {
         title: 'partials should be included in the templates',
         json: {
             partials: {
@@ -153,6 +177,33 @@ test('notifications using a template should update if one of its entities change
                     return off.toString() + " " + variable
                 ]]]
             `
+        }
+    },
+    {
+        title: 'partials should be included in the exceptions templates',
+        json: {
+            partials: {
+                my_partial: `
+                    const my_switch = 'input_boolean.my_switch';
+                    const on = true;
+                    const off = false;
+                    const variable = 123;
+                `
+            },
+            exceptions: [
+                {
+                    is_admin: true,
+                    title: `
+                        [[[
+                            @partial my_partial
+                            if (is_state(my_switch, "on")) {
+                                return on.toString() + " " + variable
+                            }
+                            return off.toString() + " " + variable
+                        ]]]
+                    `
+                }
+            ]
         }
     },
     {
