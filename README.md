@@ -182,12 +182,23 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | divider_bottom_color<sup>\*</sup> | String               | no       | Sets the color of the bottom sidebar divider. It overrides `divider_color` for this divider if it is set |
 | scrollbar_thumb_color<sup>\*</sup>| String              | no       | Sets the color of the sidebar scrollbar (This option uses non-baseline CSS styles and it could not work in some browsers) |
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
-| js_variables       | Object                             | no       | An object containing variales that will be used in [JavaScript templates](#javascript-templates). The variables cannot be templates and they must be strings, numbers or booleans |
-| jinja_variables       | Object                          | no       | An object containing variales that will be used in [Jinja templates](#jinja-templates). The variables cannot be templates and they must be strings, numbers or booleans |
-| partials              | Object                          | no       | An object containing fragments of code that can be included in your templates. Consult [the partial section](#partials) for more info |
 
 >[!TIP]
 >\* These options allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
+
+#### Advanced configuration options
+
+| Property           | Type                               | Required | Description |
+| ------------------ | ---------------------------------- | -------- | ----------- |
+| js_variables       | Object                             | no       | An object containing variales that will be used in [JavaScript templates](#javascript-templates). The variables cannot be templates and they must be strings, numbers or booleans (check the [partials section](#partials) for an example) |
+| jinja_variables       | Object                          | no       | An object containing variales that will be used in [Jinja templates](#jinja-templates). The variables cannot be templates and they must be strings, numbers or booleans (check the [partials section](#partials) for an example) |
+| partials              | Object                          | no       | An object containing fragments of code that can be included in your templates. Consult [the partial section](#partials) for more info |
+| extendable_configs    | Object                          | no       | An object containing extendable configurations (check [extendable configurations section](#extendable-configurations)) |
+| extend_from           | String                          | no       | Indicates if the configuration should extend from an extendable configration (check [extendable configurations section](#extendable-configurations)) |
+
+>[!TIP]
+>These options are intended for advanced users. They are not strictly necessary. Do not use them if they result confusing to you or if you don't understand their usage.
+
 
 #### Order items properties
 
@@ -297,11 +308,10 @@ Short example in `JSON` format:
 ### Exceptions
 
 You can define user-specific options using exceptions feature. Exceptions can be used if you would like to define different options for a specific user/device.
-In an exception you can define almost all the options available in [the main configuration options](#configuration-options) (excluding `js_variables`, `jinja_variables` and `partials`). And on top of those options, the next ones will be available:
+In an exception you can define almost all the options available in [the main configuration options](#configuration-options) (excluding the advanced options `js_variables`, `jinja_variables`, `partials`, and `extendable_configs`). And on top of those options, the next ones will be available:
 
 | Property            | Type              | Required | Description |
 | ------------------- | ----------------- | -------- | ----------- |
-| extend_from_base    | Boolean           | no       | If true, the options will be extended with the root options. The property `order` will be merged with the base one, the rest of properties will use the base counterpart if they are not specified. If it is false, it will take into account only the options in the exception |
 | user       | String or String[] | no          | Home Assistant user name(s) you would like to display this order for. This option can be set alone or combined with `device`, `not_device` or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
 | not_user   | String or String[] | no          | Home Assistant user name(s) you wouldn't like to display this order for. This option can be set alone or combined with `device`, `not_device` or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
 | device     | String or String[] | no          | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]). This option can be set alone or combined with `user`, `not_user` or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
@@ -366,7 +376,6 @@ Short example in `JSON` format:
 >* If multiple exeptions match, the last match rules so their options will be the ones used. There is a special treatment for the `order` option, if multiple exceptions match, the order of all of them will be merged, but if an item is repeated in more than one order, then the last one will rule.
 >* You cannot use `user` and `not_user` at the same time, doing so will end in an error
 >* You cannot use `device` and `not_device` at the same time, doing so will end in an error
->* Pay attention to `extend_from_base` property. If it's set to `false` (default value), the main `config` will be ignored, leaving you with default sidebar modified only by the exception's options
 
 ## Templates
 
@@ -507,6 +516,10 @@ order:
 }
 ```
 
+## Advanced configuration options
+
+Custom sidebar has advanced configurations options only intended for advanced users. These options are basically used to avoid repetition of options or templates, but they are not strictly necessary to configure the plugin. Do not use these options if they result confusing for you or if you don't understand their usage.
+
 ### Partials
 
 Partials are fragments of code that can be included in your templates. They can be inserted in [JavaScript](#javascript-templates), [Jinja](#jinja-templates) templates or inside another partial. Any entity used in them will make the template in which the partial is inserted to be reevaluated when the entity changes its state, so it is not recommended to use a bloated partial using multiple entities that have no context with each other because that will provoke that the templates in which that partial is used get reevaluated when anyone of the entities used in it change.
@@ -515,8 +528,6 @@ Partials are fragments of code that can be included in your templates. They can 
 >Partials will automatically use the variables set in the `js_variables` or `jinja_variables` (depending on the kind of template in which they are inserted).
 
 #### Partials example with a JavaScript template
-
-##### in `YAML` format:
 
 ```yaml
 js_variables:
@@ -545,34 +556,7 @@ order:
     icon: mdi:information-outline
 ```
 
-##### in `JSON` format:
-
-```json5
-{
-  "js_variables": {
-    "supervisor_update": "update.home_assistant_supervisor_update",
-    "os_update": "update.home_assistant_operating_system_update"
-  },
-  "partials": {
-    "supervisor_version": "const supervisorVersion = state_attr(supervisor_update, 'latest_version');",
-    "updates": "@partial supervisor_version const osVersion = state_attr(os_update, 'latest_version');"
-  },
-  "order": [
-    {
-      "new_item": true,
-      "item": "info",
-      "name": "[[[ @partial updates return `Info ${supervisorVersion}`; ]]]",
-      "info": "[[[ @partial updates return `OS ${ osVersion }`; ]]]",
-      "href": "/config/info",
-      "icon": "mdi:information-outline"
-    }
-  ]
-}
-```
-
 #### Partials example with a Jinja template
-
-##### in `YAML` format:
 
 ```yaml
 jinja_variables:
@@ -597,29 +581,176 @@ order:
     icon: mdi:information-outline
 ```
 
-##### in `JSON` format:
+### Extendable configurations
 
-```json5
-{
-  "jinja_variables": {
-    "supervisor_update": "update.home_assistant_supervisor_update",
-    "os_update": "update.home_assistant_operating_system_update"
-  },
-  "partials": {
-    "supervisor_version": "{% set supervisorVersion = state_attr(supervisor_update, 'latest_version') %}",
-    "updates": "@partial supervisor_version {% set osVersion = state_attr(os_update, 'latest_version') %}"
-  },
-  "order": [
-    {
-      "new_item": true,
-      "item": "info",
-      "name": "@partial updates Info {{ supervisorVersion }}",
-      "info": "@partial updates OS {{ osVersion }}",
-      "href": "/config/info",
-      "icon": "mdi:information-outline"
-    }
-  ]
-}
+Extendable configurations (`extendable_configs`) is an object containing different configurations options that could be extended from the [main configuration](#configuration-options), from [the exceptions](#exceptions) or from an extendable configuration itself, making them a very flexible option to share configuration blocks. To specify that a configuration should extend from an extendable configuration, the `extend_from` option should be used specifying the extendable configuration name.
+
+For example, the next configuration has a main configuration extending from an extendable configuration named `example`, let's analyse what will be the result of that extend.
+
+```yaml
+title: Custom Title
+order:
+  - item: overview
+    name: Dashboard
+    order: 3
+  - new_item: true
+    item: Integrations
+    href: "/config/integrations"
+    icon: mdi:puzzle
+    order: 2
+extend_from: example
+extendable_configs:
+  example:
+    title: My Home
+    subtitle: Assistant
+    order:
+      - item: overview
+        icon: mdi:monitor-dashboard
+        order: 0
+      - new_item: true
+        item: Google
+        href: https://mrdoob.com/projects/chromeexperiments/google-gravity/
+        icon: mdi:earth
+        target: _blank
+        order: 1
+```
+
+1. As the `title` option is defined in the main configuration, it will not get the `title` option from the extendable configuration.
+2. As the `subtitle` option is not defined in the main configuration, it will get it from the extendable configuration
+3. As the main configuration and the extendable configuration both have an `order` option, it will be merged:
+    1. Both orders have an `overview` item, so it will be merged. As the main config order-item has also an `order` property, it will not be extended, but as the extendable order-item has an `icon` property that doesn't exist in the main config order-item, it will be extended
+    2. The `Integrations` doesn't exist in the extendable order so it will remain as it is 
+    3. The `Google` extendable item doesn't exist in the main config, so it will be extended from it
+
+The resulted main config will be:
+
+```yaml
+title: Custom Title
+subtitle: Assistant
+order:
+  - new_item: true
+    item: Google
+    href: https://mrdoob.com/projects/chromeexperiments/google-gravity/
+    icon: mdi:earth
+    target: _blank
+    order: 1
+  - new_item: true
+    item: Integrations
+    href: "/config/integrations"
+    icon: mdi:puzzle
+    order: 2
+  - item: overview
+    name: Dashboard
+    icon: mdi:monitor-dashboard
+    order: 3
+  
+```
+
+As already mentioned, an extendable configuration can extend from another extendable configuration:
+
+```yaml
+title: Custom Title
+extend_from: example
+extendable_configs:
+  colorful:
+    title_color: red,
+    subtitle_color: blue
+  example:
+    subtitle: Assistant
+    extend_from: colorful
+```
+
+The resulted main config will be:
+
+```yaml
+title: Custom Title
+subtitle: Assistant
+title_color: red,
+subtitle_color: blue
+```
+
+In the case of [exceptions](#exceptions), they can also extend from the main configuration if `"base"` is used as `extend_from`:
+
+```yaml
+title: Custom Title
+extend_from: example
+extendable_configs:
+  colorful:
+    title_color: red,
+    subtitle_color: blue
+  example:
+    subtitle: Assistant
+    extend_from: colorful
+exceptions:
+  - user:
+    - ElChiniNet
+    order:
+      - item: overview
+        name: Dashboard
+        icon: mdi:monitor-dashboard
+        order: 3
+    extend_from: base
+```
+
+So, the configuration for the user `ElChiniNet` will be the same previous main config, plus an order with an order-item.
+
+The next example is a more complex one extending from multiple configurations:
+
+```yaml
+title: My Home
+extend_from: admin_config
+order:
+  - new_item: true
+    item: Google
+    href: https://mrdoob.com/projects/chromeexperiments/google-gravity/
+    icon: mdi:earth
+    target: _blank
+    order: 1
+extendable_configs:
+  multicolor:
+    icon_color: red
+    icon_color_selected: blue
+    icon_color_hover: green
+    text_color: red
+    text_color_selected: blue
+    text_color_hover: green
+  admin_config:
+    extend_from: multicolor
+    order:
+      - new_item: true
+        item: Integrations
+        href: "/config/integrations"
+        icon: mdi:puzzle
+        order: 2
+      - new_item: true
+        item: Entities
+        href: "/config/entities"
+        icon: mdi:hexagon-multiple
+        order: 3
+  user_config:
+    extend_from: multicolor
+    hide_all: true
+    order:
+      - item: overview
+        hide: false
+exceptions:
+  - is_admin: true
+    extend_from: admin_config
+    order:
+      - item: config
+        bottom: true
+  - user:
+    - ElChiniNet
+    - Palaus
+    etend_from: base
+    title: HA
+  - user:
+    - Jim Hawkins
+    - Long John Silver
+    extend_from: user_config
+    order:
+      - item: overview
+        name: Dashboard
 ```
 
 ## Home Assistant built-in sidebar configuration options

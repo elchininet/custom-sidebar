@@ -72,14 +72,13 @@ exceptions:
   - user:
     - Jim Hawkins
     - Long John Silver
-    extend_from_base: false
     order:
       - new_item: true
         item: Updates
         href: "/config/updates"
         icon: mdi:update
   - user: Palaus
-    extend_from_base: true
+    extend_from: base
     order:
       - item: history
         order: 12

@@ -6,6 +6,7 @@ import {
     ConfigExceptionBase
 } from '@types';
 import {
+    EXTEND_FROM_BASE,
     NAMESPACE,
     TYPE,
     ITEM_TEMPLATE_STRING_OPTIONS,
@@ -60,7 +61,7 @@ const getArray = (value: string | string[]): string[] => {
     return value.toLowerCase().split(/\s*,\s*/);
 };
 
-const extendOptionsFromBase = (
+const extendOptionsFromExtendableConfig = (
     config: Config,
     exception: ConfigException
 ): OptionsFromBase => {
@@ -69,8 +70,10 @@ const extendOptionsFromBase = (
 
     EXTENDABLE_OPTIONS.forEach((option: ExtendableConfigOption): void => {
         const exceptionValue = exception[option];
-        const value = exception.extend_from_base
-            ? exceptionValue ?? config[option]
+        const value = exception.extend_from
+            ? exception.extend_from === EXTEND_FROM_BASE
+                ? exceptionValue ?? config[option]
+                : exceptionValue ?? config.extendable_configs[exception.extend_from][option]
             : exceptionValue;
         if (typeof value !== TYPE.UNDEFINED) {
             configCommonProps[option] = value;
@@ -78,7 +81,9 @@ const extendOptionsFromBase = (
     });
 
     ONLY_CONFIG_OPTIONS.forEach((option: OnlyConfigOption) => {
-        configCommonProps[option] = config[option];
+        if (config[option]) {
+            configCommonProps[option] = config[option];
+        }
     });
 
     return configCommonProps;
@@ -90,7 +95,17 @@ const flatConfigOrder = (order: ConfigOrder[], config: Config): ConfigOrder[] =>
     const orderMap = new Map<string, ConfigOrder>();
 
     order.forEach((orderItem: ConfigOrder): void => {
-        orderMap.set(orderItem.item, orderItem);
+        if (orderMap.has(orderItem.item)) {
+            orderMap.set(
+                orderItem.item,
+                {
+                    ...orderMap.get(orderItem.item),
+                    ...orderItem
+                }
+            );
+        } else {
+            orderMap.set(orderItem.item, orderItem);
+        }
     });
 
     orderMap.forEach((orderItem: ConfigOrder): void => {
@@ -146,11 +161,76 @@ export const logVersionToConsole = () => {
     );
 };
 
+const EXTENDABLE_CONFIG_STORE: Config['extendable_configs'] = {};
+
+const mergeConfigs = (
+    config: Config,
+    extendable: Config,
+    removeExtendFrom = true
+): Config => {
+    if (removeExtendFrom) {
+        delete config.extend_from;
+        delete extendable.extend_from;
+    }
+    return {
+        ...extendable,
+        ...config,
+        order: [
+            ...(extendable.order ?? []),
+            ...(config.order ?? [])
+        ]
+    };
+};
+
+const processExtendableConfig = (
+    extendableConfig: Config = {},
+    extendableConfigs: Config['extendable_configs']
+): Config => {
+    if (extendableConfig.extend_from) {
+        if (EXTENDABLE_CONFIG_STORE[extendableConfig.extend_from]) {
+            return {
+                ...EXTENDABLE_CONFIG_STORE[extendableConfig.extend_from]
+            };
+        }
+        const configExtended = processExtendableConfig(
+            extendableConfigs[extendableConfig.extend_from],
+            extendableConfigs
+        );
+        const configExtendedMerged = mergeConfigs(extendableConfig, configExtended);
+        EXTENDABLE_CONFIG_STORE[extendableConfig.extend_from] = configExtendedMerged;
+        return configExtendedMerged;
+    }
+    return {
+        ...extendableConfig
+    };
+};
+
 export const getConfigWithExceptions = (
     user: Hass['user'],
     userAgent: string,
     config: Config
 ): Config => {
+
+    if (config.extendable_configs) {
+
+        const extendableConfigsNames = Object.keys(config.extendable_configs);
+
+        extendableConfigsNames.forEach((extendableConfigName: string): void => {
+            config.extendable_configs[extendableConfigName] = processExtendableConfig(
+                config.extendable_configs[extendableConfigName],
+                config.extendable_configs
+            );
+        });
+
+        if (config.extend_from) {
+            config = mergeConfigs(
+                config,
+                config.extendable_configs[config.extend_from]
+            );
+        }
+
+    }
+
     if (config.exceptions) {
 
         const userName = user.name.toLocaleLowerCase();
@@ -183,26 +263,26 @@ export const getConfigWithExceptions = (
         if (filteredExceptions.length) {
 
             const flattenException = filteredExceptions.reduce((mergedExceptions: ConfigExceptionBase, exception: ConfigExceptionBase): ConfigException => {
-                const mergedOrder = mergedExceptions.order ?? [];
-                const order = exception.order ?? [];
-                return {
-                    ...mergedExceptions,
-                    ...exception,
-                    order: [
-                        ...mergedOrder,
-                        ...order
-                    ]
-                };
+                return mergeConfigs(
+                    exception,
+                    mergedExceptions,
+                    false
+                );
             }, {});
 
-            const configCommonProps = extendOptionsFromBase(config, flattenException);
+            const configCommonProps = extendOptionsFromExtendableConfig(config, flattenException);
 
-            if (flattenException.extend_from_base) {
+            if (flattenException.extend_from) {
+
+                const extendableConfig = flattenException.extend_from === EXTEND_FROM_BASE
+                    ? config
+                    : config.extendable_configs[flattenException.extend_from];
+
                 return {
                     ...configCommonProps,
                     order: flatConfigOrder(
                         [
-                            ...(config.order ?? []),
+                            ...(extendableConfig.order ?? []),
                             ...flattenException.order
                         ],
                         configCommonProps

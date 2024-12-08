@@ -106,7 +106,6 @@
         "Jim Hawkins",
         "Long John Silver"
       ],
-      "extend_from_base": false,
       "order": [
         {
           "new_item": true,
@@ -118,7 +117,7 @@
     },
     {
       "user": "Palaus",
-      "extend_from_base": true,
+      "extend_from": "base",
       "order": [
         {
           "item": "history",
