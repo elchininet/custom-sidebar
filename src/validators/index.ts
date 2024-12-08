@@ -5,7 +5,7 @@ import {
     SidebarMode
 } from '@types';
 import {
-    EXTEND_FROM_BASE,
+    BASE_NAME,
     TYPE,
     OBJECT_TO_STRING,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
@@ -32,6 +32,13 @@ const BASE_CONFIG_OPTIONS = [
     'scrollbar_thumb_color',
     'styles',
     ...ITEM_TEMPLATE_STRING_OPTIONS
+] as const;
+
+const ONLY_BASE_CONFIG_OPTIONS = [
+    'js_variables',
+    'jinja_variables',
+    'partials',
+    'extendable_configs'
 ] as const;
 
 const validateStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
@@ -101,65 +108,73 @@ const validateStringOrArrayOfStrings = (value: undefined | string | string[]): b
 };
 
 const validateExtendFrom = (
-    extendFrom: string | undefined,
+    extendFrom: string | string[] |  undefined,
     config: Config,
     exceptions = false,
     prefix = `${ERROR_PREFIX},`,
     extendBreadcrumb: string[] = []
 ): void => {
     if (extendFrom) {
-        if (extendBreadcrumb.includes(extendFrom)) {
-            throw new SyntaxError(`${prefix} circular extend dependency detected "${extendBreadcrumb.join(' > ')} > ${extendFrom}"`);
-        }
-        if (exceptions) {
-            if (
-                extendFrom !== EXTEND_FROM_BASE &&
-                !(extendFrom in (config.extendable_configs ?? {}))
-            ) {
-                throw new SyntaxError(`${prefix} "${extendFrom}" doesn't exist in "extendable_configs"`);
+        const extendFromArray = Array.isArray(extendFrom)
+            ? extendFrom
+            : [extendFrom];
+        extendFromArray.forEach((extendFrom: string): void => {
+            if (extendBreadcrumb.includes(extendFrom)) {
+                throw new SyntaxError(`${prefix} circular extend dependency detected "${extendBreadcrumb.join(' > ')} > ${extendFrom}"`);
             }
-            if (extendFrom === EXTEND_FROM_BASE) {
-                validateExtendFrom(
-                    config.extend_from,
-                    config,
-                    exceptions,
-                    prefix,
-                    [
-                        ...extendBreadcrumb,
-                        config.extend_from
-                    ]
-                );
+            extendBreadcrumb = [
+                ...extendBreadcrumb,
+                extendFrom
+            ];
+            if (exceptions) {
+                if (
+                    extendFrom !== BASE_NAME &&
+                    !(extendFrom in (config.extendable_configs ?? {}))
+                ) {
+                    throw new SyntaxError(`${prefix} "${extendFrom}" doesn't exist in "extendable_configs"`);
+                }
+                if (extendFrom === BASE_NAME) {
+                    validateExtendFrom(
+                        config.extend_from,
+                        config,
+                        exceptions,
+                        prefix,
+                        extendBreadcrumb
+                    );
+                } else {
+                    validateExtendFrom(
+                        config.extendable_configs?.[extendFrom].extend_from,
+                        config,
+                        exceptions,
+                        prefix,
+                        extendBreadcrumb
+                    );
+                }
             } else {
+                if (extendFrom === BASE_NAME) {
+                    throw new SyntaxError(`${ERROR_PREFIX}, "entend_from" can only be "base" in exceptions`);
+                }
+                if (!(extendFrom in (config.extendable_configs ?? {}))) {
+                    throw new SyntaxError(`${prefix} "${extendFrom}" doesn't exist in "extendable_configs"`);
+                }
                 validateExtendFrom(
                     config.extendable_configs?.[extendFrom].extend_from,
                     config,
                     exceptions,
                     prefix,
-                    [
-                        ...extendBreadcrumb,
-                        config.extendable_configs?.[extendFrom].extend_from
-                    ]
+                    extendBreadcrumb
                 );
             }
-        } else {
-            if (extendFrom === EXTEND_FROM_BASE) {
-                throw new SyntaxError(`${ERROR_PREFIX}, "entend_from" can only be "base" in exceptions`);
-            }
-            if (!(extendFrom in (config.extendable_configs ?? {}))) {
-                throw new SyntaxError(`${prefix} "${extendFrom}" doesn't exist in "extendable_configs"`);
-            }
-            validateExtendFrom(
-                config.extendable_configs?.[extendFrom].extend_from,
-                config,
-                exceptions,
-                prefix,
-                [
-                    ...extendBreadcrumb,
-                    config.extendable_configs?.[extendFrom].extend_from
-                ]
-            );
-        }
+        });
     }
+};
+
+const validateBaseConfigOnlyOptions = <T extends object>(config: T, prefix: string): void => {
+    ONLY_BASE_CONFIG_OPTIONS.forEach((option: string): void => {
+        if (option in config) {
+            throw new SyntaxError(`${prefix} "${option}" option can only be placed in the main config`);
+        }
+    });
 };
 
 const validateVariables = (name: string, variables: Record<string, unknown> | undefined): void => {
@@ -190,6 +205,11 @@ const validateVariables = (name: string, variables: Record<string, unknown> | un
 };
 
 const validateExceptionItem = (exception: ConfigException, config: Config): void => {
+
+    validateBaseConfigOnlyOptions(
+        exception,
+        `${ERROR_PREFIX}, exceptions`
+    );
 
     validateStringOptions(
         exception,
@@ -282,6 +302,11 @@ const validateExceptions = (exceptions: ConfigException[] | undefined, config: C
 
 const validateConfigItem = (configItem: ConfigItem): void => {
 
+    validateBaseConfigOnlyOptions(
+        configItem,
+        `${ERROR_PREFIX} in ${configItem.item},`
+    );
+
     if (!configItem.item) {
         throw new SyntaxError(`${ERROR_PREFIX}, every item in an "order" array should have an "item" property`);
     }
@@ -321,6 +346,11 @@ const validateConfigItem = (configItem: ConfigItem): void => {
 
 export const validateConfig = (config: Config): void => {
 
+    validateExtendFrom(
+        config.extend_from,
+        config
+    );
+
     validateStringOptions(
         config,
         [
@@ -348,11 +378,6 @@ export const validateConfig = (config: Config): void => {
         config,
         ['hide_all'],
         `${ERROR_PREFIX},`
-    );
-
-    validateExtendFrom(
-        config.extend_from,
-        config
     );
 
     if (
