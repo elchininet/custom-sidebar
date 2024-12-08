@@ -113,7 +113,7 @@ export interface ConfigNewItem extends Omit<ConfigItem, 'new_item'> {
 export type ConfigOrder = ConfigItem | ConfigNewItem;
 export type ConfigOrderWithItem = ConfigOrder & { element?: HTMLAnchorElement };
 
-interface BaseConfig extends SidebarColorConfig {
+export interface BaseConfig extends SidebarColorConfig {
     title?: string;
     subtitle?: string;
     hide_all?: boolean;
@@ -121,11 +121,11 @@ interface BaseConfig extends SidebarColorConfig {
     sidebar_editable?: boolean | string;
     sidebar_mode?: `${SidebarMode}`;
     styles?: string;
+    extend_from?: string;
 }
 
 export interface ConfigExceptionBase extends BaseConfig {
     is_admin?: boolean;
-    extend_from_base?: boolean;
 }
 
 interface ConfigExceptionUserInclude extends ConfigExceptionBase {
@@ -159,6 +159,7 @@ export interface Config extends BaseConfig {
     jinja_variables?: Record<string, Primitive>;
     partials?: Record<string, string>;
     exceptions?: ConfigException[];
+    extendable_configs?: Record<string, BaseConfig>;
 }
 
 export type ItemColorConfigKeys = keyof ItemColorConfig;

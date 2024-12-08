@@ -5,6 +5,7 @@ import {
     SidebarMode
 } from '@types';
 import {
+    EXTEND_FROM_BASE,
     TYPE,
     OBJECT_TO_STRING,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
@@ -99,6 +100,68 @@ const validateStringOrArrayOfStrings = (value: undefined | string | string[]): b
     );
 };
 
+const validateExtendFrom = (
+    extendFrom: string | undefined,
+    config: Config,
+    exceptions = false,
+    prefix = `${ERROR_PREFIX},`,
+    extendBreadcrumb: string[] = []
+): void => {
+    if (extendFrom) {
+        if (extendBreadcrumb.includes(extendFrom)) {
+            throw new SyntaxError(`${prefix} circular extend dependency detected "${extendBreadcrumb.join(' > ')} > ${extendFrom}"`);
+        }
+        if (exceptions) {
+            if (
+                extendFrom !== EXTEND_FROM_BASE &&
+                !(extendFrom in (config.extendable_configs ?? {}))
+            ) {
+                throw new SyntaxError(`${prefix} "${extendFrom}" doesn't exist in "extendable_configs"`);
+            }
+            if (extendFrom === EXTEND_FROM_BASE) {
+                validateExtendFrom(
+                    config.extend_from,
+                    config,
+                    exceptions,
+                    prefix,
+                    [
+                        ...extendBreadcrumb,
+                        config.extend_from
+                    ]
+                );
+            } else {
+                validateExtendFrom(
+                    config.extendable_configs?.[extendFrom].extend_from,
+                    config,
+                    exceptions,
+                    prefix,
+                    [
+                        ...extendBreadcrumb,
+                        config.extendable_configs?.[extendFrom].extend_from
+                    ]
+                );
+            }
+        } else {
+            if (extendFrom === EXTEND_FROM_BASE) {
+                throw new SyntaxError(`${ERROR_PREFIX}, "entend_from" can only be "base" in exceptions`);
+            }
+            if (!(extendFrom in (config.extendable_configs ?? {}))) {
+                throw new SyntaxError(`${prefix} "${extendFrom}" doesn't exist in "extendable_configs"`);
+            }
+            validateExtendFrom(
+                config.extendable_configs?.[extendFrom].extend_from,
+                config,
+                exceptions,
+                prefix,
+                [
+                    ...extendBreadcrumb,
+                    config.extendable_configs?.[extendFrom].extend_from
+                ]
+            );
+        }
+    }
+};
+
 const validateVariables = (name: string, variables: Record<string, unknown> | undefined): void => {
     if (typeof variables !== TYPE.UNDEFINED) {
         if (Object.prototype.toString.call(variables) !== OBJECT_TO_STRING) {
@@ -126,13 +189,21 @@ const validateVariables = (name: string, variables: Record<string, unknown> | un
     }
 };
 
-const validateExceptionItem = (exception: ConfigException): void => {
+const validateExceptionItem = (exception: ConfigException, config: Config): void => {
 
     validateStringOptions(
         exception,
         [
-            ...BASE_CONFIG_OPTIONS
+            ...BASE_CONFIG_OPTIONS,
+            'extend_from'
         ],
+        `${ERROR_PREFIX}, exceptions`
+    );
+
+    validateExtendFrom(
+        exception.extend_from,
+        config,
+        true,
         `${ERROR_PREFIX}, exceptions`
     );
 
@@ -197,14 +268,16 @@ const validateExceptionItem = (exception: ConfigException): void => {
     exception.order?.forEach(validateConfigItem);
 };
 
-const validateExceptions = (exceptions: ConfigException[] | undefined): void => {
+const validateExceptions = (exceptions: ConfigException[] | undefined, config: Config): void => {
     if (typeof exceptions === TYPE.UNDEFINED) {
         return;
     }
     if (!Array.isArray(exceptions)) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions should be an array`);
     }
-    exceptions.forEach(validateExceptionItem);
+    exceptions.forEach((exceptionItem): void => {
+        validateExceptionItem(exceptionItem, config);
+    });
 };
 
 const validateConfigItem = (configItem: ConfigItem): void => {
@@ -251,7 +324,8 @@ export const validateConfig = (config: Config): void => {
     validateStringOptions(
         config,
         [
-            ...BASE_CONFIG_OPTIONS
+            ...BASE_CONFIG_OPTIONS,
+            'extend_from'
         ],
         `${ERROR_PREFIX},`
     );
@@ -274,6 +348,11 @@ export const validateConfig = (config: Config): void => {
         config,
         ['hide_all'],
         `${ERROR_PREFIX},`
+    );
+
+    validateExtendFrom(
+        config.extend_from,
+        config
     );
 
     if (
@@ -305,5 +384,5 @@ export const validateConfig = (config: Config): void => {
     validateVariables('js_variables', config.js_variables);
     validateVariables('jinja_variables', config.jinja_variables);
     config.order?.forEach(validateConfigItem);
-    validateExceptions(config.exceptions);
+    validateExceptions(config.exceptions, config);
 };

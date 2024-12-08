@@ -53,3 +53,5 @@ export const SIDEBAR_NARROW_CLIP = {
     width: 60,
     height: 667
 };
+
+export const EXTEND_FROM_BASE = 'base';
