@@ -48,7 +48,7 @@ import {
 } from '@constants';
 import {
     logVersionToConsole,
-    getConfigWithExceptions,
+    getConfig,
     flushPromise,
     getTemplateWithPartials
 } from '@utilities';
@@ -99,7 +99,7 @@ class CustomSidebar {
     }
 
     private _configPromise: Promise<Config>;
-    private _configWithExceptions: Config;
+    private _config: Config;
     private _homeAssistant: HAElement;
     private _main: HAElement;
     private _haDrawer: HAElement;
@@ -115,10 +115,10 @@ class CustomSidebar {
     private _mouseEnterBinded: (event: MouseEvent) => void;
     private _mouseLeaveBinded: () => void;
 
-    private async _getConfigWithExceptions(): Promise<void> {
-        this._configWithExceptions = await this._configPromise
+    private async _getConfig(): Promise<void> {
+        this._config = await this._configPromise
             .then((config: Config) => {
-                return getConfigWithExceptions(
+                return getConfig(
                     this._ha.hass.user,
                     navigator.userAgent.toLowerCase(),
                     config
@@ -215,17 +215,17 @@ class CustomSidebar {
             .query(SELECTOR.TITLE)
             .element
             .then((titleElement: HTMLElement) => {
-                if (this._configWithExceptions.title) {
+                if (this._config.title) {
                     this._subscribeTemplate(
-                        this._configWithExceptions.title,
+                        this._config.title,
                         (rendered: string) => {
                             titleElement.innerHTML = rendered;
                         }
                     );
                 }
-                if (this._configWithExceptions.subtitle) {
+                if (this._config.subtitle) {
                     this._subscribeTemplate(
-                        this._configWithExceptions.subtitle,
+                        this._config.subtitle,
                         (rendered: string) => {
                             titleElement.dataset.subtitle = rendered;
                         }
@@ -257,15 +257,15 @@ class CustomSidebar {
             this._main.element,
             this._sidebar.selector.$.query(SELECTOR.MENU).element
         ]).then(([homeAssistantMain, menu]) => {
-            if (typeof this._configWithExceptions.sidebar_editable === 'boolean') {
-                this._isSidebarEditable = this._configWithExceptions.sidebar_editable;
+            if (typeof this._config.sidebar_editable === 'boolean') {
+                this._isSidebarEditable = this._config.sidebar_editable;
                 if (!this._isSidebarEditable) {
                     blockSidebar(homeAssistantMain, menu);
                 }
             }
-            if (typeof this._configWithExceptions.sidebar_editable === 'string') {
+            if (typeof this._config.sidebar_editable === 'string') {
                 this._subscribeTemplate(
-                    this._configWithExceptions.sidebar_editable,
+                    this._config.sidebar_editable,
                     (rendered: string) => {
                         if (rendered === 'true' || rendered === 'false') {
                             this._isSidebarEditable = !(rendered === 'false');
@@ -406,7 +406,7 @@ class CustomSidebar {
         this._renderer.trackTemplate(
             getTemplateWithPartials(
                 template,
-                this._configWithExceptions.partials
+                this._config.partials
             ),
             (result: unknown): void => {
                 this._getTemplateString(result)
@@ -431,14 +431,14 @@ class CustomSidebar {
                     type: EVENT.RENDER_TEMPLATE,
                     template: getTemplateWithPartials(
                         template,
-                        this._configWithExceptions.partials
+                        this._config.partials
                     ),
                     variables: {
                         user_name: this._ha.hass.user.name,
                         user_is_admin: this._ha.hass.user.is_admin,
                         user_is_owner: this._ha.hass.user.is_owner,
                         user_agent: window.navigator.userAgent,
-                        ...(this._configWithExceptions.jinja_variables)
+                        ...(this._config.jinja_variables)
                     }
                 }
             );
@@ -551,7 +551,7 @@ class CustomSidebar {
             this._partialPanelResolver.element
         ]).then(([homeAssistantMain, partialPanelResolver]: [HomeAssistantMain, PartialPanelResolver]) => {
 
-            const sidebarMode = this._configWithExceptions.sidebar_mode;
+            const sidebarMode = this._config.sidebar_mode;
             const mql = matchMedia('(max-width: 870px)');
 
             if (sidebarMode) {
@@ -590,13 +590,13 @@ class CustomSidebar {
         ]).then(([mcDrawer, sidebar, sideBarShadowRoot, paperListBox]: [HTMLElement, HTMLElement, ShadowRoot, HTMLElement]) => {
 
             this._subscribeTemplateColorChanges(
-                this._configWithExceptions,
+                this._config,
                 sidebar,
                 SIDEBAR_OPTIONS_VARIABLES_MAP
             );
 
             this._subscribeTemplateColorChanges(
-                this._configWithExceptions,
+                this._config,
                 mcDrawer,
                 [
                     ['sidebar_border_color',    CUSTOM_SIDEBAR_CSS_VARIABLES.BORDER_COLOR]
@@ -666,7 +666,7 @@ class CustomSidebar {
                     STYLES.INFO_COLOR_HOVER,
                     STYLES.NOTIFICATION_COLOR_SELECTED_NOTIFICATION_TEXT_COLOR_SELECTED,
                     STYLES.NOTIFICATION_COLOR_HOVER_NOTIFICATION_TEXT_COLOR_HOVER,
-                    this._configWithExceptions.styles || ''
+                    this._config.styles || ''
                 ],
                 sideBarShadowRoot
             );
@@ -679,7 +679,7 @@ class CustomSidebar {
         this._getElements()
             .then((elements) => {
 
-                const { order, hide_all } = this._configWithExceptions;
+                const { order, hide_all } = this._config;
                 const [paperListBox, items, spacer] = elements;
 
                 let orderIndex = 0;
@@ -973,9 +973,9 @@ class CustomSidebar {
                     .getRenderer()
                     .then((renderer) => {
                         this._renderer = renderer;
-                        this._getConfigWithExceptions()
+                        this._getConfig()
                             .then(() => {
-                                this._renderer.variables = this._configWithExceptions.js_variables ?? {};
+                                this._renderer.variables = this._config.js_variables ?? {};
                                 this._processSidebar();
                                 this._subscribeTitle();
                                 this._subscribeSideBarEdition();

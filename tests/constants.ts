@@ -54,4 +54,4 @@ export const SIDEBAR_NARROW_CLIP = {
     height: 667
 };
 
-export const EXTEND_FROM_BASE = 'base';
+export const BASE_NAME = 'base';
