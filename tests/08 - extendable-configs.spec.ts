@@ -39,25 +39,137 @@ const runTest = ({ title, json, snapshot }: TestParams): void => {
 
 test.describe('extendable configurations', () => {
 
-    [
-        {
-            title: 'main config should extend from an extendable configuration',
-            json: {
-                extendable_configs: {
-                    colors: {
-                        icon_color: 'red',
-                        text_color: 'red'
+    test.describe('main configuration', () => {
+
+        [
+            {
+                title: 'main config should extend from an extendable configuration',
+                json: {
+                    extendable_configs: {
+                        my_config: {
+                            subtitle: 'Extended Subtitle',
+                            icon_color: 'red',
+                            text_color: 'red'
+                        }
                     },
-                    my_config: {
-                        subtitle: 'Extended Subtitle',
-                        extend_from: 'colors'
-                    }
+                    title: 'Custom Title',
+                    extend_from: 'my_config'
                 },
-                title: 'Custom Title',
-                extend_from: 'my_config'
+                snapshot: 'extendable-configurations-main-config-extending.png'
             },
-            snapshot: 'extendable-configurations-main-config-extending.png'
-        }
-    ].forEach(runTest);
+            {
+                title: 'main config should extend from an extendable configuration that extends from another extendable configuration',
+                json: {
+                    extendable_configs: {
+                        colors: {
+                            icon_color: 'red',
+                            text_color: 'red'
+                        },
+                        my_config: {
+                            subtitle: 'Extended Subtitle',
+                            extend_from: 'colors'
+                        }
+                    },
+                    title: 'Custom Title',
+                    extend_from: 'my_config'
+                },
+                snapshot: 'extendable-configurations-main-config-extending.png'
+            },
+            {
+                title: 'main config should extend from two extendable configurations',
+                json: {
+                    extendable_configs: {
+                        colors: {
+                            icon_color: 'red',
+                            text_color: 'red'
+                        },
+                        titles: {
+                            title: 'Custom Title',
+                            subtitle: 'Extended Subtitle'
+                        }
+                    },
+                    extend_from: [
+                        'colors',
+                        'titles'
+                    ]
+                },
+                snapshot: 'extendable-configurations-main-config-extending.png'
+            }
+        ].forEach(runTest);
+
+    });
+
+    test.describe('exceptions', () => {
+
+        [
+            {
+                title: 'an exception should extend from an extendable configuration',
+                json: {
+                    extendable_configs: {
+                        my_config: {
+                            subtitle: 'Extended Subtitle',
+                            icon_color: 'red',
+                            text_color: 'red'
+                        }
+                    },
+                    exceptions: [
+                        {
+                            user: 'Test',
+                            title: 'Custom Title',
+                            extend_from: 'my_config'
+                        }
+                    ]
+                },
+                snapshot: 'extendable-configurations-exception-extending.png'
+            },
+            {
+                title: 'an exception should extend from an extendable configuration and base',
+                json: {
+                    extendable_configs: {
+                        my_config: {
+                            subtitle: 'Extended Subtitle',
+                            icon_color: 'red',
+                            text_color: 'red'
+                        }
+                    },
+                    exceptions: [
+                        {
+                            user: 'Test',
+                            title: 'Custom Title',
+                            extend_from: [
+                                'base',
+                                'my_config'
+                            ]
+                        }
+                    ]
+                },
+                snapshot: 'extendable-configurations-main-config-extending.png'
+            },
+            {
+                title: '@testing an exception should extend from an extendable configuration that extends from another extendable configuration',
+                json: {
+                    extendable_configs: {
+                        colors: {
+                            icon_color: 'red',
+                            text_color: 'red'
+                        },
+                        my_config: {
+                            subtitle: 'Extended Subtitle',
+                            extend_from: 'colors'
+                        }
+                    },
+                    exceptions: [
+                        {
+                            device: 'Chrome',
+                            title: 'Custom Title',
+                            extend_from: 'my_config'
+                        }
+                    ]
+                },
+                snapshot: 'extendable-configurations-exception-extending.png'
+            }
+        ].forEach(runTest);
+
+    });
 
 });

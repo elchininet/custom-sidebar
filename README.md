@@ -188,6 +188,9 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 
 #### Advanced configuration options
 
+>[!IMPORTANT]
+>These options are intended for advanced users. They are not strictly necessary and you can use the plugin without making use of them. The purpose of these options is to reduce code repetition and share configurations. It is advisable that you do not use them if they result confusing to you or if you don't understand their usage. Check the [advanced configuration options usage section](#advanced-configuration-options-usage)
+
 | Property           | Type                               | Required | Description |
 | ------------------ | ---------------------------------- | -------- | ----------- |
 | js_variables       | Object                             | no       | An object containing variales that will be used in [JavaScript templates](#javascript-templates). The variables cannot be templates and they must be strings, numbers or booleans (check the [partials section](#partials) for an example) |
@@ -195,10 +198,6 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | partials              | Object                          | no       | An object containing fragments of code that can be included in your templates. Consult [the partial section](#partials) for more info |
 | extendable_configs    | Object                          | no       | An object containing extendable configurations (check [extendable configurations section](#extendable-configurations)) |
 | extend_from           | String or String[]              | no       | Indicates if the configuration should extend from extendable configrations (check [extendable configurations section](#extendable-configurations)) |
-
->[!TIP]
->These options are intended for advanced users. They are not strictly necessary. Do not use them if they result confusing to you or if you don't understand their usage.
-
 
 #### Order items properties
 
@@ -308,7 +307,7 @@ Short example in `JSON` format:
 ### Exceptions
 
 You can define user-specific options using exceptions feature. Exceptions can be used if you would like to define different options for a specific user/device.
-In an exception you can define almost all the options available in [the main configuration options](#configuration-options) (excluding the advanced options `js_variables`, `jinja_variables`, `partials`, and `extendable_configs`). And on top of those options, the next ones will be available:
+In an exception you can define almost all the options available in [the main configuration options](#configuration-options) (excluding the [advanced options](#advanced-configuration-options) `js_variables`, `jinja_variables`, `partials`, and `extendable_configs`). And on top of those options, the next ones will be available:
 
 | Property            | Type              | Required | Description |
 | ------------------- | ----------------- | -------- | ----------- |
@@ -326,7 +325,7 @@ exceptions:
   - user:
     - Jim Hawkins
     - Long John Silver
-    extend_from_base: true
+    extend_from: base
     title: My Home
     order:
       ...
@@ -349,7 +348,7 @@ Short example in `JSON` format:
   "exceptions": [
     {
       "user": ["Jim Hawkins", "Long John Silver"],
-      "extend_from_base": true,
+      "extend_from": "base",
       "title": "My Home",
       "order": [
         ...
@@ -376,6 +375,7 @@ Short example in `JSON` format:
 >* If multiple exeptions match, the last match rules so their options will be the ones used. There is a special treatment for the `order` option, if multiple exceptions match, the order of all of them will be merged, but if an item is repeated in more than one order, then the last one will rule.
 >* You cannot use `user` and `not_user` at the same time, doing so will end in an error
 >* You cannot use `device` and `not_device` at the same time, doing so will end in an error
+>* In exceptions it is possible to use the `extend_from` option with the value `base`. If you use it with this value, the main configuration will be merged with the one in the exceptions. Consult the [extendable configurations section](#extendable-configurations) to know how is the process of extending configurations.
 
 ## Templates
 
@@ -516,9 +516,10 @@ order:
 }
 ```
 
-## Advanced configuration options
+## Advanced configuration options usage
 
-Custom sidebar has advanced configurations options only intended for advanced users. These options are basically used to avoid repetition of options or templates, but they are not strictly necessary to configure the plugin. Do not use these options if they result confusing for you or if you don't understand their usage.
+>[!IMPORTANT]
+>`Custom Sidebar`'s advanced configurations options are intended for advanced users. They are not strictly necessary and you can use the plugin without making use of them. The purpose of these options is to reduce code repetition and share configurations. It is advisable that you do not use them if they result confusing to you or if you don't understand their usage.
 
 ### Partials
 
@@ -585,7 +586,7 @@ order:
 
 Extendable configurations (`extendable_configs`) is an object containing different configurations options that could be extended from the [main configuration](#configuration-options), from [the exceptions](#exceptions) or from another extendable configuration, making them a very flexible option to share configuration blocks. To specify that a configuration should extend from an extendable configuration, the `extend_from` option should be used specifying the extendable configuration name(s).
 
-Extending from a configuration basically means "import what I don't already have", so if a configuration already have an option, this will prevail and it will not be overridden if the configuration is extended. For example, the next configuration has a main configuration extending from an extendable configuration named `example`, let's analyse what will be the result of that extend.
+Extending from a configuration basically means "import what I don't already have", so if a configuration already have an option, it will prevail and it will not be overridden if the configuration is extended. For example, the next configuration has a main configuration extending from an extendable configuration named `example`, let's analyse what will be the result of that extend.
 
 ```yaml
 title: Custom Title
@@ -616,11 +617,12 @@ extendable_configs:
 ```
 
 1. As the `title` option is defined in the main configuration, it will not get the `title` option from the extendable configuration.
-2. As the `subtitle` option is not defined in the main configuration, it will get it from the extendable configuration
+2. As the `subtitle` option is not defined in the main configuration, it will be get from the extendable configuration
 3. As the main configuration and the extendable configuration both have an `order` option, it will be merged:
     1. Both orders have an `overview` item, so it will be merged. As the main config order-item has also an `order` property, it will not be extended, but as the extendable order-item has an `icon` property that doesn't exist in the main config order-item, it will be extended
-    2. The `Integrations` doesn't exist in the extendable order so it will remain as it is 
-    3. The `Google` extendable item doesn't exist in the main config, so it will be extended
+    2. As the extendable order-item doesn't have a `name` property, it will remain there
+    3. The `Integrations` doesn't exist in the extendable order so it will remain as it is 
+    4. The `Google` extendable item doesn't exist in the main config, so it will be extended
 
 The resulted main config after the extending process will be:
 
@@ -646,7 +648,7 @@ order:
   
 ```
 
-It is possible to extend from multiple configurations, as shown in the next example:
+It is possible to extend from multiple configurations and they will be extended in order, as shown in the next example:
 
 ```yaml
 extend_from:
@@ -684,7 +686,7 @@ title_color: red,
 subtitle_color: blue
 ```
 
-In the case of [exceptions](#exceptions), they can also extend from the main configuration if `"base"` is used in the `extend_from` option:
+In the case of [exceptions](#exceptions), they can also extend from the main configuration if `base` is used in the `extend_from` option:
 
 ```yaml
 title: Custom Title
@@ -771,7 +773,7 @@ exceptions:
 
 > [!IMPORTANT]
 >* You need to be careful of circular dependencies when extending configurations, if this is detected and error will be thrown
->* You can only use `"base"` inside `extend_from` if you are in an exception, trying to use it in the main config or in an extendable configuration will throw and error
+>* You can only use `base` inside `extend_from` if you are in an exception, trying to use it in the main config or in an extendable configuration will throw and error
 
 ## Home Assistant built-in sidebar configuration options
 

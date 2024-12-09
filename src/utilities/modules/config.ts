@@ -47,7 +47,6 @@ class ConfigFlatter {
                 this._config.extendable_configs ?? []
             )
         );
-        this._configStore = new Map();
         this._user = user;
         this._userAgent = userAgent;
         this._exceptions = this._getExceptions();
@@ -56,7 +55,6 @@ class ConfigFlatter {
 
     private _config: Config;
     private _extendable: Map<string, Config>;
-    private _configStore: Map<string, Config>;
     private _user: Hass['user'];
     private _userAgent: string;
     private _exceptions: ConfigException[];
@@ -96,6 +94,19 @@ class ConfigFlatter {
         return [];
     }
 
+    private _mergeConfigs(...configs: Config[]): Config {
+        return configs.reduce((merged: Config, config: Config): Config => {
+            return {
+                ...merged,
+                ...config,
+                order: [
+                    ...(merged.order ?? []),
+                    ...(config.order ?? [])
+                ]
+            };
+        }, {});
+    }
+
     private _pickExtendableOptions(config: Config): Config {
         const entries = Object.entries(config);
         const pickedConfig = Object.fromEntries(
@@ -110,43 +121,24 @@ class ConfigFlatter {
                 pickedConfig
             );
         }
-        return pickedConfig;
-    }
-
-    private _mergeConfigs(base: Config, config: Config): Config {
         return {
-            ...base,
-            ...config,
-            order: [
-                ...(base.order ?? []),
-                ...(config.order ?? [])
-            ]
+            ...pickedConfig
         };
     }
 
     private _importConfig(configIds: string | string[]): Config {
         const configs = getArray(configIds);
         return configs.reduce((flattenConfig: Config, id: string): Config => {
-            if (this._configStore.has(id)) {
-                return this._mergeConfigs(
-                    this._configStore.get(id),
-                    flattenConfig
-                );
-            }
             if (id === BASE_NAME) {
-                const config = this._pickExtendableOptions(this._config);
-                this._configStore.set(id, config);
                 return this._mergeConfigs(
-                    config,
+                    this._pickExtendableOptions(this._config),
                     flattenConfig
                 );
             }
-            const extendedConfig = this._pickExtendableOptions(
-                this._extendable.get(id)
-            );
-            this._configStore.set(id, extendedConfig);
             return this._mergeConfigs(
-                extendedConfig,
+                this._pickExtendableOptions(
+                    this._extendable.get(id)
+                ),
                 flattenConfig
             );
         }, {});
@@ -165,10 +157,8 @@ class ConfigFlatter {
         this._flattenConfig = this._exceptions.reduce((flattenException: Config, exception: ConfigException): Config => {
             if (exception.extend_from) {
                 return this._mergeConfigs(
-                    this._mergeConfigs(
-                        this._importConfig(exception.extend_from),
-                        flattenException
-                    ),
+                    this._importConfig(exception.extend_from),
+                    flattenException,
                     exception
                 );
             }
