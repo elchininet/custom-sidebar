@@ -133,6 +133,29 @@ test('notifications using a template should update if one of its entities change
         }
     },
     {
+        title: 'variables should be included in exceptions templates',
+        json: {
+            jinja_variables: {
+                my_switch: 'input_boolean.my_switch',
+                on: true,
+                off: false,
+                variable: 123
+            },
+            exceptions: [
+                {
+                    user: 'Test',
+                    title: `
+                        {% if is_state(my_switch, "on") %}
+                            {{ on }} {{ variable }}
+                        {% else %}
+                            {{ off }} {{ variable }}
+                        {% endif %}
+                    `
+                }
+            ]
+        }
+    },
+    {
         title: 'partials should be included in the templates',
         json: {
             partials: {
@@ -151,6 +174,32 @@ test('notifications using a template should update if one of its entities change
                     {{ off }} {{ variable }}
                 {% endif %}
             `
+        }
+    },
+    {
+        title: 'partials should be included in the exceptions templates',
+        json: {
+            partials: {
+                my_partial: `
+                    {% set my_switch = 'input_boolean.my_switch' %}
+                    {% set on = True %}
+                    {% set off = False %}
+                    {% set variable = 123 %}
+                `
+            },
+            exceptions: [
+                {
+                    is_admin: true,
+                    title: `
+                        @partial my_partial
+                        {% if is_state(my_switch, "on") %}
+                            {{ on }} {{ variable }}
+                        {% else %}
+                            {{ off }} {{ variable }}
+                        {% endif %}
+                    `
+                }
+            ]
         }
     },
     {
