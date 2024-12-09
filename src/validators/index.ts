@@ -110,9 +110,31 @@ const validateStringOrArrayOfStrings = (value: undefined | string | string[]): b
 const validateExtendFrom = (
     extendFrom: string | string[] |  undefined,
     config: Config,
-    exceptions = false,
-    prefix = `${ERROR_PREFIX},`,
-    extendBreadcrumb: string[] = []
+    prefix: string,
+    exceptions = false
+): void => {
+    if (extendFrom) {
+        const extendFromArray = Array.isArray(extendFrom)
+            ? extendFrom
+            : [extendFrom];
+        extendFromArray.forEach((extendFrom: string): void => {
+            if (extendFrom === BASE_NAME && !exceptions) {
+                throw new SyntaxError(`${prefix} "entend_from" can only be "base" in exceptions`);
+            }
+            if (
+                extendFrom !== BASE_NAME &&
+                !(extendFrom in (config.extendable_configs ?? {}))
+            ) {
+                throw new SyntaxError(`${prefix} "${extendFrom}" doesn't exist in "extendable_configs"`);
+            }
+        });
+    }
+};
+
+const validateExtendableConfig = (
+    extendFrom: string | string[] | undefined,
+    config: Config,
+    extendBreadcrumb: string[]
 ): void => {
     if (extendFrom) {
         const extendFromArray = Array.isArray(extendFrom)
@@ -120,51 +142,35 @@ const validateExtendFrom = (
             : [extendFrom];
         extendFromArray.forEach((extendFrom: string): void => {
             if (extendBreadcrumb.includes(extendFrom)) {
-                throw new SyntaxError(`${prefix} circular extend dependency detected "${extendBreadcrumb.join(' > ')} > ${extendFrom}"`);
+                throw new SyntaxError(`${ERROR_PREFIX}, circular extend dependency detected in "${extendBreadcrumb.join(' > ')} > ${extendFrom}"`);
             }
-            extendBreadcrumb = [
-                ...extendBreadcrumb,
-                extendFrom
-            ];
-            if (exceptions) {
-                if (
-                    extendFrom !== BASE_NAME &&
-                    !(extendFrom in (config.extendable_configs ?? {}))
-                ) {
-                    throw new SyntaxError(`${prefix} "${extendFrom}" doesn't exist in "extendable_configs"`);
-                }
-                if (extendFrom === BASE_NAME) {
-                    validateExtendFrom(
-                        config.extend_from,
-                        config,
-                        exceptions,
-                        prefix,
-                        extendBreadcrumb
-                    );
-                } else {
-                    validateExtendFrom(
-                        config.extendable_configs?.[extendFrom].extend_from,
-                        config,
-                        exceptions,
-                        prefix,
-                        extendBreadcrumb
-                    );
-                }
-            } else {
-                if (extendFrom === BASE_NAME) {
-                    throw new SyntaxError(`${ERROR_PREFIX}, "entend_from" can only be "base" in exceptions`);
-                }
-                if (!(extendFrom in (config.extendable_configs ?? {}))) {
-                    throw new SyntaxError(`${prefix} "${extendFrom}" doesn't exist in "extendable_configs"`);
-                }
-                validateExtendFrom(
-                    config.extendable_configs?.[extendFrom].extend_from,
-                    config,
-                    exceptions,
-                    prefix,
-                    extendBreadcrumb
-                );
+            if (extendFrom === BASE_NAME) {
+                throw new SyntaxError(`${ERROR_PREFIX}, error in extendable config "${extendBreadcrumb[0]}": "entend_from" can only be "base" in exceptions`);
             }
+            if (!(extendFrom in config.extendable_configs)) {
+                throw new SyntaxError(`${ERROR_PREFIX}, error in "${extendBreadcrumb[extendBreadcrumb.length - 1]}": "${extendFrom}" doesn't exist in "extendable_configs"`);
+            }
+            validateExtendableConfig(
+                config.extendable_configs[extendFrom].extend_from,
+                config,
+                [
+                    ...extendBreadcrumb,
+                    extendFrom
+                ]
+            );
+        });
+    }
+};
+
+const validateExtendableConfigs = (config: Config): void => {
+    if (config.extendable_configs) {
+        Object.entries(config.extendable_configs).forEach((entry): void => {
+            const [name, entendableConfig] = entry;
+            validateExtendableConfig(
+                entendableConfig.extend_from,
+                config,
+                [name]
+            );
         });
     }
 };
@@ -214,8 +220,7 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
     validateStringOptions(
         exception,
         [
-            ...BASE_CONFIG_OPTIONS,
-            'extend_from'
+            ...BASE_CONFIG_OPTIONS
         ],
         `${ERROR_PREFIX}, exceptions`
     );
@@ -223,8 +228,8 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
     validateExtendFrom(
         exception.extend_from,
         config,
-        true,
-        `${ERROR_PREFIX}, exceptions`
+        `${ERROR_PREFIX}, error in exception:`,
+        true
     );
 
     validateStringOrNumberOptions(
@@ -240,7 +245,8 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
             ['user', exception.user],
             ['not_user', exception.not_user],
             ['device', exception.device],
-            ['not_device', exception.not_device]
+            ['not_device', exception.not_device],
+            ['extend_from', exception.extend_from]
         ],
         `${ERROR_PREFIX}, exceptions`
     );
@@ -346,19 +352,28 @@ const validateConfigItem = (configItem: ConfigItem): void => {
 
 export const validateConfig = (config: Config): void => {
 
-    validateExtendFrom(
-        config.extend_from,
-        config
-    );
-
     validateStringOptions(
         config,
         [
-            ...BASE_CONFIG_OPTIONS,
-            'extend_from'
+            ...BASE_CONFIG_OPTIONS
         ],
         `${ERROR_PREFIX},`
     );
+
+    validateStringOrArrayOfStringsOptions(
+        [
+            ['extend_from', config.extend_from]
+        ],
+        `${ERROR_PREFIX},`
+    );
+
+    validateExtendFrom(
+        config.extend_from,
+        config,
+        `${ERROR_PREFIX}, error in main config:`
+    );
+
+    validateExtendableConfigs(config);
 
     validateStringOrNumberOptions(
         config,
