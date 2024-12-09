@@ -194,7 +194,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | jinja_variables       | Object                          | no       | An object containing variales that will be used in [Jinja templates](#jinja-templates). The variables cannot be templates and they must be strings, numbers or booleans (check the [partials section](#partials) for an example) |
 | partials              | Object                          | no       | An object containing fragments of code that can be included in your templates. Consult [the partial section](#partials) for more info |
 | extendable_configs    | Object                          | no       | An object containing extendable configurations (check [extendable configurations section](#extendable-configurations)) |
-| extend_from           | String                          | no       | Indicates if the configuration should extend from an extendable configration (check [extendable configurations section](#extendable-configurations)) |
+| extend_from           | String or String[]              | no       | Indicates if the configuration should extend from extendable configrations (check [extendable configurations section](#extendable-configurations)) |
 
 >[!TIP]
 >These options are intended for advanced users. They are not strictly necessary. Do not use them if they result confusing to you or if you don't understand their usage.
@@ -583,9 +583,9 @@ order:
 
 ### Extendable configurations
 
-Extendable configurations (`extendable_configs`) is an object containing different configurations options that could be extended from the [main configuration](#configuration-options), from [the exceptions](#exceptions) or from an extendable configuration itself, making them a very flexible option to share configuration blocks. To specify that a configuration should extend from an extendable configuration, the `extend_from` option should be used specifying the extendable configuration name.
+Extendable configurations (`extendable_configs`) is an object containing different configurations options that could be extended from the [main configuration](#configuration-options), from [the exceptions](#exceptions) or from another extendable configuration, making them a very flexible option to share configuration blocks. To specify that a configuration should extend from an extendable configuration, the `extend_from` option should be used specifying the extendable configuration name(s).
 
-For example, the next configuration has a main configuration extending from an extendable configuration named `example`, let's analyse what will be the result of that extend.
+Extending from a configuration basically means "import what I don't already have", so if a configuration already have an option, this will prevail and it will not be overridden if the configuration is extended. For example, the next configuration has a main configuration extending from an extendable configuration named `example`, let's analyse what will be the result of that extend.
 
 ```yaml
 title: Custom Title
@@ -620,9 +620,9 @@ extendable_configs:
 3. As the main configuration and the extendable configuration both have an `order` option, it will be merged:
     1. Both orders have an `overview` item, so it will be merged. As the main config order-item has also an `order` property, it will not be extended, but as the extendable order-item has an `icon` property that doesn't exist in the main config order-item, it will be extended
     2. The `Integrations` doesn't exist in the extendable order so it will remain as it is 
-    3. The `Google` extendable item doesn't exist in the main config, so it will be extended from it
+    3. The `Google` extendable item doesn't exist in the main config, so it will be extended
 
-The resulted main config will be:
+The resulted main config after the extending process will be:
 
 ```yaml
 title: Custom Title
@@ -646,7 +646,22 @@ order:
   
 ```
 
-As already mentioned, an extendable configuration can extend from another extendable configuration:
+It is possible to extend from multiple configurations, as shown in the next example:
+
+```yaml
+extend_from:
+  - colors
+  - titles
+extendable_configs:
+  colors:
+    icon_color: red
+    text_color: red
+  titles:
+    title: Custom Title
+    subtitle: Custom Subtitle
+```
+
+As already mentioned, an extendable configuration can extend from other extendable configurations:
 
 ```yaml
 title: Custom Title
@@ -669,7 +684,7 @@ title_color: red,
 subtitle_color: blue
 ```
 
-In the case of [exceptions](#exceptions), they can also extend from the main configuration if `"base"` is used as `extend_from`:
+In the case of [exceptions](#exceptions), they can also extend from the main configuration if `"base"` is used in the `extend_from` option:
 
 ```yaml
 title: Custom Title
@@ -715,7 +730,6 @@ extendable_configs:
     text_color_selected: blue
     text_color_hover: green
   admin_config:
-    extend_from: multicolor
     order:
       - new_item: true
         item: Integrations
@@ -735,7 +749,9 @@ extendable_configs:
         hide: false
 exceptions:
   - is_admin: true
-    extend_from: admin_config
+    extend_from:
+      - multicolor
+      - admin_config
     order:
       - item: config
         bottom: true
@@ -752,6 +768,10 @@ exceptions:
       - item: overview
         name: Dashboard
 ```
+
+> [!IMPORTANT]
+>* You need to be careful of circular dependencies when extending configurations, if this is detected and error will be thrown
+>* You can only use `"base"` inside `extend_from` if you are in an exception, trying to use it in the main config or in an extendable configuration will throw and error
 
 ## Home Assistant built-in sidebar configuration options
 

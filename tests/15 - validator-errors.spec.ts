@@ -243,7 +243,7 @@ test.describe('main options', () => {
                     return myTitle;
                 ]]]`
             },
-            error: `custom-sidebar: circular partials dependency my_partial > my_title > my_partial`
+            error: 'custom-sidebar: circular partials dependency my_partial > my_title > my_partial'
         },
         {
             title: 'should warn about a non existent partial with a Jinja template',
@@ -276,7 +276,133 @@ test.describe('main options', () => {
                     {{ myTitle }}
                 `
             },
-            error: `custom-sidebar: circular partials dependency my_partial > my_title > my_partial`
+            error: 'custom-sidebar: circular partials dependency my_partial > my_title > my_partial'
+        },
+        {
+            title: 'should throw an error with a malformed "extend_from"',
+            json: {
+                title: 'Custom Title',
+                extend_from: {
+                    name: 'something'
+                }
+            },
+            error: `${ERROR_PREFIX}, "extend_from" property should be a string or an array of strings`
+        },
+        {
+            title: 'should throw an error if "extend_from" is used with "base" in the main config',
+            json: {
+                title: 'Custom Title',
+                extend_from: 'base'
+            },
+            error: `${ERROR_PREFIX}, error in main config: "entend_from" can only be "base" in exceptions`
+        },
+        {
+            title: 'should throw an error if the main config tries to extend but there is no "extendable_configs"',
+            json: {
+                extend_from: 'title'
+            },
+            error: `${ERROR_PREFIX}, error in main config: "title" doesn't exist in "extendable_configs"`
+        },
+        {
+            title: 'should throw an error if the main config extends from a non-existent extendable config',
+            json: {
+                extendable_configs: {
+                    test: {
+                        title: 'Custom Title'
+                    }
+                },
+                extend_from: [
+                    'test',
+                    'title'
+                ]
+            },
+            error: `${ERROR_PREFIX}, error in main config: "title" doesn't exist in "extendable_configs"`
+        },
+        {
+            title: 'should throw an error if the extendable config contains an unexistent extend_from',
+            json: {
+                extendable_configs: {
+                    colors: {
+                        icon_color: 'red'
+                    },
+                    test: {
+                        title: 'Custom Title',
+                        extend_from: [
+                            'colors',
+                            'users'
+                        ]
+                    },
+                    users: {
+                        sidebar_editable: false,
+                        extend_from: 'non_existent'
+                    }
+                }
+            },
+            error: `${ERROR_PREFIX}, error in "users": "non_existent" doesn't exist in "extendable_configs"`
+        },
+        {
+            title: 'should throw an error if an extendable config extends from base',
+            json: {
+                extendable_configs: {
+                    test: {
+                        title: 'Custom Title',
+                        extend_from: 'base'
+                    }
+                }
+            },
+            error: `${ERROR_PREFIX}, error in extendable config "test": "entend_from" can only be "base" in exceptions`
+        },
+        {
+            title: 'should throw an error if the initial extendable config is found in a circular dependecney',
+            json: {
+                extendable_configs: {
+                    colorful: {
+                        icon_color: 'red',
+                        extend_from: [
+                            'users',
+                            'admins'
+                        ]
+                    },
+                    test: {
+                        title: 'Custom Title',
+                        extend_from: 'colorful'
+                    },
+                    users: {
+                        sidebar_editable: false
+                    },
+                    admins: {
+                        menu_background: 'blue',
+                        extend_from: 'test'
+                    }
+                }
+            },
+            error: `${ERROR_PREFIX}, circular extend dependency detected in "colorful > admins > test > colorful"`
+        },
+        {
+            title: 'should throw an error if an intermediate extendable config is found in a circular dependecney',
+            json: {
+                extendable_configs: {
+                    colorful: {
+                        icon_color: 'red',
+                        extend_from: [
+                            'admins',
+                            'users'
+                        ]
+                    },
+                    test: {
+                        title: 'Custom Title',
+                        extend_from: 'admins'
+                    },
+                    users: {
+                        sidebar_editable: false
+                    },
+                    admins: {
+                        menu_background: 'blue',
+                        extend_from: 'test'
+                    }
+                }
+            },
+            error: `${ERROR_PREFIX}, circular extend dependency detected in "colorful > admins > test > admins"`
         }
     ]);
 
@@ -388,6 +514,20 @@ test.describe('order item property', () => {
                 ]
             },
             error: `${ERROR_PREFIX} in dev, "icon" property should be a string`
+        },
+        {
+            title: 'should throw an error if a base config option is found in order item',
+            json: {
+                order: [
+                    {
+                        item: 'logbook',
+                        partials: {
+                            test: 'const a = "test";'
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in logbook, "partials" option can only be placed in the main config`
         }
     ]);
 
@@ -580,6 +720,60 @@ test.describe('exceptions', () => {
                 ]
             },
             error: `${ERROR_PREFIX}, every item in an "order" array should have an "item" property`
+        },
+        {
+            title: 'should throw an error if an exceptions extends from a non-existent extendable config',
+            json: {
+                extendable_configs: {
+                    test: {
+                        title: 'Custom Title'
+                    }
+                },
+                exceptions: [
+                    {
+                        user: 'Test',
+                        extend_from: 'title'
+
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, error in exception: "title" doesn't exist in "extendable_configs"`
+        },
+        {
+            title: 'should throw an error if a base config option is found in an exception',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        extendable_configs: {
+                            test: {
+                                title: 'Custom Title',
+                                extend_from: 'base'
+                            }
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, exceptions "extendable_configs" option can only be placed in the main config`
+        },
+        {
+            title: 'should throw an error if a base config option is found in an exception order item',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: [
+                            {
+                                item: 'dashboard',
+                                js_variables: {
+                                    test: 'test'
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in dashboard, "js_variables" option can only be placed in the main config`
         }
     ]);
 
