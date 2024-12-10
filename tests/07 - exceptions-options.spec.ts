@@ -786,6 +786,32 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
+            title: 'it should match the user name regardless of is_owner being true',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        is_owner: true,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'it should match the user name regardless of is_owner being false',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        is_owner: false,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
             title: 'shuld match a user if it is included in the user option as an array',
             json: {
                 exceptions: [
@@ -817,6 +843,32 @@ test.describe('user and device matchers', () => {
                     {
                         user: ['ElChiniNet', 'Test', 'Palaus'],
                         is_admin: false,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'should match a user included in an user option as an array regardless of is_owner being true',
+            json: {
+                exceptions: [
+                    {
+                        user: ['ElChiniNet', 'Test', 'Palaus'],
+                        is_owner: true,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'should match a user included in an user option as an array regardless of is_owner being false',
+            json: {
+                exceptions: [
+                    {
+                        user: ['ElChiniNet', 'Test', 'Palaus'],
+                        is_owner: false,
                         ...json
                     }
                 ]
@@ -862,6 +914,32 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
+            title: 'should match a user if the user name doesn\'t match with not_user regardless of is_owner being true',
+            json: {
+                exceptions: [
+                    {
+                        not_user: 'ElChiniNet',
+                        is_owner: true,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'should match a user if the user name doesn\'t match with not_user regardless of is_owner being false',
+            json: {
+                exceptions: [
+                    {
+                        not_user: 'ElChiniNet',
+                        is_owner: false,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
             title: 'should match an user if it is not included in the not_user option as an array',
             json: {
                 exceptions: [
@@ -893,6 +971,32 @@ test.describe('user and device matchers', () => {
                     {
                         not_user: ['ElChiniNet', 'Palaus'],
                         is_admin: false,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'should match an user if it is not included in the not_user option as an array regardless of is_owner being true',
+            json: {
+                exceptions: [
+                    {
+                        not_user: ['ElChiniNet', 'Palaus'],
+                        is_owner: true,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'should match an user if it is not included in the not_user option as an array regardless of is_owner being false',
+            json: {
+                exceptions: [
+                    {
+                        not_user: ['ElChiniNet', 'Palaus'],
+                        is_owner: false,
                         ...json
                     }
                 ]
@@ -938,6 +1042,32 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
+            title: 'should match a device regardless of is_owner being true',
+            json: {
+                exceptions: [
+                    {
+                        device: 'Chrome',
+                        is_owner: true,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'should match a device regardless of is_owner being false',
+            json: {
+                exceptions: [
+                    {
+                        device: 'Chrome',
+                        is_owner: false,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
             title: 'should match a device if it is included in the device option as an array',
             json: {
                 exceptions: [
@@ -969,6 +1099,32 @@ test.describe('user and device matchers', () => {
                     {
                         device: ['Android', 'Chrome', 'iPad'],
                         is_admin: false,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'should match a device if it is included in the device option as an array regardless of is_owner being true',
+            json: {
+                exceptions: [
+                    {
+                        device: ['Android', 'Chrome', 'iPad'],
+                        is_owner: true,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'should match a device if it is included in the device option as an array regardless of is_owner being false',
+            json: {
+                exceptions: [
+                    {
+                        device: ['Android', 'Chrome', 'iPad'],
+                        is_owner: false,
                         ...json
                     }
                 ]
@@ -1014,6 +1170,32 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
+            title: 'should match a device if it is not equal to the not_device regardless of is_owner being true',
+            json: {
+                exceptions: [
+                    {
+                        not_device: 'iPad',
+                        is_owner: true,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'should match a device if it is not equal to the not_device regardless of is_owner being false',
+            json: {
+                exceptions: [
+                    {
+                        not_device: 'iPad',
+                        is_owner: false,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
             title: 'should match a device if it is not included in the not_device option as an array',
             json: {
                 exceptions: [
@@ -1052,6 +1234,32 @@ test.describe('user and device matchers', () => {
             snapshot: 'sidebar-exceptions-match-success.png'
         },
         {
+            title: 'should match a device if it is not included in the not_device option as an array regardless of is_owner being true',
+            json: {
+                exceptions: [
+                    {
+                        not_device: ['iPad', 'Android'],
+                        is_owner: true,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'should match a device if it is not included in the not_device option as an array regardless of is_owner being false',
+            json: {
+                exceptions: [
+                    {
+                        not_device: ['iPad', 'Android'],
+                        is_owner: false,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
             title: 'should match an admin user if is_admin is true',
             json: {
                 exceptions: [
@@ -1069,6 +1277,30 @@ test.describe('user and device matchers', () => {
                 exceptions: [
                     {
                         is_admin: false,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-no-match-admin-false.png'
+        },
+        {
+            title: 'should match an owner user if is_owner is true',
+            json: {
+                exceptions: [
+                    {
+                        is_owner: true,
+                        ...json
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-match-success.png'
+        },
+        {
+            title: 'should not match an owner user if is_owner is false',
+            json: {
+                exceptions: [
+                    {
+                        is_owner: false,
                         ...json
                     }
                 ]

@@ -266,7 +266,11 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
 
     validateBooleanOptions(
         exception,
-        ['hide_all', 'is_admin'],
+        [
+            'hide_all',
+            'is_admin',
+            'is_owner'
+        ],
         `${ERROR_PREFIX}, exceptions`
     );
 
