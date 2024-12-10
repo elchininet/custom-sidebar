@@ -149,14 +149,45 @@ test.describe('main options', () => {
             error: `${ERROR_PREFIX}, "js_variables" property should be an object`
         },
         {
-            title: 'should throw an error if the js_variables property contains a variable that is not a string, a number or a boolean',
+            title: 'should throw an error if the js_variables property contains a non valid variable',
             json: {
                 js_variables: {
                     TEST_1: 3,
-                    TEST_2: /expression/
+                    TEST_2: null
                 }
             },
-            error: `${ERROR_PREFIX}, "js_variables" property should contain only strings, numbers or booleans. Property TEST_2 has the wrong type`
+            error: `${ERROR_PREFIX}, "js_variables: TEST_2" has a wrong type [object Null]`
+        },
+        {
+            title: 'should throw an error if the js_variables property contains a non valid variable in a nested array',
+            json: {
+                js_variables: {
+                    TEST_1: 3,
+                    TEST_2: {
+                        NESTED: [1, 'two', null, 4]
+                    }
+                }
+            },
+            error: `${ERROR_PREFIX}, "js_variables: TEST_2 > NESTED > [2]" has a wrong type [object Null]`
+        },
+        {
+            title: 'should throw an error if the js_variables property contains a non valid variable in a nested object',
+            json: {
+                js_variables: {
+                    TEST_1: 3,
+                    TEST_2: {
+                        NESTED: [
+                            'one',
+                            2,
+                            {
+                                NESTED_OBJECT_PROP1: 100,
+                                NESTED_OBJECT_PROP3: null
+                            }
+                        ]
+                    }
+                }
+            },
+            error: `${ERROR_PREFIX}, "js_variables: TEST_2 > NESTED > [2] > NESTED_OBJECT_PROP3" has a wrong type [object Null]`
         },
         {
             title: 'should throw a warning if the js_variables property contains templates',
@@ -166,7 +197,38 @@ test.describe('main options', () => {
                     TEST_2: '[[[ return 3; ]]]'
                 }
             },
-            warning: '"js_variables" property should not have templates. Property TEST_2 seems to be a template'
+            warning: '"js_variables" property should not have templates. "TEST_2" seems to be a template'
+        },
+        {
+            title: 'should throw a warning if the js_variables property contains templates in a nested array',
+            json: {
+                js_variables: {
+                    TEST_1: 'TEST_1',
+                    TEST_2: [1, 'two', 3, '[[[ return 3; ]]]', 5]
+                }
+            },
+            warning: '"js_variables" property should not have templates. "TEST_2 > [3]" seems to be a template'
+        },
+        {
+            title: 'should throw a warning if the js_variables property contains templates in a nested object',
+            json: {
+                js_variables: {
+                    TEST_1: 'TEST_1',
+                    TEST_2: {
+                        NESTED: [
+                            1,
+                            'two',
+                            3,
+                            {
+                                NESTED_OBJECT_PROP1: 100,
+                                NESTED_OBJECT_PROP3: '[[[ return 3; ]]]'
+                            },
+                            5
+                        ]
+                    }
+                }
+            },
+            warning: '"js_variables" property should not have templates. "TEST_2 > NESTED > [3] > NESTED_OBJECT_PROP3" seems to be a template'
         },
         {
             title: 'should throw an error if the jinja_variables property is not an object',
@@ -176,14 +238,45 @@ test.describe('main options', () => {
             error: `${ERROR_PREFIX}, "jinja_variables" property should be an object`
         },
         {
-            title: 'should throw an error if the jinja_variables property contains a variable that is not a string, a number or a boolean',
+            title: 'should throw an error if the jinja_variables property contains a non valid variable',
             json: {
                 jinja_variables: {
-                    TEST_1: [1, 2, 3],
-                    TEST_2: 'TEST_2'
+                    TEST_1: 'TEST_1',
+                    TEST_2: null
                 }
             },
-            error: `${ERROR_PREFIX}, "jinja_variables" property should contain only strings, numbers or booleans. Property TEST_1 has the wrong type`
+            error: `${ERROR_PREFIX}, "jinja_variables: TEST_2" has a wrong type [object Null]`
+        },
+        {
+            title: 'should throw an error if the jinja_variables property contains a non valid variable in a nested array',
+            json: {
+                jinja_variables: {
+                    TEST_1: 3,
+                    TEST_2: {
+                        NESTED: [1, 'two', null, 4]
+                    }
+                }
+            },
+            error: `${ERROR_PREFIX}, "jinja_variables: TEST_2 > NESTED > [2]" has a wrong type [object Null]`
+        },
+        {
+            title: 'should throw an error if the jinja_variables property contains a non valid variable in a nested object',
+            json: {
+                jinja_variables: {
+                    TEST_1: 3,
+                    TEST_2: {
+                        NESTED: [
+                            'one',
+                            2,
+                            {
+                                NESTED_OBJECT_PROP1: 100,
+                                NESTED_OBJECT_PROP3: null
+                            }
+                        ]
+                    }
+                }
+            },
+            error: `${ERROR_PREFIX}, "jinja_variables: TEST_2 > NESTED > [2] > NESTED_OBJECT_PROP3" has a wrong type [object Null]`
         },
         {
             title: 'should throw a warning if the jinja_variables property contains templates',
@@ -193,7 +286,38 @@ test.describe('main options', () => {
                     TEST_2: 'TEST_2'
                 }
             },
-            warning: '"jinja_variables" property should not have templates. Property TEST_1 seems to be a template'
+            warning: '"jinja_variables" property should not have templates. "TEST_1" seems to be a template'
+        },
+        {
+            title: 'should throw a warning if the jinja_variables property contains templates in a nested array',
+            json: {
+                jinja_variables: {
+                    TEST_1: 'TEST_1',
+                    TEST_2: [1, 'two', 3, '{{ states("sun.sun") }}', 5]
+                }
+            },
+            warning: '"jinja_variables" property should not have templates. "TEST_2 > [3]" seems to be a template'
+        },
+        {
+            title: 'should throw a warning if the jinja_variables property contains templates in a nested object',
+            json: {
+                jinja_variables: {
+                    TEST_1: 'TEST_1',
+                    TEST_2: {
+                        NESTED: [
+                            1,
+                            'two',
+                            3,
+                            {
+                                NESTED_OBJECT_PROP1: 100,
+                                NESTED_OBJECT_PROP3: '{{ states("sun.sun") }}'
+                            },
+                            5
+                        ]
+                    }
+                }
+            },
+            warning: '"jinja_variables" property should not have templates. "TEST_2 > NESTED > [3] > NESTED_OBJECT_PROP3" seems to be a template'
         },
         {
             title: 'should throw an error if the partials property is not an object',

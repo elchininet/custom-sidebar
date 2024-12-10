@@ -193,11 +193,11 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 
 | Property           | Type                               | Required | Description |
 | ------------------ | ---------------------------------- | -------- | ----------- |
-| js_variables       | Object                             | no       | An object containing variales that will be used in [JavaScript templates](#javascript-templates). The variables cannot be templates and they must be strings, numbers or booleans (check the [partials section](#partials) for an example) |
-| jinja_variables       | Object                          | no       | An object containing variales that will be used in [Jinja templates](#jinja-templates). The variables cannot be templates and they must be strings, numbers or booleans (check the [partials section](#partials) for an example) |
-| partials              | Object                          | no       | An object containing fragments of code that can be included in your templates. Consult [the partial section](#partials) for more info |
-| extendable_configs    | Object                          | no       | An object containing extendable configurations (check [extendable configurations section](#extendable-configurations)) |
-| extend_from           | String or String[]              | no       | Indicates if the configuration should extend from extendable configrations (check [extendable configurations section](#extendable-configurations)) |
+| js_variables       | Object                             | no       | An object containing variales that will be used in [JavaScript templates](#javascript-templates) Consult the [variables section](#variables) for more info |
+| jinja_variables       | Object                          | no       | An object containing variales that will be used in [Jinja templates](#jinja-templates). Consult the [variables section](#variables) for more info |
+| partials              | Object                          | no       | An object containing fragments of code that can be included in your templates. Consult [the partials section](#partials) for more info |
+| extendable_configs    | Object                          | no       | An object containing extendable configurations. Consult the [extendable configurations section](#extendable-configurations) for more info |
+| extend_from           | String or String[]              | no       | Indicates if the configuration should extend from extendable configrations. Consult the [extendable configurations section](#extendable-configurations) for more info |
 
 #### Order items properties
 
@@ -528,6 +528,61 @@ order:
 
 >[!IMPORTANT]
 >`Custom Sidebar`'s advanced configurations options are intended for advanced users. They are not strictly necessary and you can use the plugin without making use of them. The purpose of these options is to reduce code repetition and share configurations. It is advisable that you do not use them if they result confusing to you or if you don't understand their usage.
+
+### Variables
+
+`js_variables` and `jinja_variables` are an objects to declare variables intended to be used inside [JavaScript](#javaScript-templates) or [Jinja](#jinja-templates) templates respectively. These objects have the same shape, they can store `string`,  `number`, and `boolean` variables as well as `dictionaries` (or `objects`) and `lists` (or `arrays`). These variables will be available in any [partial](#partials) or in any [template](#templates).
+
+>[!IMPORTANT]
+>1. `js_variables` and `jinja_variables` only allows `string`, `number` and `boolean` variables or `dictionaries` and `lists` containing other `dictionaries` or `lists` or the aforementioned primitives. Trying to send other kind of variables will end in an error.
+>2. `js_variables` and `jinja_variables` don't compile any template string. So if you set a variable as a template string, it will be interpreted as a string and a warning will be thrown in the console.
+
+The next examples using `js_variables` and `jinja_variables` will set the same title ("Title 80 dog"):
+
+#### js_variables example
+
+```yaml
+js_variables:
+  my_string: Title
+  my_number: 100
+  my_boolean: true
+  my_object:
+    prop1: 4
+    prop2: 5
+  my_array:
+    - cat
+    - dog
+    - bird
+title: |
+  [[[
+    if (my_boolean) {
+      return `${my_string} ${(my_number * my_object.prop1) / my_object.prop2} ${my_array[1]}`;
+    }
+    return 'Home Assistant';
+  ]]]
+```
+
+#### jinja_variables example
+
+```yaml
+jinja_variables:
+  my_string: Title
+  my_number: 100
+  my_boolean: true
+  my_dictionary:
+    prop1: 4
+    prop2: 5
+  my_list:
+    - cat
+    - dog
+    - bird
+title: |
+  {% if my_boolean %}
+    {{ my_string }} {{ ((my_number * my_dictionary.prop1) / my_dictionary.prop2) | int }} {{ my_list.1 }}
+  {% else %}
+    Home Assistant
+  {% endif %}
+```
 
 ### Partials
 

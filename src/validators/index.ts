@@ -2,7 +2,10 @@ import {
     Config,
     ConfigItem,
     ConfigException,
-    SidebarMode
+    SidebarMode,
+    Primitive,
+    PrimitiveObject,
+    PrimitiveArray
 } from '@types';
 import {
     BASE_NAME,
@@ -183,29 +186,66 @@ const validateBaseConfigOnlyOptions = <T extends object>(config: T, prefix: stri
     });
 };
 
-const validateVariables = (name: string, variables: Record<string, unknown> | undefined): void => {
+const validateVariable = (
+    variableGroup: string,
+    variable: Primitive | PrimitiveObject | PrimitiveArray,
+    stack: string[]
+): void => {
+    if (
+        typeof variable === 'string' &&
+        (
+            JS_TEMPLATE_REG.test(variable) ||
+            JINJA_TEMPLATE_REG.test(variable)
+        )
+    ) {
+        console.warn(`"${variableGroup}" property should not have templates. "${stack.join(' > ')}" seems to be a template`);
+    } else if (
+        typeof variable !== TYPE.STRING &&
+        typeof variable !== TYPE.NUMBER &&
+        typeof variable !== TYPE.BOOLEAN
+    ) {
+        if (Array.isArray(variable)) {
+            variable.forEach((value: Primitive | PrimitiveObject | PrimitiveArray, index: number) => {
+                validateVariable(
+                    variableGroup,
+                    value,
+                    [
+                        ...stack,
+                        `[${index}]`
+                    ]
+                );
+            });
+        } else if (Object.prototype.toString.call(variable) === OBJECT_TO_STRING) {
+            const variableObject = variable as PrimitiveObject;
+            Object.entries(variableObject).forEach((entry): void => {
+                const [prop, value] = entry;
+                validateVariable(
+                    variableGroup,
+                    value,
+                    [
+                        ...stack,
+                        prop
+                    ]
+                );
+            });
+        } else {
+            throw new SyntaxError(`${ERROR_PREFIX}, "${variableGroup}: ${stack.join(' > ')}" has a wrong type ${Object.prototype.toString.call(variable)}`);
+        }
+    }
+};
+
+const validateVariables = (variableGroup: string, variables: Record<string, Primitive | PrimitiveObject | PrimitiveArray>): void => {
     if (typeof variables !== TYPE.UNDEFINED) {
         if (Object.prototype.toString.call(variables) !== OBJECT_TO_STRING) {
-            throw new SyntaxError(`${ERROR_PREFIX}, "${name}" property should be an object`);
+            throw new SyntaxError(`${ERROR_PREFIX}, "${variableGroup}" property should be an object`);
         }
         Object.entries(variables).forEach((entry) => {
-            const [prop, value] = entry;
-            if (
-                typeof value !== TYPE.STRING &&
-                typeof value !== TYPE.NUMBER &&
-                typeof value !== TYPE.BOOLEAN
-            ) {
-                throw new SyntaxError(`${ERROR_PREFIX}, "${name}" property should contain only strings, numbers or booleans. Property ${prop} has the wrong type`);
-            }
-            if (
-                typeof value === 'string' &&
-                (
-                    JS_TEMPLATE_REG.test(value) ||
-                    JINJA_TEMPLATE_REG.test(value)
-                )
-            ) {
-                console.warn(`"${name}" property should not have templates. Property ${prop} seems to be a template`);
-            }
+            const [prop, variable] = entry;
+            validateVariable(
+                variableGroup,
+                variable,
+                [prop]
+            );
         });
     }
 };
