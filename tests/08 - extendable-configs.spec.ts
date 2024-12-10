@@ -94,6 +94,57 @@ test.describe('extendable configurations', () => {
                     ]
                 },
                 snapshot: 'extendable-configurations-main-config-extending.png'
+            },
+            {
+                title: 'main config should extend from multiple configuration mergin their order items',
+                json: {
+                    extendable_configs: {
+                        show_only_overview: {
+                            hide_all: true,
+                            order: [
+                                {
+                                    item: 'overview',
+                                    hide: false,
+                                    order: 0
+                                }
+                            ]
+                        },
+                        admin_items: {
+                            order: [
+                                {
+                                    new_item: true,
+                                    item: 'Integrations',
+                                    href: '/config/integrations',
+                                    icon: 'mdi:puzzle',
+                                    order: 2
+                                },
+                                {
+                                    new_item: true,
+                                    item: 'Entities',
+                                    href: '/config/entities',
+                                    icon: 'mdi:hexagon-multiple',
+                                    order: 3
+                                }
+                            ]
+                        }
+                    },
+                    order: [
+                        {
+                            item: 'overview',
+                            icon_color_selected: 'red',
+                            order: 4
+                        },
+                        {
+                            item: 'Integrations',
+                            name: 'Integrations Renamed'
+                        }
+                    ],
+                    extend_from: [
+                        'show_only_overview',
+                        'admin_items'
+                    ]
+                },
+                snapshot: 'extendable-configurations-main-config-extending-order-items.png'
             }
         ].forEach(runTest);
 
@@ -146,7 +197,7 @@ test.describe('extendable configurations', () => {
                 snapshot: 'extendable-configurations-main-config-extending.png'
             },
             {
-                title: '@testing an exception should extend from an extendable configuration that extends from another extendable configuration',
+                title: 'an exception should extend from an extendable configuration that extends from another extendable configuration',
                 json: {
                     extendable_configs: {
                         colors: {
@@ -167,6 +218,96 @@ test.describe('extendable configurations', () => {
                     ]
                 },
                 snapshot: 'extendable-configurations-exception-extending.png'
+            },
+            {
+                title: 'exceptions should extend from multiple configurations mergin their order items',
+                json: {
+                    extendable_configs: {
+                        show_only_overview: {
+                            hide_all: true,
+                            order: [
+                                {
+                                    item: 'overview',
+                                    hide: false,
+                                    order: 0
+                                }
+                            ]
+                        },
+                        admin_items: {
+                            order: [
+                                {
+                                    new_item: true,
+                                    item: 'Integrations',
+                                    href: '/config/integrations',
+                                    icon: 'mdi:puzzle',
+                                    order: 2
+                                },
+                                {
+                                    new_item: true,
+                                    item: 'Entities',
+                                    href: '/config/entities',
+                                    icon: 'mdi:hexagon-multiple',
+                                    order: 3
+                                }
+                            ]
+                        }
+                    },
+                    order: [
+                        {
+                            item: 'overview',
+                            icon_color_selected: 'red',
+                            order: 4
+                        },
+                        {
+                            item: 'Integrations',
+                            name: 'Integrations Renamed'
+                        }
+                    ],
+                    extend_from: [
+                        'show_only_overview',
+                        'admin_items'
+                    ],
+                    exceptions: [
+                        {
+                            user: 'Test',
+                            order: [
+                                {
+                                    new_item: true,
+                                    item: 'User Exception',
+                                    icon: 'mdi:account-heart',
+                                    href: '/user_exception',
+                                    order: 4
+                                },
+                                {
+                                    item: 'overview',
+                                    name: 'Dashboard',
+                                    order: 6
+                                }
+                            ]
+                        },
+                        {
+                            is_admin: true,
+                            order: [
+                                {
+                                    item: 'Entities',
+                                    name: 'Entities Renamed',
+                                    icon_color: 'orange'
+                                },
+                                {
+                                    new_item: true,
+                                    item: 'Admin Exception',
+                                    icon: 'mdi:account-key',
+                                    href: '/admin_exception',
+                                    order: 5
+                                }
+                            ],
+                            extend_from: [
+                                'base'
+                            ]
+                        }
+                    ]
+                },
+                snapshot: 'extendable-configurations-exception-extending-order-items.png'
             }
         ].forEach(runTest);
 
