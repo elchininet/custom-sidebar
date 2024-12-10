@@ -311,11 +311,12 @@ In an exception you can define almost all the options available in [the main con
 
 | Property            | Type              | Required | Description |
 | ------------------- | ----------------- | -------- | ----------- |
-| user       | String or String[] | no          | Home Assistant user name(s) you would like to display this order for. This option can be set alone or combined with `device`, `not_device` or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
-| not_user   | String or String[] | no          | Home Assistant user name(s) you wouldn't like to display this order for. This option can be set alone or combined with `device`, `not_device` or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
-| device     | String or String[] | no          | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]). This option can be set alone or combined with `user`, `not_user` or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
-| not_device | String or String[] | no          | Device(s) you wouldn't like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]). This option can be set alone or combined with `user`, `not_user` or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
-| is_admin   | Boolean            | no          | Checks if the user is admin or not. This option can be set alone or combined with `user`, `not_user`, `device` or `not_device`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
+| user       | String or String[] | no          | Home Assistant user name(s) you would like to display this order for. This option can be set alone or combined with `device`, `not_device`, `is_admin`, or `is_owner`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
+| not_user   | String or String[] | no          | Home Assistant user name(s) you wouldn't like to display this order for. This option can be set alone or combined with `device`, `not_device`, `is_admin`, or `is_owner`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
+| device     | String or String[] | no          | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]). This option can be set alone or combined with `user`, `not_user`, `is_admin`, or `is_owner`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
+| not_device | String or String[] | no          | Device(s) you wouldn't like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]). This option can be set alone or combined with `user`, `not_user` `is_admin`, or `is_owner`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
+| is_admin   | Boolean            | no          | Checks if the user is admin or not. This option can be set alone or combined with `user`, `not_user`, `device`, `not_device`, or `is_owner`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
+| is_owner   | Boolean            | no          | Checks if the user is owner of the system. This option can be set alone or combined with `user`, `not_user`, `device`, `not_device`, or `is_admin`. If it is used together with one of these options they will be taken as conditions separated by a logical `OR` |
 
 Short example in `YAML` format:
 
@@ -332,10 +333,12 @@ exceptions:
   - not_user:
     - John Doe
     - Jack Sparrow
-    is_admin: true
     order:
       ...
   - not_device: Android
+    order:
+      ...
+  - is_admin: true
     order:
       ...
 ```
@@ -356,13 +359,18 @@ Short example in `JSON` format:
     },
     {
       "not_user": ["John Doe", "Jack Sparrow"],
-      "is_admin": true,
       "order": [
         ...
       ]
     },
     {
       "not_device": "Android",
+      "order": [
+        ...
+      ]
+    },
+    {
+      "is_admin": true,
       "order": [
         ...
       ]
