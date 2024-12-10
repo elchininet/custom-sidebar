@@ -126,6 +126,7 @@ export interface BaseConfig extends SidebarColorConfig {
 
 export interface ConfigExceptionBase extends BaseConfig {
     is_admin?: boolean;
+    is_owner?: boolean;
 }
 
 interface ConfigExceptionUserInclude extends ConfigExceptionBase {
