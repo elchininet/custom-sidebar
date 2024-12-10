@@ -1,6 +1,10 @@
 import { HomeAssistant, Hass } from 'home-assistant-javascript-templates';
 
-type Primitive = string | number | boolean;
+export type Primitive = string | number | boolean;
+export type PrimitiveObject = {
+    [key: string]: Primitive | PrimitiveObject | PrimitiveArray;
+};
+export type PrimitiveArray = (Primitive | PrimitiveObject | PrimitiveArray)[];
 
 export enum SidebarMode {
     HIDDEN = 'hidden',
@@ -156,8 +160,8 @@ export type ConfigException = ConfigExceptionUser & ConfigExceptionDevice;
 
 export interface Config extends BaseConfig {
     id?: string;
-    js_variables?: Record<string, Primitive>;
-    jinja_variables?: Record<string, Primitive>;
+    js_variables?: Record<string, Primitive | PrimitiveObject | PrimitiveArray>;
+    jinja_variables?: Record<string, Primitive | PrimitiveObject | PrimitiveArray>;
     partials?: Record<string, string>;
     exceptions?: ConfigException[];
     extendable_configs?: Record<string, BaseConfig>;
