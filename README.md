@@ -203,7 +203,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 
 | Property                  | Type    | Required  | Description |
 | ------------------------- | ------- | --------- | ----------- |
-| item                      | String  | yes       | This is a string that will be used to match each sidebar item by its text, its `data-panel` attribute or its `href`. If the `exact` property is not set, it is case insensitive and it can be a substring such as `developer` instead of `Developer Tools` or `KITCHEN` instead of `kitchen-lights`. |
+| item                      | String  | yes       | This is a string that will be used to match each sidebar item by its text, its `data-panel` attribute or its `href`. If the `exact` property is not set, it is case insensitive and it can be a substring such as `developer` instead of `Developer Tools` or `KITCHEN` instead of `kitchen-lights` |
 | match                     | String  | no        | This property will define which string will be used to match the `item` property. It has three possible values "text" (default) to match the text content of the element, "data-panel" to match the `data-panel` attribute of the element, or "href", to match the `href` attribute of the element |
 | exact                     | Boolean | no        | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`). |
 | order                     | Number  | no        | Sets the order number of the sidebar item |
@@ -380,7 +380,7 @@ Short example in `JSON` format:
 ```
 
 > [!IMPORTANT]
->* If multiple exeptions match, the last match rules so their options will be the ones used. There is a special treatment for the `order` option, if multiple exceptions match, the order of all of them will be merged, but if an item is repeated in more than one order, then the last one will rule.
+>* If multiple exeptions match, their options will be merged from top to bottom and if multiple configurations have an `order` property, it will be merged too. Check the [extendable configurations section](#extendable-configurations) for more info about how two configurations are merged.
 >* You cannot use `user` and `not_user` at the same time, doing so will end in an error
 >* You cannot use `device` and `not_device` at the same time, doing so will end in an error
 >* In exceptions it is possible to use the `extend_from` option with the value `base`. If you use it with this value, the main configuration will be merged with the one in the exceptions. Consult the [extendable configurations section](#extendable-configurations) to know how is the process of extending configurations.
@@ -680,12 +680,12 @@ extendable_configs:
 ```
 
 1. As the `title` option is defined in the main configuration, it will not get the `title` option from the extendable configuration.
-2. As the `subtitle` option is not defined in the main configuration, it will be get from the extendable configuration
+2. As the `subtitle` option is not defined in the main configuration, it will be get from the extendable configuration.
 3. As the main configuration and the extendable configuration both have an `order` option, it will be merged:
-    1. Both orders have an `overview` item, so it will be merged. As the main config order-item has also an `order` property, it will not be extended, but as the extendable order-item has an `icon` property that doesn't exist in the main config order-item, it will be extended
-    2. As the extendable order-item doesn't have a `name` property, it will remain there
-    3. The `Integrations` doesn't exist in the extendable order so it will remain as it is 
-    4. The `Google` extendable item doesn't exist in the main config, so it will be extended
+    1. Both orders have an `overview` item, so it will be merged. As the main config order-item has also an `order` property, it will not be extended, but as the extendable order-item has an `icon` property that doesn't exist in the main config order-item, it will be extended.
+    2. As the extendable order-item doesn't have a `name` property, it will remain there.
+    3. The `Integrations` doesn't exist in the extendable order so it will remain as it is.
+    4. The `Google` extendable item doesn't exist in the main config, so it will be extended.
 
 The resulted main config after the extending process will be:
 
