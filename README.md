@@ -380,7 +380,7 @@ Short example in `JSON` format:
 ```
 
 > [!IMPORTANT]
->* If multiple exeptions match, the last match rules so their options will be the ones used. There is a special treatment for the `order` option, if multiple exceptions match, the order of all of them will be merged, but if an item is repeated in more than one order, then the last one will rule.
+>* If multiple exeptions match, their options will be merged from top to bottom and if multiple configurations have an `order` property, it will be merged too. Check the [extendable configurations section](#extendable-configurations) for more info about how two configurations are merged.
 >* You cannot use `user` and `not_user` at the same time, doing so will end in an error
 >* You cannot use `device` and `not_device` at the same time, doing so will end in an error
 >* In exceptions it is possible to use the `extend_from` option with the value `base`. If you use it with this value, the main configuration will be merged with the one in the exceptions. Consult the [extendable configurations section](#extendable-configurations) to know how is the process of extending configurations.
