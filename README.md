@@ -780,7 +780,7 @@ exceptions:
 ```
 
 > [!IMPORTANT]
->* You need to be careful of circular dependencies when extending configurations, if this is detected and error will be thrown
+>* You need to be careful of circular dependencies when extending configurations, if this is detected an error will be thrown
 >* You can only use `base` inside `extend_from` if you are in an exception, trying to use it in the main config or in an extendable configuration will throw and error
 
 ## Home Assistant built-in sidebar configuration options
