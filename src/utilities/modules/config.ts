@@ -88,6 +88,10 @@ class ConfigFlatter {
                 (
                     exception.is_admin !== undefined &&
                     exception.is_admin === this._user.is_admin
+                ) ||
+                (
+                    exception.is_owner !== undefined &&
+                    exception.is_owner === this._user.is_owner
                 );
             });
         }

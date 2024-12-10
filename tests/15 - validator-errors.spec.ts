@@ -623,6 +623,18 @@ test.describe('exceptions', () => {
             error: `${ERROR_PREFIX}, exceptions "is_admin" property should be a boolean`
         },
         {
+            title: 'should throw an error if the "is_owner" property is not a boolean',
+            json: {
+                exceptions: [
+                    {
+                        is_owner: 'true',
+                        user: 'Test'
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, exceptions "is_owner" property should be a boolean`
+        },
+        {
             title: 'should throw an error if it has a malformed "user" option',
             json: {
                 exceptions: [
