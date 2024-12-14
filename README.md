@@ -139,7 +139,7 @@ Depending on the file that you have added to [extra_module_url], you will need t
 Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<config directory>/www/` directory. It is recommendable that you copy the [example sidebar-config.yaml] or the [example sidebar-config.json] file, delete the `id` parameter, and modify it to match your needs. It is recommended to start with the simplest configuration and start to extend it step by step, in that way if you suffer any issue, it is easy to identify with which code block it started.
 
 >[!TIP]
->If you want to check an extensive sidebar configuration which uses custom styles, variables and templates, check [@Mariusthvdb](https://gist.github.com/Mariusthvdb)'s [sidebar-config.yaml](https://gist.github.com/Mariusthvdb/e41957dc6f66d9764e0480030c9bd386).
+>If you want to check an extensive sidebar configuration which uses custom styles, variables and templates, check [@Mariusthvdb](https://github.com/Mariusthvdb)'s [sidebar-config.yaml](https://gist.github.com/Mariusthvdb/e41957dc6f66d9764e0480030c9bd386).
 
 
 ### Configuration options
