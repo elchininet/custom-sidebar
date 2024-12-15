@@ -910,6 +910,27 @@ test.describe('exceptions', () => {
                 ]
             },
             error: `${ERROR_PREFIX} in dashboard, "js_variables" option can only be placed in the main config`
+        },
+        {
+            title: 'should throw an error if a matchers_conditions doesn\'t have a valid value',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        device: 'Chrome',
+                        matchers_conditions: 'YES',
+                        order: [
+                            {
+                                item: 'dashboard',
+                                js_variables: {
+                                    test: 'test'
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, exceptions "matchers_conditions" property should be "AND" or "OR"`
         }
     ]);
 

@@ -744,7 +744,7 @@ test.describe('without extending from the base', () => {
 
 });
 
-test.describe('user and device matchers', () => {
+test.describe('exceptions matchers', () => {
 
     [
         {
@@ -1432,6 +1432,186 @@ test.describe('multiple matchers that match', () => {
                 ]
             },
             snapshot: 'sidebar-exceptions-multiple-matchers-merged-orders-repeated-items.png'
+        },
+        {
+            title: 'if matchers_conditions is AND and all the matchers match, it should take the exception',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        device: 'Chrome',
+                        is_admin: true,
+                        is_owner: true,
+                        matchers_conditions: 'AND',
+                        hide_all: true,
+                        order: [
+                            ...json.order,
+                            {
+                                item: 'overview',
+                                hide: false,
+                                order: 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-matchers-conditions-and-match.png'
+        },
+        {
+            title: 'if matchers_conditions is AND and all the matchers match, it should take the exception (second)',
+            json: {
+                exceptions: [
+                    {
+                        not_user: 'ElChiniNet',
+                        not_device: 'Android',
+                        is_admin: true,
+                        is_owner: true,
+                        matchers_conditions: 'AND',
+                        hide_all: true,
+                        order: [
+                            ...json.order,
+                            {
+                                item: 'overview',
+                                hide: false,
+                                order: 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-matchers-conditions-and-match.png'
+        },
+        {
+            title: 'if matchers_conditions is AND and user doesn\'t match, the exception should be ignored',
+            json: {
+                exceptions: [
+                    {
+                        user: 'ElChiniNet',
+                        device: 'Chrome',
+                        matchers_conditions: 'AND',
+                        hide_all: true,
+                        order: [
+                            ...json.order,
+                            {
+                                item: 'overview',
+                                hide: false,
+                                order: 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-matchers-conditions-and-do-not-match.png'
+        },
+        {
+            title: 'if matchers_conditions is AND and not_user doesn\'t match, the exception should be ignored',
+            json: {
+                exceptions: [
+                    {
+                        not_user: 'Test',
+                        device: 'Chrome',
+                        matchers_conditions: 'AND',
+                        hide_all: true,
+                        order: [
+                            ...json.order,
+                            {
+                                item: 'overview',
+                                hide: false,
+                                order: 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-matchers-conditions-and-do-not-match.png'
+        },
+        {
+            title: 'if matchers_conditions is AND and device doesn\'t match, the exception should be ignored',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        device: 'Android',
+                        matchers_conditions: 'AND',
+                        hide_all: true,
+                        order: [
+                            ...json.order,
+                            {
+                                item: 'overview',
+                                hide: false,
+                                order: 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-matchers-conditions-and-do-not-match.png'
+        },
+        {
+            title: '@testing if matchers_conditions is AND and not_device doesn\'t match, the exception should be ignored',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        not_device: 'Chrome',
+                        matchers_conditions: 'AND',
+                        hide_all: true,
+                        order: [
+                            ...json.order,
+                            {
+                                item: 'overview',
+                                hide: false,
+                                order: 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-matchers-conditions-and-do-not-match.png'
+        },
+        {
+            title: 'if matchers_conditions is AND and is_admin doesn\'t match, the exception should be ignored',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        is_admin: false,
+                        matchers_conditions: 'AND',
+                        hide_all: true,
+                        order: [
+                            ...json.order,
+                            {
+                                item: 'overview',
+                                hide: false,
+                                order: 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-matchers-conditions-and-do-not-match.png'
+        },
+        {
+            title: 'if matchers_conditions is AND and is_owner doesn\'t match, the exception should be ignored',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        is_owner: false,
+                        matchers_conditions: 'AND',
+                        hide_all: true,
+                        order: [
+                            ...json.order,
+                            {
+                                item: 'overview',
+                                hide: false,
+                                order: 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            snapshot: 'sidebar-exceptions-matchers-conditions-and-do-not-match.png'
         }
     ].forEach(runTest);
 

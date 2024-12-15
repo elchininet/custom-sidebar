@@ -5,7 +5,8 @@ import {
     SidebarMode,
     Primitive,
     PrimitiveObject,
-    PrimitiveArray
+    PrimitiveArray,
+    MatchersCondition
 } from '@types';
 import {
     BASE_NAME,
@@ -290,6 +291,14 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
         ],
         `${ERROR_PREFIX}, exceptions`
     );
+
+    if (
+        typeof exception.matchers_conditions !== TYPE.UNDEFINED &&
+        exception.matchers_conditions !== MatchersCondition.AND &&
+        exception.matchers_conditions !== MatchersCondition.OR
+    ) {
+        throw new SyntaxError(`${ERROR_PREFIX}, exceptions "matchers_conditions" property should be "${MatchersCondition.AND}" or "${MatchersCondition.OR}"`);
+    }
 
     if (
         typeof exception.order !== TYPE.UNDEFINED &&

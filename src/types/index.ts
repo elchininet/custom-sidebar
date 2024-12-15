@@ -18,6 +18,11 @@ export enum DockedSidebar {
     ALWAYS_HIDDEN = 'always_hidden'
 }
 
+export enum MatchersCondition {
+    AND = 'AND',
+    OR = 'OR'
+}
+
 export interface HassExtended extends Hass {
     dockedSidebar: `${DockedSidebar}`;
 }
@@ -129,6 +134,7 @@ export interface BaseConfig extends SidebarColorConfig {
 }
 
 export interface ConfigExceptionBase extends BaseConfig {
+    matchers_conditions?: `${MatchersCondition}`;
     is_admin?: boolean;
     is_owner?: boolean;
 }
