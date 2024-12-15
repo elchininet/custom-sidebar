@@ -2,7 +2,8 @@ import { Hass } from 'home-assistant-javascript-templates';
 import {
     Config,
     ConfigException,
-    ConfigOrder
+    ConfigOrder,
+    MatchersCondition
 } from '@types';
 import {
     BASE_NAME,
@@ -67,31 +68,41 @@ class ConfigFlatter {
             const userName = this._user.name.toLocaleLowerCase();
 
             return this._config.exceptions.filter((exception: ConfigException): boolean => {
-                return (
-                    (
-                        exception.user &&
-                        getLowercaseArray(exception.user).includes(userName)
-                    ) ||
-                    (
-                        exception.not_user &&
-                        !getLowercaseArray(exception.not_user).includes(userName)
-                    ) ||
-                    (
-                        exception.device &&
-                        getLowercaseArray(exception.device).some((device: string) => this._userAgent.includes(device))
-                    ) ||
-                    (
-                        exception.not_device &&
-                        !getLowercaseArray(exception.not_device).some((device: string) => this._userAgent.includes(device))
-                    )
-                ) ||
-                (
+                const matchersConditions = exception.matchers_conditions ?? MatchersCondition.OR;
+                const user = (
+                    exception.user !== undefined &&
+                    getLowercaseArray(exception.user).includes(userName)
+                );
+                const notUser = (
+                    exception.not_user !== undefined &&
+                    !getLowercaseArray(exception.not_user).includes(userName)
+                );
+                const device = (
+                    exception.device !== undefined &&
+                    getLowercaseArray(exception.device).some((device: string) => this._userAgent.includes(device))
+                );
+                const notDevice = (
+                    exception.not_device !== undefined &&
+                    !getLowercaseArray(exception.not_device).some((device: string) => this._userAgent.includes(device))
+                );
+                const isAdmin = (
                     exception.is_admin !== undefined &&
                     exception.is_admin === this._user.is_admin
-                ) ||
-                (
+                );
+                const isOwner = (
                     exception.is_owner !== undefined &&
                     exception.is_owner === this._user.is_owner
+                );
+                if (matchersConditions === MatchersCondition.OR) {
+                    return user || notUser || device || notDevice || isAdmin || isOwner;
+                }
+                return (
+                    (exception.user === undefined || user) &&
+                    (exception.not_user === undefined || notUser) &&
+                    (exception.device === undefined || device) &&
+                    (exception.not_device === undefined || notDevice) &&
+                    (exception.is_admin === undefined || isAdmin) &&
+                    (exception.is_owner === undefined || isOwner)
                 );
             });
         }
