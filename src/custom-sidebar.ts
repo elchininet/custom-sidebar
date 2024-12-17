@@ -469,7 +469,7 @@ class CustomSidebar {
         });
     }
 
-    private _focusAnchorItem(activeIndex: number, forward: boolean): void {
+    private _focusItem(activeIndex: number, forward: boolean, focusPaperItem: boolean): void {
 
         const length = this._items.length;
         const noneDisplay = 'none';
@@ -501,8 +501,13 @@ class CustomSidebar {
             }
         }
 
-        this._items[focusIndex].focus();
-        this._items[focusIndex].tabIndex = 0;
+        if (focusPaperItem) {
+            const paperItem = this._items[focusIndex].querySelector<HTMLElement>(ELEMENT.PAPER_ICON_ITEM);
+            paperItem.focus();
+        } else {
+            this._items[focusIndex].focus();
+            this._items[focusIndex].tabIndex = 0;
+        }
 
     }
 
@@ -525,7 +530,7 @@ class CustomSidebar {
             anchor.tabIndex = -1;
         });
 
-        this._focusAnchorItem(activeIndex, forward);
+        this._focusItem(activeIndex, forward, false);
 
     }
 
@@ -543,7 +548,7 @@ class CustomSidebar {
                 (!forward && activeIndex > 0)
             ) {
 
-                this._focusAnchorItem(activeIndex, forward);
+                this._focusItem(activeIndex, forward, true);
 
             } else {
 
@@ -559,7 +564,7 @@ class CustomSidebar {
                 const profile = sidebarShadowRoot.querySelector<HTMLElement>(`${SELECTOR.PROFILE} > ${ELEMENT.PAPER_ICON_ITEM}`);
                 profile.focus();
             } else {
-                this._focusAnchorItem(0, forward);
+                this._focusItem(0, forward, true);
             }
         }
 
@@ -975,10 +980,10 @@ class CustomSidebar {
         const pathName = panelResolver.__route.path;
         const paperListBox = await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element as HTMLElement;
         const activeLink = paperListBox.querySelector<HTMLAnchorElement>(
-            [
-                `${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}"]`,
-                `${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}/dashboard"]`
-            ].join(',')
+            `
+               ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}"],
+               ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}/dashboard"]
+            `
         );
 
         const activeParentLink = activeLink

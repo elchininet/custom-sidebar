@@ -1548,7 +1548,7 @@ test.describe('multiple matchers that match', () => {
             snapshot: 'sidebar-exceptions-matchers-conditions-and-do-not-match.png'
         },
         {
-            title: '@testing if matchers_conditions is AND and not_device doesn\'t match, the exception should be ignored',
+            title: 'if matchers_conditions is AND and not_device doesn\'t match, the exception should be ignored',
             json: {
                 exceptions: [
                     {

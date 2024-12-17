@@ -76,7 +76,8 @@ test('new items should be added properly with all their attributes', async ({ pa
     await expect(automations).not.toHaveAttribute('target', '_blank');
 
     const hidden = page.locator(SELECTORS.SIDEBAR_ITEMS.HIDDEN);
-    await expect(hidden).not.toBeAttached();
+    await expect(hidden).toBeAttached();
+    await expect(hidden).not.toBeVisible();
 
 });
 
