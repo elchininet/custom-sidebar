@@ -105,7 +105,7 @@ export interface ConfigItem extends ItemColorConfig {
     notification?: string;
     order?: number;
     bottom?: boolean;
-    hide?: boolean;
+    hide?: boolean | string;
     href?: string;
     target?: '_self' | '_blank';
     icon?: string;

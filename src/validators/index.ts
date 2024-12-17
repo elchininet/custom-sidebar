@@ -266,13 +266,6 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
         `${ERROR_PREFIX}, exceptions`
     );
 
-    validateExtendFrom(
-        exception.extend_from,
-        config,
-        `${ERROR_PREFIX}, error in exception:`,
-        true
-    );
-
     validateStringOrNumberOptions(
         exception,
         [
@@ -290,6 +283,13 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
             ['extend_from', exception.extend_from]
         ],
         `${ERROR_PREFIX}, exceptions`
+    );
+
+    validateExtendFrom(
+        exception.extend_from,
+        config,
+        `${ERROR_PREFIX}, error in exception:`,
+        true
     );
 
     if (
@@ -385,6 +385,12 @@ const validateConfigItem = (configItem: ConfigItem): void => {
         [
             ...ITEM_TEMPLATE_NUMBER_OPTIONS
         ],
+        `${ERROR_PREFIX} in ${configItem.item},`
+    );
+
+    validateBooleanOrStringOptions(
+        configItem,
+        ['hide'],
         `${ERROR_PREFIX} in ${configItem.item},`
     );
 
