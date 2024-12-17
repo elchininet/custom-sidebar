@@ -207,7 +207,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | match                     | String  | no        | This property will define which string will be used to match the `item` property. It has three possible values "text" (default) to match the text content of the element, "data-panel" to match the `data-panel` attribute of the element, or "href", to match the `href` attribute of the element |
 | exact                     | Boolean | no        | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`). |
 | order                     | Number  | no        | Sets the order number of the sidebar item |
-| hide                      | Boolean | no        | Setting this property to `true` will hide the sidebar item and if the property `hide_all` from the main configuration is `true`, setting this property as `false` will avoid hiding this item |
+| hide<sup>\*</sup>         | Boolean \| String | no | Setting this property to `true` will hide the sidebar item and if the property `hide_all` from the main configuration is `true`, setting this property as `false` will avoid hiding the item |
 | name<sup>\*</sup>         | String  | no        | Changes the name of the sidebar item |
 | icon<sup>\*</sup>         | String  | no        | Specifies the icon of the sidebar item |
 | info<sup>\*</sup>         | String  | no        | Sets the content of the info text (a smaller secondary text below the main item text) |
