@@ -110,7 +110,7 @@ class CustomSidebar {
     private _isSidebarEditable: boolean | undefined;
     private _renderer: HomeAssistantJavaScriptTemplatesRenderer;
     private _styleManager: HomeAssistantStylesManager;
-    private _items: ConfigOrderWithItem[];
+    private _items: HTMLAnchorElement[];
     private _itemTouchedBinded: () => Promise<void>;
     private _mouseEnterBinded: (event: MouseEvent) => void;
     private _mouseLeaveBinded: () => void;
@@ -149,6 +149,14 @@ class CustomSidebar {
             promisableResultOptions
         );
         return [paperListBox, items, spacer];
+    }
+
+    private _hideAnchor(anchor: HTMLAnchorElement, hide: boolean): void {
+        if (hide) {
+            anchor.style.display = 'none';
+        } else {
+            anchor.style.removeProperty('display');
+        }
     }
 
     private _buildNewItem(configItem: ConfigNewItem): HTMLAnchorElement {
@@ -360,6 +368,22 @@ class CustomSidebar {
 
     }
 
+    private _subscribeHide(element: HTMLAnchorElement, hide: boolean | string) {
+        if (typeof hide === 'boolean') {
+            this._hideAnchor(element, hide);
+        } else {
+            this._subscribeTemplate(
+                hide,
+                (rendered: string): void => {
+                    this._hideAnchor(
+                        element,
+                        rendered === 'true'
+                    );
+                }
+            );
+        }
+    }
+
     private _subscribeTemplateColorChanges<T, K extends keyof T>(
         config: T,
         element: HTMLElement,
@@ -445,34 +469,64 @@ class CustomSidebar {
         });
     }
 
-    private _focusItemByKeyboard(paperListBox: HTMLElement, forward: boolean): void {
-        const lastIndex = this._items.length - 1;
-        const activeAnchor = paperListBox.querySelector(`
-            ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:not(.${CLASS.IRON_SELECTED}):focus,
-            ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:focus,
-            ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:has(> ${ELEMENT.PAPER_ICON_ITEM}:focus)
-        `.trim());
+    private _focusAnchorItem(activeIndex: number, forward: boolean): void {
 
-        let activeIndex: number = 0;
-        let focusIndex: number;
-        for (const entry of Object.entries(this._items)) {
-            const [index, configItem] = entry;
-            if (configItem.element === activeAnchor) {
-                activeIndex = +index;
-            }
-            configItem.element.tabIndex = -1;
-        }
+        const length = this._items.length;
+        const noneDisplay = 'none';
+        let focusIndex = 0;
+
         if (forward) {
-            focusIndex = activeIndex < lastIndex
-                ? activeIndex + 1
-                : 0;
+            const start = activeIndex + 1;
+            const end = start + length;
+            for (let i = start; i < end; i++) {
+                const index = i > length - 1
+                    ? i - length
+                    : i;
+                if (this._items[index].style.display !== noneDisplay) {
+                    focusIndex = index;
+                    break;
+                }
+            }
         } else {
-            focusIndex = activeIndex > 0
-                ? activeIndex - 1
-                : lastIndex;
+            const start = activeIndex - 1;
+            const end = start - length;
+            for (let i = start; i > end; i--) {
+                const index = i < 0
+                    ? length + i
+                    : i;
+                if (this._items[index].style.display !== noneDisplay) {
+                    focusIndex = index;
+                    break;
+                }
+            }
         }
-        this._items[focusIndex].element.focus();
-        this._items[focusIndex].element.tabIndex = 0;
+
+        this._items[focusIndex].focus();
+        this._items[focusIndex].tabIndex = 0;
+
+    }
+
+    private _focusItemByKeyboard(paperListBox: HTMLElement, forward: boolean): void {
+
+        const activeAnchor = paperListBox.querySelector<HTMLAnchorElement>(
+            `
+                ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:not(.${CLASS.IRON_SELECTED}):focus,
+                ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:focus,
+                ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:has(> ${ELEMENT.PAPER_ICON_ITEM}:focus)
+            `
+        );
+
+        let activeIndex = 0;
+
+        this._items.forEach((anchor: HTMLAnchorElement, index: number): void => {
+            if (anchor === activeAnchor) {
+                activeIndex = index;
+            }
+            anchor.tabIndex = -1;
+        });
+
+        this._focusAnchorItem(activeIndex, forward);
+
     }
 
     private _focusItemByTab(sidebarShadowRoot: ShadowRoot, element: HTMLElement, forward: boolean): void {
@@ -482,27 +536,22 @@ class CustomSidebar {
         if (element.nodeName === NODE_NAME.A) {
 
             const anchor = element as HTMLAnchorElement;
+            const activeIndex = this._items.indexOf(anchor);
 
-            const activeIndex = this._items.findIndex((configItem: ConfigOrderWithItem): boolean => configItem.element === anchor);
+            if (
+                (forward && activeIndex < lastIndex) ||
+                (!forward && activeIndex > 0)
+            ) {
 
-            let focusIndex: number = NaN;
+                this._focusAnchorItem(activeIndex, forward);
 
-            if (forward && activeIndex < lastIndex) {
-                focusIndex = activeIndex + 1;
-            } else if (!forward && activeIndex > 0) {
-                focusIndex = activeIndex - 1;
-            }
-
-            if (Number.isNaN(focusIndex)) {
-                if (forward) {
-                    const notifications = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.SIDEBAR_NOTIFICATIONS);
-                    notifications.focus();
-                } else {
-                    const menuButton = sidebarShadowRoot.querySelector<HTMLElement>(ELEMENT.HA_ICON_BUTTON);
-                    menuButton.focus();
-                }
             } else {
-                this._items[focusIndex].element.querySelector<HTMLElement>(ELEMENT.PAPER_ICON_ITEM).focus();
+
+                const element = forward
+                    ? sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.SIDEBAR_NOTIFICATIONS)
+                    : sidebarShadowRoot.querySelector<HTMLElement>(ELEMENT.HA_ICON_BUTTON);
+                element.focus();
+
             }
 
         } else {
@@ -510,7 +559,7 @@ class CustomSidebar {
                 const profile = sidebarShadowRoot.querySelector<HTMLElement>(`${SELECTOR.PROFILE} > ${ELEMENT.PAPER_ICON_ITEM}`);
                 profile.focus();
             } else {
-                this._items[lastIndex].element.querySelector<HTMLElement>(ELEMENT.PAPER_ICON_ITEM).focus();
+                this._focusAnchorItem(0, forward);
             }
         }
 
@@ -685,12 +734,12 @@ class CustomSidebar {
                 let orderIndex = 0;
                 let crossedBottom = false;
 
-                const itemsArray = Array.from(items) as HTMLAnchorElement[];
+                this._items = Array.from(items);
                 const matched: Set<Element> = new Set();
 
                 if (hide_all) {
-                    itemsArray.forEach((element: HTMLAnchorElement): void => {
-                        element.style.display = 'none';
+                    this._items.forEach((element: HTMLAnchorElement): void => {
+                        this._hideAnchor(element, true);
                     });
                 }
 
@@ -700,7 +749,7 @@ class CustomSidebar {
                         const itemLowerCase = item.toLocaleLowerCase();
                         const element = new_item
                             ? undefined
-                            : itemsArray.find((element: Element): boolean => {
+                            : this._items.find((element: Element): boolean => {
                                 const text = match === Match.DATA_PANEL
                                     ? element.getAttribute(ATTRIBUTE.PANEL)
                                     : (
@@ -748,7 +797,7 @@ class CustomSidebar {
 
                 const processBottom = () => {
                     if (!crossedBottom) {
-                        itemsArray.forEach((element: HTMLElement) => {
+                        this._items.forEach((element: HTMLElement) => {
                             if (!element.hasAttribute(ATTRIBUTE.PROCESSED)) {
                                 element.style.order = `${orderIndex}`;
                             }
@@ -766,24 +815,20 @@ class CustomSidebar {
                         processBottom();
                     }
 
-                    if (orderItem.new_item && !orderItem.hide) {
+                    if (orderItem.new_item) {
 
                         const newItem = this._buildNewItem(orderItem);
-                        newItem.style.order = `${orderIndex}`;
                         paperListBox.append(newItem);
 
                         orderItem.element = newItem;
 
+                        orderItem.element.setAttribute(ATTRIBUTE.PROCESSED, 'true');
+
+                        this._items.push(orderItem.element);
+
                     } else if (orderItem.element) {
 
                         const element = orderItem.element as HTMLAnchorElement;
-                        element.style.order = `${orderIndex}`;
-
-                        if (orderItem.hide) {
-                            element.style.display = 'none';
-                        } else {
-                            element.style.removeProperty('display');
-                        }
 
                         if (orderItem.href) {
                             element.href = orderItem.href;
@@ -795,60 +840,64 @@ class CustomSidebar {
 
                     }
 
-                    if (!orderItem.hide) {
+                    orderItem.element.style.order = `${orderIndex}`;
 
-                        if (orderItem.name) {
-                            this._subscribeName(
-                                orderItem.element,
-                                orderItem.name
-                            );
-                        }
-
-                        if (orderItem.icon) {
-                            this._subscribeIcon(
-                                orderItem.element,
-                                orderItem.icon
-                            );
-                        }
-
-                        if (orderItem.info) {
-                            this._subscribeInfo(
-                                orderItem.element,
-                                orderItem.info
-                            );
-                        }
-
-                        if (orderItem.notification) {
-                            this._subscribeNotification(
-                                orderItem.element,
-                                orderItem.notification
-                            );
-                        }
-
-                        this._subscribeTemplateColorChanges(
-                            orderItem,
+                    if (orderItem.name) {
+                        this._subscribeName(
                             orderItem.element,
-                            ITEM_OPTIONS_VARIABLES_MAP
+                            orderItem.name
                         );
-
-                        if (orderItem.new_item) {
-
-                            // New items rollover
-                            orderItem.element.addEventListener(EVENT.MOUSEENTER, this._mouseEnterBinded);
-                            orderItem.element.addEventListener(EVENT.MOUSELEAVE, this._mouseLeaveBinded);
-
-                        }
-
-                        // When the item is clicked
-                        orderItem.element.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
-                        orderItem.element.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent): void => {
-                            if (event.key === KEY.ENTER) {
-                                this._itemTouchedBinded();
-                            }
-                        });
-
-                        this._items.push(orderItem);
                     }
+
+                    if (orderItem.icon) {
+                        this._subscribeIcon(
+                            orderItem.element,
+                            orderItem.icon
+                        );
+                    }
+
+                    if (orderItem.info) {
+                        this._subscribeInfo(
+                            orderItem.element,
+                            orderItem.info
+                        );
+                    }
+
+                    if (orderItem.notification) {
+                        this._subscribeNotification(
+                            orderItem.element,
+                            orderItem.notification
+                        );
+                    }
+
+                    if (typeof orderItem.hide !== 'undefined') {
+                        this._subscribeHide(
+                            orderItem.element,
+                            orderItem.hide
+                        );
+                    }
+
+                    this._subscribeTemplateColorChanges(
+                        orderItem,
+                        orderItem.element,
+                        ITEM_OPTIONS_VARIABLES_MAP
+                    );
+
+                    if (orderItem.new_item) {
+
+                        // New items rollover
+                        orderItem.element.addEventListener(EVENT.MOUSEENTER, this._mouseEnterBinded);
+                        orderItem.element.addEventListener(EVENT.MOUSELEAVE, this._mouseLeaveBinded);
+
+                    }
+
+                    // When the item is clicked
+                    orderItem.element.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
+                    orderItem.element.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent): void => {
+                        if (event.key === KEY.ENTER) {
+                            this._itemTouchedBinded();
+                        }
+                    });
 
                     orderIndex++;
 
@@ -857,6 +906,13 @@ class CustomSidebar {
                 if (configItems.length) {
                     processBottom();
                 }
+
+                this._items.sort(
+                    (
+                        linkA: HTMLAnchorElement,
+                        linkB: HTMLAnchorElement
+                    ): number => +linkA.style.order - +linkB.style.order
+                );
 
                 this._panelLoaded();
 
@@ -927,8 +983,7 @@ class CustomSidebar {
 
         const activeParentLink = activeLink
             ? null
-            : this._items.reduce((link: HTMLAnchorElement | null, configItem: ConfigOrderWithItem): HTMLAnchorElement | null => {
-                const anchor = configItem.element;
+            : this._items.reduce((link: HTMLAnchorElement | null, anchor: HTMLAnchorElement): HTMLAnchorElement | null => {
                 const href = anchor.getAttribute(ATTRIBUTE.HREF);
                 if (pathName.startsWith(href)) {
                     if (
@@ -941,8 +996,7 @@ class CustomSidebar {
                 return link;
             }, null);
 
-        this._items.forEach((configItem: ConfigOrderWithItem) => {
-            const anchor = configItem.element;
+        this._items.forEach((anchor: HTMLAnchorElement) => {
             const isActive = (
                 activeLink &&
                 activeLink === anchor
