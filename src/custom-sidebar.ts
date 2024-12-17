@@ -536,12 +536,11 @@ class CustomSidebar {
 
     private _focusItemByTab(sidebarShadowRoot: ShadowRoot, element: HTMLElement, forward: boolean): void {
 
-        const lastIndex = this._items.length - 1;
-
         if (element.nodeName === NODE_NAME.A) {
 
             const anchor = element as HTMLAnchorElement;
             const activeIndex = this._items.indexOf(anchor);
+            const lastIndex = this._items.length - 1;
 
             if (
                 (forward && activeIndex < lastIndex) ||
