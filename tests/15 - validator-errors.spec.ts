@@ -640,6 +640,18 @@ test.describe('order item property', () => {
             error: `${ERROR_PREFIX} in dev, "icon" property should be a string`
         },
         {
+            title: 'should throw an error if the hide property is not a boolean or a string',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        hide: [true]
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, "hide" property should be a boolean or a string`
+        },
+        {
             title: 'should throw an error if a base config option is found in order item',
             json: {
                 order: [

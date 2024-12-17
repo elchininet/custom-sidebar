@@ -113,6 +113,36 @@ test('notifications using a template should update if one of its entities change
 
 });
 
+test('if the hide property is a template, item should get hidden when the template evaluates to true', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            order: [
+                {
+                    item: 'logbook',
+                    hide: '{{ is_state("input_boolean.my_switch", "on") }}'
+                }
+            ]
+        }
+    );
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.LOGBOOK)).toBeVisible();
+
+    await haSwitchStateRequest(page, true);
+
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.LOGBOOK)).not.toBeVisible();
+
+    await haSwitchStateRequest(page, false);
+
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.LOGBOOK)).toBeVisible();
+
+});
+
 [
     {
         title: 'variables should be included in the templates',

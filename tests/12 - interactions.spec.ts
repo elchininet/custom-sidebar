@@ -82,6 +82,25 @@ test('Hiting Enter with items focused should select the proper item', async ({ p
 
 test('Visit a URL that matches with multiple items should select the proper item', async ({ page }) => {
 
+    await addJsonExtendedRoute(page, {
+        exceptions: [
+            {
+                user: 'Test',
+                extend_from: 'base',
+                order: [
+                    {
+                        item: 'config',
+                        order: 1
+                    },
+                    {
+                        item: 'Google',
+                        order: 8
+                    }
+                ]
+            }
+        ]
+    });
+
     await page.goto('/config');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
 
