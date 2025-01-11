@@ -47,10 +47,7 @@ This is a refactor of [custom-sidebar-v2] by @galloween, which unfortunately is 
 
 You can install the plugin manually or through [HACS], not both. If you install the plugin using the two installations methods you could have issues or errors.
 
-### Through HACS (v2 or greater)
-
->[!NOTE]
->If your version of `HACS` is lower than `v2` consult the section [Through old HACS versions (< v2)](#through-old-hacs-versions--v2)
+### Through HACS
 
 1. Go to `HACS` dashboard
 2. Search for `custom-sidebar` and click on it
@@ -74,31 +71,8 @@ frontend:
     - /hacsfiles/custom-sidebar/custom-sidebar-json.js
 ```
 
-6. Restart Home Assistant
-
-### Through old HACS versions (< v2)
-
-1. Go to `HACS` dashboard
-2. Go to `Frontend`
-3. Click on `Explore and download repositories` button in the bottom-right of the screen
-4. Search for `custom-sidebar` and install it
-5. Add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
-
-#### If you want to use a `YAML` configuration
-
-```yaml
-frontend:
-  extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js
-```
-
-#### If you want to use a `JSON` configuration
-
-```yaml
-frontend:
-  extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-json.js
-```
+>[!IMPORTANT]
+>Do not get creative with the path of the plugin, use the provided one. If you have `HACS` installed [the hacsfiles custom path](https://www.hacs.xyz/docs/use/repositories/type/dashboard/#custom-features-for-files-stored-under-hacsfiles) will be there even if you cannot see it in your filesystem.
 
 6. Restart Home Assistant
 
@@ -857,7 +831,8 @@ Check out Home Assistant's native sidebar tools, maybe it will be enough for you
 * Do you have an idea or a question? Open [a discussion](https://github.com/elchininet/custom-sidebar/discussions)
 * Do you have an issue or have you encountered a bug? Open [an issue](https://github.com/elchininet/custom-sidebar/issues)
 * Do you need to discuss or to show and tell? visit the [`custom-sidebar` entry](https://community.home-assistant.io/t/custom-sidebar-manage-home-assistants-sidebar-items-per-user-or-device-basis/665800) in the Home Assistant Forum
-* [Video tutorial](https://www.youtube.com/watch?v=oecwBjPmlYo) about how to install the plugin (in Spanish) by @hectorzin
+* [Video tutorial](https://youtu.be/oecwBjPmlYo) about how to install the plugin (in Spanish) by @hectorzin
+* [Video tutorial](https://youtu.be/CPVumRS8v7o) about how to install the plugin (in German) by @Senbei123
 
 ---
 
