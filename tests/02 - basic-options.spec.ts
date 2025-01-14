@@ -1,5 +1,9 @@
 import { test, expect } from 'playwright-test-coverage';
-import { CONFIG_FILES, SIDEBAR_CLIP_WITH_DIVIDERS } from './constants';
+import {
+    CONFIG_FILES,
+    SIDEBAR_CLIP_WITH_DIVIDERS,
+    BASE_URL
+} from './constants';
 import { haConfigRequest } from './ha-services';
 import { fulfillJson } from './utilities';
 import { SELECTORS } from './selectors';
@@ -303,7 +307,7 @@ test('should redirect to the default_path on load', async ({ page }) => {
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
-    await expect(page).toHaveScreenshot('sidebar-default-path.png');
+    await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
 
 });
 
@@ -320,15 +324,15 @@ test('should redirect to the default_path on refresh', async ({ page }) => {
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
-    await expect(page).toHaveScreenshot('sidebar-default-path.png');
+    await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
 
     await page.locator(SELECTORS.SIDEBAR_ITEMS.TODO).click();
 
-    await expect(page).not.toHaveScreenshot('sidebar-default-path.png');
+    await expect(page).not.toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
 
     await page.reload();
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
-    await expect(page).toHaveScreenshot('sidebar-default-path.png');
+    await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
 
 });
