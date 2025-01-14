@@ -31,6 +31,7 @@ export const SELECTORS = {
     PAPER_LIST_BOX: 'paper-listbox',
     TOOLTIP: '.tooltip',
     HA_ICON: 'ha-icon',
+    PANEL_CONFIG: 'ha-panel-config',
     SIDEBAR_ITEMS,
     SIDEBAR_PAPER_ICON_ITEMS
 };

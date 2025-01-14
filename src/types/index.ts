@@ -129,6 +129,7 @@ export interface BaseConfig extends SidebarColorConfig {
     order?: ConfigOrder[];
     sidebar_editable?: boolean | string;
     sidebar_mode?: `${SidebarMode}`;
+    default_path?: string;
     styles?: string;
     extend_from?: string | string[];
 }
@@ -175,6 +176,7 @@ export interface Config extends BaseConfig {
 
 export type ItemColorConfigKeys = keyof ItemColorConfig;
 export type SidebarColorConfigKeys = keyof SidebarColorConfig;
+export type SidebarStringConfigKeys = keyof Pick<BaseConfig, 'default_path'>;
 
 export interface SubscriberTemplate {
     result: string;
