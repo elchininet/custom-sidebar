@@ -13,8 +13,9 @@ import {
     TYPE,
     OBJECT_TO_STRING,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
-    ITEM_TEMPLATE_STRING_OPTIONS,
-    ITEM_TEMPLATE_NUMBER_OPTIONS,
+    ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
+    ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS,
+    ITEM_TEMPLATE_STRING_CONFIG_OPTIONS,
     JS_TEMPLATE_REG,
     JINJA_TEMPLATE_REG
 } from '@constants';
@@ -35,7 +36,8 @@ const BASE_CONFIG_OPTIONS = [
     'divider_bottom_color',
     'scrollbar_thumb_color',
     'styles',
-    ...ITEM_TEMPLATE_STRING_OPTIONS
+    ...ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
+    ...ITEM_TEMPLATE_STRING_CONFIG_OPTIONS
 ] as const;
 
 const ONLY_BASE_CONFIG_OPTIONS = [
@@ -269,7 +271,7 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
     validateStringOrNumberOptions(
         exception,
         [
-            ...ITEM_TEMPLATE_NUMBER_OPTIONS
+            ...ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS
         ],
         `${ERROR_PREFIX}, exceptions`
     );
@@ -375,7 +377,7 @@ const validateConfigItem = (configItem: ConfigItem): void => {
         [
             'item',
             'info',
-            ...ITEM_TEMPLATE_STRING_OPTIONS
+            ...ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS
         ],
         `${ERROR_PREFIX} in ${configItem.item},`
     );
@@ -383,7 +385,7 @@ const validateConfigItem = (configItem: ConfigItem): void => {
     validateStringOrNumberOptions(
         configItem,
         [
-            ...ITEM_TEMPLATE_NUMBER_OPTIONS
+            ...ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS
         ],
         `${ERROR_PREFIX} in ${configItem.item},`
     );
@@ -437,7 +439,7 @@ export const validateConfig = (config: Config): void => {
     validateStringOrNumberOptions(
         config,
         [
-            ...ITEM_TEMPLATE_NUMBER_OPTIONS
+            ...ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS
         ],
         `${ERROR_PREFIX},`
     );

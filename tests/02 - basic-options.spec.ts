@@ -289,3 +289,46 @@ test.beforeAll(async ({ browser }) => {
     });
 
 });
+
+test('should redirect to the default_path on load', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            default_path: '/config/integrations'
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
+    await expect(page).toHaveScreenshot('sidebar-default-path.png');
+
+});
+
+test('should redirect to the default_path on refresh', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            default_path: '/config/integrations'
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
+    await expect(page).toHaveScreenshot('sidebar-default-path.png');
+
+    await page.locator(SELECTORS.SIDEBAR_ITEMS.TODO).click();
+
+    await expect(page).not.toHaveScreenshot('sidebar-default-path.png');
+
+    await page.reload();
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
+    await expect(page).toHaveScreenshot('sidebar-default-path.png');
+
+});

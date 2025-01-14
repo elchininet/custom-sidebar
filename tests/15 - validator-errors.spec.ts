@@ -1,10 +1,11 @@
 import { test, expect } from 'playwright-test-coverage';
 import { SidebarMode } from '../src/types';
+import { NAMESPACE } from '../src/constants';
 import { BASE_NAME } from './constants';
 import { fulfillJson } from './utilities';
 import { SELECTORS } from './selectors';
 
-const ERROR_PREFIX = 'custom-sidebar: Invalid configuration';
+const ERROR_PREFIX = `${NAMESPACE}: Invalid configuration`;
 
 interface TestSuit {
     title: string;
@@ -140,6 +141,20 @@ test.describe('main options', () => {
                 order: {}
             },
             error: `${ERROR_PREFIX}, "order" property should be an array`
+        },
+        {
+            title: 'should throw an error if the default_path property is not a string',
+            json: {
+                default_path: true
+            },
+            error: `${ERROR_PREFIX}, "default_path" property should be a string`
+        },
+        {
+            title: 'should throw a warning if the default_path property does not start with "/"',
+            json: {
+                default_path: 'https://google.com'
+            },
+            warning: `${NAMESPACE}: ignoring default_path property as it doesn't start with "/".`
         },
         {
             title: 'should throw an error if the js_variables property is not an object',
@@ -347,7 +362,7 @@ test.describe('main options', () => {
                     return 'Title';
                 ]]]`
             },
-            warning: 'custom-sidebar: partial your_partial doesn\'t exist'
+            warning: `${NAMESPACE}: partial your_partial doesn't exist`
         },
         {
             title: 'should throw an error if there is a circular partial dependency in a JavaScript template',
@@ -367,7 +382,7 @@ test.describe('main options', () => {
                     return myTitle;
                 ]]]`
             },
-            error: 'custom-sidebar: circular partials dependency my_partial > my_title > my_partial'
+            error: `${NAMESPACE}: circular partials dependency my_partial > my_title > my_partial`
         },
         {
             title: 'should warn about a non existent partial with a Jinja template',
@@ -380,7 +395,7 @@ test.describe('main options', () => {
                     {{ title }}
                 `
             },
-            warning: 'custom-sidebar: partial your_partial doesn\'t exist'
+            warning: `${NAMESPACE}: partial your_partial doesn't exist`
         },
         {
             title: 'should throw an error if there is a circular partial dependency in a Jinja template',
@@ -400,7 +415,7 @@ test.describe('main options', () => {
                     {{ myTitle }}
                 `
             },
-            error: 'custom-sidebar: circular partials dependency my_partial > my_title > my_partial'
+            error: `${NAMESPACE}: circular partials dependency my_partial > my_title > my_partial`
         },
         {
             title: 'should throw an error with a malformed "extend_from"',
@@ -903,6 +918,32 @@ test.describe('exceptions', () => {
                 ]
             },
             error: `${ERROR_PREFIX}, exceptions "extendable_configs" option can only be placed in the main config`
+        },
+        {
+            title: 'should throw an error if the default_path property is not a string',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        default_path: {
+                            path: '/config'
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, exceptions "default_path" property should be a string`
+        },
+        {
+            title: 'should throw a warning if the default_path property does not start with "/"',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        default_path: 'http://localhost:8123/config'
+                    }
+                ]
+            },
+            warning: `${NAMESPACE}: ignoring default_path property as it doesn't start with "/".`
         },
         {
             title: 'should throw an error if a base config option is found in an exception order item',

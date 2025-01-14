@@ -125,7 +125,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
 | title_color<sup>\*</sup> | String                       | no       | Sets the color of the sidebar title |
 | subtitle<sup>\*</sup> | String                          | no       | Sets a custom subtitle below the `Home Assistant` title |
-| subtitle_color<sup>\*</sup> | String                     | no      | Sets the color of the sidebar subtitle |
+| subtitle_color<sup>\*</sup> | String                    | no       | Sets the color of the sidebar subtitle |
 | sidebar_background<sup>\*</sup> | String                | no       | Sets the background of the sidebar. It could be a color or [a background declaration] |
 | sidebar_border_color<sup>\*</sup> | String              | no       | Sets the border-right color of the sidebar |
 | menu_background<sup>\*</sup>    | String                | no       | Sets the background of the sidebar menu area (the one containing the menu button and the title). If it is not set, the `sidebar_background` option will be used. It could be a color or [a background declaration] |
@@ -153,8 +153,9 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | notification_text_color_hover<sup>\*</sup>  | String    | no       | Sets the color of the sidebar notifications texts when the item is in hover state |
 | divider_color<sup>\*</sup>       | String               | no       | Sets the color of both sidebar dividers |
 | divider_top_color<sup>\*</sup>   | String               | no       | Sets the color of the top sidebar divider. It overrides `divider_color` for this divider if it is set |
-| divider_bottom_color<sup>\*</sup> | String               | no       | Sets the color of the bottom sidebar divider. It overrides `divider_color` for this divider if it is set |
+| divider_bottom_color<sup>\*</sup> | String              | no       | Sets the color of the bottom sidebar divider. It overrides `divider_color` for this divider if it is set |
 | scrollbar_thumb_color<sup>\*</sup>| String              | no       | Sets the color of the sidebar scrollbar (This option uses non-baseline CSS styles and it could not work in some browsers) |
+| default_path                       | String             | no       | Defines the default URL path when the page loads. This path must start with `/` |
 | styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
 
 >[!TIP]
@@ -275,6 +276,7 @@ Short example in `JSON` format:
 >* All the items placed in the bottom will be moved to the top by default. If you want to have some items in the bottom you need to add them to the `config.order` and specify their `bottom` property on `true`.
 >* Any items present in the Sidebar, but not in `config.order`, will be shown **on the bottom** of the top part of the list
 >* Notifications and user account are not part of the main sidebar items so they cannot be targeted inside the `order` option to change their properties. On the other hand, global color properties will affect these items though.
+>* The `default_path` option will change the default behaviour and every time that the page loads it will navigate to this path (either when the page loads for the first time or when it gets refreshed). If you don't want to have this behaviour and you would prefer to load Home Assistant in an specific path or refresh a specific page without being redirected to the `default_path`, then you should not set this option.
 >* The `style` option doesn't allow templates, it should be used only to override or correct some styles of the sidebar.
 >* If you use `custom-sidebar` to set the order or to hide items from the sidebar, it is recommended that you don't use Home Assistant functionality to reorder/hide items, because it will conflict with the functionality of the plugin.
 

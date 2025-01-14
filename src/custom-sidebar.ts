@@ -596,6 +596,40 @@ class CustomSidebar {
         return null;
     }
 
+    private _processDefaultPath() {
+
+        const pathname = this._config.default_path;
+
+        if (pathname) {
+
+            if (pathname.startsWith('/')) {
+
+                const params: Parameters<typeof window.history.replaceState> = [
+                    null,
+                    '',
+                    pathname
+                ];
+
+                window.history.replaceState(...params);
+
+                window.dispatchEvent(
+                    new CustomEvent(
+                        EVENT.LOCATION_CHANGED,
+                        {
+                            detail: {
+                                replace: pathname
+                            }
+                        }
+                    )
+                );
+
+            } else {
+                console.warn(`${NAMESPACE}: ignoring default_path property as it doesn't start with "/".`);
+            }
+
+        }
+    }
+
     private _processSidebar(): void {
 
         // Process Home Assistant Main and Partial Panel Resolver
@@ -1034,6 +1068,7 @@ class CustomSidebar {
                         this._getConfig()
                             .then(() => {
                                 this._renderer.variables = this._config.js_variables ?? {};
+                                this._processDefaultPath();
                                 this._processSidebar();
                                 this._subscribeTitle();
                                 this._subscribeSideBarEdition();

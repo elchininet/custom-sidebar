@@ -1,6 +1,7 @@
 import{
     ItemColorConfigKeys,
     SidebarColorConfigKeys,
+    SidebarStringConfigKeys,
     SidebarMode,
     DockedSidebar
 } from '@types';
@@ -118,7 +119,7 @@ export enum CUSTOM_SIDEBAR_CSS_VARIABLES {
     NOTIFICATION_TEXT_COLOR_HOVER = '--custom-sidebar-notification-text-color-hover'
 }
 
-export const ITEM_TEMPLATE_STRING_OPTIONS: ItemColorConfigKeys[] = [
+export const ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
     'item_background',
     'item_background_hover',
     'icon_color',
@@ -139,8 +140,12 @@ export const ITEM_TEMPLATE_STRING_OPTIONS: ItemColorConfigKeys[] = [
     'notification_text_color_hover'
 ];
 
-export const ITEM_TEMPLATE_NUMBER_OPTIONS: ItemColorConfigKeys[] = [
+export const ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
     'selection_opacity'
+];
+
+export const ITEM_TEMPLATE_STRING_CONFIG_OPTIONS: SidebarStringConfigKeys[] = [
+    'default_path'
 ];
 
 export const ITEM_OPTIONS_VARIABLES_MAP: [ItemColorConfigKeys, string][] = [
@@ -202,7 +207,8 @@ export enum EVENT {
     MOUSELEAVE = 'mouseleave',
     KEYDOWN = 'keydown',
     HASS_EDIT_SIDEBAR = 'hass-edit-sidebar',
-    RENDER_TEMPLATE = 'render_template'
+    RENDER_TEMPLATE = 'render_template',
+    LOCATION_CHANGED = 'location-changed'
 }
 
 export enum KEY {
