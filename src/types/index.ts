@@ -25,6 +25,7 @@ export enum MatchersCondition {
 
 export interface HassExtended extends Hass {
     dockedSidebar: `${DockedSidebar}`;
+    callService: (domain: string, service: string, data: Record<string, unknown>) => void;
 }
 
 export interface HomeAsssistantExtended extends HomeAssistant {
@@ -60,6 +61,24 @@ export enum Match {
     DATA_PANEL = 'data-panel',
     HREF = 'href'
 }
+
+export enum ActionType {
+    CALL_SERVICE = 'call-service',
+    JAVASCRIPT = 'javascript'
+}
+
+export interface ServiceCallAction {
+    action: `${ActionType.CALL_SERVICE}`;
+    service: string;
+    data?: Record<string, unknown>;
+}
+
+export interface JavaScriptAction{
+    action: `${ActionType.JAVASCRIPT}`,
+    code: string;
+}
+
+export type OnClickAction = ServiceCallAction | JavaScriptAction;
 
 export interface ItemColorConfig {
     item_background?: string;
@@ -108,6 +127,7 @@ export interface ConfigItem extends ItemColorConfig {
     hide?: boolean | string;
     href?: string;
     target?: '_self' | '_blank';
+    on_click?: OnClickAction;
     icon?: string;
     new_item?: never;
 }

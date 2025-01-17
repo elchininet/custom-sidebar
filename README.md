@@ -209,7 +209,8 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
 | href                      | String  | no        | Specifies the `href` of the sidebar item |
 | target                    | String  | no        | Specifies the [target property] of the sidebar item |
-| new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. **Using this option makes `href` and `icon` required properties** |
+| on_click                  | OnClickAction | no  | Specifies the `onClick` property of the sidebar item. It allows two types of actions, `ServiceCallAction` or `JavaScriptAction`. Take into account that setting this will not stop the `href` option for working. If you want to avoid navigating to a page, you should set the `href` option as `#` (in new items you can just omit it).<br><br><pre>## service call action<br>on_click:<br>  action: call-service<br>  service: light.toggle<br>  data:<br>    entity_id: light.woonkamer<br><br>## javascript action<br>on_click:<br>  action: javascript<br>  code: \|<br>    location.reload();</pre> |
+| new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. **Using this option makes `icon` a required property together with `href` or `on_click`** |
 
 >[!TIP]
 >\* These item properties allow [JavaScript](#javascript-templates) or [Jinja](#jinja-templates) templates.
@@ -279,6 +280,8 @@ Short example in `JSON` format:
 >* The `default_path` option will change the default behaviour and every time that the page loads it will navigate to this path (either when the page loads for the first time or when it gets refreshed). If you don't want to have this behaviour and you would prefer to load Home Assistant in an specific path or refresh a specific page without being redirected to the `default_path`, then you should not set this option.
 >* The `style` option doesn't allow templates, it should be used only to override or correct some styles of the sidebar.
 >* If you use `custom-sidebar` to set the order or to hide items from the sidebar, it is recommended that you don't use Home Assistant functionality to reorder/hide items, because it will conflict with the functionality of the plugin.
+>* Take into account that using the `on_click` parameter in an item will not stop redirecting to a page if the `href` parameter has a value. If you want to stop navigating to a page when you click on an item, for new items you can just omit the `href` parameter, but for existing items you should set the `href` parameter as `#`.
+>* Take into account that the `code` parameter of an `javascript` action in the `on_click` parameter doesn't need to be enclosed between three square brackets (`[[[ ]]]`).
 
 ### Exceptions
 
@@ -369,7 +372,7 @@ Short example in `JSON` format:
 
 ## Templates
 
-Some config options and item properties, as `title`, `sidebar_editable`, `name` `notification`, and `info`, admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main difference between the two templating systems (apart from the syntax) is that `JavaScript` can access client side data like DOM APIs and can return [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), and `Jinja` templates are mostly agnostic to the device in which `Home Assistant` is being executed.
+Some config options and item properties admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main differences between the two templating systems (apart from the syntax) are that `JavaScript` can access client side data like DOM APIs, can return [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) and can work with [reactive variables](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#ref-and-unref). `Jinja` templates are mostly agnostic to the device in which `Home Assistant` is being executed, cannot return Promises and do not support reactive variables.
 
 ### JavaScript templates
 
@@ -378,6 +381,8 @@ This templating system IS NOT [the same that Home Assistant implements](https://
 The `JavaScript` code will be taken as something that you want to return, but if you have a more complex logic, you can create your own variables and return the desired result at the end.
 
 The entities used in the templates will be stored, so if the state of an stored entity changes, all the templates that use this entity will be reevaluated snd rerendered. On top of this, if the variable `panel_url` is used in a template, the template will be reevaluated every time that a new panel or a new view is loaded.
+
+`JavaScript` templates can make use of [reactive variables](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#ref-and-unref). If you use a reactive variable in some templates and you modify it in the `javascript` action of an `on_click` parameter of an item, all the templates in which the variable was used will be reevaluated in the device in which the action is performed.
 
 #### JavaScript templates example
 
