@@ -579,7 +579,7 @@ test.describe('order item property', () => {
             error: `${ERROR_PREFIX} in dev, "item" property should be a string`
         },
         {
-            title: 'should throw an error if a new item doesn\'t have an "href" property',
+            title: 'should throw an error if a new item doesn\'t have an "href" or an "on_click" property',
             json: {
                 order: [
                     {
@@ -591,7 +591,7 @@ test.describe('order item property', () => {
                     }
                 ]
             },
-            error: `${ERROR_PREFIX} in dev, if you set "new_item" as "true", "href" property is necessary`
+            error: `${ERROR_PREFIX} in dev, if you set "new_item" as "true", it is necessary an "href" or an "on_click "property`
         },
         {
             title: 'should throw an error if the "href" property in a new item is not a string',
@@ -665,6 +665,94 @@ test.describe('order item property', () => {
                 ]
             },
             error: `${ERROR_PREFIX} in history, "hide" property should be a boolean or a string`
+        },
+        {
+            title: 'should throw an error if the on_click property is not an object',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        on_click: true
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, "on_click" property should be an object`
+        },
+        {
+            title: 'should throw an error if the on_click property contains a malformed action parameter',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        on_click: {
+                            action: false
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the "action" parameter should be a string`
+        },
+        {
+            title: 'should throw an error if the on_click property contains a non-valid action parameter',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        on_click: {
+                            action: 'custom_action'
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the "action" parameter should be one of these values: call-service, javascript`
+        },
+        {
+            title: 'should throw an error if the on_click property contains a call-service action with a malformed service parameter',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        on_click: {
+                            action: 'call-service',
+                            service: {
+                                type: 'input_boolean.toggle'
+                            }
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the "service" parameter should be a string`
+        },
+        {
+            title: 'should throw an error if the on_click property contains a call-service action with a malformed data parameter',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        on_click: {
+                            action: 'call-service',
+                            service: 'input_boolean.toggle',
+                            data: ['light.my_light']
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the "data" parameter needs to be an object`
+        },
+        {
+            title: 'should throw an error if the on_click property contains a javascript action with a malformed code parameter',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        on_click: {
+                            action: 'javascript',
+                            script: 'console.log("yes")'
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the "code" parameter should be a string`
         },
         {
             title: 'should throw an error if a base config option is found in order item',

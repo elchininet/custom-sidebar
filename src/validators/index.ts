@@ -6,7 +6,8 @@ import {
     Primitive,
     PrimitiveObject,
     PrimitiveArray,
-    MatchersCondition
+    MatchersCondition,
+    ActionType
 } from '@types';
 import {
     BASE_NAME,
@@ -111,6 +112,36 @@ const validateStringOrArrayOfStrings = (value: undefined | string | string[]): b
             value.some((item: string): boolean => typeof item === TYPE.STRING)
         )
     );
+};
+
+const validateOnClickOption = (configItem: ConfigItem, errorProfix: string): void => {
+    if (typeof configItem.on_click !== TYPE.UNDEFINED) {
+        if (Object.prototype.toString.call(configItem.on_click) !== OBJECT_TO_STRING) {
+            throw new SyntaxError(`${errorProfix} "on_click" property should be an object`);
+        }
+        if (typeof configItem.on_click.action !== TYPE.STRING) {
+            throw new SyntaxError(`${errorProfix} the "action" parameter should be a string`);
+        }
+        if (!Object.values<string>(ActionType).includes(configItem.on_click.action)) {
+            throw new SyntaxError(`${errorProfix} the "action" parameter should be one of these values: ${Object.values(ActionType).join(', ')}`);
+        }
+        if (configItem.on_click.action === ActionType.CALL_SERVICE) {
+            if (typeof configItem.on_click.service !== TYPE.STRING) {
+                throw new SyntaxError(`${errorProfix} the "service" parameter should be a string`);
+            }
+            if (
+                typeof configItem.on_click.data !== TYPE.UNDEFINED &&
+                Object.prototype.toString.call(configItem.on_click.data) !== OBJECT_TO_STRING
+            ) {
+                throw new SyntaxError(`${errorProfix} the "data" parameter needs to be an object`);
+            }
+        }
+        if (configItem.on_click.action === ActionType.JAVASCRIPT) {
+            if (typeof configItem.on_click.code !== TYPE.STRING) {
+                throw new SyntaxError(`${errorProfix} the "code" parameter should be a string`);
+            }
+        }
+    }
 };
 
 const validateExtendFrom = (
@@ -396,14 +427,19 @@ const validateConfigItem = (configItem: ConfigItem): void => {
         `${ERROR_PREFIX} in ${configItem.item},`
     );
 
+    validateOnClickOption(
+        configItem,
+        `${ERROR_PREFIX} in ${configItem.item},`
+    );
+
     if (configItem.new_item) {
         validateStringOptions(
             configItem,
             ['href', 'icon'],
             `${ERROR_PREFIX} in ${configItem.item},`
         );
-        if (!configItem.href) {
-            throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, if you set "new_item" as "true", "href" property is necessary`);
+        if (!configItem.href && !configItem.on_click) {
+            throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, if you set "new_item" as "true", it is necessary an "href" or an "on_click "property`);
         }
         if (!configItem.icon) {
             throw new SyntaxError(`${ERROR_PREFIX} in ${configItem.item}, if you set "new_item" as "true", "icon" property is necessary`);

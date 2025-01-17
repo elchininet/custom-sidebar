@@ -18,6 +18,8 @@ import {
     ConfigNewItem,
     ConfigOrder,
     ConfigOrderWithItem,
+    OnClickAction,
+    ActionType,
     PartialPanelResolver,
     Sidebar,
     SidebarMode,
@@ -44,7 +46,8 @@ import {
     BLOCKED_PROPERTY,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
     MAX_ATTEMPTS,
-    RETRY_DELAY
+    RETRY_DELAY,
+    DOMAIN_ENTITY_REGEXP
 } from '@constants';
 import {
     logVersionToConsole,
@@ -162,7 +165,9 @@ class CustomSidebar {
     private _buildNewItem(configItem: ConfigNewItem): HTMLAnchorElement {
 
         const a = document.createElement('a');
-        a.href = configItem.href;
+        a.href = configItem.href
+            ? configItem.href
+            : '#';
         a.target = configItem.target || '';
         a.tabIndex = -1;
         a.setAttribute(ATTRIBUTE.ROLE, 'option');
@@ -937,6 +942,10 @@ class CustomSidebar {
                         }
                     });
 
+                    if (orderItem.on_click) {
+                        orderItem.element.addEventListener(EVENT.CLICK, this._mouseClick.bind(this, orderItem.on_click), true);
+                    }
+
                     orderIndex++;
 
                 });
@@ -988,6 +997,40 @@ class CustomSidebar {
                     sidebar._hideTooltip();
                 }, 500);
             });
+    }
+
+    private async _mouseClick(onClickAction: OnClickAction, event: MouseEvent): Promise<void> {
+        const anchor = event.currentTarget as HTMLAnchorElement;
+        const hasHashBangAsHref = anchor.getAttribute(ATTRIBUTE.HREF) === '#';
+        const dataPanel = anchor.getAttribute(ATTRIBUTE.PANEL);
+        if (hasHashBangAsHref) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+        switch(onClickAction.action) {
+            case ActionType.CALL_SERVICE: {
+                const { service, data = {} } = onClickAction;
+                const matches = service.match(DOMAIN_ENTITY_REGEXP);
+                if (matches?.length === 3) {
+                    this._ha.hass.callService(
+                        matches[1],
+                        matches[2],
+                        data
+                    );
+                } else {
+                    console.warn(`${NAMESPACE} ignoring "${ActionType.CALL_SERVICE}" action in "${dataPanel}" item. The service parameter is malfomed.`);
+                }
+                break;
+            }
+            case ActionType.JAVASCRIPT: {
+                const { code } = onClickAction;
+                const finalCode = code.includes('return')
+                    ? code
+                    : `${code}\n;return;`;
+                this._renderer.renderTemplate(finalCode);
+                break;
+            }
+        }
     }
 
     private async _checkProfileEditableButton(): Promise<void> {

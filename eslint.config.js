@@ -26,7 +26,7 @@ module.exports = [
                     allowTemplateLiterals: true
                 }
             ],
-            indent: ['error', 4],
+            indent: ['error', 4, { 'SwitchCase': 1 }],
             semi: ['error', 'always'],
             'comma-dangle': ['error', 'never'],
             'no-trailing-spaces': ['error'],
