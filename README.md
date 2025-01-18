@@ -631,7 +631,7 @@ order:
 
 Extendable configurations (`extendable_configs`) is an object containing different configurations options that could be extended from the [main configuration](#configuration-options), from [the exceptions](#exceptions) or from another extendable configuration, making them a very flexible option to share configuration blocks. To specify that a configuration should extend from an extendable configuration, the `extend_from` option should be used specifying the extendable configuration name(s).
 
-Extending from a configuration basically means "import what I don't already have", so if a configuration already have an option, it will prevail and it will not be overridden if the configuration is extended. For example, the next configuration has a main configuration extending from an extendable configuration named `example`, let's analyse what will be the result of that extend.
+Extending from a configuration basically means "import what I don't already have", so if a configuration already has an option, it will prevail and it will not be overridden if the configuration is extended. For example, the next configuration has a main configuration extending from an extendable configuration named `example`, let's analyse what will be the result of that extend.
 
 ```yaml
 title: Custom Title
