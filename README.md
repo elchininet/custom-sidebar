@@ -372,7 +372,7 @@ Short example in `JSON` format:
 
 ## Templates
 
-Some config options and item properties admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main differences between the two templating systems (apart from the syntax) are that `JavaScript` can access client side data like DOM APIs, can return [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) and can work with [reactive variables](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#ref-and-unref). `Jinja` templates are mostly agnostic to the device in which `Home Assistant` is being executed, cannot return Promises and do not support reactive variables.
+Some config options and item properties admit templates. `custom-sidebar` admits two templating systems, [JavaScript templates](#javascript-templates) or [Jinja templates](#jinja-templates). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [websocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main differences between the two templating systems (apart from the syntax) are that `JavaScript` can access client side data like DOM APIs, can return [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) and can work with [reactive variables]. `Jinja` templates are mostly agnostic to the device in which `Home Assistant` is being executed, cannot return Promises and do not support reactive variables.
 
 ### JavaScript templates
 
@@ -382,7 +382,7 @@ The `JavaScript` code will be taken as something that you want to return, but if
 
 The entities used in the templates will be stored, so if the state of an stored entity changes, all the templates that use this entity will be reevaluated snd rerendered. On top of this, if the variable `panel_url` is used in a template, the template will be reevaluated every time that a new panel or a new view is loaded.
 
-`JavaScript` templates can make use of [reactive variables](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#ref-and-unref). If you use a reactive variable in some templates and you modify it in the `javascript` action of an `on_click` parameter of an item, all the templates in which the variable was used will be reevaluated in the device in which the action is performed.
+`JavaScript` templates can make use of [reactive variables]. If you use a reactive variable in some templates and you modify it in the `javascript` action of an `on_click` parameter of an item, all the templates in which the variable was used will be reevaluated in the device in which the action is performed.
 
 #### JavaScript templates example
 
@@ -518,10 +518,10 @@ order:
 
 ### Variables
 
-`js_variables` and `jinja_variables` are an objects to declare variables intended to be used inside [JavaScript](#javaScript-templates) or [Jinja](#jinja-templates) templates respectively. These objects have the same shape, they can store `string`,  `number`, and `boolean` variables as well as `dictionaries` (or `objects`) and `lists` (or `arrays`). These variables will be available in any [partial](#partials) or in any [template](#templates).
+`js_variables` and `jinja_variables` are an objects to declare variables intended to be used inside [JavaScript](#javaScript-templates) or [Jinja](#jinja-templates) templates respectively. These objects can store `string`,  `number`, and `boolean` variables as well as `dictionaries` (or `objects`) and `lists` (or `arrays`) and in the case of `js_templates` they can also declare [reactive variables] (setting a string with the variable wrapped in a `ref()` method). These variables will be available in any [partial](#partials) or in any [template](#templates).
 
 >[!IMPORTANT]
->1. `js_variables` and `jinja_variables` only allows `string`, `number` and `boolean` variables or `dictionaries` and `lists` containing other `dictionaries` or `lists` or the aforementioned primitives. Trying to send other kind of variables will end in an error.
+>1. `jinja_variables` only allows `string`, `number` and `boolean` variables as well as `dictionaries` and `lists` containing other `dictionaries` or `lists` or the aforementioned primitives. In the case of `js_variables`, they allow the same type of variables as well as reactive variables. Trying to send other kind of variables will end in an error.
 >2. `js_variables` and `jinja_variables` don't compile any template string. So if you set a variable as a template string, it will be interpreted as a string and a warning will be thrown in the console.
 
 The next examples using `js_variables` and `jinja_variables` will set the same title ("Title 80 dog"):
@@ -569,6 +569,25 @@ title: |
   {% else %}
     Home Assistant
   {% endif %}
+```
+
+#### js_variables with reactive variables example
+
+The next example will change the sidebar title every time that the item "Change Title" is clicked. It will set the title with the string "Title" followed by a number (it will start in `0` and it will be incrementing every time that the item is clicked).
+
+```yaml
+js_variables:
+  title_number: ref(0)
+title: |
+  [[[ return 'Title ' + ref('title_number').value; ]]]
+order:
+  - new_item: true
+    item: Change Title
+    icon: mdi:gesture-tap
+    on_click:
+      action: javascript
+      code: |
+        ref('title_number').value++;
 ```
 
 ### Partials
@@ -862,3 +881,4 @@ Check out Home Assistant's native sidebar tools, maybe it will be enough for you
 [Home Assistant Javascript Templates]: https://github.com/elchininet/home-assistant-javascript-templates
 [websocket call]: https://developers.home-assistant.io/docs/api/websocket
 [a background declaration]: https://developer.mozilla.org/en-US/docs/Web/CSS/background
+[reactive variables]: https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#ref-and-unref
