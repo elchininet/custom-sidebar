@@ -387,3 +387,101 @@ test('if a partial doesn\'t exist it should throw a warning', async ({ page }) =
     );
 
 });
+
+test('reactive variables in js_variables should be converted properly', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            js_variables: {
+                reactive_array: `ref(
+                    [1, 2, 3]
+                )`,
+                reactive_object: `ref(
+                    {
+                        propA: 'A',
+                        propB: 'B',
+                        propC: 'C'
+                    }
+                )`,
+                reactive_string: 'ref("String")',
+                reactive_count: 'ref([0])'
+            },
+            title: `
+                [[[
+                    const array = ref('reactive_array').value;
+                    const object = ref('reactive_object').value;
+                    const string = ref('reactive_string').value;
+                    const count = ref('reactive_count').value;
+
+                    switch (count[0]) {
+                        case 1:
+                            return array.join(' | ');
+                        case 2:
+                            return Object.values(object).join(' | ');
+                        case 3:
+                            return string;
+                        default:
+                            return 'Initial Value';
+                    }
+                ]]]
+            `,
+            order: [
+                {
+                    new_item: true,
+                    item: 'Check',
+                    icon: 'mdi:bullseye-arrow',
+                    on_click: {
+                        action: 'javascript',
+                        code: `
+                            const array = ref('reactive_array');
+                            const object = ref('reactive_object');
+                            const string = ref('reactive_string');
+                            const count = ref('reactive_count');
+
+                            count.value[0]++;
+
+                            switch (count.value[0]) {
+                                case 1:
+                                    array.value = [
+                                        ...array.value,
+                                        4
+                                    ];
+                                    break;
+                                case 2:
+                                    object.value = {
+                                        ...object.value,
+                                        propD: 'D'
+                                    };
+                                    break;
+                                case 3:
+                                    string.value = 'Custom ' + string.value;
+                                    break;
+                            }
+                        `
+                    }
+                }
+            ]
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('Initial Value');
+
+    await page.locator(getSidebarItemSelector('check')).click();
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('1 | 2 | 3 | 4');
+
+    await page.locator(getSidebarItemSelector('check')).click();
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('A | B | C | D');
+
+    await page.locator(getSidebarItemSelector('check')).click();
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom String');
+
+});

@@ -24,7 +24,10 @@ import {
     Sidebar,
     SidebarMode,
     Match,
-    SubscriberTemplate
+    SubscriberTemplate,
+    Primitive,
+    PrimitiveObject,
+    PrimitiveArray
 } from '@types';
 import {
     NAMESPACE,
@@ -47,7 +50,8 @@ import {
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
     MAX_ATTEMPTS,
     RETRY_DELAY,
-    DOMAIN_ENTITY_REGEXP
+    DOMAIN_ENTITY_REGEXP,
+    REF_VARIABLE_REGEXP
 } from '@constants';
 import {
     logVersionToConsole,
@@ -128,6 +132,28 @@ class CustomSidebar {
                 );
             });
     }
+
+    private _parseJavaScriptVariables = (): Record<string, Primitive | PrimitiveObject | PrimitiveArray> => {
+        const jsVariables = this._config.js_variables ?? {};
+        const entries = Object.entries(jsVariables);
+        const finalEntries = entries.filter((entry: [string, Primitive | PrimitiveObject | PrimitiveArray]): boolean => {
+            const [name, value] = entry;
+            if (
+                typeof value === 'string' &&
+                REF_VARIABLE_REGEXP.test(value)
+            ) {
+                const refValue = value.replace(REF_VARIABLE_REGEXP, '$1');
+                this._renderer.renderTemplate(`
+                    const myRef = ref('${name}');
+                    myRef.value = ${refValue};
+                    return;
+                `);
+                return false;
+            }
+            return true;
+        });
+        return Object.fromEntries(finalEntries);
+    };
 
     private async _getElements(): Promise<[HTMLElement, NodeListOf<HTMLAnchorElement>, HTMLElement]> {
         const promisableResultOptions = {
@@ -1110,7 +1136,7 @@ class CustomSidebar {
                         this._renderer = renderer;
                         this._getConfig()
                             .then(() => {
-                                this._renderer.variables = this._config.js_variables ?? {};
+                                this._renderer.variables = this._parseJavaScriptVariables();
                                 this._processDefaultPath();
                                 this._processSidebar();
                                 this._subscribeTitle();
