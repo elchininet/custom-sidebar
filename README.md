@@ -209,7 +209,7 @@ Add a file named `sidebar-config.yaml` or `sidebar-config.json` into your `<conf
 | bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
 | href                      | String  | no        | Specifies the `href` of the sidebar item |
 | target                    | String  | no        | Specifies the [target property] of the sidebar item |
-| on_click                  | OnClickAction | no  | Specifies the `onClick` property of the sidebar item. It allows two types of actions, `ServiceCallAction` or `JavaScriptAction`. Take into account that setting this will not stop the `href` option for working. If you want to avoid navigating to a page, you should set the `href` option as `#` (in new items you can just omit it).<br><br><pre>## service call action<br>on_click:<br>  action: call-service<br>  service: light.toggle<br>  data:<br>    entity_id: light.woonkamer<br><br>## javascript action<br>on_click:<br>  action: javascript<br>  code: \|<br>    location.reload();</pre> |
+| on_click                  | OnClickAction | no  | Specifies the `onClick` property of the sidebar item. It allows two types of actions, `ServiceCallAction` or `JavaScriptAction`. Take into account that setting this property will not stop the `href` option for working. If you want to avoid navigating to a page, you should set the `href` option as `#` (in new items you can just omit it).<br><br><pre>## service call action<br>on_click:<br>  action: call-service<br>  service: light.toggle<br>  data:<br>    entity_id: light.woonkamer<br><br>## javascript action<br>on_click:<br>  action: javascript<br>  code: \|<br>    location.reload();</pre> |
 | new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. **Using this option makes `icon` a required property together with `href` or `on_click`** |
 
 >[!TIP]
@@ -589,6 +589,10 @@ order:
       code: |
         ref('title_number').value++;
 ```
+
+>[!IMPORTANT]
+>1. To make the templates detect that a reactive variable has been mutated, one needs to assign a new value to the reactive variable. For example, changing the items or an array using `push` or `pop` will not make the remplates using that variable to be reevaluated. You need to assign a new array to the value of the reactive variable to make the change been detected.
+>2. To make the template aware that it contains a reactive variable, the `value` property of the variable should be accesed when the template is rendered. If the code accesing the `value` property is not executed when the template renders, then the reactive variable will not be tracked. That is why is recomendable to access the `value` property of the reactive variable outside any condition and build the logic using the retrieved value. In this way the template will track that the reactive variable is being used and any time that the variable changes, the template will get re-evaluated.
 
 ### Partials
 
