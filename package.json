@@ -9,7 +9,7 @@
   "private": false,
   "scripts": {
     "build": "rollup --config rollup.config.js --bundleConfigAsCjs",
-    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\" \"docs/**/*.ts\"",
     "lint:fix": "pnpm lint --fix",
     "test:clean": "rm -rf dist .nyc_output coverage || true",
     "test:ts": "tsc --noEmit",

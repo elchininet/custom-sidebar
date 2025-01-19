@@ -1,0 +1,85 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Installation
+
+You can install the plugin manually or through [HACS], not both. **If you install the plugin using the two installations methods you could have issues or errors**.
+
+### Through HACS
+
+1. Go to `HACS` dashboard
+2. Search for `custom-sidebar` and click on it
+3. On the plugin page, click on the `Download` yellow button in the bottom-right corner
+4. Click on `Download` in the more-info dialog
+5. When the plugin is already downloaded, add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
+
+<Tabs>
+  <TabItem value="yaml" label="If you want to use a YAML configuration" default>
+    ```yaml title="configuration.yaml"
+    frontend:
+      extra_module_url:
+        - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js
+    ```
+  </TabItem>
+  <TabItem value="json" label="If you want to use a JSON configuration">
+    ```yaml title="configuration.yaml"
+    frontend:
+      extra_module_url:
+        - /hacsfiles/custom-sidebar/custom-sidebar-json.js
+    ```
+  </TabItem>
+</Tabs>
+
+6. Restart Home Assistant
+
+:::warning[Important]
+
+1. Do not get creative with the path of the plugin, use the provided one. If you have `HACS` installed [the hacsfiles custom path](https://www.hacs.xyz/docs/use/repositories/type/dashboard/#custom-features-for-files-stored-under-hacsfiles) will be there even if you cannot see it in your filesystem.
+2. Do not forget to restart Home Assistant.
+
+:::
+
+### Manual installation
+
+1. Download the latest [custom-sidebar release]
+2. Copy `custom-sidebar-yaml.js` or `custom-sidebar-json.js` into `<config directory>/www/` (depending on the configuration format that you are going to use,  `YAML` or `JSON`)
+3. Add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
+
+<Tabs>
+  <TabItem value="yaml" label="If you want to use a YAML configuration" default>
+    ```yaml title="configuration.yaml"
+    frontend:
+      extra_module_url:
+        - /local/custom-sidebar-yaml.js?v1.0.0
+    ```
+  </TabItem>
+  <TabItem value="json" label="If you want to use a JSON configuration">
+    ```yaml title="configuration.yaml"
+    frontend:
+      extra_module_url:
+        - /local/custom-sidebar-json.js?v1.0.0
+    ```
+  </TabItem>
+</Tabs>
+
+4. Restart Home Assistant
+
+:::warning[Important]
+
+1. Do not forget to restart Home Assistant.
+
+:::
+
+:::tip
+
+It is recommendable that you add the plugin's version at the end of the URL as a parameter (e.g. `?v=1.0.0`) to force Home Assistant to load the new version instead of a version stored in cache. This step is not mandatory, but if you start suffering from caching issues, this would be one of the first steps to perform.
+
+:::
+
+[HACS]: https://hacs.xyz
+[extra_module_url]: https://www.home-assistant.io/integrations/frontend/#extra_module_url
+[custom-sidebar release]: https://github.com/elchininet/custom-sidebar/releases

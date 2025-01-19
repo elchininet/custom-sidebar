@@ -1,0 +1,66 @@
+---
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Jinja Variables
+
+`jinja_variables` is an object to declare variables intended to be used inside [Jinja templates](../templates/jinja-templates). This object can store `string`,  `number`, and `boolean` variables as well as `dictionaries` (or `objects`) and `lists` (or `arrays`). These variables will be available in any [partial](partials) or in any [template](../templates/jinja-templates).
+
+:::warning[Important]
+
+1. `jinja_variables` only allows `string`, `number` and `boolean` variables as well as `dictionaries` and `lists` containing other `dictionaries` or `lists` or the aforementioned primitives. Trying to send other kinds of variables will end in an error.
+2. `jinja_variables` don't compile any template string. So if you set a variable as a template string, it will be interpreted as a string and a warning will be thrown in the console.
+
+:::
+
+### Example
+
+The next example will set "Title 80 dog" as the title of the page:
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    jinja_variables:
+      my_string: Title
+      my_number: 100
+      my_boolean: true
+      my_dictionary:
+        prop1: 4
+        prop2: 5
+      my_list:
+        - cat
+        - dog
+        - bird
+      title: |
+        {% if my_boolean %}
+          {{ my_string }} {{ ((my_number * my_dictionary.prop1) / my_dictionary.prop2) | int }} {{ my_list.1 }}
+        {% else %}
+          Home Assistant
+        {% endif %}
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "jinja_variables": {
+        "my_string": "Title",
+        "my_number": 100,
+        "my_boolean": true,
+        "my_dictionary": {
+          "prop1": 4,
+          "prop2": 5
+        },
+        "my_list": [
+          "cat",
+          "dog",
+          "bird"
+        ]
+      },
+      "title": "{% if my_boolean %} {{ my_string }} {{ ((my_number * my_dictionary.prop1) / my_dictionary.prop2) | int }} {{ my_list.1 }} {% else %} Home Assistant {% endif %}"
+    }
+    ```
+  </TabItem>
+</Tabs>

@@ -41,5 +41,14 @@ module.exports = [
         rules: {
             '@typescript-eslint/no-require-imports': 'off'
         }
+    },
+    {
+        files: [
+            'docs/**/*.mdx',
+            'docs/**/*.yaml'
+        ],
+        rules: {
+            indent: ['error', 2, { 'SwitchCase': 1 }]
+        }
     }
 ];

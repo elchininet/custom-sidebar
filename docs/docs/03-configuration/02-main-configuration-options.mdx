@@ -1,0 +1,192 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Main Configuration Options
+
+:::info
+
+These options are intended to change the functionality of the sidebar and to change the texts, the order and the visibility of their elements among other options. Check [Themeable Configuration Options](themeable-configuration-options) if you are interested in changing the colors and the appareance of the sidebar elements.
+
+:::
+
+## Root Configuration Options
+
+| Options            | Type                               | Required | Description |
+| ------------------ | ---------------------------------- | -------- | ----------- |
+| order              | [items](#order-items-properties)[] | no | List of sidebar items to process and customise. Consult the [Order Item Properties](#order-items-properties) for the documentation of the options inside each order item |
+| hide_all           | Boolean                            | no       | Hides all items of the sidebar by default, useful if one wants to hide everything and just show a few items. (This options doesn't make any effect in an item with the property `new_item` in `true`) |
+| title<sup>\*</sup> | String                             | no       | Custom title to replace the `Home Assistant` title |
+| subtitle<sup>\*</sup> | String                          | no       | Sets a custom subtitle below the `Home Assistant` title |
+| sidebar_editable<sup>\*</sup> | Boolean or String       | no       | If it is set to `false`, long press on the sidebar title will be ignored and the button to edit the sidebar in the profile panel will be disabled. As a string it should be a JavaScript or a Jinja template that returns a boolean or a promise that resolves in a boolean |
+| sidebar_mode       | String                             | no       | Defines the default status of the sidebar when Home Assistant is loaded. It has three possible values: "hidden" to make the sidebar hidden, "narrow" to make the sidebar visible in narrow state and "extended" to make sidebar visible in extended state. This option will show or hide the sidebar ignoring if it is a desktop or a mobile device or if the `Always hide the sidebar` switch in the profile page in on or off (depending on the value of this option, this switch will be switched on or off automatically) |
+| default_path                       | String             | no       | Defines the default URL path when the page loads. This path must start with `/` |
+
+:::tip
+
+\* These options allow [JavaScript](../templates/javascript-templates) or [Jinja](../templates/jinja-templates) templates.
+
+:::
+
+:::warning[Important]
+
+* All the items placed in the bottom will be moved to the top by default. If you want to have some items in the bottom you need to add them to the `order` option and specify their `bottom` property on `true`.
+* Any items present in the Sidebar, but not in the `order` option, will be shown **on the bottom** of the top part of the list.
+* The `default_path` option will change the default behaviour and every time that the page loads it will navigate to this path (either when the page loads for the first time or when it gets refreshed). If you don't want to have this behaviour and you would prefer to load Home Assistant in an specific path or refresh a specific page without being redirected to the `default_path`, then you should not set this option.
+
+:::
+
+### Short Configuration Example
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'My Home'
+    sidebar_editable: false
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "My Home",
+      "sidebar_editable": false
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Order Items Properties
+
+| Property                  | Type    | Required  | Description |
+| ------------------------- | ------- | --------- | ----------- |
+| item                      | String  | yes       | This is a string that will be used to match each sidebar item by its text, its `data-panel` attribute or its `href`. If the `exact` property is not set, it is case insensitive and it can be a substring such as `developer` instead of `Developer Tools` or `KITCHEN` instead of `kitchen-lights` |
+| match                     | String  | no        | This property will define which string will be used to match the `item` property. It has three possible values "text" (default) to match the text content of the element, "data-panel" to match the `data-panel` attribute of the element, or "href", to match the `href` attribute of the element |
+| exact                     | Boolean | no        | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`). |
+| order                     | Number  | no        | Sets the order of the sidebar item |
+| hide<sup>\*</sup>         | Boolean or String | no | Setting this property to `true` will hide the sidebar item and if the property `hide_all` from the main configuration is `true`, setting this property as `false` will avoid hiding the item |
+| name<sup>\*</sup>         | String  | no        | Changes the name of the sidebar item |
+| icon<sup>\*</sup>         | String  | no        | Specifies the icon of the sidebar item |
+| info<sup>\*</sup>         | String  | no        | Sets the content of the info text (a smaller secondary text below the main item text) |
+| notification<sup>\*</sup> | String  | no        | Add a notification badge to the sidebar item |
+| bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
+| href                      | String  | no        | Specifies the `href` of the sidebar item |
+| target                    | String  | no        | Specifies the [target property] of the sidebar item |
+| on_click                  | See below  | no        | Specifies the `onClick` property of the sidebar item. It allows two types of actions, service call actions or javascript actions. Take into account that setting this property will not prevent redirecting to an internal dashboard or an external URL if the `href` property is set. If you want to avoid navigating to a page, you should set the `href` option as `#` (in new items you can just omit it). Check the [Short Configuration Example](#short-configuration-example-1) below for an example of its usage. |
+| new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. If you use this property you need to provide an `icon` property and either a `href` or an `on_click` property |
+
+:::tip
+
+\* These options allow [JavaScript](../templates/javascript-templates) or [Jinja](../templates/jinja-templates) templates.
+
+:::
+
+:::warning[Important]
+
+* All items should have a unique `item` property.
+* Avoid an `item` property that could match multiple elements. If you find that an `item` property matches multiple elements, try to use the `match` and `exact` properties to match the specific item that you want to match.
+* The items will be ordered according to their `order` property OR in the order of appearance.
+* If you use the `order` property in at least one item, make sure either all items (except hidden ones) have this property, or none of them (otherwise order may be messed up).
+* Notifications and user account are not part of the main sidebar items so you cannot change their properties. On the other hand, global color properties will affect these items.
+* If you set the order or hide items from the sidebar, it is recommended that you don't use Home Assistant functionality to reorder/hide items, because it will conflict with the functionality of the plugin.
+* Take into account that using the `on_click` parameter in an item will not stop redirecting to a page if the `href` parameter has a value. If you want to stop navigating to a page when you click on an item, for new items you can just omit the `href` parameter, but for existing items you should set the `href` parameter as `#`.
+* Take into account that the `code` parameter of an `javascript` action in the `on_click` parameter doesn't need to be enclosed between three square brackets (`[[[ ]]]`).
+
+:::
+
+### Short Configuration Example
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'My Home'
+    order:
+      - new_item: true
+        item: 'Automations'
+        href: '/config/automation'
+        icon: 'mdi:robot'
+        order: 1
+      - new_item: true
+        item: 'Woonkamer'
+        icon: 'mdi:ceiling-light-multiple'
+        on_click:
+          action: 'call-service'
+          service: 'light.toggle'
+          data:
+            entity_id: 'light.woonkamer'
+        order: 2
+      - new_item: true
+        item: 'Reload'
+        icon: 'mdi:reload-alert'
+        on_click:
+          action: 'javascript'
+          code: 'location.reload();'
+        order: 3
+      - item: 'overview'
+        hide: true
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "My Home",
+      "order": [
+        {
+          "new_item": true,
+          "item": "Automations",
+          "href": "/config/automation",
+          "icon": "mdi:robot",
+          "order": 1
+        },
+        {
+          "new_item": true,
+          "item": "Woonkamer",
+          "icon": "mdi:ceiling-light-multiple",
+          "on_click": {
+            "action": "call-service",
+            "service": "light.toggle",
+            "data": {
+              "entity_id": "light.woonkamer"
+            }
+          },
+          "order": 2
+        },
+        {
+          "new_item": true,
+          "item": "Reload",
+          "icon": "mdi:reload-alert",
+          "on_click": {
+            "action": "javascript",
+            "code": "location.reload();"
+          },
+          "order": 3
+        },
+        {
+          "item": "overview",
+          "hide": true
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Advanced Configuration Options
+
+:::info
+
+These options are intended for advanced users. They are not strictly necessary and you can use the plugin without making use of them. The purpose of these options is to reduce code repetition and share configurations. It is advisable that you do not use them if they result confusing to you or if you don't understand their usage. Check the [Advanced Configuration Options section](../category/advanced-configuration-options) for a more detailed explanation.
+
+:::
+
+These configuration options should be placed only in the root configuration. They are not allowed in [exceptions](exceptions).
+
+| Options            | Type                               | Required | Description |
+| ------------------ | ---------------------------------- | -------- | ----------- |
+| js_variables       | Object                             | no       | An object containing variales that will be used in [JavaScript templates](../templates/javascript-templates) Consult the [JavaScript Variables section](../advanced-configuration-options/javascript-variables) for more info |
+| jinja_variables       | Object                          | no       | An object containing variales that will be used in [Jinja templates](../templates/jinja-templates). Consult the [Jinja Variables section](../advanced-configuration-options/jinja-variables) for more info |
+| partials              | Object                          | no       | An object containing fragments of code that can be included in your templates. Consult the [Partials section](../advanced-configuration-options/partials) for more info |
+| extendable_configs    | Object                          | no       | An object containing extendable configurations. Consult the [Extendable Configurations section](../advanced-configuration-options/extendable-configurations) for more info |
+| extend_from           | String or String[]              | no       | Indicates if the configuration should extend from extendable configrations. Consult the [Extendable Configurations section](../advanced-configuration-options/extendable-configurations) for more info |
