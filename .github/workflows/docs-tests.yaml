@@ -3,7 +3,7 @@ name: Tests Docs
 on:
   pull_request:
     branches:
-      - main
+      - master
     paths:
       - 'docs/**'
 
