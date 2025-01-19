@@ -1,0 +1,477 @@
+---
+sidebar_position: 5
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Extendable configurations
+
+Extendable configurations (`extendable_configs`) is an object containing different configurations options that could be extended from the root configuration, from the [Exceptions](../configuration/exceptions) or from another extendable configuration, making them a very flexible option to share configuration blocks. To specify that a configuration should extend from an extendable configuration, the `extend_from` option should be used specifying the extendable configuration name(s).
+
+Extending from a configuration basically means _"import what I don't already have"_, so if a configuration already has an option, it will prevail and it will not be overridden if the configuration is extended. For example, the next configuration has a main configuration extending from an extendable configuration named `example`, let's analyse what will be the result of that extend.
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'Custom Title'
+    order:
+      - item: 'overview'
+        name: 'Dashboard'
+        order: 3
+      - new_item: true
+        item: 'Integrations'
+        href: '/config/integrations'
+        icon: 'mdi:puzzle'
+        order: 2
+    extend_from: 'example'
+    extendable_configs:
+      example:
+        title: 'My Home'
+        subtitle: 'Assistant'
+        order:
+          - item: 'overview'
+            icon: 'mdi:monitor-dashboard'
+            order: 0
+          - new_item: true
+            item: 'Google'
+            href: 'https://mrdoob.com/projects/chromeexperiments/google-gravity/'
+            icon: 'mdi:earth'
+            target: '_blank'
+            order: 1
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "Custom Title",
+      "order": [
+        {
+          "item": "overview",
+          "name": "Dashboard",
+          "order": 3
+        },
+        {
+          "new_item": true,
+          "item": "Integrations",
+          "href": "/config/integrations",
+          "icon": "mdi:puzzle",
+          "order": 2
+        }
+      ],
+      "extend_from": "example",
+      "extendable_configs": {
+        "example": {
+          "title": "My Home",
+          "subtitle": "Assistant",
+          "order": [
+            {
+              "item": "overview",
+              "icon": "mdi:monitor-dashboard",
+              "order": 0
+            },
+            {
+              "new_item": true,
+              "item": "Google",
+              "href": "https://mrdoob.com/projects/chromeexperiments/google-gravity/",
+              "icon": "mdi:earth",
+              "target": "_blank",
+              "order": 1
+            }
+          ]
+        }
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+1. As the `title` option is defined in the main configuration, it will not get the `title` option from the extendable configuration.
+2. As the `subtitle` option is not defined in the main configuration, it will be get from the extendable configuration.
+3. As the main configuration and the extendable configuration both have an `order` option, it will be merged:
+    1. Both orders have an `overview` item, so it will be merged. As the main config order-item has also an `order` property, it will not be extended, but as the extendable order-item has an `icon` property that doesn't exist in the main config order-item, it will be extended.
+    2. As the extendable order-item doesn't have a `name` property, it will remain there.
+    3. The `Integrations` doesn't exist in the extendable order so it will remain as it is.
+    4. The `Google` extendable item doesn't exist in the main config, so it will be extended.
+
+The resulted main config after the extending process will be:
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'Custom Title'
+    subtitle: 'Assistant'
+    order:
+      - new_item: true
+        item: 'Google'
+        href: 'https://mrdoob.com/projects/chromeexperiments/google-gravity/'
+        icon: 'mdi:earth'
+        target: '_blank'
+        order: 1
+      - new_item: true
+        item: 'Integrations'
+        href: '/config/integrations'
+        icon: 'mdi:puzzle'
+        order: 2
+      - item: 'overview'
+        name: 'Dashboard'
+        icon: 'mdi:monitor-dashboard'
+        order: 3
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "Custom Title",
+      "subtitle": "Assistant",
+      "order": [
+        {
+          "new_item": true,
+          "item": "Google",
+          "href": "https://mrdoob.com/projects/chromeexperiments/google-gravity/",
+          "icon": "mdi:earth",
+          "target": "_blank",
+          "order": 1
+        },
+        {
+          "new_item": true,
+          "item": "Integrations",
+          "href": "/config/integrations",
+          "icon": "mdi:puzzle",
+          "order": 2
+        },
+        {
+          "item": "overview",
+          "name": "Dashboard",
+          "icon": "mdi:monitor-dashboard",
+          "order": 3
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+It is possible to extend from multiple configurations and they will be extended in order, as shown in the next example:
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    extend_from:
+      - 'colors'
+      - 'titles'
+    extendable_configs:
+      colors:
+        icon_color: 'red'
+        text_color: 'red'
+      titles:
+        title: 'Custom Title'
+        subtitle: 'Custom Subtitle'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "extend_from": [
+        "colors",
+        "titles"
+      ],
+      "extendable_configs": {
+        "colors": {
+          "icon_color": "red",
+          "text_color": "red"
+        },
+        "titles": {
+          "title": "Custom Title",
+          "subtitle": "Custom Subtitle"
+        }
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+As already mentioned, an extendable configuration can extend from other extendable configurations:
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'Custom Title'
+    extend_from: 'example'
+    extendable_configs:
+      colorful:
+        title_color: 'red'
+        subtitle_color: 'blue'
+      example:
+        subtitle: 'Assistant'
+        extend_from: 'colorful'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "Custom Title",
+      "extend_from": "example",
+      "extendable_configs": {
+        "colorful": {
+          "title_color": "red",
+          "subtitle_color": "blue"
+        },
+        "example": {
+          "subtitle": "Assistant",
+          "extend_from": "colorful"
+        }
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+The resulted main config will be:
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'Custom Title'
+    subtitle: 'Assistant'
+    title_color: 'red'
+    subtitle_color: 'blue'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "Custom Title",
+      "subtitle": "Assistant",
+      "title_color": "red",
+      "subtitle_color": "blue"
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+In the case of [Exceptions](../configuration/exceptions), they can also extend from the main configuration if `base` is used in the `extend_from` option:
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'Custom Title'
+    extend_from: 'example'
+    extendable_configs:
+      colorful:
+        title_color: 'red'
+        subtitle_color: 'blue'
+      example:
+        subtitle: 'Assistant'
+        extend_from: 'colorful'
+    exceptions:
+      - user:
+        - 'ElChiniNet'
+        order:
+          - item: 'overview'
+            name: 'Dashboard'
+            icon: 'mdi:monitor-dashboard'
+            order: 3
+        extend_from: 'base'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "Custom Title",
+      "extend_from": "example",
+      "extendable_configs": {
+        "colorful": {
+          "title_color": "red",
+          "subtitle_color": "blue"
+        },
+        "example": {
+          "subtitle": "Assistant",
+          "extend_from": "colorful"
+        }
+      },
+      "exceptions": [
+        {
+          "user": [
+            "ElChiniNet"
+          ],
+          "order": [
+            {
+              "item": "overview",
+              "name": "Dashboard",
+              "icon": "mdi:monitor-dashboard",
+              "order": 3
+            }
+          ],
+          "extend_from": "base"
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+So, the configuration for the user `ElChiniNet` will be the same previous main config, plus an order with an order-item.
+
+The next example is a more complex one extending from multiple configurations:
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'My Home'
+    extend_from: 'admin_config'
+    order:
+      - new_item: true
+        item: 'Google'
+        href: 'https://mrdoob.com/projects/chromeexperiments/google-gravity/'
+        icon: 'mdi:earth'
+        target: '_blank'
+        order: 1
+    extendable_configs:
+      multicolor:
+        icon_color: 'red'
+        icon_color_selected: 'blue'
+        icon_color_hover: 'green'
+        text_color: 'red'
+        text_color_selected: 'blue'
+        text_color_hover: 'green'
+      admin_config:
+        order:
+          - new_item: true
+            item: 'Integrations'
+            href: '/config/integrations'
+            icon: 'mdi:puzzle'
+            order: 2
+          - new_item: true
+            item: 'Entities'
+            href: '/config/entities'
+            icon: 'mdi:hexagon-multiple'
+            order: 3
+      user_config:
+        extend_from: 'multicolor'
+        hide_all: true
+        order:
+          - item: 'overview'
+            hide: false
+    exceptions:
+      - is_admin: true
+        extend_from:
+          - 'multicolor'
+          - 'admin_config'
+        order:
+          - item: 'config'
+            bottom: true
+      - user:
+        - 'ElChiniNet'
+        - 'Paulus'
+        etend_from: 'base'
+        title: 'HA'
+      - user:
+        - 'Jim Hawkins'
+        - 'Long John Silver'
+        extend_from: 'user_config'
+        order:
+          - item: 'overview'
+            name: 'Dashboard'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "My Home",
+      "extend_from": "admin_config",
+      "order": [
+        {
+          "new_item": true,
+          "item": "Google",
+          "href": "https://mrdoob.com/projects/chromeexperiments/google-gravity/",
+          "icon": "mdi:earth",
+          "target": "_blank",
+          "order": 1
+        }
+      ],
+      "extendable_configs": {
+        "multicolor": {
+          "icon_color": "red",
+          "icon_color_selected": "blue",
+          "icon_color_hover": "green",
+          "text_color": "red",
+          "text_color_selected": "blue",
+          "text_color_hover": "green"
+        },
+        "admin_config": {
+          "order": [
+            {
+              "new_item": true,
+              "item": "Integrations",
+              "href": "/config/integrations",
+              "icon": "mdi:puzzle",
+              "order": 2
+            },
+            {
+              "new_item": true,
+              "item": "Entities",
+              "href": "/config/entities",
+              "icon": "mdi:hexagon-multiple",
+              "order": 3
+            }
+          ]
+        },
+        "user_config": {
+          "extend_from": "multicolor",
+          "hide_all": true,
+          "order": [
+            {
+              "item": "overview",
+              "hide": false
+            }
+          ]
+        }
+      },
+      "exceptions": [
+        {
+          "is_admin": true,
+          "extend_from": [
+            "multicolor",
+            "admin_config"
+          ],
+          "order": [
+            {
+              "item": "config",
+              "bottom": true
+            }
+          ]
+        },
+        {
+          "user": [
+            "ElChiniNet",
+            "Paulus"
+          ],
+          "etend_from": "base",
+          "title": "HA"
+        },
+        {
+          "user": [
+            "Jim Hawkins",
+            "Long John Silver"
+          ],
+          "extend_from": "user_config",
+          "order": [
+            {
+              "item": "overview",
+              "name": "Dashboard"
+            }
+          ]
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+:::warning[Important]
+
+* You need to be careful of circular dependencies when extending configurations, if this is detected an error will be thrown
+* You can only use `base` inside `extend_from` if you are in an exception, trying to use it in the main config or in an extendable configuration will throw and error
+
+:::

@@ -1,0 +1,105 @@
+---
+sidebar_position: 4
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Exceptions
+
+You can define user/device-specific options using the exceptions feature. Exceptions can be used if you would like to define different options for a specific user/device.
+In an exception you can define all the configuration options (excluding the [Advanced Configuration Options](main-configuration-options#advanced-configuration-options) `js_variables`, `jinja_variables`, `partials`, and `extendable_configs`). And on top of these options, the next ones will be available:
+
+## Matcher Options
+
+| Options             | Type              | Required | Description |
+| ------------------- | ----------------- | -------- | ----------- |
+| user       | String or String[] | no          | Home Assistant user name(s) you would like to display this order for. This option can be set alone or combined with `device`, `not_device`, `is_admin`, or `is_owner` |
+| not_user   | String or String[] | no          | Home Assistant user name(s) you wouldn't like to display this order for. This option can be set alone or combined with `device`, `not_device`, `is_admin`, or `is_owner` |
+| device     | String or String[] | no          | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]). This option can be set alone or combined with `user`, `not_user`, `is_admin`, or `is_owner` |
+| not_device | String or String[] | no          | Device(s) you wouldn't like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]). This option can be set alone or combined with `user`, `not_user` `is_admin`, or `is_owner` |
+| is_admin   | Boolean            | no          | Checks if the user is admin or not. This option can be set alone or combined with `user`, `not_user`, `device`, `not_device`, or `is_owner` |
+| is_owner   | Boolean            | no          | Checks if the user is owner of the system. This option can be set alone or combined with `user`, `not_user`, `device`, `not_device`, or `is_admin` |
+
+## Other Options
+
+| Options             | Type              | Required | Description |
+| ------------------- | ----------------- | -------- | ----------- |
+| matchers_conditions   | `OR` or `AND`  | no  | Defines if at least one of the matchers should match (`OR` which is the default value) or if all the matchers should match (`AND`) |
+
+:::warning[Important]
+
+* If multiple exeptions match, their options will be merged from top to bottom and if multiple configurations have an `order` property, it will be merged too. Check the [Extendable Configurations section](../advanced-configuration-options/extendable-configurations) for more info about how two configurations are merged.
+* If `matchers_conditions` is "OR" (default value), only one match from the matchers is needed for the exception to be picked. But if this option is "AND" then all of the matcher must match for the exception to be picked, in this case if any matcher does't match, then the exception will be discarded.
+* You cannot use `user` and `not_user` at the same time, doing so will end in an error
+* You cannot use `device` and `not_device` at the same time, doing so will end in an error
+* In exceptions it is possible to use the `extend_from` option with the value `base`. If you use it with this value, the main configuration will be merged with the one in the exceptions. Consult the [Extendable Configurations section](../advanced-configuration-options/extendable-configurations) to know how is the process of extending configurations.
+
+:::
+
+### Short Configuration Example
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    exceptions:
+      - user:
+        - 'Jim Hawkins'
+        - 'Long John Silver'
+        extend_from: 'base'
+        title: 'My Home'
+        order:
+          ...
+      - not_user:
+        - 'John Doe'
+        - 'Jack Sparrow'
+        is_admin: true
+        matchers_conditions: 'AND'
+        order:
+          ...
+      - not_device: 'Android'
+        order:
+          ...
+      - is_admin: true
+        order:
+          ...
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      ...
+      "exceptions": [
+        {
+          "user": ["Jim Hawkins", "Long John Silver"],
+          "extend_from": "base",
+          "title": "My Home",
+          "order": [
+            ...
+          ]
+        },
+        {
+          "not_user": ["John Doe", "Jack Sparrow"],
+          "is_admin": true,
+          "matchers_conditions": "AND",
+          "order": [
+            ...
+          ]
+        },
+        {
+          "not_device": "Android",
+          "order": [
+             ...
+          ]
+        },
+        {
+          "is_admin": true,
+          "order": [
+            ...
+          ]
+        }
+      ]  
+    }
+    ```
+  </TabItem>
+</Tabs>

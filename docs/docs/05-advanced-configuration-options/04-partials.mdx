@@ -1,0 +1,126 @@
+---
+sidebar_position: 4
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Partials
+
+Partials are fragments of code that can be included in your templates. They can be inserted in [JavaScript](../templates/javascript-templates), [Jinja](../templates/jinja-templates) templates or inside another partial. Any entity used in them will make the template in which the partial is inserted to be reevaluated when the entity changes its state, so it is not recommended to use a bloated partial using multiple entities that have no context with each other because that will provoke that the templates in which that partial is used gets reevaluated when any of the entities used in it change.
+
+:::tip
+
+Partials will automatically use the variables set in the `js_variables` or `jinja_variables` (depending on the kind of template in which they are inserted).
+
+:::
+
+### Example with JavaScript templates
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    js_variables:
+      supervisor_update: 'update.home_assistant_supervisor_update'
+      os_update: 'update.home_assistant_operating_system_update'
+    partials:
+      supervisor_version: |
+        const supervisorVersion = state_attr(supervisor_update, "latest_version");
+      updates: |
+        @partial supervisor_version
+        const osVersion = state_attr(os_update, "latest_version");
+    order:
+      - new_item: true
+        item: 'info'
+        name: |
+          [[[
+            @partial updates
+            return `Info ${supervisorVersion}`;
+          ]]]
+        info: |
+          [[[
+            @partial updates
+            return `OS ${ osVersion }`;
+          ]]]
+        href: '/config/info'
+        icon: 'mdi:information-outline'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "js_variables": {
+        "supervisor_update": "update.home_assistant_supervisor_update",
+        "os_update": "update.home_assistant_operating_system_update"
+      },
+      "partials": {
+        "supervisor_version": "const supervisorVersion = state_attr(supervisor_update, 'latest_version');",
+        "updates": "@partial supervisor_version const osVersion = state_attr(os_update, 'latest_version');"
+      },
+      "order": [
+        {
+          "new_item": true,
+          "item": "info",
+          "name": "[[[ @partial updates return `Info ${supervisorVersion}`; ]]]",
+          "info": "[[[ @partial updates return `OS ${ osVersion }`; ]]]",
+          "href": "/config/info",
+          "icon": "mdi:information-outline"
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+### Example with Jinja templates
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    jinja_variables:
+      supervisor_update: 'update.home_assistant_supervisor_update'
+      os_update: 'update.home_assistant_operating_system_update'
+    partials:
+      supervisor_version: |
+        {% set supervisorVersion = state_attr(supervisor_update, "latest_version") %}
+      updates: |
+        @partial supervisor_version
+        {% set osVersion = state_attr(os_update, "latest_version") %}
+    order:
+      - new_item: true
+        item: 'info'
+        name: |
+          @partial updates
+          Info {{ supervisorVersion }}
+        info: |
+          @partial updates
+          OS {{ osVersion }}
+        href: '/config/info'
+        icon: 'mdi:information-outline'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "jinja_variables": {
+        "supervisor_update": "update.home_assistant_supervisor_update",
+        "os_update": "update.home_assistant_operating_system_update"
+      },
+      "partials": {
+        "supervisor_version": "{% set supervisorVersion = state_attr(supervisor_update, 'latest_version') %}",
+        "updates": "@partial supervisor_version {% set osVersion = state_attr(os_update, 'latest_version') %}"
+      },
+      "order": [
+        {
+          "new_item": true,
+          "item": "info",
+          "name": "@partial updates Info {{ supervisorVersion }}",
+          "info": "@partial updates OS {{ osVersion }}",
+          "href": "/config/info",
+          "icon": "mdi:information-outline"
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>

@@ -1,0 +1,150 @@
+---
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Themeable Configuration Options
+
+:::info
+
+These options are only useful if you plan to change the appareance of the sidebar. If you are interested in changing the order or the visibility of the sidebar items as well as changing its functionality, check the [Main Configuration Options](main-configuration-options).
+
+:::
+
+## Root Configuration Options
+
+| Options            | Type                               | Required | Description |
+| ------------------ | ---------------------------------- | -------- | ----------- |
+| title_color<sup>\*</sup> | String                       | no       | Sets the color of the sidebar title |
+| subtitle_color<sup>\*</sup> | String                    | no       | Sets the color of the sidebar subtitle |
+| sidebar_background<sup>\*</sup> | String                | no       | Sets the background of the sidebar. It could be a color or [a background declaration] |
+| sidebar_border_color<sup>\*</sup> | String              | no       | Sets the border-right color of the sidebar |
+| menu_background<sup>\*</sup>    | String                | no       | Sets the background of the sidebar menu area (the one containing the menu button and the title). If it is not set, the `sidebar_background` option will be used. It could be a color or [a background declaration] |
+| sidebar_button_color<sup>\*</sup> | String              | no       | Sets the color of the sidebar hamburger menu |
+| item_background<sup>\*</sup> | String                   | no       | Sets the background of the sidebar items. It could be a color or [a background declaration] |
+| item_background_hover<sup>\*</sup> | String             | no       | Sets the background of the sidebar items in a hover state. It could be a color or [a background declaration] |
+| icon_color<sup>\*</sup> | String                        | no       | Sets the color of the sidebar icons |
+| icon_color_selected<sup>\*</sup> | String               | no       | Sets the icon color of the selected sidebar item |
+| icon_color_hover<sup>\*</sup> | String                  | no       | Sets the icon color of the sidebar items in a hover state |
+| text_color<sup>\*</sup> | String                        | no       | Sets the text color of the sidebar items |
+| text_color_selected<sup>\*</sup> | String               | no       | Sets the text color of the selected sidebar item |
+| text_color_hover<sup>\*</sup> | String                  | no       | Sets the text color of the sidebar items in a hover state |
+| selection_background<sup>\*</sup> | String              | no       | Sets the background of the selected item. It could be a color or [a background declaration]. If it is not specified, the `icon_color_selected` will be used |
+| selection_opacity<sup>\*</sup> | Number or String       | no       | Sets the opacity of the selected item background. It should be a number between `0` (fully transparent) and `1` (fully opaque). If it is not specified, the default `0.12` will be used |
+| info_color<sup>\*</sup> | String                        | no       | Sets the color of the info texts of the sidebar items |
+| info_color_selected<sup>\*</sup> | String               | no       | Sets the color of the info text of the selected sidebar item |
+| info_color_hover<sup>\*</sup> | String                  | no       | Sets the color of the info texts in a hover state |
+| notification_color<sup>\*</sup>  | String               | no       | Sets the color of the sidebar notifications |
+| notification_color_selected<sup>\*</sup>  | String      | no       | Sets the color of the sidebar notification of the selected sidebar item |
+| notification_color_hover<sup>\*</sup>  | String         | no       | Sets the color of the sidebar notification when the item is in hover state |
+| notification_text_color<sup>\*</sup>  | String          | no       | Sets the color of the sidebar notifications texts |
+| notification_text_color_selected<sup>\*</sup>  | String | no       | Sets the color of the sidebar notification texts of the selected sidebar item |
+| notification_text_color_hover<sup>\*</sup>  | String    | no       | Sets the color of the sidebar notifications texts when the item is in hover state |
+| divider_color<sup>\*</sup>       | String               | no       | Sets the color of both sidebar dividers |
+| divider_top_color<sup>\*</sup>   | String               | no       | Sets the color of the top sidebar divider. It overrides `divider_color` for this divider if it is set |
+| divider_bottom_color<sup>\*</sup> | String              | no       | Sets the color of the bottom sidebar divider. It overrides `divider_color` for this divider if it is set |
+| scrollbar_thumb_color<sup>\*</sup>| String              | no       | Sets the color of the sidebar scrollbar (This option uses non-baseline CSS styles and it could not work in some browsers) |
+| styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
+
+:::tip
+
+\* These options allow [JavaScript](../templates/javascript-templates) or [Jinja](../templates/jinja-templates) templates.
+
+:::
+
+### Short Configuration Example
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'My Home'
+    title_color: 'var(--accent-color)'
+    subtitle: 'Welcome!'
+    subtitle_color: 'var(--primary-color)'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "My Home",
+      "title_color": "var(--accent-color)",
+      "subtitle": "Welcome!",
+      "subtitle_color": "var(--primary-color)"
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Order Items Properties
+
+| Property                  | Type    | Required  | Description |
+| ------------------------- | ------- | --------- | ----------- |
+| item_background<sup>\*</sup> | String | no      | Sets the background of the items. It could be a color or [a background declaration] (it overrides the root `item_background` option) |
+| item_background_hover<sup>\*</sup> | String  | no | Sets the background of the items in a hover state. It could be a color or [a background declaration] (it overrides the rot `item_background_hover` option) |
+| icon_color<sup>\*</sup>   | String  | no        | Sets the color of the icon (it overrides the root `icon_color` option) |
+| icon_color_selected<sup>\*</sup> | String | no  | Sets the icon color of the item when it is selected (it overrides the root `icon_color_selected` option) |
+| icon_color_hover<sup>\*</sup> | String | no     | Sets the item icon color in a hover state (it overrides the root `icon_color_hover` option) |
+| text_color<sup>\*</sup> | String    | no        | Sets the text color of the item (it overrides the root `text_color` option) |
+| text_color_selected<sup>\*</sup> | String | no  | Sets the text color of the item when it is selected (it overrides the root `text_color_selected`) |
+| text_color_hover<sup>\*</sup> | String | no     | Sets the item text color in a hover state (it overrides the root `text_color_hover` option) |
+| selection_background<sup>\*</sup> | String      | no  | Sets the background of the item when it is selected. It could be a color or [a background declaration]. If it is not specified, the `icon_color_selected` will be used |
+| selection_opacity<sup>\*</sup> | Number or String | no       | Sets the opacity of the item background when it is selected. It should be a number between `0` (fully transparent) and `1` (fully opaque). If it is not specified, the default `0.12` will be used (it overrides the root `selection_opacity` option) |
+| info_color<sup>\*</sup> | String | no           | Sets the color of the info text (it overrides the root `info_color` option) |
+| info_color_selected<sup>\*</sup> | String | no  | Sets the color of the info text when the item is selected (it overrides the root `info_color_selected` option) |
+| info_color_hover<sup>\*</sup> | String | no     | Sets the color of the info text in a hover state (it overrides the root `info_color_hover` option) |
+| notification_color<sup>\*</sup>  | String | no  | Sets the notification color (it overrides the root `notification_color` option) |
+| notification_color_selected<sup>\*</sup>  | String  | no | Sets the color of the item notification when it is selected (it overrides the root `notification_color_selected` option) |
+| notification_color_hover<sup>\*</sup>  | String | no | Sets the color of the item notification in hover state (it overrides the root `notification_color_hover` option) |
+| notification_text_color<sup>\*</sup>  | String  | no       | Sets the color of the notification text (it overrides the root `notification_text_color` option) |
+| notification_text_color_selected<sup>\*</sup>  | String | no | Sets the color of the notification text when it is selected (it overrides the root `notification_text_color_selected` option) |
+| notification_text_color_hover<sup>\*</sup>  | String | no | Sets the color of the notifications text in hover state (it overrides the root `notification_text_color_hover` option) |
+
+:::tip
+
+\* These options allow [JavaScript](../templates/javascript-templates) or [Jinja](../templates/jinja-templates) templates.
+
+:::
+
+### Short Configuration Example
+
+<Tabs>
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'My Home'
+    icon_color_selected: 'var(--accent-color)'
+    order:
+      - item: 'overview'
+        order: 1
+      - new_item: true
+        item: 'Automations'
+        href: '/config/automation'
+        icon: 'mdi:robot'
+        icon_color_selected: 'var(--success-color)'
+        order: 2
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "My Home",
+      "icon_color_selected": "var(--accent-color)",
+      "order": [
+        {
+          "item": "overview",
+          "order": 1
+        },
+        {
+          "new_item": true,
+          "item": "Automations",
+          "href": "/config/automation",
+          "icon": "mdi:robot",
+          "icon_color_selected": "var(--success-color)",
+          "order": 2
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
