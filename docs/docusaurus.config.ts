@@ -79,7 +79,8 @@ const config: Config = {
             {
                 docs: {
                     routeBasePath: '/',
-                    sidebarPath: './sidebars.ts'
+                    sidebarPath: './sidebars.ts',
+                    editUrl: 'https://github.com/elchininet/custom-sidebar/tree/master/docs'
                 },
                 blog: false,
                 theme: {
