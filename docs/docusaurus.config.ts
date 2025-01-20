@@ -108,7 +108,55 @@ const config: Config = {
         },
         footer: {
             style: 'dark',
-            links: [],
+            links: [
+                {
+                    title: 'Need help?',
+                    items: [
+                        {
+                            label: 'Home Assistant Community',
+                            href: 'https://community.home-assistant.io/t/custom-sidebar-manage-home-assistants-sidebar-items-per-user-or-device-basis/665800'
+                        },
+                        {
+                            label: 'Repository discussions',
+                            href: 'https://github.com/elchininet/custom-sidebar/discussions'
+                        }
+                    ]
+                },
+                {
+                    title: 'Found a bug?',
+                    items: [
+                        {
+                            label: 'Repository issues',
+                            href: 'https://github.com/elchininet/custom-sidebar/issues'
+                        }
+                    ]
+                },
+                {
+                    title: 'Custom Sidebar dependencies:',
+                    items: [
+                        {
+                            label: 'get-promisable-result',
+                            href: 'https://github.com/elchininet/get-promisable-result'
+                        },
+                        {
+                            label: 'home-assistant-javascript-templates',
+                            href: 'https://github.com/elchininet/home-assistant-javascript-templates'
+                        },
+                        {
+                            label: 'home-assistant-query-selector',
+                            href: 'https://github.com/elchininet/home-assistant-query-selector'
+                        },
+                        {
+                            label: 'home-assistant-styles-manager',
+                            href: 'https://github.com/elchininet/home-assistant-styles-manager'
+                        },
+                        {
+                            label: 'js-yaml',
+                            href: 'https://github.com/nodeca/js-yaml'
+                        }
+                    ]
+                }
+            ],
             copyright: 'Built with Docusaurus.'
         },
         prism: {
