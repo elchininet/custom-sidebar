@@ -43,7 +43,7 @@ Custom [HACS] plugin that allows you to personalise the [Home Assistant]'s sideb
 
 This is a refactor of [custom-sidebar-v2] by @galloween, which unfortunately is now unmaintained and archived. In its beginning, @galloween's code was a refactor of the [original Custom Sidebar] plugin by @Villhellm (R.I.P.). This version refactored completely @galloween's code allowing to use a configuration in `YAML` (as @Villhellm's one) or in `JSON` (as @galloween's version), fixing several bugs, improving performance, and using [home-assistant-query-selector] to make it less likely to break with future Home Assistant front-end updates.
 
-## Installation instructions and Configuration
+## Installation and Configuration instructions 
 
 Consult the [Custom Sidebar Docs]
 
