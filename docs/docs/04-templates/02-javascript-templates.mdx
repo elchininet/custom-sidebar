@@ -11,7 +11,7 @@ This templating system IS NOT [the same that Home Assistant implements](https://
 
 The `JavaScript` code will be taken as something that you want to return, but if you have a more complex logic, you can create your own variables and return the desired result at the end.
 
-The entities used in the templates will be stored, so if the state of an stored entity changes, all the templates that use this entity will be reevaluated snd rerendered. On top of this, if the variable `panel_url` is used in a template, the template will be reevaluated every time that a new panel or a new view is loaded.
+The entities used in the templates will be stored, so if the state of an stored entity changes, all the templates that use this entity will be reevaluated and rerendered. On top of this, if the variable `panel_url` is used in a template, the template will be reevaluated every time that a new panel or a new view is loaded.
 
 `JavaScript` templates can make use of [Reactive JavaScript Variables](../advanced-configuration-options/javascript-variables#reactive-javascript-variables). If you use a reactive variable in some templates and you modify it in the `javascript` action of an `on_click` parameter of an item, all the templates in which the variable was used will be reevaluated in the device in which the action was performed.
 
