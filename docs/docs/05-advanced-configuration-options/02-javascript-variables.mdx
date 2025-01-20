@@ -208,7 +208,7 @@ Now it is possible to change the value of any of these variables and the title t
 
 :::warning[Important]
 
-1. To make the templates detect that a reactive variable has been mutated, one needs to assign a new value to the reactive variable. For example, changing the items or an array using `push` or `pop` will not make the remplates using that variable to be reevaluated. You need to assign a new array to the value of the reactive variable to make the change been detected.
+1. To make the templates detect that a reactive variable has been mutated, one needs to assign a new value to the reactive variable. For example, changing the items of an array using `push` or `pop` will not make the remplates using that variable to be reevaluated. You need to assign a new array to the value of the reactive variable to make the change been detected.
 2. To make the template aware that it contains a reactive variable, the `value` property of the variable should be accesed when the template is rendered. If the code accesing the `value` property is not executed when the template renders, then the reactive variable will not be tracked. That is why is recomendable to access the `value` property of the reactive variable outside any condition and build the logic using the retrieved value. In this way the template will track that the reactive variable is being used and any time that the variable changes, the template will get re-evaluated.
 
 :::
