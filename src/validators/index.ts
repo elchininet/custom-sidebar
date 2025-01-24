@@ -16,7 +16,7 @@ import {
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
     ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
     ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS,
-    ITEM_TEMPLATE_STRING_CONFIG_OPTIONS,
+    ITEM_STRING_CONFIG_OPTIONS,
     JS_TEMPLATE_REG,
     JINJA_TEMPLATE_REG
 } from '@constants';
@@ -38,7 +38,7 @@ const BASE_CONFIG_OPTIONS = [
     'scrollbar_thumb_color',
     'styles',
     ...ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
-    ...ITEM_TEMPLATE_STRING_CONFIG_OPTIONS
+    ...ITEM_STRING_CONFIG_OPTIONS
 ] as const;
 
 const ONLY_BASE_CONFIG_OPTIONS = [
@@ -424,6 +424,12 @@ const validateConfigItem = (configItem: ConfigItem): void => {
     validateBooleanOrStringOptions(
         configItem,
         ['hide'],
+        `${ERROR_PREFIX} in ${configItem.item},`
+    );
+
+    validateBooleanOptions(
+        configItem,
+        ['divider'],
         `${ERROR_PREFIX} in ${configItem.item},`
     );
 

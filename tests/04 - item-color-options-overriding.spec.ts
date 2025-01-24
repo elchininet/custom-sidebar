@@ -5,7 +5,7 @@ import { haConfigRequest } from './ha-services';
 import { fulfillJson } from './utilities';
 import { SELECTORS } from './selectors';
 
-const getOrderItemWithColorOption = (option: string, extraOptions: Record<string, string> = {}) => ({
+const getOrderItemWithColorOption = (option: string, extraOptions: Record<string, unknown> = {}) => ({
     [option]: 'blue',
     order: [
         {
@@ -98,6 +98,14 @@ const pageVisit = async (page: Page): Promise<void> => {
             { notification: '2' }
         ),
         screenshot: 'color-overriding-notification-text-color.png'
+    },
+    {
+        title: 'should override the global divider_color option',
+        json: getOrderItemWithColorOption(
+            'divider_color',
+            { divider: true }
+        ),
+        screenshot: 'color-overriding-divider-color.png'
     }
 ].forEach(({ title, json, screenshot }) => {
 

@@ -772,6 +772,7 @@ class CustomSidebar {
                     STYLES.SIDEBAR_EDITABLE,
                     STYLES.ITEM_BACKGROUND,
                     STYLES.ITEM_BACKGROUND_HOVER,
+                    STYLES.ITEM_DIVIDER_ITEM_DIVIDER_COLOR,
                     STYLES.ICON_COLOR,
                     STYLES.ICON_COLOR_SELECTED,
                     STYLES.ICON_COLOR_HOVER,
@@ -910,6 +911,10 @@ class CustomSidebar {
                     }
 
                     orderItem.element.style.order = `${orderIndex}`;
+
+                    if (orderItem.divider) {
+                        orderItem.element.setAttribute(ATTRIBUTE.WITH_DIVIDER, 'true');
+                    }
 
                     if (orderItem.name) {
                         this._subscribeName(

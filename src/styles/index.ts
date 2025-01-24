@@ -193,6 +193,18 @@ export const ITEM_BACKGROUND_HOVER = {
     }
 };
 
+export const ITEM_DIVIDER_ITEM_DIVIDER_COLOR = {
+    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_DIVIDER }]`]: {
+        borderBottom: '1px solid',
+        borderBottomColor: getCSSVariables(
+            CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR,
+            HA_CSS_VARIABLES.DIVIDER_COLOR
+        ),
+        marginBottom: '10px',
+        paddingBottom: '10px'
+    }
+};
+
 export const ICON_COLOR = {
     [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON })`]: {
         color: getCSSVariables(
