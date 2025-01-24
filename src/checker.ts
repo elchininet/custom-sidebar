@@ -3,7 +3,7 @@ import {
     NAMESPACE,
     MAX_ATTEMPTS,
     RETRY_DELAY
-} from '@constants';
+} from './constants/global';
 
 getPromisableResult(
     () => window.CustomSidebar,

@@ -579,6 +579,30 @@ test.describe('order item property', () => {
             error: `${ERROR_PREFIX} in dev, "item" property should be a string`
         },
         {
+            title: 'should throw an error if the "divider" property is not a boolean',
+            json: {
+                order: [
+                    {
+                        item: 'config',
+                        divider: 'true'
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in config, "divider" property should be a boolean`
+        },
+        {
+            title: 'should throw an error if the "divider_color" property is not a string',
+            json: {
+                order: [
+                    {
+                        item: 'config',
+                        divider_color: false
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in config, "divider_color" property should be a string`
+        },
+        {
             title: 'should throw an error if a new item doesn\'t have an "href" or an "on_click" property',
             json: {
                 order: [

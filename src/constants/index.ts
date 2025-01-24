@@ -6,12 +6,10 @@ import{
     DockedSidebar
 } from '@types';
 
-export const NAMESPACE = 'custom-sidebar';
+export * from './global';
 export const LOCAL_PATH = '/local/';
 export const CONFIG_NAME = 'sidebar-config';
 export const CONFIG_PATH = `${LOCAL_PATH}${CONFIG_NAME}`;
-export const MAX_ATTEMPTS = 100;
-export const RETRY_DELAY = 50;
 export const FLUSH_PROMISE_DELAY = 1;
 export const BASE_NAME = 'base';
 
@@ -137,14 +135,15 @@ export const ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
     'notification_color_hover',
     'notification_text_color',
     'notification_text_color_selected',
-    'notification_text_color_hover'
+    'notification_text_color_hover',
+    'divider_color'
 ];
 
 export const ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
     'selection_opacity'
 ];
 
-export const ITEM_TEMPLATE_STRING_CONFIG_OPTIONS: SidebarStringConfigKeys[] = [
+export const ITEM_STRING_CONFIG_OPTIONS: SidebarStringConfigKeys[] = [
     'default_path'
 ];
 
@@ -167,7 +166,8 @@ export const ITEM_OPTIONS_VARIABLES_MAP: [ItemColorConfigKeys, string][] = [
     ['notification_color_hover',         CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR_HOVER],
     ['notification_text_color',          CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR],
     ['notification_text_color_selected', CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_SELECTED],
-    ['notification_text_color_hover',    CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_HOVER]
+    ['notification_text_color_hover',    CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_HOVER],
+    ['divider_color',                    CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR]
 ];
 
 export const SIDEBAR_OPTIONS_VARIABLES_MAP: [SidebarColorConfigKeys, string][] = [
@@ -177,7 +177,6 @@ export const SIDEBAR_OPTIONS_VARIABLES_MAP: [SidebarColorConfigKeys, string][] =
     ['sidebar_background',               CUSTOM_SIDEBAR_CSS_VARIABLES.BACKGROUND],
     ['menu_background',                  CUSTOM_SIDEBAR_CSS_VARIABLES.MENU_BACKGROUND],
     ['scrollbar_thumb_color',            CUSTOM_SIDEBAR_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR],
-    ['divider_color',                    CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR],
     ['divider_top_color',                CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_TOP_COLOR],
     ['divider_bottom_color',             CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_BOTTOM_COLOR],
     ...ITEM_OPTIONS_VARIABLES_MAP
@@ -194,6 +193,7 @@ export enum ATTRIBUTE {
     ROLE = 'role',
     PROCESSED = 'data-processed',
     WITH_NOTIFICATION = 'data-notification',
+    WITH_DIVIDER = 'data-divider',
     ARIA_SELECTED = 'aria-selected',
     ARIA_DISABLED = 'aria-disabled',
     DISABLED = 'disabled',

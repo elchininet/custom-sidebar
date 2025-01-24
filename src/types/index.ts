@@ -100,6 +100,7 @@ export interface ItemColorConfig {
     notification_text_color?: string;
     notification_text_color_selected?: string;
     notification_text_color_hover?: string;
+    divider_color?: string;
 }
 
 export interface SidebarColorConfig extends ItemColorConfig {
@@ -120,6 +121,7 @@ export interface ConfigItem extends ItemColorConfig {
     match?: `${Match}`;
     exact?: boolean;
     name?: string;
+    icon?: string;
     info?: string;
     notification?: string;
     order?: number;
@@ -128,14 +130,13 @@ export interface ConfigItem extends ItemColorConfig {
     href?: string;
     target?: '_self' | '_blank';
     on_click?: OnClickAction;
-    icon?: string;
+    divider?: boolean;
     new_item?: never;
 }
 
 export interface ConfigNewItem extends Omit<ConfigItem, 'new_item'> {
     new_item: boolean;
     item: string;
-    href: string;
     icon: string;
 }
 

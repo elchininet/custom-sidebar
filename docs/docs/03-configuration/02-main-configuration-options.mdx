@@ -64,7 +64,7 @@ These options are intended to change the functionality of the sidebar and to cha
 | ------------------------- | ------- | --------- | ----------- |
 | item                      | String  | yes       | This is a string that will be used to match each sidebar item by its text, its `data-panel` attribute or its `href`. If the `exact` property is not set, it is case insensitive and it can be a substring such as `developer` instead of `Developer Tools` or `KITCHEN` instead of `kitchen-lights` |
 | match                     | String  | no        | This property will define which string will be used to match the `item` property. It has three possible values "text" (default) to match the text content of the element, "data-panel" to match the `data-panel` attribute of the element, or "href", to match the `href` attribute of the element |
-| exact                     | Boolean | no        | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`). |
+| exact                     | Boolean | no        | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`) |
 | order                     | Number  | no        | Sets the order of the sidebar item |
 | hide<sup>\*</sup>         | Boolean or String | no | Setting this property to `true` will hide the sidebar item and if the property `hide_all` from the main configuration is `true`, setting this property as `false` will avoid hiding the item |
 | name<sup>\*</sup>         | String  | no        | Changes the name of the sidebar item |
@@ -74,7 +74,8 @@ These options are intended to change the functionality of the sidebar and to cha
 | bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
 | href                      | String  | no        | Specifies the `href` of the sidebar item |
 | target                    | String  | no        | Specifies the [target property] of the sidebar item |
-| on_click                  | See below  | no        | Specifies the `onClick` property of the sidebar item. It allows two types of actions, service call actions or javascript actions. Take into account that setting this property will not prevent redirecting to an internal dashboard or an external URL if the `href` property is set. If you want to avoid navigating to a page, you should set the `href` option as `#` (in new items you can just omit it). Check the [Short Configuration Example](#short-configuration-example-1) below for an example of its usage. |
+| on_click                  | See below  | no     | Specifies the `onClick` property of the sidebar item. It allows two types of actions, service call actions or javascript actions. Take into account that setting this property will not prevent redirecting to an internal dashboard or an external URL if the `href` property is set. If you want to avoid navigating to a page, you should set the `href` option as `#` (in new items you can just omit it). Check the [Short Configuration Example](#short-configuration-example-1) below for an example of its usage |
+| divider                   | Boolean | no        | Adds a divider line below the item |
 | new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. If you use this property you need to provide an `icon` property and either a `href` or an `on_click` property |
 
 :::tip
