@@ -24,7 +24,9 @@ Extending from a configuration basically means _"import what I don't already hav
         href: '/config/integrations'
         icon: 'mdi:puzzle'
         order: 2
+    // highlight-start
     extend_from: 'example'
+    // highlight-end
     extendable_configs:
       example:
         title: 'My Home'
@@ -59,7 +61,9 @@ Extending from a configuration basically means _"import what I don't already hav
           "order": 2
         }
       ],
+      // highlight-start
       "extend_from": "example",
+      // highlight-end
       "extendable_configs": {
         "example": {
           "title": "My Home",
@@ -204,7 +208,9 @@ As already mentioned, an extendable configuration can extend from other extendab
         subtitle_color: 'blue'
       example:
         subtitle: 'Assistant'
+        // highlight-start
         extend_from: 'colorful'
+        // highlight-end
     ```
   </TabItem>
   <TabItem value="json" label="JSON">
@@ -219,7 +225,9 @@ As already mentioned, an extendable configuration can extend from other extendab
         },
         "example": {
           "subtitle": "Assistant",
+          // highlight-start
           "extend_from": "colorful"
+          // highlight-end
         }
       }
     }
@@ -272,7 +280,9 @@ In the case of [Exceptions](../configuration/exceptions), they can also extend f
             name: 'Dashboard'
             icon: 'mdi:monitor-dashboard'
             order: 3
+        // highlight-start
         extend_from: 'base'
+        // highlight-end
     ```
   </TabItem>
   <TabItem value="json" label="JSON">
@@ -303,7 +313,9 @@ In the case of [Exceptions](../configuration/exceptions), they can also extend f
               "order": 3
             }
           ],
+          // highlight-start
           "extend_from": "base"
+          // highlight-end
         }
       ]
     }

@@ -23,23 +23,29 @@ Partials will automatically use the variables set in the `js_variables` or `jinj
     js_variables:
       supervisor_update: 'update.home_assistant_supervisor_update'
       os_update: 'update.home_assistant_operating_system_update'
+    // highlight-start
     partials:
       supervisor_version: |
         const supervisorVersion = state_attr(supervisor_update, "latest_version");
       updates: |
         @partial supervisor_version
         const osVersion = state_attr(os_update, "latest_version");
+    // highlight-end
     order:
       - new_item: true
         item: 'info'
         name: |
           [[[
+            // highlight-start
             @partial updates
+            // highlight-end
             return `Info ${supervisorVersion}`;
           ]]]
         info: |
           [[[
+            // highlight-start
             @partial updates
+            // highlight-end
             return `OS ${ osVersion }`;
           ]]]
         href: '/config/info'
@@ -53,16 +59,20 @@ Partials will automatically use the variables set in the `js_variables` or `jinj
         "supervisor_update": "update.home_assistant_supervisor_update",
         "os_update": "update.home_assistant_operating_system_update"
       },
+      // highlight-start
       "partials": {
         "supervisor_version": "const supervisorVersion = state_attr(supervisor_update, 'latest_version');",
         "updates": "@partial supervisor_version const osVersion = state_attr(os_update, 'latest_version');"
       },
+      // highlight-end
       "order": [
         {
           "new_item": true,
           "item": "info",
+          // highlight-start
           "name": "[[[ @partial updates return `Info ${supervisorVersion}`; ]]]",
           "info": "[[[ @partial updates return `OS ${ osVersion }`; ]]]",
+          // highlight-end
           "href": "/config/info",
           "icon": "mdi:information-outline"
         }
@@ -80,20 +90,26 @@ Partials will automatically use the variables set in the `js_variables` or `jinj
     jinja_variables:
       supervisor_update: 'update.home_assistant_supervisor_update'
       os_update: 'update.home_assistant_operating_system_update'
+    // highlight-start
     partials:
       supervisor_version: |
         {% set supervisorVersion = state_attr(supervisor_update, "latest_version") %}
       updates: |
         @partial supervisor_version
         {% set osVersion = state_attr(os_update, "latest_version") %}
+    // highlight-end
     order:
       - new_item: true
         item: 'info'
         name: |
+          // highlight-start
           @partial updates
+          // highlight-end
           Info {{ supervisorVersion }}
         info: |
+          // highlight-start
           @partial updates
+          // highlight-end
           OS {{ osVersion }}
         href: '/config/info'
         icon: 'mdi:information-outline'
@@ -106,16 +122,20 @@ Partials will automatically use the variables set in the `js_variables` or `jinj
         "supervisor_update": "update.home_assistant_supervisor_update",
         "os_update": "update.home_assistant_operating_system_update"
       },
+      // highlight-start
       "partials": {
         "supervisor_version": "{% set supervisorVersion = state_attr(supervisor_update, 'latest_version') %}",
         "updates": "@partial supervisor_version {% set osVersion = state_attr(os_update, 'latest_version') %}"
       },
+      // highlight-end
       "order": [
         {
           "new_item": true,
           "item": "info",
+          // highlight-start
           "name": "@partial updates Info {{ supervisorVersion }}",
           "info": "@partial updates OS {{ osVersion }}",
+          // highlight-end
           "href": "/config/info",
           "icon": "mdi:information-outline"
         }
