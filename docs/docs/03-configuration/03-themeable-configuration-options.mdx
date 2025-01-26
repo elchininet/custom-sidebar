@@ -60,18 +60,26 @@ These options are only useful if you plan to change the appareance of the sideba
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     title: 'My Home'
+    // highlight-start
     title_color: 'var(--accent-color)'
+    // highlight-end
     subtitle: 'Welcome!'
+    // highlight-start
     subtitle_color: 'var(--primary-color)'
+    // highlight-end
     ```
   </TabItem>
   <TabItem value="json" label="JSON">
     ```json title="<config directory>/www/sidebar-config.json"
     {
       "title": "My Home",
+      // highlight-start
       "title_color": "var(--accent-color)",
+      // highlight-end
       "subtitle": "Welcome!",
+      // highlight-start
       "subtitle_color": "var(--primary-color)"
+      // highlight-end
     }
     ```
   </TabItem>
