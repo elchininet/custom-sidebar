@@ -24,7 +24,7 @@ The next example will set the next options:
 3. Adds the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed.
 4. Creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses and the Operating System version in the info text.
 
-<Tabs>
+<Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     title: '[[[ "My Home " + new Date(states("sensor.date_time_iso")).toLocaleTimeString().slice(0, 5) ]]]'
