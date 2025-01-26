@@ -114,12 +114,12 @@ const config: Config = {
                     title: 'Need help?',
                     items: [
                         {
-                            label: 'Home Assistant Community',
-                            href: 'https://community.home-assistant.io/t/custom-sidebar-manage-home-assistants-sidebar-items-per-user-or-device-basis/665800'
-                        },
-                        {
                             label: 'Repository discussions',
                             href: 'https://github.com/elchininet/custom-sidebar/discussions'
+                        },
+                        {
+                            label: 'Home Assistant Community',
+                            href: 'https://community.home-assistant.io/t/custom-sidebar-manage-home-assistants-sidebar-items-per-user-or-device-basis/665800'
                         }
                     ]
                 },
