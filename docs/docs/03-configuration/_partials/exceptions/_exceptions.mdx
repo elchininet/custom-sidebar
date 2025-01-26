@@ -1,0 +1,67 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    exceptions:
+      - user:
+        - 'Jim Hawkins'
+        - 'Long John Silver'
+        extend_from: 'base'
+        title: 'My Home'
+        order:
+          ...
+      - not_user:
+        - 'John Doe'
+        - 'Jack Sparrow'
+        is_admin: true
+        matchers_conditions: 'AND'
+        order:
+          ...
+      - not_device: 'Android'
+        order:
+          ...
+      - is_admin: true
+        order:
+          ...
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      ...
+      "exceptions": [
+        {
+          "user": ["Jim Hawkins", "Long John Silver"],
+          "extend_from": "base",
+          "title": "My Home",
+          "order": [
+            ...
+          ]
+        },
+        {
+          "not_user": ["John Doe", "Jack Sparrow"],
+          "is_admin": true,
+          "matchers_conditions": "AND",
+          "order": [
+            ...
+          ]
+        },
+        {
+          "not_device": "Android",
+          "order": [
+             ...
+          ]
+        },
+        {
+          "is_admin": true,
+          "order": [
+            ...
+          ]
+        }
+      ]  
+    }
+    ```
+  </TabItem>
+</Tabs>

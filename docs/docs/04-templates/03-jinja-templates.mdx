@@ -2,8 +2,7 @@
 sidebar_position: 3
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import JinjaTemplatesExample from './_partials/jinja-templates/_jinja-templates.mdx';
 
 # Jinja Templates
 
@@ -24,49 +23,4 @@ The next example will set the next options:
 2. Adds the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed.
 3. Creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version between parentheses and the Operating System version in the info text.
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/sidebar-config.yaml"
-    title: 'My Home {{ as_timestamp(states("sensor.date_time_iso")) | timestamp_custom("%H:%M") }}'
-    order:
-      - item: 'hacs'
-        notification: |
-          {{
-            expand(states.update)
-            | selectattr('state', 'eq', 'on')
-            | map(attribute='entity_id')
-            | map('device_attr', 'identifiers')
-            | map('contains', 'hacs')
-            | list
-            | length or ""
-          }}
-      - new_item: true
-        item: 'info'
-        name: 'Info ({{ state_attr("update.home_assistant_supervisor_update", "latest_version") }})'
-        info: 'OS {{ state_attr("update.home_assistant_operating_system_update", "latest_version") }}'
-        href: '/config/info'
-        icon: 'mdi:information-outline'
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/sidebar-config.json"
-    {
-      "title": "My Home {{ as_timestamp(states('sensor.date_time_iso')) | timestamp_custom('%H:%M') }}",
-      "order": [
-        {
-          "item": "hacs",
-          "notification": "{{ expand(states.update) | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | map('device_attr', 'identifiers') | map('contains', 'hacs') | list | length or '' }}"
-        },
-        {
-          "new_item": true,
-          "item": "info",
-          "name": "Info ({{ state_attr('update.home_assistant_supervisor_update', 'latest_version') }})",
-          "info": "OS {{ state_attr('update.home_assistant_operating_system_update', 'latest_version') }}",
-          "href": "/config/info",
-          "icon": "mdi:information-outline"
-        }
-      ]
-    }
-    ```
-  </TabItem>
-</Tabs>
+<JinjaTemplatesExample />

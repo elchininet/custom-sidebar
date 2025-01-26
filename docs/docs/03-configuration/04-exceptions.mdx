@@ -2,8 +2,7 @@
 sidebar_position: 4
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import ExceptionsExample from './_partials/exceptions/_exceptions.mdx';
 
 # Exceptions
 
@@ -39,67 +38,4 @@ In an exception you can define all the configuration options (excluding the [Adv
 
 ### Short Configuration Example
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/sidebar-config.yaml"
-    exceptions:
-      - user:
-        - 'Jim Hawkins'
-        - 'Long John Silver'
-        extend_from: 'base'
-        title: 'My Home'
-        order:
-          ...
-      - not_user:
-        - 'John Doe'
-        - 'Jack Sparrow'
-        is_admin: true
-        matchers_conditions: 'AND'
-        order:
-          ...
-      - not_device: 'Android'
-        order:
-          ...
-      - is_admin: true
-        order:
-          ...
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/sidebar-config.json"
-    {
-      ...
-      "exceptions": [
-        {
-          "user": ["Jim Hawkins", "Long John Silver"],
-          "extend_from": "base",
-          "title": "My Home",
-          "order": [
-            ...
-          ]
-        },
-        {
-          "not_user": ["John Doe", "Jack Sparrow"],
-          "is_admin": true,
-          "matchers_conditions": "AND",
-          "order": [
-            ...
-          ]
-        },
-        {
-          "not_device": "Android",
-          "order": [
-             ...
-          ]
-        },
-        {
-          "is_admin": true,
-          "order": [
-            ...
-          ]
-        }
-      ]  
-    }
-    ```
-  </TabItem>
-</Tabs>
+<ExceptionsExample />

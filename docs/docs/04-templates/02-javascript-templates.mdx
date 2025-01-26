@@ -2,8 +2,7 @@
 sidebar_position: 2
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import JavaScriptTemplateExample from './_partials/javascript-templates/_javascript-templates.mdx';
 
 # JavaScript Templates
 
@@ -24,62 +23,7 @@ The next example will set the next options:
 3. Adds the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed.
 4. Creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses and the Operating System version in the info text.
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/sidebar-config.yaml"
-    title: '[[[ "My Home " + new Date(states("sensor.date_time_iso")).toLocaleTimeString().slice(0, 5) ]]]'
-    sidebar_background: |
-      [[[
-        return panel_url === '/config/dashboard'
-          ? 'red'
-          : 'green';
-      ]]]
-    order:
-      - item: hacs
-        notification: |
-          [[[
-            const outdatedHacsEntities = Object.values(entities.update).filter(
-              (entity) => entity.platform === 'hacs' && is_state(entity.entity_id, 'on')
-            );
-            return outdatedHacsEntities.length || '';
-          ]]]
-      - new_item: true
-        item: info
-        name: |
-          [[[
-            return 'Info (' + state_attr('update.home_assistant_supervisor_update', 'latest_version') + ')';
-          ]]]
-        info: |
-          [[[
-            return 'OS ' + state_attr('update.home_assistant_operating_system_update', 'latest_version');
-          ]]]
-        href: '/config/info'
-        icon: 'mdi:information-outline'
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/sidebar-config.json"
-    {
-      "title": "[[[ 'My Home ' + new Date(states('sensor.date_time_iso')).toLocaleTimeString().slice(0, 5) ]]]",
-      "sidebar_background": "[[[ return panel_url === '/config/dashboard' ? 'red' : 'green' ]]]",
-      "order": [
-        {
-          "item": "hacs",
-          "notification": "[[[ return Object.values(entities.update).filter((entity) => entity.platform === 'hacs' && is_state(entity.entity_id, 'on')).length || '' ]]]"
-        },
-        {
-          "new_item": true,
-          "item": "info",
-          "name": "[[[ return 'Info (' + state_attr('update.home_assistant_supervisor_update', 'latest_version') + ')'; ]]]",
-          "info": "[[[ return 'OS ' + state_attr('update.home_assistant_operating_system_update', 'latest_version'); ]]]",
-          "href": "/config/info",
-          "icon": "mdi:information-outline"
-        }
-      ]
-    }
-    ```
-  </TabItem>
-</Tabs>
+<JavaScriptTemplateExample />
 
 :::tip
 

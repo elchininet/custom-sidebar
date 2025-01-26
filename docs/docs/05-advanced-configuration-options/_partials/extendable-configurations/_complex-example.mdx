@@ -1,0 +1,156 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'My Home'
+    extend_from: 'admin_config'
+    order:
+      - new_item: true
+        item: 'Google'
+        href: 'https://mrdoob.com/projects/chromeexperiments/google-gravity/'
+        icon: 'mdi:earth'
+        target: '_blank'
+        order: 1
+    extendable_configs:
+      multicolor:
+        icon_color: 'red'
+        icon_color_selected: 'blue'
+        icon_color_hover: 'green'
+        text_color: 'red'
+        text_color_selected: 'blue'
+        text_color_hover: 'green'
+      admin_config:
+        order:
+          - new_item: true
+            item: 'Integrations'
+            href: '/config/integrations'
+            icon: 'mdi:puzzle'
+            order: 2
+          - new_item: true
+            item: 'Entities'
+            href: '/config/entities'
+            icon: 'mdi:hexagon-multiple'
+            order: 3
+      user_config:
+        extend_from: 'multicolor'
+        hide_all: true
+        order:
+          - item: 'overview'
+            hide: false
+    exceptions:
+      - is_admin: true
+        extend_from:
+          - 'multicolor'
+          - 'admin_config'
+        order:
+          - item: 'config'
+            bottom: true
+      - user:
+        - 'ElChiniNet'
+        - 'Paulus'
+        etend_from: 'base'
+        title: 'HA'
+      - user:
+        - 'Jim Hawkins'
+        - 'Long John Silver'
+        extend_from: 'user_config'
+        order:
+          - item: 'overview'
+            name: 'Dashboard'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "My Home",
+      "extend_from": "admin_config",
+      "order": [
+        {
+          "new_item": true,
+          "item": "Google",
+          "href": "https://mrdoob.com/projects/chromeexperiments/google-gravity/",
+          "icon": "mdi:earth",
+          "target": "_blank",
+          "order": 1
+        }
+      ],
+      "extendable_configs": {
+        "multicolor": {
+          "icon_color": "red",
+          "icon_color_selected": "blue",
+          "icon_color_hover": "green",
+          "text_color": "red",
+          "text_color_selected": "blue",
+          "text_color_hover": "green"
+        },
+        "admin_config": {
+          "order": [
+            {
+              "new_item": true,
+              "item": "Integrations",
+              "href": "/config/integrations",
+              "icon": "mdi:puzzle",
+              "order": 2
+            },
+            {
+              "new_item": true,
+              "item": "Entities",
+              "href": "/config/entities",
+              "icon": "mdi:hexagon-multiple",
+              "order": 3
+            }
+          ]
+        },
+        "user_config": {
+          "extend_from": "multicolor",
+          "hide_all": true,
+          "order": [
+            {
+              "item": "overview",
+              "hide": false
+            }
+          ]
+        }
+      },
+      "exceptions": [
+        {
+          "is_admin": true,
+          "extend_from": [
+            "multicolor",
+            "admin_config"
+          ],
+          "order": [
+            {
+              "item": "config",
+              "bottom": true
+            }
+          ]
+        },
+        {
+          "user": [
+            "ElChiniNet",
+            "Paulus"
+          ],
+          "etend_from": "base",
+          "title": "HA"
+        },
+        {
+          "user": [
+            "Jim Hawkins",
+            "Long John Silver"
+          ],
+          "extend_from": "user_config",
+          "order": [
+            {
+              "item": "overview",
+              "name": "Dashboard"
+            }
+          ]
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>

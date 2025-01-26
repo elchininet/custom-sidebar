@@ -2,8 +2,9 @@
 sidebar_position: 2
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import JavaScriptVariablesExample from './_partials/javascript-variables/_javascript-variables.mdx';
+import ReactiveVariablesExample from './_partials/javascript-variables/_reactive-variables.mdx';
+import ReactiveVariablesWorkingExample from './_partials/javascript-variables/_reactive-variables-working.mdx';
 
 # JavaScript Variables
 
@@ -20,51 +21,7 @@ import TabItem from '@theme/TabItem';
 
 The next example will set "Title 80 dog" as the title of the page:
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/sidebar-config.yaml"
-    js_variables:
-      my_string: 'Title'
-      my_number: 100
-      my_boolean: true
-      my_object:
-        prop1: 4
-        prop2: 5
-      my_array:
-        - 'cat'
-        - 'dog'
-        - 'bird'
-    title: |
-      [[[
-        if (my_boolean) {
-          return `${my_string} ${(my_number * my_object.prop1) / my_object.prop2} ${my_array[1]}`;
-        }
-        return 'Home Assistant';
-      ]]]
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/sidebar-config.json"
-    {
-      "js_variables": {
-        "my_string": "Title",
-        "my_number": 100,
-        "my_boolean": true,
-        "my_object": {
-          "prop1": 4,
-          "prop2": 5
-        },
-        "my_array": [
-          "cat",
-          "dog",
-          "bird"
-        ]
-      },
-      "title": "return (my_boolean) ? `${my_string} ${(my_number * my_object.prop1) / my_object.prop2} ${my_array[1]}` : 'Home Assistant';"
-    }
-    ```
-  </TabItem>
-</Tabs>
+<JavaScriptVariablesExample />
 
 ## Reactive JavaScript Variables
 
@@ -72,128 +29,11 @@ Reactive variables will make your templates be reactive to changes in local vari
 
 You can define a reactive variable in the `js_variables` option, and later use or change its value in a template. To defined a reactive variable with an initial value, just create a string variable in the `js_variables` wrapped by the special method `ref`. To use it in a template, just access it with the same special `ref` method and then retrieve its `value` property. For example, let's change the previous example to use reactive variables:
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/sidebar-config.yaml"
-    js_variables:
-      my_string: 'ref("Title")'
-      my_number: 'ref(100)'
-      my_boolean: 'ref(true)'
-      my_object: |
-        ref({
-          prop1: 4,
-          prop2: 5
-        })
-      my_array: |
-        ref([
-          'cat',
-          'dog',
-          'bird'
-        ])
-    title: |
-      [[[
-        const my_boolean = ref('my_boolean').value;
-        const my_string = ref('my_string').value;
-        const my_number = ref('my_number').value;
-        const my_object = ref('my_object').value;
-        const my_array = ref('my_array').value;
-        if (my_boolean) {
-          return `${my_string} ${(my_number * my_object.prop1) / my_object.prop2} ${my_array[1]}`;
-        }
-        return 'Home Assistant';
-      ]]]
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/sidebar-config.json"
-    {
-      "js_variables": {
-        "my_string": "ref('Title')",
-        "my_number": "ref(100)",
-        "my_boolean": "ref(true)",
-        "my_object": "ref({ prop1: 4, prop2: 5 })",
-        "my_array": "ref(['cat', 'dog', 'bird'])"
-      },
-      "title": "[[[ const my_boolean = ref('my_boolean').value, my_string = ref('my_string').value, my_number = ref('my_number').value, my_object = ref('my_object').value, my_array = ref('my_array').value; return my_boolean ? `${my_string} ${(my_number * my_object.prop1) / my_object.prop2} ${my_array[1]}` : 'Home Assistant' ]]]"
-    }
-    ```
-  </TabItem>
-</Tabs>
+<ReactiveVariablesExample />
 
 Now it is possible to change the value of any of these variables and the title template will be reevaluated using the new values. For example, let's modify the value of some of these variables when an item in the sidebar is clicked and let's check what will be the value of the `title` on each click.
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/sidebar-config.yaml"
-    js_variables:
-      my_string: 'ref("Title")'
-      my_number: 'ref(100)'
-      my_boolean: 'ref(true)'
-      my_object: |
-        ref({
-          prop1: 4,
-          prop2: 5
-        })
-      my_array: |
-        ref([
-          'cat',
-          'dog',
-          'bird'
-        ])
-    title: |
-      [[[
-        const my_boolean = ref('my_boolean').value;
-        const my_string = ref('my_string').value;
-        const my_number = ref('my_number').value;
-        const my_object = ref('my_object').value;
-        const my_array = ref('my_array').value;
-        if (my_boolean) {
-          return `${my_string} ${(my_number * my_object.prop1) / my_object.prop2} ${my_array[1]}`;
-        }
-        return 'Home Assistant';
-      ]]]
-    order:
-      - new_item: true
-        item: 'Example'
-        icon: 'mdi:gesture-tap'
-        on_click:
-          action: 'javascript'
-          code: |
-            const my_number = ref('my_number');
-            const my_object = ref('my_object');
-            my_number.value *= 2;
-            my_object.value = {
-                ...my_object.value,
-                prop1: my_object.value.prop1 + 2
-            };
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/sidebar-config.json"
-    {
-      "js_variables": {
-        "my_string": "ref('Title')",
-        "my_number": "ref(100)",
-        "my_boolean": "ref(true)",
-        "my_object": "ref({ prop1: 4, prop2: 5 })",
-        "my_array": "ref(['cat', 'dog', 'bird'])"
-      },
-      "title": "[[[ const my_boolean = ref('my_boolean').value, my_string = ref('my_string').value, my_number = ref('my_number').value, my_object = ref('my_object').value, my_array = ref('my_array').value; return my_boolean ? `${my_string} ${(my_number * my_object.prop1) / my_object.prop2} ${my_array[1]}` : 'Home Assistant' ]]]",
-      "order": [
-        {
-            "new_item": true,
-            "item": "Example",
-            "icon": "mdi:gesture-tap",
-            "on_click": {
-                "action": "javascript",
-                "code": "const my_number = ref('my_number'), my_object = ref('my_object'); my_number.value *= 2; my_object.value = { ...my_object.value, prop1: my_object.value.prop1 + 2 }"
-            }
-        }
-      ]
-    }
-    ```
-  </TabItem>
-</Tabs>
+<ReactiveVariablesWorkingExample />
 
 ### Value of the `title` after each click:
 

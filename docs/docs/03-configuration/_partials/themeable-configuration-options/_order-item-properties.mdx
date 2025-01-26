@@ -1,0 +1,44 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'My Home'
+    icon_color_selected: 'var(--accent-color)'
+    order:
+      - item: 'overview'
+        order: 1
+      - new_item: true
+        item: 'Automations'
+        href: '/config/automation'
+        icon: 'mdi:robot'
+        // highlight-next-line
+        icon_color_selected: 'var(--success-color)'
+        order: 2
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "My Home",
+      "icon_color_selected": "var(--accent-color)",
+      "order": [
+        {
+          "item": "overview",
+          "order": 1
+        },
+        {
+          "new_item": true,
+          "item": "Automations",
+          "href": "/config/automation",
+          "icon": "mdi:robot",
+          // highlight-next-line
+          "icon_color_selected": "var(--success-color)",
+          "order": 2
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>

@@ -2,8 +2,8 @@
 sidebar_position: 2
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import RootConfigurationOptionsExample from './_partials/main-configuration-options/_root-configuration-options.mdx';
+import OrderItemPropertiesExample from './_partials/main-configuration-options/_order-item-properties.mdx';
 
 # Main Configuration Options
 
@@ -41,22 +41,7 @@ These options are intended to change the functionality of the sidebar and to cha
 
 ### Short Configuration Example
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/sidebar-config.yaml"
-    title: 'My Home'
-    sidebar_editable: false
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/sidebar-config.json"
-    {
-      "title": "My Home",
-      "sidebar_editable": false
-    }
-    ```
-  </TabItem>
-</Tabs>
+<RootConfigurationOptionsExample />
 
 ## Order Items Properties
 
@@ -99,80 +84,7 @@ These options are intended to change the functionality of the sidebar and to cha
 
 ### Short Configuration Example
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/sidebar-config.yaml"
-    title: 'My Home'
-    order:
-      - new_item: true
-        item: 'Automations'
-        href: '/config/automation'
-        icon: 'mdi:robot'
-        order: 1
-      - new_item: true
-        item: 'Woonkamer'
-        icon: 'mdi:ceiling-light-multiple'
-        on_click:
-          action: 'call-service'
-          service: 'light.toggle'
-          data:
-            entity_id: 'light.woonkamer'
-        order: 2
-      - new_item: true
-        item: 'Reload'
-        icon: 'mdi:reload-alert'
-        on_click:
-          action: 'javascript'
-          code: 'location.reload();'
-        order: 3
-      - item: 'overview'
-        hide: true
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/sidebar-config.json"
-    {
-      "title": "My Home",
-      "order": [
-        {
-          "new_item": true,
-          "item": "Automations",
-          "href": "/config/automation",
-          "icon": "mdi:robot",
-          "order": 1
-        },
-        {
-          "new_item": true,
-          "item": "Woonkamer",
-          "icon": "mdi:ceiling-light-multiple",
-          "on_click": {
-            "action": "call-service",
-            "service": "light.toggle",
-            "data": {
-              "entity_id": "light.woonkamer"
-            }
-          },
-          "order": 2
-        },
-        {
-          "new_item": true,
-          "item": "Reload",
-          "icon": "mdi:reload-alert",
-          "on_click": {
-            "action": "javascript",
-            "code": "location.reload();"
-          },
-          "order": 3
-        },
-        {
-          "item": "overview",
-          "hide": true
-        }
-      ]
-    }
-    ```
-  </TabItem>
-</Tabs>
+<OrderItemPropertiesExample />
 
 ## Advanced Configuration Options
 
