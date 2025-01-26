@@ -1,0 +1,23 @@
+---
+title: How to avoid sidebar changes
+slug: how-to-avoid-sidebar-changes
+authors: elchininet
+tags: [sidebar, home-assistant]
+hide_table_of_contents: true
+---
+
+[Home Assistant] has [a native feature](https://github.com/home-assistant/frontend/pull/6755) to change the order of sidebar items or hide them. But this feature should not be used together with Custom Sidebar if you are using a custom order or hiding/showing items. So, in case that you are doing this you should disable this functionality.
+
+[Home Assistant]: https://www.home-assistant.io/
+
+{/* truncate */}
+
+import Example from './_partials/2024-11-24-how-to-avoid-sidebar-changes/_example.mdx';
+
+Custom Sidebar has an option that will allow you to disable this `Home Assistant` feature.
+
+## sidebar_editable
+
+This option is `true` by default, which gives the normal behaviour in `Home Assistant`. If you set it to `false`, it will not only ignore clicking-and-hold on the sidebar's title, it will also disable the `EDIT` button in the `Change the order and hide items from the sidebar` in the user's profile.
+
+<Example />

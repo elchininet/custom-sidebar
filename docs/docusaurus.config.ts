@@ -83,7 +83,12 @@ const config: Config = {
                     sidebarPath: './sidebars.ts',
                     editUrl: 'https://github.com/elchininet/custom-sidebar/tree/master/docs'
                 },
-                blog: false,
+                blog: {
+                    blogTitle: 'Custom Sidebar Blog',
+                    blogDescription: 'Discover things that you can achieve with Custom Sidebar',
+                    blogSidebarCount: 5,
+                    blogSidebarTitle: 'All posts'
+                },
                 theme: {
                     customCss: './src/css/custom.css'
                 }
@@ -94,12 +99,23 @@ const config: Config = {
     themeConfig: {
         // Replace with your project's social card
         navbar: {
-            title: 'Custom Sidebar Docs',
+            title: 'Custom Sidebar',
             logo: {
                 alt: 'Custom Sidebar Logo',
                 src: '/img/favicon-96x96.png'
             },
             items: [
+                {
+                    to: '/',
+                    label: 'Docs',
+                    position: 'left',
+                    activeBaseRegex: '^((?!\\/blog).)*$'
+                },
+                {
+                    to: 'blog',
+                    label: 'Blog',
+                    position: 'left'
+                },
                 {
                     href: 'https://github.com/elchininet/custom-sidebar',
                     label: 'GitHub',

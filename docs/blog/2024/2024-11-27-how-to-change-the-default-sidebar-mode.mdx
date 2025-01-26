@@ -1,0 +1,38 @@
+---
+title: How to change the default sidebar mode
+slug: how-to-change-the-default-sidebar-mode
+authors: elchininet
+tags: [sidebar, home-assistant]
+hide_table_of_contents: true
+---
+
+If you are in a desktop device, you can go to your settings and activate a switch for `Always hide the sidebar`, so you will have the sidebar automatically hidden as in a mobile device. But if you are in a small-screen device, there is no `Always show the sidebar` option.
+
+{/* truncate */}
+
+import Example from './_partials/2024-11-27-how-to-change-the-default-sidebar-mode/_example.mdx';
+
+Custom Sidebar has an option that will allow you to manage the default sidebar mode per user or device basis.
+
+:::info
+
+If you se this option, the changes made in the `Always hide the sidebar` section in your profile will be ignored.
+
+:::
+
+## sidebar_mode
+
+This option has three possible values and they will ignore the device screen size:
+
+| Option&nbsp;Value | Description                                                 |
+| ----------------- | ----------------------------------------------------------- |
+| hidden            | The sidebar will be hidden by default as in a mobile device |
+| narrow            | The sidebar will be in a narrow state by default            |
+| extended          | The sidebar will be in an extended state by default         |
+
+<Example />
+
+<figure>
+![Mobile device with sidebar_mode in narrow](./_images/2024-11-27-how-to-change-the-default-sidebar-mode/sidebar-mode.png)
+<figcaption>_Mobile device with `sidebar_mode` in `narrow`_</figcaption>
+</figure>
