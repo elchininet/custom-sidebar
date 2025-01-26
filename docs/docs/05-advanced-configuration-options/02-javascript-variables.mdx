@@ -20,7 +20,7 @@ import TabItem from '@theme/TabItem';
 
 The next example will set "Title 80 dog" as the title of the page:
 
-<Tabs>
+<Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     js_variables:
@@ -72,7 +72,7 @@ Reactive variables will make your templates be reactive to changes in local vari
 
 You can define a reactive variable in the `js_variables` option, and later use or change its value in a template. To defined a reactive variable with an initial value, just create a string variable in the `js_variables` wrapped by the special method `ref`. To use it in a template, just access it with the same special `ref` method and then retrieve its `value` property. For example, let's change the previous example to use reactive variables:
 
-<Tabs>
+<Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     js_variables:
@@ -122,7 +122,7 @@ You can define a reactive variable in the `js_variables` option, and later use o
 
 Now it is possible to change the value of any of these variables and the title template will be reevaluated using the new values. For example, let's modify the value of some of these variables when an item in the sidebar is clicked and let's check what will be the value of the `title` on each click.
 
-<Tabs>
+<Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     js_variables:

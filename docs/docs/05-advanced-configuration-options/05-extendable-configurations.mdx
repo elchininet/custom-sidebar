@@ -11,7 +11,7 @@ Extendable configurations (`extendable_configs`) is an object containing differe
 
 Extending from a configuration basically means _"import what I don't already have"_, so if a configuration already has an option, it will prevail and it will not be overridden if the configuration is extended. For example, the next configuration has a main configuration extending from an extendable configuration named `example`, let's analyse what will be the result of that extend.
 
-<Tabs>
+<Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     title: 'Custom Title'
@@ -96,7 +96,7 @@ Extending from a configuration basically means _"import what I don't already hav
 
 The resulted main config after the extending process will be:
 
-<Tabs>
+<Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     title: 'Custom Title'
@@ -154,7 +154,7 @@ The resulted main config after the extending process will be:
 
 It is possible to extend from multiple configurations and they will be extended in order, as shown in the next example:
 
-<Tabs>
+<Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     extend_from:
@@ -193,7 +193,7 @@ It is possible to extend from multiple configurations and they will be extended 
 
 As already mentioned, an extendable configuration can extend from other extendable configurations:
 
-<Tabs>
+<Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     title: 'Custom Title'
@@ -229,7 +229,7 @@ As already mentioned, an extendable configuration can extend from other extendab
 
 The resulted main config will be:
 
-<Tabs>
+<Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     title: 'Custom Title'
@@ -252,7 +252,7 @@ The resulted main config will be:
 
 In the case of [Exceptions](../configuration/exceptions), they can also extend from the main configuration if `base` is used in the `extend_from` option:
 
-<Tabs>
+<Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     title: 'Custom Title'
@@ -315,7 +315,7 @@ So, the configuration for the user `ElChiniNet` will be the same previous main c
 
 The next example is a more complex one extending from multiple configurations:
 
-<Tabs>
+<Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     title: 'My Home'
