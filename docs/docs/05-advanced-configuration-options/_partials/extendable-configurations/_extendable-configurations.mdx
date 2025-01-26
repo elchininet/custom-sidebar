@@ -1,0 +1,79 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'Custom Title'
+    order:
+      - item: 'overview'
+        name: 'Dashboard'
+        order: 3
+      - new_item: true
+        item: 'Integrations'
+        href: '/config/integrations'
+        icon: 'mdi:puzzle'
+        order: 2
+    // highlight-next-line
+    extend_from: 'example'
+    extendable_configs:
+      example:
+        title: 'My Home'
+        subtitle: 'Assistant'
+        order:
+          - item: 'overview'
+            icon: 'mdi:monitor-dashboard'
+            order: 0
+          - new_item: true
+            item: 'Google'
+            href: 'https://mrdoob.com/projects/chromeexperiments/google-gravity/'
+            icon: 'mdi:earth'
+            target: '_blank'
+            order: 1
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "Custom Title",
+      "order": [
+        {
+          "item": "overview",
+          "name": "Dashboard",
+          "order": 3
+        },
+        {
+          "new_item": true,
+          "item": "Integrations",
+          "href": "/config/integrations",
+          "icon": "mdi:puzzle",
+          "order": 2
+        }
+      ],
+      // highlight-next-line
+      "extend_from": "example",
+      "extendable_configs": {
+        "example": {
+          "title": "My Home",
+          "subtitle": "Assistant",
+          "order": [
+            {
+              "item": "overview",
+              "icon": "mdi:monitor-dashboard",
+              "order": 0
+            },
+            {
+              "new_item": true,
+              "item": "Google",
+              "href": "https://mrdoob.com/projects/chromeexperiments/google-gravity/",
+              "icon": "mdi:earth",
+              "target": "_blank",
+              "order": 1
+            }
+          ]
+        }
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>

@@ -2,8 +2,8 @@
 sidebar_position: 2
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import InstallThroughHacsExample from './_partials/installation/_installation-trough-hacs.mdx';
+import InstallationManualExample from './_partials/installation/_installation-manual.mdx';
 
 # Installation
 
@@ -17,22 +17,7 @@ You can install the plugin manually or through [HACS], not both. **If you instal
 4. Click on `Download` in the more-info dialog
 5. When the plugin is already downloaded, add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="If you want to use a YAML configuration" default>
-    ```yaml title="configuration.yaml"
-    frontend:
-      extra_module_url:
-        - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js
-    ```
-  </TabItem>
-  <TabItem value="json" label="If you want to use a JSON configuration">
-    ```yaml title="configuration.yaml"
-    frontend:
-      extra_module_url:
-        - /hacsfiles/custom-sidebar/custom-sidebar-json.js
-    ```
-  </TabItem>
-</Tabs>
+<InstallThroughHacsExample />
 
 6. Restart Home Assistant
 
@@ -49,22 +34,7 @@ You can install the plugin manually or through [HACS], not both. **If you instal
 2. Copy `custom-sidebar-yaml.js` or `custom-sidebar-json.js` into `<config directory>/www/` (depending on the configuration format that you are going to use,  `YAML` or `JSON`)
 3. Add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="If you want to use a YAML configuration" default>
-    ```yaml title="configuration.yaml"
-    frontend:
-      extra_module_url:
-        - /local/custom-sidebar-yaml.js?v1.0.0
-    ```
-  </TabItem>
-  <TabItem value="json" label="If you want to use a JSON configuration">
-    ```yaml title="configuration.yaml"
-    frontend:
-      extra_module_url:
-        - /local/custom-sidebar-json.js?v1.0.0
-    ```
-  </TabItem>
-</Tabs>
+<InstallationManualExample />
 
 4. Restart Home Assistant
 

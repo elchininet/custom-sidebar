@@ -1,0 +1,27 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    title: 'My Home'
+    // highlight-next-line
+    title_color: 'var(--accent-color)'
+    subtitle: 'Welcome!'
+    // highlight-next-line
+    subtitle_color: 'var(--primary-color)'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "title": "My Home",
+      // highlight-next-line
+      "title_color": "var(--accent-color)",
+      "subtitle": "Welcome!",
+      // highlight-next-line
+      "subtitle_color": "var(--primary-color)"
+    }
+    ```
+  </TabItem>
+</Tabs>

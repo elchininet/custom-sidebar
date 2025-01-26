@@ -1,0 +1,39 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    extend_from:
+      - 'colors'
+      - 'titles'
+    extendable_configs:
+      colors:
+        icon_color: 'red'
+        text_color: 'red'
+      titles:
+        title: 'Custom Title'
+        subtitle: 'Custom Subtitle'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "extend_from": [
+        "colors",
+        "titles"
+      ],
+      "extendable_configs": {
+        "colors": {
+          "icon_color": "red",
+          "text_color": "red"
+        },
+        "titles": {
+          "title": "Custom Title",
+          "subtitle": "Custom Subtitle"
+        }
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>

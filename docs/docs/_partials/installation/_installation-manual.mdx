@@ -1,0 +1,19 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="If you want to use a YAML configuration" default>
+    ```yaml title="configuration.yaml"
+    frontend:
+      extra_module_url:
+        - /local/custom-sidebar-yaml.js?v1.0.0
+    ```
+  </TabItem>
+  <TabItem value="json" label="If you want to use a JSON configuration">
+    ```yaml title="configuration.yaml"
+    frontend:
+      extra_module_url:
+        - /local/custom-sidebar-json.js?v1.0.0
+    ```
+  </TabItem>
+</Tabs>

@@ -1,0 +1,61 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    jinja_variables:
+      supervisor_update: 'update.home_assistant_supervisor_update'
+      os_update: 'update.home_assistant_operating_system_update'
+    // highlight-start
+    partials:
+      supervisor_version: |
+        {% set supervisorVersion = state_attr(supervisor_update, "latest_version") %}
+      updates: |
+        @partial supervisor_version
+        {% set osVersion = state_attr(os_update, "latest_version") %}
+    // highlight-end
+    order:
+      - new_item: true
+        item: 'info'
+        name: |
+          // highlight-next-line
+          @partial updates
+          Info {{ supervisorVersion }}
+        info: |
+          // highlight-next-line
+          @partial updates
+          OS {{ osVersion }}
+        href: '/config/info'
+        icon: 'mdi:information-outline'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "jinja_variables": {
+        "supervisor_update": "update.home_assistant_supervisor_update",
+        "os_update": "update.home_assistant_operating_system_update"
+      },
+      // highlight-start
+      "partials": {
+        "supervisor_version": "{% set supervisorVersion = state_attr(supervisor_update, 'latest_version') %}",
+        "updates": "@partial supervisor_version {% set osVersion = state_attr(os_update, 'latest_version') %}"
+      },
+      // highlight-end
+      "order": [
+        {
+          "new_item": true,
+          "item": "info",
+          // highlight-start
+          "name": "@partial updates Info {{ supervisorVersion }}",
+          "info": "@partial updates OS {{ osVersion }}",
+          // highlight-end
+          "href": "/config/info",
+          "icon": "mdi:information-outline"
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>

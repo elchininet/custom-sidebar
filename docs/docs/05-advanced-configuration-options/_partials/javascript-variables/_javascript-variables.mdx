@@ -1,0 +1,48 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    js_variables:
+      my_string: 'Title'
+      my_number: 100
+      my_boolean: true
+      my_object:
+        prop1: 4
+        prop2: 5
+      my_array:
+        - 'cat'
+        - 'dog'
+        - 'bird'
+    title: |
+      [[[
+        if (my_boolean) {
+          return `${my_string} ${(my_number * my_object.prop1) / my_object.prop2} ${my_array[1]}`;
+        }
+        return 'Home Assistant';
+      ]]]
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "js_variables": {
+        "my_string": "Title",
+        "my_number": 100,
+        "my_boolean": true,
+        "my_object": {
+          "prop1": 4,
+          "prop2": 5
+        },
+        "my_array": [
+          "cat",
+          "dog",
+          "bird"
+        ]
+      },
+      "title": "return (my_boolean) ? `${my_string} ${(my_number * my_object.prop1) / my_object.prop2} ${my_array[1]}` : 'Home Assistant';"
+    }
+    ```
+  </TabItem>
+</Tabs>

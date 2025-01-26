@@ -2,8 +2,8 @@
 sidebar_position: 3
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import RootConfigurationOptionsExample from './_partials/themeable-configuration-options/_root-configuration-options.mdx';
+import OrderItemPropertiesExample from './_partials/themeable-configuration-options/_order-item-properties.mdx';
 
 # Themeable Configuration Options
 
@@ -56,30 +56,7 @@ These options are only useful if you plan to change the appareance of the sideba
 
 ### Short Configuration Example
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/sidebar-config.yaml"
-    title: 'My Home'
-    // highlight-next-line
-    title_color: 'var(--accent-color)'
-    subtitle: 'Welcome!'
-    // highlight-next-line
-    subtitle_color: 'var(--primary-color)'
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/sidebar-config.json"
-    {
-      "title": "My Home",
-      // highlight-next-line
-      "title_color": "var(--accent-color)",
-      "subtitle": "Welcome!",
-      // highlight-next-line
-      "subtitle_color": "var(--primary-color)"
-    }
-    ```
-  </TabItem>
-</Tabs>
+<RootConfigurationOptionsExample />
 
 ## Order Items Properties
 
@@ -114,44 +91,4 @@ These options are only useful if you plan to change the appareance of the sideba
 
 ### Short Configuration Example
 
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/sidebar-config.yaml"
-    title: 'My Home'
-    icon_color_selected: 'var(--accent-color)'
-    order:
-      - item: 'overview'
-        order: 1
-      - new_item: true
-        item: 'Automations'
-        href: '/config/automation'
-        icon: 'mdi:robot'
-        // highlight-next-line
-        icon_color_selected: 'var(--success-color)'
-        order: 2
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/sidebar-config.json"
-    {
-      "title": "My Home",
-      "icon_color_selected": "var(--accent-color)",
-      "order": [
-        {
-          "item": "overview",
-          "order": 1
-        },
-        {
-          "new_item": true,
-          "item": "Automations",
-          "href": "/config/automation",
-          "icon": "mdi:robot",
-          // highlight-next-line
-          "icon_color_selected": "var(--success-color)",
-          "order": 2
-        }
-      ]
-    }
-    ```
-  </TabItem>
-</Tabs>
+<OrderItemPropertiesExample />
