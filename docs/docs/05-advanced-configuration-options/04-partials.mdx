@@ -36,16 +36,14 @@ Partials will automatically use the variables set in the `js_variables` or `jinj
         item: 'info'
         name: |
           [[[
-            // highlight-start
+            // highlight-next-line
             @partial updates
-            // highlight-end
             return `Info ${supervisorVersion}`;
           ]]]
         info: |
           [[[
-            // highlight-start
+            // highlight-next-line
             @partial updates
-            // highlight-end
             return `OS ${ osVersion }`;
           ]]]
         href: '/config/info'
@@ -102,14 +100,12 @@ Partials will automatically use the variables set in the `js_variables` or `jinj
       - new_item: true
         item: 'info'
         name: |
-          // highlight-start
+          // highlight-next-line
           @partial updates
-          // highlight-end
           Info {{ supervisorVersion }}
         info: |
-          // highlight-start
+          // highlight-next-line
           @partial updates
-          // highlight-end
           OS {{ osVersion }}
         href: '/config/info'
         icon: 'mdi:information-outline'
