@@ -1,0 +1,31 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    js_variables:
+      background_image: 'https://cdn.jsdelivr.net/gh/basnijholt/lovelace-ios-themes@a37376d918fcfe4785be99910dc9a7200ac37da9/themes/homekit-bg-blue-red.jpg'
+    sidebar_background: |
+      [[[
+        if (panel_url.startsWith('/lovelace')) {
+          return `center / cover no-repeat fixed url('${background_image}')`;
+        }
+        if (panel_url.startsWith('/5c53de3b_esphome')) {
+          return '#DAD8DA';
+        }
+        return '#2C2C2E';
+      ]]]
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "js_variables": {
+        "background_image": "https://cdn.jsdelivr.net/gh/basnijholt/lovelace-ios-themes@a37376d918fcfe4785be99910dc9a7200ac37da9/themes/homekit-bg-blue-red.jpg"
+      },
+      "sidebar_background": "if (panel_url.startsWith('/lovelace')) { return `center / cover no-repeat fixed url('${background_image}')`; } if (panel_url.startsWith('/5c53de3b_esphome')) { return '#DAD8DA'; } return '#2C2C2E';"
+    }
+    ```
+  </TabItem>
+</Tabs>
