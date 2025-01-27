@@ -12,7 +12,12 @@ export const fetchConfig = async (): Promise<Config> => {
     const errorNotFound = `${NAMESPACE}: YAML config file not found.`;
     const errorSuffix = `Make sure you have valid config in /config/www/${CONFIG_NAME}.yaml file.`;
     return new Promise<Config>((resolve) => {
-        fetch(`${CONFIG_PATH}.yaml?hash=${randomId()}`)
+        fetch(
+            `${CONFIG_PATH}.yaml?hash=${randomId()}`,
+            {
+                cache: 'no-store'
+            }
+        )
             .then((response: Response) => {
                 if (response.ok) {
                     response
