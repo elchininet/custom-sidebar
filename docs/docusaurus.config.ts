@@ -97,6 +97,14 @@ const config: Config = {
     ],
 
     themeConfig: {
+        algolia: {
+            appId: 'EV6E4WOGP0',
+            apiKey: '84ad8e3b012235fdbc97db169faaff38',
+            indexName: 'elchininetio',
+            contextualSearch: true,
+            placeholder: 'Search'
+
+        },
         // Replace with your project's social card
         navbar: {
             title: 'Custom Sidebar',
@@ -117,7 +125,7 @@ const config: Config = {
                     position: 'left'
                 },
                 {
-                    href: 'https://github.com/elchininet/custom-sidebar',
+                    href: 'https://github.com/elchininet/custom-sidebar/',
                     label: 'GitHub',
                     position: 'right'
                 }
