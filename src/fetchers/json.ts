@@ -11,7 +11,12 @@ export const fetchConfig = async (): Promise<Config> => {
     const errorNotFound = `${NAMESPACE}: JSON config file not found.`;
     const errorSuffix = `Make sure you have valid config in /config/www/${CONFIG_NAME}.json file.`;
     return new Promise<Config>((resolve) => {
-        fetch(`${CONFIG_PATH}.json?hash=${randomId()}`)
+        fetch(
+            `${CONFIG_PATH}.json?hash=${randomId()}`,
+            {
+                cache: 'no-store'
+            }
+        )
             .then((response: Response) => {
                 if (response.ok) {
                     response
