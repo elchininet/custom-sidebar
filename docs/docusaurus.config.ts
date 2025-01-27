@@ -105,6 +105,12 @@ const config: Config = {
             placeholder: 'Search'
 
         },
+        metadata: [
+            {
+                name: 'keywords',
+                content: 'sidebar, custom-sidebar, custom-sidebars, home-assistant, homeassistant, hacs, javascript, plugin, custom-plugin, lovelace, lovelace-ui'
+            }
+        ],
         // Replace with your project's social card
         navbar: {
             title: 'Custom Sidebar',
