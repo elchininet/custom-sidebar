@@ -4,7 +4,12 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - 'docs/**'
+
   pull_request_target:
+    paths-ignore:
+      - 'docs/**'
 
 jobs:      
   test:
