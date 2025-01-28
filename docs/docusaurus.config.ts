@@ -86,7 +86,7 @@ const config: Config = {
                 blog: {
                     blogTitle: 'Custom Sidebar Blog',
                     blogDescription: 'Discover things that you can achieve with Custom Sidebar',
-                    blogSidebarCount: 5,
+                    blogSidebarCount: 'ALL',
                     blogSidebarTitle: 'All posts'
                 },
                 theme: {
