@@ -1,0 +1,19 @@
+---
+title: How to start with an empty sidebar
+slug: how-to-start-with-an-empty-sidebar
+authors: elchininet
+tags: [sidebar, home-assistant]
+hide_table_of_contents: true
+---
+
+When you are going to create a configuration for a user, one possible approach is to start hiding the items that this user doesn't need. But what happens when we want to hide everything and just display a few items for that user? In would be a hassle to write item by item with a `hide` property. It is better if we hide everything and just show what we want visible.
+
+{/* truncate */}
+
+import Example from '@site/blog/2025/_partials/2025-01-28-how-to-start-with-an-empty-sidebar/_example.mdx';
+
+## hide_all
+
+With this option it is possible to hide all the items from the sidebar, and just start to show the ones that we want to make visible. The next example hides all the items from the sidebar but the `Dashboard` item.
+
+<Example />
