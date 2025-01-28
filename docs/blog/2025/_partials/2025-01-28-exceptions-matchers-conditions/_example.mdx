@@ -1,0 +1,37 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    exceptions:
+      - is_admin: true
+        not_device: 'iPhone'
+        not_user: 'ElChiniNet'
+        matchers_conditions: 'AND'
+        order:
+          item: 'dashboard'
+          hide: true
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "exceptions": [
+        {
+          "is_admin": true,
+          "not_device": "iPhone",
+          "not_user": "ElChiniNet",
+          "matchers_conditions": "AND",
+          "order": [
+            {
+              "item": "dashboard",
+              "hide": true
+            }
+          ]
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
