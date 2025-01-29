@@ -15,6 +15,6 @@ getPromisableResult(
     }
 ).then((sidebar) => {
     if (!sidebar) {
-        throw Error(`${NAMESPACE}: you need to add the plugin as a frontend > extra_module_url module.\nCheck the documentation: https://github.com/elchininet/custom-sidebar#installation`);
+        throw Error(`${NAMESPACE}: you need to add the plugin as a frontend > extra_module_url module.\nCheck the documentation: https://elchininet.github.io/custom-sidebar/installation`);
     }
 });
