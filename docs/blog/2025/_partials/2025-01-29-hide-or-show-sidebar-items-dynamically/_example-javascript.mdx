@@ -1,0 +1,48 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    js_variables:
+      admin_boolean: 'input_boolean.show_admin_sidebar_items'
+    partials:
+      admin_active: |
+        const adminActive = is_state(admin_boolean, 'on');
+        return adminActive;
+    order:
+      - item: developer tools
+        hide: '[[[ @partial admin_active ]]]'
+      - item: studio code server
+        hide: '[[[ @partial admin_active ]]]'
+      - item: settings
+        hide: '[[[ @partial admin_active ]]]'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "js_variables": {
+        "admin_boolean": "input_boolean.show_admin_sidebar_items"
+      },
+      "partials": {
+        "admin_active": "return is_state(admin_boolean, 'on')"
+      },
+      "order": [
+        {
+          "item": "developer tools",
+          "hide": "[[[ @partial admin_active ]]]"
+        },
+        {
+          "item": "studio code server",
+          "hide": "[[[ @partial admin_active ]]]"
+        },
+        {
+          "item": "settings",
+          "hide": "[[[ @partial admin_active ]]]"
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>

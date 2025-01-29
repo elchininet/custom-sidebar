@@ -1,0 +1,26 @@
+---
+title: Hide or show sidebar items dynamically
+slug: hide-or-show-sidebar-items-dynamically
+authors: elchininet
+tags: [sidebar, home-assistant, order-items-properties]
+hide_table_of_contents: true
+---
+
+Since some time already, it is possible to add templates to the `hide` property of the `order` items. This means that it is possible to show or hide items when the state of an entity changes.
+
+{/* truncate */}
+
+import ExampleJavaScript from '@site/blog/2025/_partials/2025-01-29-hide-or-show-sidebar-items-dynamically/_example-javascript.mdx';
+import ExampleJinja from '@site/blog/2025/_partials/2025-01-29-hide-or-show-sidebar-items-dynamically/_example-jinja.mdx';
+
+We can have an `input_boolean` that when it is on `off` some items of the sidebar remain hidden and when we switch it `on`, then they get visible. Check the next examples using [JavaScript](/custom-sidebar/templates/javascript-templates) and [Jinja](/custom-sidebar/templates/jinja-templates) templates:
+
+## hide
+
+### Using JavaScript templates
+
+<ExampleJavaScript />
+
+### Using Jinja templates
+
+<ExampleJinja />
