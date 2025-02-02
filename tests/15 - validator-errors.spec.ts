@@ -691,6 +691,33 @@ test.describe('order item property', () => {
             error: `${ERROR_PREFIX} in history, "hide" property should be a boolean or a string`
         },
         {
+            title: 'should throw an error if the attributes property is not a string or an object',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        attributes: [true]
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the "attributes" parameter should be a string or an object`
+        },
+        {
+            title: 'should throw an error if the attributes property contains a property which is not a string, a number or a boolean',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        attributes: {
+                            prop1: 'pass',
+                            prop2: ['fail']
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the prop "prop2" in the attributes should be a string, a number or a boolean`
+        },
+        {
             title: 'should throw an error if the on_click property is not an object',
             json: {
                 order: [
@@ -995,6 +1022,43 @@ test.describe('exceptions', () => {
                 ]
             },
             error: `${ERROR_PREFIX}, every item in an "order" array should have an "item" property`
+        },
+        {
+            title: 'should throw an error if the attributes property is not a string or an object',
+            json: {
+                exceptions: [
+                    {
+                        order: [
+                            {
+                                item: 'history',
+                                attributes: [true]
+                            }
+                        ],
+                        user: 'ElChiniNet'
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the "attributes" parameter should be a string or an object`
+        },
+        {
+            title: 'should throw an error if the attributes property contains a property which is not a string, a number or a boolean',
+            json: {
+                exceptions: [
+                    {
+                        order: [
+                            {
+                                item: 'history',
+                                attributes: {
+                                    prop1: 'pass',
+                                    prop2: ['fail']
+                                }
+                            }
+                        ],
+                        user: 'ElChiniNet'
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the prop "prop2" in the attributes should be a string, a number or a boolean`
         },
         {
             title: 'should throw an error if an exceptions extends from a non-existent extendable config',
