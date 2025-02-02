@@ -114,6 +114,28 @@ const validateStringOrArrayOfStrings = (value: undefined | string | string[]): b
     );
 };
 
+const validateAttributes = (attributes: undefined | string | Record<string, string | number | boolean>, errorProfix: string): void => {
+    if (
+        typeof attributes === TYPE.UNDEFINED ||
+        typeof attributes === 'string'
+    ) {
+        return;
+    }
+    if (Object.prototype.toString.call(attributes) !== OBJECT_TO_STRING) {
+        throw new SyntaxError(`${errorProfix} the "attributes" parameter should be a string or an object`);
+    }
+    Object.entries(attributes).forEach((entry) => {
+        const [name, value] = entry;
+        if (
+            typeof value !== TYPE.STRING &&
+            typeof value !== TYPE.BOOLEAN &&
+            typeof value !== TYPE.NUMBER
+        ) {
+            throw new SyntaxError(`${errorProfix} the prop "${name}" in the attributes should be a string, a number or a boolean`);
+        }
+    });
+};
+
 const validateOnClickOption = (configItem: ConfigItem, errorProfix: string): void => {
     if (typeof configItem.on_click !== TYPE.UNDEFINED) {
         if (Object.prototype.toString.call(configItem.on_click) !== OBJECT_TO_STRING) {
@@ -435,6 +457,11 @@ const validateConfigItem = (configItem: ConfigItem): void => {
 
     validateOnClickOption(
         configItem,
+        `${ERROR_PREFIX} in ${configItem.item},`
+    );
+
+    validateAttributes(
+        configItem.attributes,
         `${ERROR_PREFIX} in ${configItem.item},`
     );
 

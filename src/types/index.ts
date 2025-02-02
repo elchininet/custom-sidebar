@@ -130,6 +130,7 @@ export interface ConfigItem extends ItemColorConfig {
     href?: string;
     target?: '_self' | '_blank';
     on_click?: OnClickAction;
+    attributes?: string | Record<string, string | number | boolean>;
     divider?: boolean;
     new_item?: never;
 }

@@ -34,6 +34,7 @@ import {
     ELEMENT,
     SELECTOR,
     ATTRIBUTE,
+    OBJECT_TO_STRING,
     CUSTOM_SIDEBAR_CSS_VARIABLES,
     ITEM_OPTIONS_VARIABLES_MAP,
     SIDEBAR_OPTIONS_VARIABLES_MAP,
@@ -500,6 +501,49 @@ class CustomSidebar {
         });
     }
 
+    private _applyAttributesToItem(
+        configOrderItem: ConfigOrderWithItem,
+        attributes: string | Record<string, string | number | boolean>
+    ) {
+
+        const insertAttributes = (attrs: [string, string | number | boolean][]): void => {
+            attrs.forEach((entry) => {
+                const [name, value] = entry;
+                configOrderItem.element.setAttribute(name, `${value}`);
+            });
+        };
+
+        if (typeof attributes === 'string') {
+            const object = this._config.js_variables?.[attributes];
+            if (typeof object !== 'undefined') {
+                if (Object.prototype.toString.call(object) !== OBJECT_TO_STRING) {
+                    console.warn(`${NAMESPACE}: The attribute "${attributes}" defined in the item "${configOrderItem.item}" is not an object`);
+                } else {
+                    const filteredAttributes = Object.entries(object).filter((entry) => {
+                        const [name, value] = entry;
+                        if (
+                            typeof value === 'string' ||
+                            typeof value === 'number' ||
+                            typeof value === 'boolean'
+                        ) {
+                            return true;
+                        } else {
+                            console.warn(`${NAMESPACE}: The prop "${name}" in the attribute "${attributes}" of the item "${configOrderItem.item}" is not a string, a boolean or a number, so it has been omitted`);
+                            return false;
+                        }
+                    });
+                    insertAttributes(filteredAttributes);
+                }
+            } else {
+                console.warn(`${NAMESPACE}: The attribute "${attributes}" in the item "${configOrderItem.item}" has not been defined in js_variables`);
+            }
+        } else {
+            insertAttributes(
+                Object.entries(attributes)
+            );
+        }
+    }
+
     private _focusItem(activeIndex: number, forward: boolean, focusPaperItem: boolean): void {
 
         const length = this._items.length;
@@ -911,6 +955,13 @@ class CustomSidebar {
                     }
 
                     orderItem.element.style.order = `${orderIndex}`;
+
+                    if (typeof orderItem.attributes !== 'undefined') {
+                        this._applyAttributesToItem(
+                            orderItem,
+                            orderItem.attributes
+                        );
+                    }
 
                     if (orderItem.divider) {
                         orderItem.element.setAttribute(ATTRIBUTE.WITH_DIVIDER, 'true');

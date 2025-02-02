@@ -7,6 +7,7 @@ import {
 import { haConfigRequest } from './ha-services';
 import { fulfillJson, getSidebarItemSelector } from './utilities';
 import { SELECTORS } from './selectors';
+import { NAMESPACE } from '../src/constants';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
@@ -291,6 +292,184 @@ test.beforeAll(async ({ browser }) => {
         });
 
     });
+
+});
+
+test('should apply attributes to an item', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            order: [
+                {
+                    item: 'settings',
+                    attributes: {
+                        'data-yes': 'yes',
+                        'data-no': 'no'
+                    }
+                }
+            ]
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-yes', 'yes');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-no', 'no');
+
+});
+
+test('should apply attributes to an item taking them from js_variables', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            js_variables: {
+                my_attrs: {
+                    'data-js-yes': 'yes',
+                    'data-js-no': 'no'
+                }
+            },
+            order: [
+                {
+                    item: 'settings',
+                    attributes: 'my_attrs'
+                }
+            ]
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-js-yes', 'yes');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-js-no', 'no');
+
+});
+
+test('should throw a warning if the attributes property is not defined in js_variables', async ({ page }) => {
+
+    const warnings: string[] = [];
+
+    page.on('console', message => {
+        if (message.type() === 'warning') {
+            warnings.push(message.text());
+        }
+    });
+
+    await fulfillJson(
+        page,
+        {
+            order: [
+                {
+                    item: 'settings',
+                    attributes: 'my_attrs'
+                }
+            ]
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    expect(warnings).toEqual(
+        expect.arrayContaining([
+            `${NAMESPACE}: The attribute "my_attrs" in the item "settings" has not been defined in js_variables`
+        ])
+    );
+
+});
+
+test('should throw a warning if the attributes property defined in js_variables is not an object', async ({ page }) => {
+
+    const warnings: string[] = [];
+
+    page.on('console', message => {
+        if (message.type() === 'warning') {
+            warnings.push(message.text());
+        }
+    });
+
+    await fulfillJson(
+        page,
+        {
+            js_variables: {
+                my_attrs: 'yes'
+            },
+            order: [
+                {
+                    item: 'settings',
+                    attributes: 'my_attrs'
+                }
+            ]
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    expect(warnings).toEqual(
+        expect.arrayContaining([
+            `${NAMESPACE}: The attribute "my_attrs" defined in the item "settings" is not an object`
+        ])
+    );
+
+});
+
+test('should throw a warning if a property in the attributes property defined in js_variables is not a string, a boolean or a number', async ({ page }) => {
+
+    const warnings: string[] = [];
+
+    page.on('console', message => {
+        if (message.type() === 'warning') {
+            warnings.push(message.text());
+        }
+    });
+
+    await fulfillJson(
+        page,
+        {
+            js_variables: {
+                my_attrs: {
+                    'data-prop1': 'correct',
+                    'data-prop2': ['incorrect'],
+                    'data-prop3': 100,
+                    'data-prop4': true
+                }
+            },
+            order: [
+                {
+                    item: 'settings',
+                    attributes: 'my_attrs'
+                }
+            ]
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-prop1', 'correct');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveAttribute('data-prop2');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-prop3', '100');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-prop4', 'true');
+
+    expect(warnings).toEqual(
+        expect.arrayContaining([
+            `${NAMESPACE}: The prop "data-prop2" in the attribute "my_attrs" of the item "settings" is not a string, a boolean or a number, so it has been omitted`
+        ])
+    );
 
 });
 
