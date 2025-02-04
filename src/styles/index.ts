@@ -202,6 +202,9 @@ export const ITEM_DIVIDER_ITEM_DIVIDER_COLOR = {
         ),
         marginBottom: '10px',
         paddingBottom: '10px'
+    },
+    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM }:not(${SELECTOR.ITEM_SELECTED})[${ ATTRIBUTE.WITH_DIVIDER }]:focus::before`]: {
+        bottom: '10px'
     }
 };
 
