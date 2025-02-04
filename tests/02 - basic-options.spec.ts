@@ -739,3 +739,48 @@ test('should execute a javascript action redirecting', async ({ page }) => {
     );
 
 });
+
+test('should execute a javascript action using partials', async ({ page }) => {
+
+    const logs: string[] = [];
+
+    page.on('console', message => {
+        logs.push(message.text());
+    });
+
+    await fulfillJson(
+        page,
+        {
+            partials: {
+                throw_console: 'console.log("JavaScript code from partial executed");'
+            },
+            order: [
+                {
+                    new_item: true,
+                    item: 'Check',
+                    icon: 'mdi:bullseye-arrow',
+                    href: '/config/integrations',
+                    on_click: {
+                        action: 'javascript',
+                        code: `
+                            @partial throw_console
+                            return;
+                        `
+                    }
+                }
+            ]
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await page.locator(getSidebarItemSelector('check')).click();
+
+    expect(logs).toEqual(
+        expect.arrayContaining(['JavaScript code from partial executed'])
+    );
+
+});

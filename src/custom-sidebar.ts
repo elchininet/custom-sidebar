@@ -1109,7 +1109,12 @@ class CustomSidebar {
                 const finalCode = code.includes('return')
                     ? code
                     : `${code}\n;return;`;
-                this._renderer.renderTemplate(finalCode);
+                this._renderer.renderTemplate(
+                    getTemplateWithPartials(
+                        finalCode,
+                        this._config.partials
+                    )
+                );
                 break;
             }
         }
