@@ -34,10 +34,10 @@ import {
     ELEMENT,
     SELECTOR,
     ATTRIBUTE,
-    OBJECT_TO_STRING,
     CUSTOM_SIDEBAR_CSS_VARIABLES,
     ITEM_OPTIONS_VARIABLES_MAP,
     SIDEBAR_OPTIONS_VARIABLES_MAP,
+    TYPE,
     KEY,
     CLASS,
     EVENT,
@@ -326,6 +326,54 @@ class CustomSidebar {
 
     }
 
+    private _subscribeAttributes(
+        configOrderItem: ConfigOrderWithItem,
+        attributes: string | Record<string, string | number | boolean>
+    ) {
+
+        const insertAttributes = (attrs: [string, string | number | boolean][]): void => {
+            const customSidebarAttributes = configOrderItem.element.getAttribute(ATTRIBUTE.CUSTOM_SIDEBAR_ATTRIBUTES)?.split('|') ?? [];
+            customSidebarAttributes.forEach((attr: string): void => {
+                configOrderItem.element.removeAttribute(attr);
+            });
+            customSidebarAttributes.splice(0);
+            attrs.forEach((entry) => {
+                const [name, value] = entry;
+                if (
+                    typeof value === TYPE.STRING ||
+                    typeof value === TYPE.NUMBER ||
+                    typeof value === TYPE.BOOLEAN
+                ) {
+                    configOrderItem.element.setAttribute(name, `${value}`);
+                    customSidebarAttributes.push(name);
+                } else {
+                    console.warn(`${NAMESPACE}: the property "${name}" in the attributes property of the item "${configOrderItem.item}" should be a string, a number or a boolean. This property will be omitted`);
+                }
+            });
+            configOrderItem.element.setAttribute(ATTRIBUTE.CUSTOM_SIDEBAR_ATTRIBUTES, customSidebarAttributes.join('|'));
+        };
+
+        if (typeof attributes === 'string') {
+            this._subscribeTemplate(
+                attributes,
+                (rendered: string): void => {
+                    try {
+                        const parsedAttributes = JSON.parse(rendered);
+                        insertAttributes(
+                            Object.entries(parsedAttributes)
+                        );
+                    } catch {
+                        throw new SyntaxError(`${NAMESPACE}: "attributes" template must always return an object`);
+                    }
+                }
+            );
+        } else {
+            insertAttributes(
+                Object.entries(attributes)
+            );
+        }
+    }
+
     private _subscribeName(element: HTMLElement, name: string): void {
         const itemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
         this._subscribeTemplate(
@@ -499,49 +547,6 @@ class CustomSidebar {
                 }
             );
         });
-    }
-
-    private _applyAttributesToItem(
-        configOrderItem: ConfigOrderWithItem,
-        attributes: string | Record<string, string | number | boolean>
-    ) {
-
-        const insertAttributes = (attrs: [string, string | number | boolean][]): void => {
-            attrs.forEach((entry) => {
-                const [name, value] = entry;
-                configOrderItem.element.setAttribute(name, `${value}`);
-            });
-        };
-
-        if (typeof attributes === 'string') {
-            const object = this._config.js_variables?.[attributes];
-            if (typeof object !== 'undefined') {
-                if (Object.prototype.toString.call(object) !== OBJECT_TO_STRING) {
-                    console.warn(`${NAMESPACE}: The attribute "${attributes}" defined in the item "${configOrderItem.item}" is not an object`);
-                } else {
-                    const filteredAttributes = Object.entries(object).filter((entry) => {
-                        const [name, value] = entry;
-                        if (
-                            typeof value === 'string' ||
-                            typeof value === 'number' ||
-                            typeof value === 'boolean'
-                        ) {
-                            return true;
-                        } else {
-                            console.warn(`${NAMESPACE}: The prop "${name}" in the attribute "${attributes}" of the item "${configOrderItem.item}" is not a string, a boolean or a number, so it has been omitted`);
-                            return false;
-                        }
-                    });
-                    insertAttributes(filteredAttributes);
-                }
-            } else {
-                console.warn(`${NAMESPACE}: The attribute "${attributes}" in the item "${configOrderItem.item}" has not been defined in js_variables`);
-            }
-        } else {
-            insertAttributes(
-                Object.entries(attributes)
-            );
-        }
     }
 
     private _focusItem(activeIndex: number, forward: boolean, focusPaperItem: boolean): void {
@@ -957,7 +962,7 @@ class CustomSidebar {
                     orderItem.element.style.order = `${orderIndex}`;
 
                     if (typeof orderItem.attributes !== 'undefined') {
-                        this._applyAttributesToItem(
+                        this._subscribeAttributes(
                             orderItem,
                             orderItem.attributes
                         );

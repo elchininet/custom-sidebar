@@ -114,26 +114,37 @@ const validateStringOrArrayOfStrings = (value: undefined | string | string[]): b
     );
 };
 
-const validateAttributes = (attributes: undefined | string | Record<string, string | number | boolean>, errorProfix: string): void => {
-    if (
-        typeof attributes === TYPE.UNDEFINED ||
-        typeof attributes === 'string'
-    ) {
+const validateAttributes = (
+    attributes: undefined | string | Record<string, string | number | boolean>,
+    errorProfix: string
+): void => {
+    if (typeof attributes === TYPE.UNDEFINED) {
         return;
     }
-    if (Object.prototype.toString.call(attributes) !== OBJECT_TO_STRING) {
-        throw new SyntaxError(`${errorProfix} the "attributes" parameter should be a string or an object`);
-    }
-    Object.entries(attributes).forEach((entry) => {
-        const [name, value] = entry;
-        if (
-            typeof value !== TYPE.STRING &&
-            typeof value !== TYPE.BOOLEAN &&
-            typeof value !== TYPE.NUMBER
+    if (
+        Object.prototype.toString.call(attributes) === OBJECT_TO_STRING ||
+        typeof attributes === TYPE.STRING
+    ) {
+        if (Object.prototype.toString.call(attributes) === OBJECT_TO_STRING) {
+            Object.entries(attributes).forEach((entry) => {
+                const [name, value] = entry;
+                if (
+                    typeof value !== TYPE.STRING &&
+                    typeof value !== TYPE.BOOLEAN &&
+                    typeof value !== TYPE.NUMBER
+                ) {
+                    throw new SyntaxError(`${errorProfix} the prop "${name}" in the attributes should be a string, a number or a boolean`);
+                }
+            });
+        } else if (
+            typeof attributes === 'string' &&
+            !JS_TEMPLATE_REG.test(attributes)
         ) {
-            throw new SyntaxError(`${errorProfix} the prop "${name}" in the attributes should be a string, a number or a boolean`);
+            throw new SyntaxError(`${errorProfix} the "attributes" parameter as a string should be a JavaScript template`);
         }
-    });
+    } else {
+        throw new SyntaxError(`${errorProfix} the "attributes" parameter should be an object or a template string`);
+    }
 };
 
 const validateOnClickOption = (configItem: ConfigItem, errorProfix: string): void => {

@@ -198,7 +198,8 @@ export enum ATTRIBUTE {
     ARIA_DISABLED = 'aria-disabled',
     DISABLED = 'disabled',
     HREF = 'href',
-    STYLE = 'style'
+    STYLE = 'style',
+    CUSTOM_SIDEBAR_ATTRIBUTES = 'data-custom-sidebar-attrs'
 }
 
 export enum EVENT {
