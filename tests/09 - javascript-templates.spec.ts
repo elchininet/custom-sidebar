@@ -485,3 +485,49 @@ test('reactive variables in js_variables should be converted properly', async ({
     await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom String');
 
 });
+
+test('an item with a JavaScript template in the attributes property should modify its attributes when the template is reevaluated', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            order: [
+                {
+                    item: 'settings',
+                    attributes: `[[[
+                        if (is_state('input_boolean.my_switch', 'on')) {
+                            return {
+                                'data-switch-on': true
+                            };
+                        }
+                        return {
+                            'data-switch-off': true
+                        };
+                    ]]]`
+                }
+            ]
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveAttribute('data-switch-on');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-switch-off', 'true');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-custom-sidebar-attrs', 'data-switch-off');
+
+    await haSwitchStateRequest(page, true);
+
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-switch-on', 'true');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveAttribute('data-switch-off');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-custom-sidebar-attrs', 'data-switch-on');
+
+    await haSwitchStateRequest(page, false);
+
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveAttribute('data-switch-on');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-switch-off', 'true');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-custom-sidebar-attrs', 'data-switch-off');
+
+});

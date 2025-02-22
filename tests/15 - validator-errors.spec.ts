@@ -700,7 +700,19 @@ test.describe('order item property', () => {
                     }
                 ]
             },
-            error: `${ERROR_PREFIX} in history, the "attributes" parameter should be a string or an object`
+            error: `${ERROR_PREFIX} in history, the "attributes" parameter should be an object or a template string`
+        },
+        {
+            title: 'should throw an error if the attributes property is a string but not a JavaScript template',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        attributes: 'not valid'
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the "attributes" parameter as a string should be a JavaScript template`
         },
         {
             title: 'should throw an error if the attributes property contains a property which is not a string, a number or a boolean',
@@ -1038,7 +1050,7 @@ test.describe('exceptions', () => {
                     }
                 ]
             },
-            error: `${ERROR_PREFIX} in history, the "attributes" parameter should be a string or an object`
+            error: `${ERROR_PREFIX} in history, the "attributes" parameter should be an object or a template string`
         },
         {
             title: 'should throw an error if the attributes property contains a property which is not a string, a number or a boolean',

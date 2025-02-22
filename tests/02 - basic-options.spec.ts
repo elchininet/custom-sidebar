@@ -295,7 +295,7 @@ test.beforeAll(async ({ browser }) => {
 
 });
 
-test('should apply attributes to an item', async ({ page }) => {
+test('should apply attributes as an object to an item', async ({ page }) => {
 
     await fulfillJson(
         page,
@@ -319,24 +319,24 @@ test('should apply attributes to an item', async ({ page }) => {
 
     await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-yes', 'yes');
     await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-no', 'no');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-custom-sidebar-attrs', 'data-yes|data-no');
 
 });
 
-test('should apply attributes to an item taking them from js_variables', async ({ page }) => {
+test('should apply attributes as a JavaScript template to an item', async ({ page }) => {
 
     await fulfillJson(
         page,
         {
-            js_variables: {
-                my_attrs: {
-                    'data-js-yes': 'yes',
-                    'data-js-no': 'no'
-                }
-            },
             order: [
                 {
                     item: 'settings',
-                    attributes: 'my_attrs'
+                    attributes: `[[[
+                        return {
+                            'data-js-yes': 'yes',
+                            'data-js-no': 'no'
+                        };
+                    ]]]`
                 }
             ]
         }
@@ -349,17 +349,16 @@ test('should apply attributes to an item taking them from js_variables', async (
 
     await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-js-yes', 'yes');
     await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-js-no', 'no');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-custom-sidebar-attrs', 'data-js-yes|data-js-no');
 
 });
 
-test('should throw a warning if the attributes property is not defined in js_variables', async ({ page }) => {
+test('should throw an error if the attributes property has a template that does not return an object', async ({ page }) => {
 
-    const warnings: string[] = [];
+    const errors: string[] = [];
 
-    page.on('console', message => {
-        if (message.type() === 'warning') {
-            warnings.push(message.text());
-        }
+    page.on('pageerror', error => {
+        errors.push(error.message);
     });
 
     await fulfillJson(
@@ -368,7 +367,9 @@ test('should throw a warning if the attributes property is not defined in js_var
             order: [
                 {
                     item: 'settings',
-                    attributes: 'my_attrs'
+                    attributes: `[[[
+                        return "non valid";
+                    ]]]`
                 }
             ]
         }
@@ -379,15 +380,15 @@ test('should throw a warning if the attributes property is not defined in js_var
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    expect(warnings).toEqual(
+    expect(errors).toEqual(
         expect.arrayContaining([
-            `${NAMESPACE}: The attribute "my_attrs" in the item "settings" has not been defined in js_variables`
+            `${NAMESPACE}: "attributes" template must always return an object`
         ])
     );
 
 });
 
-test('should throw a warning if the attributes property defined in js_variables is not an object', async ({ page }) => {
+test('should throw a warning if the attributes property has a template that returns an object with a non allowed property', async ({ page }) => {
 
     const warnings: string[] = [];
 
@@ -406,50 +407,14 @@ test('should throw a warning if the attributes property defined in js_variables 
             order: [
                 {
                     item: 'settings',
-                    attributes: 'my_attrs'
-                }
-            ]
-        }
-    );
-
-    await page.goto('/');
-
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-
-    expect(warnings).toEqual(
-        expect.arrayContaining([
-            `${NAMESPACE}: The attribute "my_attrs" defined in the item "settings" is not an object`
-        ])
-    );
-
-});
-
-test('should throw a warning if a property in the attributes property defined in js_variables is not a string, a boolean or a number', async ({ page }) => {
-
-    const warnings: string[] = [];
-
-    page.on('console', message => {
-        if (message.type() === 'warning') {
-            warnings.push(message.text());
-        }
-    });
-
-    await fulfillJson(
-        page,
-        {
-            js_variables: {
-                my_attrs: {
-                    'data-prop1': 'correct',
-                    'data-prop2': ['incorrect'],
-                    'data-prop3': 100,
-                    'data-prop4': true
-                }
-            },
-            order: [
-                {
-                    item: 'settings',
-                    attributes: 'my_attrs'
+                    attributes: `[[[
+                        return {
+                            'data-prop1': 'correct',
+                            'data-prop2': ['incorrect'],
+                            'data-prop3': 100,
+                            'data-prop4': true
+                        };
+                    ]]]`
                 }
             ]
         }
@@ -464,10 +429,11 @@ test('should throw a warning if a property in the attributes property defined in
     await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveAttribute('data-prop2');
     await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-prop3', '100');
     await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-prop4', 'true');
+    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-custom-sidebar-attrs', 'data-prop1|data-prop3|data-prop4');
 
     expect(warnings).toEqual(
         expect.arrayContaining([
-            `${NAMESPACE}: The prop "data-prop2" in the attribute "my_attrs" of the item "settings" is not a string, a boolean or a number, so it has been omitted`
+            `${NAMESPACE}: the property "data-prop2" in the attributes property of the item "settings" should be a string, a number or a boolean. This property will be omitted`
         ])
     );
 

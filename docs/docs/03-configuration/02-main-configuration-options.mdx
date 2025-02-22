@@ -60,7 +60,7 @@ These options are intended to change the functionality of the sidebar and to cha
 | href                      | String  | no        | Specifies the `href` of the sidebar item |
 | target                    | String  | no        | Specifies the [target property] of the sidebar item |
 | on_click                  | See below  | no     | Specifies the `onClick` property of the sidebar item. It allows two types of actions, service call actions or javascript actions. Take into account that setting this property will not prevent redirecting to an internal dashboard or an external URL if the `href` property is set. If you want to avoid navigating to a page, you should set the `href` option as `#` (in new items you can just omit it). Check the [Short Configuration Example](#short-configuration-example-1) below for an example of its usage |
-| attributes                | String or Object | no | If it is an object it defines a group of attributes that will be applied to the sidebar item. If it is a string, then it makes reference to an object defined in [js_variables](#advanced-configuration-options) |
+| attributes<sup>\*</sup>   | String or Object | no | Object that defines a group of attributes that will be applied to the sidebar item. The properties of this object must be strings, numbers or booleans |
 | divider                   | Boolean | no        | Adds a divider line below the item |
 | new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. If you use this property you need to provide an `icon` property and either a `href` or an `on_click` property |
 
