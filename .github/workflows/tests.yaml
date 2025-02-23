@@ -7,7 +7,7 @@ on:
     paths-ignore:
       - 'docs/**'
 
-  pull_request:
+  pull_request_target:
 
 jobs:
   changes:
@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: "${{ github.event.pull_request.merge_commit_sha }}"
       - name: Filter changes
         id: filter
         uses: dorny/paths-filter@v3
@@ -38,6 +40,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: "${{ github.event.pull_request.merge_commit_sha }}"
           fetch-depth: 0
       - name: Install pnpm
         uses: pnpm/action-setup@v3
@@ -80,6 +83,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: "${{ github.event.pull_request.merge_commit_sha }}"
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
