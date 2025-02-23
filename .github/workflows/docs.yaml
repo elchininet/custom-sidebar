@@ -40,7 +40,7 @@ jobs:
           path: docs/build/
 
   deploy-docs:
-    name: Deploy Docs to GitHub Pages
+    name: Deploy Docs
     needs: build-docs
 
     permissions:
