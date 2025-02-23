@@ -18,7 +18,7 @@ test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
 
-test('sidebar items should have a data-processed attribute after being processed', async ({ page }) => {
+test('sidebar items should have a data-processed attribute after being processed [TEST]', async ({ page }) => {
 
     await pageVisit(page);
 
