@@ -61,7 +61,7 @@ jobs:
   test-code:
     name: Test Code
     needs: changes
-    if: ${{ needs.changes.outputs.code == 'true' || !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) }}
+    if: ${{ needs.changes.outputs.code == 'true' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
