@@ -1,0 +1,31 @@
+---
+title: Create sidebar items sections using dividers
+slug: create-sidebar-items-sections-using-dividers
+authors: elchininet
+tags:
+    - sidebar
+    - home-assistant
+    - order-items-properties
+hide_table_of_contents: true
+---
+
+Sometimes, if we end with a sidebar with a large amount of items, it would be useful to visually separate them in groups taking into account their context. In this situation, the `divider` order-item property becomes a handy feature.
+
+{/* truncate */}
+
+import Example from '@site/blog/2025/_partials/2025-02-23-create-sidebar-items-sections-using-dividers/_example.mdx';
+
+## divider
+
+Setting this property in `true` will add a divider below the sidebar item. It will not add a new DOM element, but a pseudo element that will visually act as a divider with the items placed after it.
+
+#### Code example
+
+<Example />
+
+#### Code example result
+
+<figure>
+![Sidebar items sections using dividers](@site/blog/2025/_images/2025-02-23-create-sidebar-items-sections-using-dividers/sidebar-with-dividers.png)
+<figcaption>_Sidebar items sections using dividers_</figcaption>
+</figure>

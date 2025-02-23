@@ -1,0 +1,60 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    order:
+      - item: 'overview'
+        order: 1
+      - new_item: true
+        item: 'Lights'
+        icon: 'mdi:lightbulb-group'
+        href: 'lights/woonkamer'
+        order: 2
+      - item: 'energy'
+        order: 3
+        divider: true
+      - item: 'developer'
+        order: 4
+      - item: 'settings'
+        order: 5
+        divider: true
+        ...
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "order": [
+        {
+          "item": "overview",
+          "order": 1
+        },
+        {
+          "new_item": true,
+          "item": "Lights",
+          "icon": "mdi:lightbulb-group",
+          "href": "lights/woonkamer",
+          "order": 2
+        },
+        {
+          "item": "energy",
+          "order": 3,
+          "divider": true
+        },
+        {
+          "item": "developer",
+          "order": 4
+        },
+        {
+          "item": "settings",
+          "order": 5,
+          "divider": true
+        },
+        ...
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
