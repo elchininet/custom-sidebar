@@ -57,12 +57,20 @@ jobs:
         run: |
           cd docs
           pnpm build
-      - name: Coveralls
+      - name: Skip Coveralls
         if: ${{ needs.changes.outputs.code != 'true' }}
-        uses: coverallsapp/github-action@master
+        uses: LouisBrunner/checks-action@v2.0.0
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          allow-empty: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: coverage/coveralls
+          conclusion: skipped
+          output: |
+            {
+              "title": "",
+              "summary": "Skipped",
+              "text_description": ""
+            }
+      
 
   test-code:
     name: Test Code
