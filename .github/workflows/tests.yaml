@@ -7,12 +7,67 @@ on:
     paths-ignore:
       - 'docs/**'
 
-  pull_request_target:
-    paths-ignore:
-      - 'docs/**'
+  pull_request:
 
-jobs:      
-  test:
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-22.04
+    outputs:
+      docs: ${{ steps.filter.outputs.docs }}
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Filter changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            docs:
+              - 'docs/**'
+            code:
+              - '!docs/**'
+
+  test-docs:
+    name: Test Docs
+    needs: changes
+    if: ${{ needs.changes.outputs.docs == 'true' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          run_install: false
+      - name: Set-up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: |
+          cd docs
+          pnpm install
+      - name: Build Docs
+        run: |
+          cd docs
+          pnpm build
+      - name: Coveralls
+        if: ${{ needs.changes.outputs.code != 'true' }}
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          allow-empty: true
+
+  test-code:
+    name: Test Code
+    needs: changes
+    if: ${{ needs.changes.outputs.code == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
