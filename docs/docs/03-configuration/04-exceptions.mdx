@@ -13,8 +13,8 @@ In an exception you can define all the configuration options (excluding the [Adv
 
 | Options             | Type              | Required | Description |
 | ------------------- | ----------------- | -------- | ----------- |
-| user       | String or String[] | no          | Home Assistant user name(s) you would like to display this order for. This option can be set alone or combined with `device`, `not_device`, `is_admin`, or `is_owner` |
-| not_user   | String or String[] | no          | Home Assistant user name(s) you wouldn't like to display this order for. This option can be set alone or combined with `device`, `not_device`, `is_admin`, or `is_owner` |
+| user       | String or String[] | no          | Name of the user(s) you would like to display this order for. This option can be set alone or combined with `device`, `not_device`, `is_admin`, or `is_owner` |
+| not_user   | String or String[] | no          | Name of the user(s) you would not like to display this order for. This option can be set alone or combined with `device`, `not_device`, `is_admin`, or `is_owner` |
 | device     | String or String[] | no          | Device(s) you would like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]). This option can be set alone or combined with `user`, `not_user`, `is_admin`, or `is_owner` |
 | not_device | String or String[] | no          | Device(s) you wouldn't like to display this order for. E.g. ipad, iphone, macintosh, windows, android (it uses the device's [user-agent]). This option can be set alone or combined with `user`, `not_user` `is_admin`, or `is_owner` |
 | is_admin   | Boolean            | no          | Checks if the user is admin or not. This option can be set alone or combined with `user`, `not_user`, `device`, `not_device`, or `is_owner` |
@@ -28,6 +28,7 @@ In an exception you can define all the configuration options (excluding the [Adv
 
 :::warning[Important]
 
+* Take into account that `user` and `not_user` make reference to the name of the user(s) not the usernames.
 * If multiple exeptions match, their options will be merged from top to bottom and if multiple configurations have an `order` property, it will be merged too. Check the [Extendable Configurations section](../advanced-configuration-options/extendable-configurations) for more info about how two configurations are merged.
 * If `matchers_conditions` is "OR" (default value), only one match from the matchers is needed for the exception to be picked. But if this option is "AND" then all of the matcher must match for the exception to be picked, in this case if any matcher does't match, then the exception will be discarded.
 * You cannot use `user` and `not_user` at the same time, doing so will end in an error
