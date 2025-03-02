@@ -1,0 +1,26 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    default_path: '/generic-dashboard'
+    exceptions:
+      - is_admin: true
+        default_path: '/lovelace'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "default_path": "/generic-dashboard",
+      "exceptions": [
+        {
+          "is_admin": true,
+          "default_path": "/lovelace"
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
