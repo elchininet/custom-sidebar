@@ -577,7 +577,7 @@ test('should execute a call-service action changing the URL', async ({ page }) =
 
 });
 
-test('@testing should execute a call-service action compiling the data using JavaScript templates', async ({ page }) => {
+test('should execute a call-service action compiling the data using JavaScript templates', async ({ page }) => {
 
     await fulfillJson(
         page,
@@ -805,6 +805,47 @@ test('should execute a javascript action using partials', async ({ page }) => {
 
     expect(logs).toEqual(
         expect.arrayContaining(['JavaScript code from partial executed'])
+    );
+
+});
+
+test('should execute a javascript action having the clicked item and the dataPanel as variables', async ({ page }) => {
+
+    const logs: string[] = [];
+
+    page.on('console', message => {
+        logs.push(message.text());
+    });
+
+    await fulfillJson(
+        page,
+        {
+            order: [
+                {
+                    new_item: true,
+                    item: 'Check',
+                    icon: 'mdi:bullseye-arrow',
+                    href: '/config/integrations',
+                    on_click: {
+                        action: 'javascript',
+                        code: `
+                            console.log('Clicked item is ' + item.item + ' and data-panel is ' + dataPanel);
+                        `
+                    }
+                }
+            ]
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await page.locator(getSidebarItemSelector('check')).click();
+
+    expect(logs).toEqual(
+        expect.arrayContaining(['Clicked item is Check and data-panel is check'])
     );
 
 });

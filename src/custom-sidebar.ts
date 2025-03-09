@@ -18,7 +18,6 @@ import {
     ConfigNewItem,
     ConfigOrder,
     ConfigOrderWithItem,
-    OnClickAction,
     ActionType,
     PartialPanelResolver,
     Sidebar,
@@ -1030,7 +1029,7 @@ class CustomSidebar {
                     });
 
                     if (orderItem.on_click) {
-                        orderItem.element.addEventListener(EVENT.CLICK, this._mouseClick.bind(this, orderItem.on_click), true);
+                        orderItem.element.addEventListener(EVENT.CLICK, this._mouseClick.bind(this, orderItem), true);
                     }
 
                     orderIndex++;
@@ -1086,7 +1085,8 @@ class CustomSidebar {
             });
     }
 
-    private async _mouseClick(onClickAction: OnClickAction, event: MouseEvent): Promise<void> {
+    private async _mouseClick(item: ConfigOrderWithItem, event: MouseEvent): Promise<void> {
+        const { on_click: onClickAction } = item;
         const anchor = event.currentTarget as HTMLAnchorElement;
         const hasHashBangAsHref = anchor.getAttribute(ATTRIBUTE.HREF) === '#';
         const dataPanel = anchor.getAttribute(ATTRIBUTE.PANEL);
@@ -1103,7 +1103,11 @@ class CustomSidebar {
                 getTemplateWithPartials(
                     finalCode,
                     this._config.partials
-                )
+                ),
+                {
+                    item,
+                    dataPanel
+                }
             );
         };
 
