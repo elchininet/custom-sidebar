@@ -577,6 +577,64 @@ test('should execute a call-service action changing the URL', async ({ page }) =
 
 });
 
+test('@testing should execute a call-service action compiling the data using JavaScript templates', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            js_variables: {
+                domain: 'input_boolean',
+                entity: 'my_switch'
+            },
+            partials: {
+                my_switch: `
+                    const mySwitch = domain + '.' + entity;
+                `
+            },
+            title: `
+                if (is_state('input_boolean.my_switch', 'on')) {
+                    return 'Custom Title';
+                }
+                return 'Home Assistant';
+            `,
+            order: [
+                {
+                    new_item: true,
+                    item: 'Check',
+                    icon: 'mdi:bullseye-arrow',
+                    href: '/config/integrations',
+                    on_click: {
+                        action: 'call-service',
+                        service: 'input_boolean.toggle',
+                        data: {
+                            entity_id: `[[[
+                                @partial my_switch
+                                return mySwitch;
+                            ]]]`
+                        }
+                    }
+                }
+            ]
+        }
+    );
+
+    await page.goto('/');
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+
+    await page.locator(getSidebarItemSelector('check')).click();
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom Title');
+
+    await page.locator(getSidebarItemSelector('check')).click();
+
+    await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+
+});
+
 test('should throw a warning if a call-service action has a malformed service', async ({ page }) => {
 
     const warnings: string[] = [];
