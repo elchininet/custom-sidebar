@@ -1094,15 +1094,40 @@ class CustomSidebar {
             event.preventDefault();
             event.stopImmediatePropagation();
         }
+
+        const renderTemplate = (code: string): string => {
+            const finalCode = code.includes('return')
+                ? code
+                : `${code}\n;return;`;
+            return this._renderer.renderTemplate(
+                getTemplateWithPartials(
+                    finalCode,
+                    this._config.partials
+                )
+            );
+        };
+
         switch(onClickAction.action) {
             case ActionType.CALL_SERVICE: {
                 const { service, data = {} } = onClickAction;
                 const matches = service.match(DOMAIN_ENTITY_REGEXP);
+                const compiledDataEntries = Object.entries(data).map(([key, value]) => {
+                    const stringValue = `${value}`;
+                    if (JS_TEMPLATE_REG.test(stringValue)) {
+                        return [
+                            key,
+                            renderTemplate(
+                                stringValue.replace(JS_TEMPLATE_REG, '$1')
+                            )
+                        ];
+                    }
+                    return [key, value];
+                });
                 if (matches?.length === 3) {
                     this._ha.hass.callService(
                         matches[1],
                         matches[2],
-                        data
+                        Object.fromEntries(compiledDataEntries)
                     );
                 } else {
                     console.warn(`${NAMESPACE} ignoring "${ActionType.CALL_SERVICE}" action in "${dataPanel}" item. The service parameter is malfomed.`);
@@ -1111,15 +1136,7 @@ class CustomSidebar {
             }
             case ActionType.JAVASCRIPT: {
                 const { code } = onClickAction;
-                const finalCode = code.includes('return')
-                    ? code
-                    : `${code}\n;return;`;
-                this._renderer.renderTemplate(
-                    getTemplateWithPartials(
-                        finalCode,
-                        this._config.partials
-                    )
-                );
+                renderTemplate(code);
                 break;
             }
         }
