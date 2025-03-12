@@ -288,6 +288,35 @@ test('if the hide property is a template, item should get hidden when the templa
                 ]]]
             `
         }
+    },
+    {
+        title: 'it should render templates that are only a partial',
+        json: {
+            partials: {
+                my_switch: `
+                    const my_switch = 'input_boolean.my_switch';
+                `,
+                my_booleans: `
+                    @partial my_switch
+                    const on = true;
+                    const off = false;
+                `,
+                my_partial: `
+                    @partial my_booleans
+                    const variable = 123;
+                `,
+                title: `
+                    [[[
+                        @partial my_partial
+                        if (is_state(my_switch, "on")) {
+                            return on.toString() + " " + variable
+                        }
+                        return off.toString() + " " + variable
+                    ]]]
+                `
+            },
+            title: '@partial title'
+        }
     }
 ].forEach(({ title, json }) => {
 

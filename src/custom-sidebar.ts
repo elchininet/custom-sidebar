@@ -483,19 +483,25 @@ class CustomSidebar {
         });
     }
 
-    private _subscribeTemplate(template: string, callback: (rendered: string) => void): void {
-        if (JS_TEMPLATE_REG.test(template)) {
+    private _subscribeTemplate(template: string | number | boolean, callback: (rendered: string) => void): void {
+
+        const templateWithPartials = getTemplateWithPartials(
+            `${template}`,
+            this._config.partials
+        );
+
+        if (JS_TEMPLATE_REG.test(templateWithPartials)) {
             this._createJsTemplateSubscription(
-                template.replace(JS_TEMPLATE_REG, '$1'),
+                templateWithPartials.replace(JS_TEMPLATE_REG, '$1'),
                 callback
             );
-        } else if (JINJA_TEMPLATE_REG.test(template)) {
+        } else if (JINJA_TEMPLATE_REG.test(templateWithPartials)) {
             this._createJinjaTemplateSubscription(
-                template,
+                templateWithPartials,
                 callback
             );
         } else {
-            this._getTemplateString(template)
+            this._getTemplateString(templateWithPartials)
                 .then((result: string) => {
                     callback(result);
                 });
@@ -507,10 +513,7 @@ class CustomSidebar {
         callback: (result: string) => void
     ): void {
         this._renderer.trackTemplate(
-            getTemplateWithPartials(
-                template,
-                this._config.partials
-            ),
+            template,
             (result: unknown): void => {
                 this._getTemplateString(result)
                     .then((templateResult: string) => {
@@ -532,10 +535,7 @@ class CustomSidebar {
                 },
                 {
                     type: EVENT.RENDER_TEMPLATE,
-                    template: getTemplateWithPartials(
-                        template,
-                        this._config.partials
-                    ),
+                    template,
                     variables: {
                         user_name: this._ha.hass.user.name,
                         user_is_admin: this._ha.hass.user.is_admin,
@@ -1100,10 +1100,7 @@ class CustomSidebar {
                 ? code
                 : `${code}\n;return;`;
             return this._renderer.renderTemplate(
-                getTemplateWithPartials(
-                    finalCode,
-                    this._config.partials
-                ),
+                finalCode,
                 {
                     item,
                     dataPanel
@@ -1116,7 +1113,10 @@ class CustomSidebar {
                 const { service, data = {} } = onClickAction;
                 const matches = service.match(DOMAIN_ENTITY_REGEXP);
                 const compiledDataEntries = Object.entries(data).map(([key, value]) => {
-                    const stringValue = `${value}`;
+                    const stringValue = getTemplateWithPartials(
+                        `${value}`,
+                        this._config.partials
+                    );
                     if (JS_TEMPLATE_REG.test(stringValue)) {
                         return [
                             key,
@@ -1140,7 +1140,12 @@ class CustomSidebar {
             }
             case ActionType.JAVASCRIPT: {
                 const { code } = onClickAction;
-                renderTemplate(code);
+                renderTemplate(
+                    getTemplateWithPartials(
+                        code,
+                        this._config.partials
+                    )
+                );
                 break;
             }
         }
