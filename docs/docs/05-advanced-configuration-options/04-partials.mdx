@@ -7,7 +7,9 @@ import PartialsWithJinjaTemplatesExample from '@site/docs/_partials/05-advanced-
 
 # Partials
 
-Partials are fragments of code that can be included in your templates. They can be inserted in [JavaScript](../templates/javascript-templates), [Jinja](../templates/jinja-templates) templates or inside another partial. Any entity used in them will make the template in which the partial is inserted to be reevaluated when the entity changes its state, so it is not recommended to use a bloated partial using multiple entities that have no context with each other because that will provoke that the templates in which that partial is used gets reevaluated when any of the entities used in it change.
+Partials are fragments of code that can be included in your templates. When a `@partial something` instruction is parsed, it will get the content of the partial named `something` and it will replace altogether the `@partial something` instruction by this content.
+
+Partials can be inserted in [JavaScript](../templates/javascript-templates), [Jinja](../templates/jinja-templates) templates or inside another partial. Any entity used in them will make the template in which the partial is inserted to be reevaluated when the entity changes its state, so it is not recommended to use a bloated partial using multiple entities that have no context with each other because that will provoke that the templates in which that partial is used gets reevaluated when any of the entities used in it change.
 
 :::tip
 
