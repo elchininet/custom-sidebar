@@ -46,17 +46,19 @@ export const FUNCTIONALITY = {
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap'
     },
-    [`{ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }`]: {
         opacity: '0'
     },
     [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
         zIndex: '1'
     },
     [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED })`]: {
+        ...NOTIFICATION_COLOR_NOTIFICATION_TEXT_COLOR
+    },
+    [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM }:not(${ SELECTOR.SIDEBAR_NOTIFICATIONS }) > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED })`]: {
         left: 'calc(var(--app-drawer-width, 248px) - 22px)',
         maxWidth: '80px',
-        transform: 'translateX(-100%)',
-        ...NOTIFICATION_COLOR_NOTIFICATION_TEXT_COLOR
+        transform: 'translateX(-100%)'
     },
     [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }`]: {
         bottom: '14px',
