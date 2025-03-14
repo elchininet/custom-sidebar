@@ -61,10 +61,13 @@ export const FUNCTIONALITY = {
         transform: 'translateX(-100%)'
     },
     [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }`]: {
+        ...NOTIFICATION_COLOR_NOTIFICATION_TEXT_COLOR,
+        display: 'flex',
         bottom: '14px',
+        justifyContent: 'center',
         left: '26px',
         maxWidth: '20px',
-        ...NOTIFICATION_COLOR_NOTIFICATION_TEXT_COLOR
+        textOverflow: 'unset'
     },
     [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.CONFIGURATION_BADGE }`]: {
         ...NOTIFICATION_COLOR_NOTIFICATION_TEXT_COLOR
