@@ -12,6 +12,7 @@ export const CONFIG_NAME = 'sidebar-config';
 export const CONFIG_PATH = `${LOCAL_PATH}${CONFIG_NAME}`;
 export const FLUSH_PROMISE_DELAY = 1;
 export const BASE_NAME = 'base';
+export const DEBUG_URL_PARAMETER = 'cs_debug';
 
 export enum TYPE {
     BOOLEAN = 'boolean',

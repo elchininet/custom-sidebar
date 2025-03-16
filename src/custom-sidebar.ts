@@ -51,7 +51,8 @@ import {
     MAX_ATTEMPTS,
     RETRY_DELAY,
     DOMAIN_ENTITY_REGEXP,
-    REF_VARIABLE_REGEXP
+    REF_VARIABLE_REGEXP,
+    DEBUG_URL_PARAMETER
 } from '@constants';
 import {
     logVersionToConsole,
@@ -64,18 +65,34 @@ import { fetchConfig } from '@fetchers/json';
 
 class CustomSidebar {
 
-    constructor() {
+    constructor(enableDebug: boolean) {
+
+        this._debug = enableDebug;
 
         const selector = new HAQuerySelector();
 
         selector.addEventListener(
             HAQuerySelectorEvent.ON_LISTEN,
             (event: CustomEvent<OnListenDetail>) => {
+
                 this._homeAssistant = event.detail.HOME_ASSISTANT;
                 this._main = event.detail.HOME_ASSISTANT_MAIN;
                 this._haDrawer = event.detail.HA_DRAWER;
                 this._sidebar = event.detail.HA_SIDEBAR;
                 this._partialPanelResolver = event.detail.PARTIAL_PANEL_RESOLVER;
+
+                this._debugLog(
+                    'HAQuerySelector init executed',
+                    {
+                        HOME_ASSISTANT: this._homeAssistant,
+                        HOME_ASSISTANT_MAIN: this._main,
+                        HA_DRAWER: this._haDrawer,
+                        HA_SIDEBAR: this._sidebar,
+                        PARTIAL_PANEL_RESOLVER: this._partialPanelResolver
+                    },
+                    false
+                );
+
             },
             {
                 once: true
@@ -95,6 +112,8 @@ class CustomSidebar {
             throwWarnings: false
         });
 
+        this._debugLog('Starting the plugin...');
+
         this._items = [];
         this._sidebarScroll = 0;
         this._isSidebarEditable = undefined;
@@ -105,6 +124,7 @@ class CustomSidebar {
         this._process();
     }
 
+    private _debug: boolean;
     private _configPromise: Promise<Config>;
     private _config: Config;
     private _homeAssistant: HAElement;
@@ -122,9 +142,36 @@ class CustomSidebar {
     private _mouseEnterBinded: (event: MouseEvent) => void;
     private _mouseLeaveBinded: () => void;
 
+    private _debugLog(
+        topic: string,
+        metadata?: unknown,
+        stringify = true
+    ): void {
+        if (this._debug) {
+            const topicMessage = `${NAMESPACE} debug: ${topic}`;
+            if (metadata) {
+                console.groupCollapsed(topicMessage);
+                console.log(
+                    stringify
+                        ? JSON.stringify(metadata, null, 4)
+                        : metadata
+                );
+                console.groupEnd();
+            } else {
+                console.log(topicMessage);
+            }
+        }
+    }
+
     private async _getConfig(): Promise<void> {
+
+        this._debugLog('Getting the config...');
+
         this._config = await this._configPromise
             .then((config: Config) => {
+
+                this._debugLog('Raw config', config);
+
                 return getConfig(
                     this._ha.hass.user,
                     navigator.userAgent.toLowerCase(),
@@ -1222,12 +1269,22 @@ class CustomSidebar {
             .element
             .then((ha: HomeAsssistantExtended) => {
                 this._ha = ha;
+
+                this._debugLog('Instantiating HomeAssistantJavaScriptTemplates...');
+
                 new HomeAssistantJavaScriptTemplates(this._ha)
                     .getRenderer()
                     .then((renderer) => {
+
+                        this._debugLog('HomeAssistantJavaScriptTemplates instantiated');
+
                         this._renderer = renderer;
                         this._getConfig()
                             .then(() => {
+
+                                this._debugLog('Compiled config', this._config);
+                                this._debugLog('Executing plugin logic...');
+
                                 this._renderer.variables = this._parseJavaScriptVariables();
                                 this._processDefaultPath();
                                 this._processSidebar();
@@ -1243,5 +1300,7 @@ class CustomSidebar {
 
 if (!window.CustomSidebar) {
     logVersionToConsole();
-    window.CustomSidebar = new CustomSidebar();
+    const params = new URLSearchParams(window.location.search);
+    const enableDebug = params.has(DEBUG_URL_PARAMETER);
+    window.CustomSidebar = new CustomSidebar(enableDebug);
 }
