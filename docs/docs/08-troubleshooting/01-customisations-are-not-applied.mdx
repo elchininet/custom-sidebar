@@ -18,6 +18,7 @@ If the customisations are applied correctly in a browser but not in the Companio
 3. Check that you have added the [extra_module_url] in the `frontend` entry on your configuration and using the provided paths.
 4. Check that you have placed your `sidebar-config.yaml` or `sidebar-config.json` (depending on the configuration format that you have chosen) inside the `<config directory>/www/` directory.
 5. Try with a very simple configuration (like a title change) without exceptions or advanced options. If the customisation is applied, then start to add one by one pieces of block until you reach to the one that is provoking the issue.
+6. If you cannot solve your issue, open the Developer tools of your browser, add the parameter `cs_debug` to the URL and reload your Home Assistant instance (e.g. `http:your-home-assistant-domain:8123?cs_debug`). You will see different messages in the console. Check if the raw config is loaded correctly and if the compiled config contains all the elements that you need. If you are not able to interpret the debug log messages, [open an issue](https://github.com/elchininet/custom-sidebar/issues) in the repo providing the content of these logs.
 
 :::warning[Important]
 
