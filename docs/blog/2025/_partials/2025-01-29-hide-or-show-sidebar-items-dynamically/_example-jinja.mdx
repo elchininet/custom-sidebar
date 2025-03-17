@@ -7,14 +7,20 @@ import TabItem from '@theme/TabItem';
     jinja_variables:
       admin_boolean: 'input_boolean.show_admin_sidebar_items'
     partials:
-      admin_active: '{{ is_state(admin_boolean, "on") }}'
+      admin_active: '{% set admin_active = is_state(admin_boolean, "on") %}'
     order:
       - item: developer tools
-        hide: '{{ @partial admin_active }}'
+        hide: |
+          @partial admin_active
+          {{ admin_active }}
       - item: studio code server
-        hide: '{{ @partial admin_active }}'
+        hide: |
+          @partial admin_active
+          {{ admin_active }}
       - item: settings
-        hide: '{{ @partial admin_active }}'
+        hide: |
+          @partial admin_active
+          {{ admin_active }}
     ```
   </TabItem>
   <TabItem value="json" label="JSON">
@@ -24,20 +30,20 @@ import TabItem from '@theme/TabItem';
         "admin_boolean": "input_boolean.show_admin_sidebar_items"
       },
       "partials": {
-        "admin_active": "{{ is_state(admin_boolean, 'on') }}"
+        "admin_active": "{% set admin_active = is_state(admin_boolean, 'on') %}"
       },
       "order": [
         {
           "item": "developer tools",
-          "hide": "{{ @partial admin_active }}"
+          "hide": "@partial admin_active {{ admin_active }}"
         },
         {
           "item": "studio code server",
-          "hide": "{{ @partial admin_active }}"
+          "hide": "@partial admin_active {{ admin_active }}"
         },
         {
           "item": "settings",
-          "hide": "{{ @partial admin_active }}"
+          "hide": "@partial admin_active {{ admin_active }}"
         }
       ]
     }
