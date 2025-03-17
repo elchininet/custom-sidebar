@@ -103,7 +103,6 @@ const config: Config = {
             indexName: 'elchininetio',
             contextualSearch: true,
             placeholder: 'Search'
-
         },
         metadata: [
             {
