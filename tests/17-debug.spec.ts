@@ -40,7 +40,7 @@ test('Debug messages shoud not be logged', async ({ page }) => {
 
 });
 
-test('@testing Debug messages shoud be logged', async ({ page }) => {
+test('Debug messages shoud be logged', async ({ page }) => {
 
     const logs: string[] = [];
 
