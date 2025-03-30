@@ -154,6 +154,7 @@ export interface BaseConfig extends SidebarColorConfig {
     default_path?: string;
     styles?: string;
     extend_from?: string | string[];
+    analytics?: boolean;
 }
 
 export interface ConfigExceptionBase extends BaseConfig {
