@@ -32,6 +32,8 @@ export const SELECTORS = {
     TOOLTIP: '.tooltip',
     HA_ICON: 'ha-icon',
     PANEL_CONFIG: 'ha-panel-config',
+    ENTRY_CONTAINER: '.entry-container',
+    HA_LOGBOOK: 'ha-logbook',
     SIDEBAR_ITEMS,
     SIDEBAR_PAPER_ICON_ITEMS
 };

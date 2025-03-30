@@ -849,6 +849,42 @@ class CustomSidebar {
                 }
             }, true);
 
+            // If analytics is enabled
+            if (this._config.analytics) {
+
+                const entities = Object.entries(this._ha.hass.entities);
+                const personEntityEntry = entities.filter(([, entityData]) => {
+                    return entityData.name === this._ha.hass.user.name;
+                });
+
+                const personEntity = personEntityEntry[0][0];
+
+                sideBarShadowRoot.addEventListener(EVENT.CLICK, (event: MouseEvent) => {
+
+                    const clickedElement = event.target as HTMLElement;
+                    const itemClicked = clickedElement.closest(`${ SELECTOR.ITEM }, ${ELEMENT.PAPER_ICON_ITEM}${SELECTOR.SIDEBAR_NOTIFICATIONS}`);
+
+                    if (itemClicked) {
+
+                        const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText;
+
+                        this._ha.hass.callService(
+                            'logbook',
+                            'log',
+                            {
+                                name: NAMESPACE,
+                                message: `clicked on ${itemText}`,
+                                domain: 'person',
+                                entity_id: personEntity
+                            }
+                        );
+
+                    }
+
+                });
+
+            }
+
             this._styleManager.addStyle(
                 STYLES.SIDEBAR_BORDER_COLOR,
                 mcDrawer
@@ -1139,7 +1175,6 @@ class CustomSidebar {
         const dataPanel = anchor.getAttribute(ATTRIBUTE.PANEL);
         if (hasHashBangAsHref) {
             event.preventDefault();
-            event.stopImmediatePropagation();
         }
 
         const renderTemplate = (code: string): string => {
