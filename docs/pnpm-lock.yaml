@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  image-size@<1.2.1: ^1.2.1
   prismjs@<1.30.0: '>=1.30.0'
   '@babel/runtime-corejs3@<7.26.10': '>=7.26.10'
   '@babel/runtime@<7.26.10': '>=7.26.10'
@@ -2792,8 +2793,8 @@ packages:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
 
-  image-size@1.2.0:
-    resolution: {integrity: sha512-4S8fwbO6w3GeCVN6OPtA9I5IGKkcDMPcKndtUlpJuCwu7JLjtj7JZpwqLuyY2nrmQT3AWsCJLSKPsc2mPBSl3w==}
+  image-size@1.2.1:
+    resolution: {integrity: sha512-rH+46sQJ2dlwfjfhCyNx5thzrv+dtmBIhPHk0zgRUukHzZ/kRueTJXoYYsclBaKcSMBWuGbOFXtioLpzTb5euw==}
     engines: {node: '>=16.x'}
     hasBin: true
 
@@ -6249,7 +6250,7 @@ snapshots:
       estree-util-value-to-estree: 3.2.1
       file-loader: 6.2.0(webpack@5.97.1)
       fs-extra: 11.3.0
-      image-size: 1.2.0
+      image-size: 1.2.1
       mdast-util-mdx: 3.0.0
       mdast-util-to-string: 4.0.0
       react: 19.0.0
@@ -8795,7 +8796,7 @@ snapshots:
 
   ignore@5.3.2: {}
 
-  image-size@1.2.0:
+  image-size@1.2.1:
     dependencies:
       queue: 6.0.2
 
