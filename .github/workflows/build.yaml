@@ -29,7 +29,7 @@ jobs:
         run: pnpm coverage:report
       - name: Build Changelog
         id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@v3
+        uses: mikepenz/release-changelog-builder-action@v5
         with:
           configurationJson: |
             {
