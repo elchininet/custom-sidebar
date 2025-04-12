@@ -7,11 +7,11 @@ import {
 } from '@types';
 import {
     BASE_NAME,
-    TYPE,
     ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
     ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS
 } from '@constants';
 import { getLowercaseArray, getArray } from './misc';
+import { isUndefined } from './predicates';
 
 const ITEM_TEMPLATE_OPTIONS = [
     ...ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
@@ -246,13 +246,13 @@ class ConfigFlatter {
                     : -1;
             }
             if (
-                typeof orderItemA.order === TYPE.UNDEFINED ||
-                typeof orderItemB.order === TYPE.UNDEFINED
+                isUndefined(orderItemA.order) ||
+                isUndefined(orderItemB.order)
             ) {
                 if (orderItemA.order === orderItemB.order) {
                     return 0;
                 }
-                return typeof orderItemA.order === TYPE.UNDEFINED
+                return isUndefined(orderItemA.order)
                     ? 1
                     : -1;
             }
