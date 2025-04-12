@@ -542,6 +542,26 @@ test.describe('main options', () => {
                 }
             },
             error: `${ERROR_PREFIX}, circular extend dependency detected in "colorful > admins > test > admins"`
+        },
+        {
+            title: 'should throw an error if analytics object is not a boolean or an object',
+            json: {
+                analytics: [
+                    'sidebar_item_clicked',
+                    'panel_visited'
+                ]
+            },
+            error: `${ERROR_PREFIX}, "analytics" should be a boolean or an object`
+        },
+        {
+            title: 'should throw an error if one of the properties inside analytics is not a boolean',
+            json: {
+                analytics: {
+                    sidebar_item_clicked: true,
+                    panel_visited: 1
+                }
+            },
+            error: `${ERROR_PREFIX}, "analytics" "panel_visited" property should be a boolean`
         }
     ]);
 
@@ -1172,6 +1192,36 @@ test.describe('exceptions', () => {
                 ]
             },
             error: `${ERROR_PREFIX}, exceptions "matchers_conditions" property should be "AND" or "OR"`
+        },
+        {
+            title: 'should throw an error if analytics object is not a boolean or an object',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        analytics: [
+                            'sidebar_item_clicked',
+                            'panel_visited'
+                        ]
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, error in exception: "analytics" should be a boolean or an object`
+        },
+        {
+            title: 'should throw an error if one of the properties inside analytics is not a boolean',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        analytics: {
+                            sidebar_item_clicked: true,
+                            panel_visited: 1
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, error in exception: "analytics" "panel_visited" property should be a boolean`
         }
     ]);
 
