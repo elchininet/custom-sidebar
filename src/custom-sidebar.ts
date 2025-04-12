@@ -19,6 +19,7 @@ import {
     ConfigOrder,
     ConfigOrderWithItem,
     ActionType,
+    AnalyticsConfig,
     PartialPanelResolver,
     Sidebar,
     SidebarMode,
@@ -49,6 +50,7 @@ import {
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
     MAX_ATTEMPTS,
     RETRY_DELAY,
+    LOGBOOK_DELAY,
     DOMAIN_ENTITY_REGEXP,
     REF_VARIABLE_REGEXP,
     DEBUG_URL_PARAMETER
@@ -121,6 +123,7 @@ class CustomSidebar {
         this._debugLog('Starting the plugin...');
 
         this._items = [];
+        this._logBookMessagesMap = new Map<string, number>();
         this._sidebarScroll = 0;
         this._isSidebarEditable = undefined;
         this._itemTouchedBinded = this._itemTouched.bind(this);
@@ -144,6 +147,8 @@ class CustomSidebar {
     private _renderer: HomeAssistantJavaScriptTemplatesRenderer;
     private _styleManager: HomeAssistantStylesManager;
     private _items: HTMLAnchorElement[];
+    private _userEntity: string;
+    private _logBookMessagesMap: Map<string, number>;
     private _itemTouchedBinded: () => Promise<void>;
     private _mouseEnterBinded: (event: MouseEvent) => void;
     private _mouseLeaveBinded: () => void;
@@ -727,6 +732,50 @@ class CustomSidebar {
         return null;
     }
 
+    private _isAnalyticsOptionEnabled(option: keyof AnalyticsConfig): boolean {
+        return this._config.analytics &&
+        (
+            this._config.analytics === true ||
+            this._config.analytics[option]
+        );
+    }
+
+    private _getUserEntity(): void {
+        const entities = Object.entries(this._ha.hass.entities);
+        const personEntityEntry = entities.filter(
+            ([, entityData]) => entityData.name === this._ha.hass.user.name
+        );
+        this._userEntity = personEntityEntry[0][0];
+    }
+
+    private _logBookLog(message: string): void {
+
+        window.clearTimeout(
+            this._logBookMessagesMap.get(message)
+        );
+
+        this._logBookMessagesMap.set(
+            message,
+            window.setTimeout(() => {
+
+                this._ha.hass.callService(
+                    'logbook',
+                    'log',
+                    {
+                        name: NAMESPACE,
+                        message,
+                        domain: 'person',
+                        entity_id: this._userEntity
+                    }
+                );
+
+                this._logBookMessagesMap.delete(message);
+
+            }, LOGBOOK_DELAY)
+        );
+
+    }
+
     private _processDefaultPath() {
 
         const pathname = this._config.default_path;
@@ -854,15 +903,8 @@ class CustomSidebar {
                 }
             }, true);
 
-            // If analytics is enabled
-            if (this._config.analytics) {
-
-                const entities = Object.entries(this._ha.hass.entities);
-                const personEntityEntry = entities.filter(([, entityData]) => {
-                    return entityData.name === this._ha.hass.user.name;
-                });
-
-                const personEntity = personEntityEntry[0][0];
+            // If analytics is enabled log sidebar clicks
+            if (this._isAnalyticsOptionEnabled('sidebar_item_clicked')) {
 
                 sideBarShadowRoot.addEventListener(EVENT.CLICK, (event: MouseEvent) => {
 
@@ -870,20 +912,8 @@ class CustomSidebar {
                     const itemClicked = clickedElement.closest(`${ SELECTOR.ITEM }, ${ELEMENT.PAPER_ICON_ITEM}${SELECTOR.SIDEBAR_NOTIFICATIONS}`);
 
                     if (itemClicked) {
-
                         const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText;
-
-                        this._ha.hass.callService(
-                            'logbook',
-                            'log',
-                            {
-                                name: NAMESPACE,
-                                message: `clicked on ${itemText}`,
-                                domain: 'person',
-                                entity_id: personEntity
-                            }
-                        );
-
+                        this._logBookLog(`sidebar_item_clicked: ${itemText}`);
                     }
 
                 });
@@ -1301,6 +1331,19 @@ class CustomSidebar {
 
         this._checkProfileEditableButton();
 
+        // If the config is not loaded yet, wait for it
+        if (!this._config) {
+            await getPromisableResult(
+                () => this._config,
+                (config: Config) => !!config
+            );
+        }
+
+        // If analytics is enabled log landings
+        if (this._isAnalyticsOptionEnabled('panel_visited')) {
+            this._logBookLog(`panel_visited: ${pathName}`);
+        }
+
     }
 
     private _process(): void {
@@ -1326,6 +1369,7 @@ class CustomSidebar {
                                 this._debugLog('Executing plugin logic...');
 
                                 this._renderer.variables = this._parseJavaScriptVariables();
+                                this._getUserEntity();
                                 this._processDefaultPath();
                                 this._processSidebar();
                                 this._subscribeTitle();
