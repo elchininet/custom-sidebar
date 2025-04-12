@@ -144,6 +144,11 @@ export interface ConfigNewItem extends Omit<ConfigItem, 'new_item'> {
 export type ConfigOrder = ConfigItem | ConfigNewItem;
 export type ConfigOrderWithItem = ConfigOrder & { element?: HTMLAnchorElement };
 
+export interface AnalyticsConfig {
+    sidebar_item_clicked?: boolean;
+    panel_visited?: boolean;
+}
+
 export interface BaseConfig extends SidebarColorConfig {
     title?: string;
     subtitle?: string;
@@ -154,7 +159,7 @@ export interface BaseConfig extends SidebarColorConfig {
     default_path?: string;
     styles?: string;
     extend_from?: string | string[];
-    analytics?: boolean;
+    analytics?: boolean | AnalyticsConfig;
 }
 
 export interface ConfigExceptionBase extends BaseConfig {
