@@ -1,0 +1,33 @@
+---
+sidebar_position: 5
+---
+
+import SimpleExample from '@site/docs/_partials/05-sidebar-analytics/_simple-example.mdx';
+import SidebarItemClickedExample from '@site/docs/_partials/05-sidebar-analytics/_sidebar-item-clicked.mdx';
+import PanelVisitedExample from '@site/docs/_partials/05-sidebar-analytics/_panel-visited.mdx';
+
+# Sidebar Analytics
+
+It is possible to log sidebar usage through [Logbook](https://www.home-assistant.io/integrations/logbook/) entries. In this way you can analyse which users make a higher usage of the sidebar, which items are the most clicked ones, if someone entered in a dashboard even if the item in the sidebar was hidden, etc.
+
+To enable sidebar analytics, it is enough to define the `analytics` option as true.
+
+<SimpleExample />
+
+This will log any event registered by `Custom Sidebar` inside Logbook using `person` as domain and using the entity relative to the user that triggered the event.
+
+## Decide which events will be logged
+
+It is also possible to decide which kinds of events will be logged. For that you need to specify this option as an object and set the desired properties in `true`.
+
+### Only log sidebar-items clicks
+
+For this, you need to enable the parameter `sidebar_item_clicked`. It will log an entry every time that a sidebar item is clicked.
+
+<SidebarItemClickedExample />
+
+### Only log panels visits
+
+For this, you need to enable the parameter `panel_visited`. It will log an entry when a panel is loaded, either after clicking on an entry that opens a panel or if the panel is visited by other means (through browser history, setting the panel in the URL, etc).
+
+<PanelVisitedExample />
