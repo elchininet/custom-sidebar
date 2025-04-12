@@ -1,14 +1,15 @@
 import { FLUSH_PROMISE_DELAY } from '@constants';
+import { isArray } from './predicates';
 
 export const getLowercaseArray = (value: string | string[]): string[] => {
-    if (Array.isArray(value)) {
+    if (isArray(value)) {
         return value.map((val: string) => val.toLowerCase());
     }
     return value.toLowerCase().split(/\s*,\s*/);
 };
 
 export const getArray = (value: string | string[]): string[] => {
-    if (Array.isArray(value)) {
+    if (isArray(value)) {
         return value;
     }
     return [value];

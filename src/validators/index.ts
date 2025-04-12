@@ -11,8 +11,6 @@ import {
 } from '@types';
 import {
     BASE_NAME,
-    TYPE,
-    OBJECT_TO_STRING,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
     ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
     ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS,
@@ -20,6 +18,14 @@ import {
     JS_TEMPLATE_REG,
     JINJA_TEMPLATE_REG
 } from '@constants';
+import {
+    isUndefined,
+    isString,
+    isBoolean,
+    isNumber,
+    isObject,
+    isArray
+} from '@utilities';
 
 const ERROR_PREFIX = 'Invalid configuration';
 
@@ -51,8 +57,8 @@ const ONLY_BASE_CONFIG_OPTIONS = [
 const validateStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
     props.forEach((prop: K): void => {
         if (
-            typeof obj[prop] !== TYPE.UNDEFINED &&
-            typeof obj[prop] !== TYPE.STRING
+            !isUndefined(obj[prop]) &&
+            !isString(obj[prop])
         ) {
             throw new SyntaxError(`${prefix} "${String(prop)}" property should be a string`);
         }
@@ -62,9 +68,9 @@ const validateStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix:
 const validateStringOrNumberOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
     props.forEach((prop: K): void => {
         if (
-            typeof obj[prop] !== TYPE.UNDEFINED &&
-            typeof obj[prop] !== TYPE.STRING &&
-            typeof obj[prop] !== TYPE.NUMBER
+            !isUndefined(obj[prop]) &&
+            !isString(obj[prop]) &&
+            !isNumber(obj[prop])
         ) {
             throw new SyntaxError(`${prefix} "${String(prop)}" property should be a number or a string`);
         }
@@ -74,8 +80,8 @@ const validateStringOrNumberOptions = <T, K extends keyof T>(obj: T, props: K[],
 const validateBooleanOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
     props.forEach((prop: K): void => {
         if (
-            typeof obj[prop] !== TYPE.UNDEFINED &&
-            typeof obj[prop] !== TYPE.BOOLEAN
+            !isUndefined(obj[prop]) &&
+            !isBoolean(obj[prop])
         ) {
             throw new SyntaxError(`${prefix} "${String(prop)}" property should be a boolean`);
         }
@@ -85,9 +91,9 @@ const validateBooleanOptions = <T, K extends keyof T>(obj: T, props: K[], prefix
 const validateBooleanOrStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
     props.forEach((prop: K): void => {
         if (
-            typeof obj[prop] !== TYPE.UNDEFINED &&
-            typeof obj[prop] !== TYPE.BOOLEAN &&
-            typeof obj[prop] !== TYPE.STRING
+            !isUndefined(obj[prop]) &&
+            !isBoolean(obj[prop]) &&
+            !isString(obj[prop])
         ) {
             throw new SyntaxError(`${prefix} "${String(prop)}" property should be a boolean or a string`);
         }
@@ -104,74 +110,74 @@ const validateStringOrArrayOfStringsOptions = <T extends [string, undefined | st
 };
 
 const validateStringOrArrayOfStrings = (value: undefined | string | string[]): boolean => {
-    if (typeof value === TYPE.UNDEFINED) return true;
+    if (isUndefined(value)) return true;
     return (
-        typeof value === TYPE.STRING ||
+        isString(value) ||
         (
-            Array.isArray(value) &&
-            value.some((item: string): boolean => typeof item === TYPE.STRING)
+            isArray(value) &&
+            value.some(isString)
         )
     );
 };
 
 const validateAttributes = (
     attributes: undefined | string | Record<string, string | number | boolean>,
-    errorProfix: string
+    errorPrefix: string
 ): void => {
-    if (typeof attributes === TYPE.UNDEFINED) {
+    if (isUndefined(attributes)) {
         return;
     }
     if (
-        Object.prototype.toString.call(attributes) === OBJECT_TO_STRING ||
-        typeof attributes === TYPE.STRING
+        isObject(attributes) ||
+        isString(attributes)
     ) {
-        if (Object.prototype.toString.call(attributes) === OBJECT_TO_STRING) {
+        if (isObject(attributes)) {
             Object.entries(attributes).forEach((entry) => {
                 const [name, value] = entry;
                 if (
-                    typeof value !== TYPE.STRING &&
-                    typeof value !== TYPE.BOOLEAN &&
-                    typeof value !== TYPE.NUMBER
+                    !isString(value) &&
+                    !isBoolean(value) &&
+                    !isNumber(value)
                 ) {
-                    throw new SyntaxError(`${errorProfix} the prop "${name}" in the attributes should be a string, a number or a boolean`);
+                    throw new SyntaxError(`${errorPrefix} the prop "${name}" in the attributes should be a string, a number or a boolean`);
                 }
             });
         } else if (
-            typeof attributes === 'string' &&
+            isString(attributes) &&
             !JS_TEMPLATE_REG.test(attributes)
         ) {
-            throw new SyntaxError(`${errorProfix} the "attributes" parameter as a string should be a JavaScript template`);
+            throw new SyntaxError(`${errorPrefix} the "attributes" parameter as a string should be a JavaScript template`);
         }
     } else {
-        throw new SyntaxError(`${errorProfix} the "attributes" parameter should be an object or a template string`);
+        throw new SyntaxError(`${errorPrefix} the "attributes" parameter should be an object or a template string`);
     }
 };
 
-const validateOnClickOption = (configItem: ConfigItem, errorProfix: string): void => {
-    if (typeof configItem.on_click !== TYPE.UNDEFINED) {
-        if (Object.prototype.toString.call(configItem.on_click) !== OBJECT_TO_STRING) {
-            throw new SyntaxError(`${errorProfix} "on_click" property should be an object`);
+const validateOnClickOption = (configItem: ConfigItem, errorPrefix: string): void => {
+    if (!isUndefined(configItem.on_click)) {
+        if (!isObject(configItem.on_click)) {
+            throw new SyntaxError(`${errorPrefix} "on_click" property should be an object`);
         }
-        if (typeof configItem.on_click.action !== TYPE.STRING) {
-            throw new SyntaxError(`${errorProfix} the "action" parameter should be a string`);
+        if (!isString(configItem.on_click.action)) {
+            throw new SyntaxError(`${errorPrefix} the "action" parameter should be a string`);
         }
         if (!Object.values<string>(ActionType).includes(configItem.on_click.action)) {
-            throw new SyntaxError(`${errorProfix} the "action" parameter should be one of these values: ${Object.values(ActionType).join(', ')}`);
+            throw new SyntaxError(`${errorPrefix} the "action" parameter should be one of these values: ${Object.values(ActionType).join(', ')}`);
         }
         if (configItem.on_click.action === ActionType.CALL_SERVICE) {
-            if (typeof configItem.on_click.service !== TYPE.STRING) {
-                throw new SyntaxError(`${errorProfix} the "service" parameter should be a string`);
+            if (!isString(configItem.on_click.service)) {
+                throw new SyntaxError(`${errorPrefix} the "service" parameter should be a string`);
             }
             if (
-                typeof configItem.on_click.data !== TYPE.UNDEFINED &&
-                Object.prototype.toString.call(configItem.on_click.data) !== OBJECT_TO_STRING
+                !isUndefined(configItem.on_click.data) &&
+                !isObject(configItem.on_click.data)
             ) {
-                throw new SyntaxError(`${errorProfix} the "data" parameter needs to be an object`);
+                throw new SyntaxError(`${errorPrefix} the "data" parameter needs to be an object`);
             }
         }
         if (configItem.on_click.action === ActionType.JAVASCRIPT) {
-            if (typeof configItem.on_click.code !== TYPE.STRING) {
-                throw new SyntaxError(`${errorProfix} the "code" parameter should be a string`);
+            if (!isString(configItem.on_click.code)) {
+                throw new SyntaxError(`${errorPrefix} the "code" parameter should be a string`);
             }
         }
     }
@@ -184,7 +190,7 @@ const validateExtendFrom = (
     exceptions = false
 ): void => {
     if (extendFrom) {
-        const extendFromArray = Array.isArray(extendFrom)
+        const extendFromArray = isArray(extendFrom)
             ? extendFrom
             : [extendFrom];
         extendFromArray.forEach((extendFrom: string): void => {
@@ -207,7 +213,7 @@ const validateExtendableConfig = (
     extendBreadcrumb: string[]
 ): void => {
     if (extendFrom) {
-        const extendFromArray = Array.isArray(extendFrom)
+        const extendFromArray = isArray(extendFrom)
             ? extendFrom
             : [extendFrom];
         extendFromArray.forEach((extendFrom: string): void => {
@@ -259,7 +265,7 @@ const validateVariable = (
     stack: string[]
 ): void => {
     if (
-        typeof variable === 'string' &&
+        isString(variable) &&
         (
             JS_TEMPLATE_REG.test(variable) ||
             JINJA_TEMPLATE_REG.test(variable)
@@ -267,11 +273,11 @@ const validateVariable = (
     ) {
         console.warn(`"${variableGroup}" property should not have templates. "${stack.join(' > ')}" seems to be a template`);
     } else if (
-        typeof variable !== TYPE.STRING &&
-        typeof variable !== TYPE.NUMBER &&
-        typeof variable !== TYPE.BOOLEAN
+        !isString(variable) &&
+        !isNumber(variable) &&
+        !isBoolean(variable)
     ) {
-        if (Array.isArray(variable)) {
+        if (isArray(variable)) {
             variable.forEach((value: Primitive | PrimitiveObject | PrimitiveArray, index: number) => {
                 validateVariable(
                     variableGroup,
@@ -282,7 +288,7 @@ const validateVariable = (
                     ]
                 );
             });
-        } else if (Object.prototype.toString.call(variable) === OBJECT_TO_STRING) {
+        } else if (isObject(variable)) {
             const variableObject = variable as PrimitiveObject;
             Object.entries(variableObject).forEach((entry): void => {
                 const [prop, value] = entry;
@@ -302,8 +308,8 @@ const validateVariable = (
 };
 
 const validateVariables = (variableGroup: string, variables: Record<string, Primitive | PrimitiveObject | PrimitiveArray>): void => {
-    if (typeof variables !== TYPE.UNDEFINED) {
-        if (Object.prototype.toString.call(variables) !== OBJECT_TO_STRING) {
+    if (!isUndefined(variables)) {
+        if (!isObject(variables)) {
             throw new SyntaxError(`${ERROR_PREFIX}, "${variableGroup}" property should be an object`);
         }
         Object.entries(variables).forEach((entry) => {
@@ -359,7 +365,7 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
     );
 
     if (
-        typeof exception.matchers_conditions !== TYPE.UNDEFINED &&
+        !isUndefined(exception.matchers_conditions) &&
         exception.matchers_conditions !== MatchersCondition.AND &&
         exception.matchers_conditions !== MatchersCondition.OR
     ) {
@@ -367,8 +373,8 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
     }
 
     if (
-        typeof exception.order !== TYPE.UNDEFINED &&
-        !Array.isArray(exception.order)
+        !isUndefined(exception.order) &&
+        !isArray(exception.order)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "order" property should be an array`);
     }
@@ -390,7 +396,7 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
     );
 
     if (
-        typeof exception.sidebar_mode !== TYPE.UNDEFINED &&
+        !isUndefined(exception.sidebar_mode) &&
         !(exception.sidebar_mode in SIDEBAR_MODE_TO_DOCKED_SIDEBAR)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`);
@@ -414,10 +420,10 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
 };
 
 const validateExceptions = (exceptions: ConfigException[] | undefined, config: Config): void => {
-    if (typeof exceptions === TYPE.UNDEFINED) {
+    if (isUndefined(exceptions)) {
         return;
     }
-    if (!Array.isArray(exceptions)) {
+    if (!isArray(exceptions)) {
         throw new SyntaxError(`${ERROR_PREFIX}, exceptions should be an array`);
     }
     exceptions.forEach((exceptionItem): void => {
@@ -537,26 +543,26 @@ export const validateConfig = (config: Config): void => {
     );
 
     if (
-        typeof config.sidebar_mode !== TYPE.UNDEFINED &&
+        !isUndefined(config.sidebar_mode) &&
         !(config.sidebar_mode in SIDEBAR_MODE_TO_DOCKED_SIDEBAR)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, "sidebar_mode" property should be ${SidebarMode.HIDDEN}, ${SidebarMode.NARROW} or ${SidebarMode.EXTENDED}`);
     }
 
     if (
-        typeof config.order !== TYPE.UNDEFINED &&
-        !Array.isArray(config.order)
+        !isUndefined(config.order) &&
+        !isArray(config.order)
     ) {
         throw new SyntaxError(`${ERROR_PREFIX}, "order" property should be an array`);
     }
 
-    if (typeof config.partials !== TYPE.UNDEFINED) {
-        if (Object.prototype.toString.call(config.partials) !== OBJECT_TO_STRING) {
+    if (!isUndefined(config.partials)) {
+        if (!isObject(config.partials)) {
             throw new SyntaxError(`${ERROR_PREFIX}, "partials" property should be an object`);
         }
         Object.entries(config.partials).forEach((entry) => {
             const [partial, value] = entry;
-            if (typeof value !== TYPE.STRING) {
+            if (!isString(value)) {
                 throw new SyntaxError(`${ERROR_PREFIX}, "partials" should be an object with strings. The partial ${partial} is not a string`);
             }
         });

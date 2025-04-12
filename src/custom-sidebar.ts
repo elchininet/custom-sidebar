@@ -36,7 +36,6 @@ import {
     CUSTOM_SIDEBAR_CSS_VARIABLES,
     ITEM_OPTIONS_VARIABLES_MAP,
     SIDEBAR_OPTIONS_VARIABLES_MAP,
-    TYPE,
     KEY,
     CLASS,
     EVENT,
@@ -58,7 +57,14 @@ import {
     logVersionToConsole,
     getConfig,
     flushPromise,
-    getTemplateWithPartials
+    getTemplateWithPartials,
+    isUndefined,
+    isString,
+    isBoolean,
+    isNumber,
+    isObject,
+    isArray,
+    isRegExp
 } from '@utilities';
 import * as STYLES from '@styles';
 import { fetchConfig } from '@fetchers/json';
@@ -186,7 +192,7 @@ class CustomSidebar {
         const finalEntries = entries.filter((entry: [string, Primitive | PrimitiveObject | PrimitiveArray]): boolean => {
             const [name, value] = entry;
             if (
-                typeof value === 'string' &&
+                isString(value) &&
                 REF_VARIABLE_REGEXP.test(value)
             ) {
                 const refValue = value.replace(REF_VARIABLE_REGEXP, '$1');
@@ -269,19 +275,18 @@ class CustomSidebar {
         let rendered = '';
         if (
             template instanceof Promise ||
-            typeof template === 'string' ||
-            (
-                typeof template === 'number' &&
-                !Number.isNaN(template)
-            ) ||
-            typeof template === 'boolean' ||
-            typeof template === 'object'
+            isString(template) ||
+            isNumber(template) ||
+            isBoolean(template) ||
+            isObject(template) ||
+            isArray(template) ||
+            isRegExp(template)
         ) {
-            if (typeof template === 'string') {
+            if (isString(template)) {
                 rendered = template.trim();
             } else if (
-                typeof template === 'number' ||
-                typeof template === 'boolean'
+                isNumber(template) ||
+                isBoolean(template)
             ) {
                 rendered = template.toString();
             } else if (template instanceof Promise) {
@@ -343,13 +348,13 @@ class CustomSidebar {
             this._main.element,
             this._sidebar.selector.$.query(SELECTOR.MENU).element
         ]).then(([homeAssistantMain, menu]) => {
-            if (typeof this._config.sidebar_editable === 'boolean') {
+            if (isBoolean(this._config.sidebar_editable)) {
                 this._isSidebarEditable = this._config.sidebar_editable;
                 if (!this._isSidebarEditable) {
                     blockSidebar(homeAssistantMain, menu);
                 }
             }
-            if (typeof this._config.sidebar_editable === 'string') {
+            if (isString(this._config.sidebar_editable)) {
                 this._subscribeTemplate(
                     this._config.sidebar_editable,
                     (rendered: string) => {
@@ -386,9 +391,9 @@ class CustomSidebar {
             attrs.forEach((entry) => {
                 const [name, value] = entry;
                 if (
-                    typeof value === TYPE.STRING ||
-                    typeof value === TYPE.NUMBER ||
-                    typeof value === TYPE.BOOLEAN
+                    isString(value) ||
+                    isNumber(value) ||
+                    isBoolean(value)
                 ) {
                     configOrderItem.element.setAttribute(name, `${value}`);
                     customSidebarAttributes.push(name);
@@ -399,7 +404,7 @@ class CustomSidebar {
             configOrderItem.element.setAttribute(ATTRIBUTE.CUSTOM_SIDEBAR_ATTRIBUTES, customSidebarAttributes.join('|'));
         };
 
-        if (typeof attributes === 'string') {
+        if (isString(attributes)) {
             this._subscribeTemplate(
                 attributes,
                 (rendered: string): void => {
@@ -495,7 +500,7 @@ class CustomSidebar {
     }
 
     private _subscribeHide(element: HTMLAnchorElement, hide: boolean | string) {
-        if (typeof hide === 'boolean') {
+        if (isBoolean(hide)) {
             this._hideAnchor(element, hide);
         } else {
             this._subscribeTemplate(
@@ -1043,7 +1048,7 @@ class CustomSidebar {
 
                     orderItem.element.style.order = `${orderIndex}`;
 
-                    if (typeof orderItem.attributes !== 'undefined') {
+                    if (!isUndefined(orderItem.attributes)) {
                         this._subscribeAttributes(
                             orderItem,
                             orderItem.attributes
@@ -1082,7 +1087,7 @@ class CustomSidebar {
                         );
                     }
 
-                    if (typeof orderItem.hide !== 'undefined') {
+                    if (!isUndefined(orderItem.hide)) {
                         this._subscribeHide(
                             orderItem.element,
                             orderItem.hide
