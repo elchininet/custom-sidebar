@@ -323,6 +323,27 @@ const validateVariables = (variableGroup: string, variables: Record<string, Prim
     }
 };
 
+const validateAnalytics = (config: Config, errorPrefix: string): void => {
+    if (config.analytics) {
+        if (
+            !isBoolean(config.analytics) &&
+            !isObject(config.analytics)
+        ) {
+            throw new SyntaxError(`${errorPrefix} "analytics" should be a boolean or an object`);
+        }
+        if (isObject(config.analytics)) {
+            validateBooleanOptions(
+                config.analytics,
+                [
+                    'sidebar_item_clicked',
+                    'panel_visited'
+                ],
+                `${errorPrefix} "analytics"`
+            );
+        }
+    }
+};
+
 const validateExceptionItem = (exception: ConfigException, config: Config): void => {
 
     validateBaseConfigOnlyOptions(
@@ -394,6 +415,8 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
         ],
         `${ERROR_PREFIX}, exceptions`
     );
+
+    validateAnalytics(exception, `${ERROR_PREFIX}, error in exception:`);
 
     if (
         !isUndefined(exception.sidebar_mode) &&
@@ -570,6 +593,7 @@ export const validateConfig = (config: Config): void => {
 
     validateVariables('js_variables', config.js_variables);
     validateVariables('jinja_variables', config.jinja_variables);
+    validateAnalytics(config, `${ERROR_PREFIX},`);
     config.order?.forEach(validateConfigItem);
     validateExceptions(config.exceptions, config);
 };
