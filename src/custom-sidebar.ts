@@ -147,7 +147,6 @@ class CustomSidebar {
     private _renderer: HomeAssistantJavaScriptTemplatesRenderer;
     private _styleManager: HomeAssistantStylesManager;
     private _items: HTMLAnchorElement[];
-    private _userEntity: string;
     private _logBookMessagesMap: Map<string, number>;
     private _itemTouchedBinded: () => Promise<void>;
     private _mouseEnterBinded: (event: MouseEvent) => void;
@@ -740,18 +739,18 @@ class CustomSidebar {
         );
     }
 
-    private _getUserEntity(): void {
+    private _getUserEntity(): string | undefined {
         const entities = Object.entries(this._ha.hass.entities);
         const personEntityEntry = entities.filter(
             ([, entityData]): boolean => {
                 return `${entityData.name}`.toLowerCase() === this._ha.hass.user.name.toLocaleLowerCase();
             }
         );
-        // During the tests, the user has a tracker so there is a person entity assigned
-        // But in a real case scenario it is possible that this is undefined
-        // in the case that there is no tracker assigner to the user
+        // During the tests, it is used a person so it has a person entity id
+        // But in a real case scenario it is possible that the user doesn't have a person
+        // In these cases there will not be any entity and the next code will return undefined
         /* istanbul ignore next */
-        this._userEntity = personEntityEntry[0]?.[0];
+        return personEntityEntry[0]?.[0];
     }
 
     private _logBookLog(message: string): void {
@@ -771,7 +770,7 @@ class CustomSidebar {
                         name: NAMESPACE,
                         message,
                         domain: 'person',
-                        entity_id: this._userEntity
+                        entity_id: this._getUserEntity()
                     }
                 );
 
@@ -1375,7 +1374,6 @@ class CustomSidebar {
                                 this._debugLog('Executing plugin logic...');
 
                                 this._renderer.variables = this._parseJavaScriptVariables();
-                                this._getUserEntity();
                                 this._processDefaultPath();
                                 this._processSidebar();
                                 this._subscribeTitle();
