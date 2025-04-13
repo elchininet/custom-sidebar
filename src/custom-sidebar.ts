@@ -743,9 +743,15 @@ class CustomSidebar {
     private _getUserEntity(): void {
         const entities = Object.entries(this._ha.hass.entities);
         const personEntityEntry = entities.filter(
-            ([, entityData]) => entityData.name === this._ha.hass.user.name
+            ([, entityData]): boolean => {
+                return `${entityData.name}`.toLowerCase() === this._ha.hass.user.name.toLocaleLowerCase();
+            }
         );
-        this._userEntity = personEntityEntry[0][0];
+        // During the tests, the user has a tracker so there is a person entity assigned
+        // But in a real case scenario it is possible that this is undefined
+        // in the case that there is no tracker assigner to the user
+        /* istanbul ignore next */
+        this._userEntity = personEntityEntry[0]?.[0];
     }
 
     private _logBookLog(message: string): void {
