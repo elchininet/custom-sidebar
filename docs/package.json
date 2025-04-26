@@ -51,7 +51,8 @@
       "@babel/runtime-corejs3@<7.26.10": ">=7.26.10",
       "@babel/runtime@<7.26.10": ">=7.26.10",
       "@babel/helpers@<7.26.10": ">=7.26.10",
-      "estree-util-value-to-estree@<3.3.3": ">=3.3.3"
+      "estree-util-value-to-estree@<3.3.3": ">=3.3.3",
+      "http-proxy-middleware@<2.0.9": "2.0.9"
     }
   }
 }
