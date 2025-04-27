@@ -9,17 +9,24 @@ import InstallationManualExample from '@site/docs/_partials/02-installation/_ins
 
 You can install the plugin manually or through [HACS], not both. **If you install the plugin using the two installations methods you could have issues or errors**.
 
-### Through HACS
+### Through HACS (recommended)
+
+#### Go to the HACS plugin's page
+
+If you have not disabled the [My Home Assistant] integration, just click on [this link](https://my.home-assistant.io/redirect/hacs_repository/?owner=elchininet&repository=custom-sidebar&category=plugin) to go to the plugin's page, otherwise follow the next steps:
 
 1. Go to `HACS` dashboard
 2. Search for `custom-sidebar` and click on it
-3. On the plugin page, click on the `Download` yellow button in the bottom-right corner
-4. Click on `Download` in the more-info dialog
-5. When the plugin is already downloaded, add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
+
+#### Install the plugin
+
+1. On the plugin page, click on the `Download` yellow button in the bottom-right corner
+2. Click on `Download` in the more-info dialog
+3. When the plugin is already downloaded, add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
 
 <InstallThroughHacsExample />
 
-6. Restart Home Assistant
+4. Restart Home Assistant
 
 :::warning[Important]
 
@@ -52,5 +59,6 @@ It is recommendable that you add the plugin's version at the end of the URL as a
 :::
 
 [HACS]: https://hacs.xyz
+[My Home Assistant]: https://www.home-assistant.io/integrations/my/
 [extra_module_url]: https://www.home-assistant.io/integrations/frontend/#extra_module_url
 [custom-sidebar release]: https://github.com/elchininet/custom-sidebar/releases
