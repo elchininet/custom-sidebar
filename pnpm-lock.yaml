@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@babel/helpers@<7.26.10': '>=7.26.10'
-
 importers:
 
   .:

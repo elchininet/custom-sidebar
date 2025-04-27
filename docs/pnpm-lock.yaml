@@ -4,15 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  image-size@<1.2.1: ^1.2.1
-  prismjs@<1.30.0: '>=1.30.0'
-  '@babel/runtime-corejs3@<7.26.10': '>=7.26.10'
-  '@babel/runtime@<7.26.10': '>=7.26.10'
-  '@babel/helpers@<7.26.10': '>=7.26.10'
-  estree-util-value-to-estree@<3.3.3: '>=3.3.3'
-  http-proxy-middleware@<2.0.9: 2.0.9
-
 importers:
 
   .:
