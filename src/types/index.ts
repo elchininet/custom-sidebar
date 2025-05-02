@@ -28,13 +28,18 @@ export interface HassExtended extends Hass {
     callService: (domain: string, service: string, data: Record<string, unknown>) => void;
 }
 
+export interface SidebarItem extends HTMLElement {
+    href: string;
+    target: string;
+}
+
 export interface HomeAsssistantExtended extends HomeAssistant {
     hass: HassExtended;
 }
 
 export interface PartialPanelResolver extends HTMLElement {
     narrow: boolean;
-    __route: {
+    route: {
         prefix: string,
         path: string;
     }
@@ -52,13 +57,12 @@ export interface HaMenuButton extends HTMLElement {
 export interface Sidebar extends HTMLElement {
     alwaysExpand: boolean;
     _mouseLeaveTimeout?: number;
-    _showTooltip: (anchor: HTMLAnchorElement) => void;
+    _showTooltip: (anchor: HTMLElement) => void;
     _hideTooltip: () => void;
 }
 
 export enum Match {
     TEXT = 'text',
-    DATA_PANEL = 'data-panel',
     HREF = 'href'
 }
 
@@ -83,6 +87,7 @@ export type OnClickAction = ServiceCallAction | JavaScriptAction;
 export interface ItemColorConfig {
     item_background?: string;
     item_background_hover?: string;
+    item_background_hover_opacity?: number | string;
     icon_color?: string;
     icon_color_selected?: string;
     icon_color_hover?: string;
@@ -142,7 +147,7 @@ export interface ConfigNewItem extends Omit<ConfigItem, 'new_item'> {
 }
 
 export type ConfigOrder = ConfigItem | ConfigNewItem;
-export type ConfigOrderWithItem = ConfigOrder & { element?: HTMLAnchorElement };
+export type ConfigOrderWithItem = ConfigOrder & { element?: HTMLElement };
 
 export interface AnalyticsConfig {
     sidebar_item_clicked?: boolean;

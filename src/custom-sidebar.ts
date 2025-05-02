@@ -24,6 +24,7 @@ import {
     Sidebar,
     SidebarMode,
     Match,
+    SidebarItem,
     SubscriberTemplate,
     Primitive,
     PrimitiveObject,
@@ -44,7 +45,6 @@ import {
     NODE_NAME,
     JS_TEMPLATE_REG,
     JINJA_TEMPLATE_REG,
-    PROFILE_PATH,
     PROFILE_GENERAL_PATH,
     BLOCKED_PROPERTY,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
@@ -123,6 +123,7 @@ class CustomSidebar {
         this._debugLog('Starting the plugin...');
 
         this._items = [];
+        this._itemsMap = new Map();
         this._logBookMessagesMap = new Map<string, number>();
         this._sidebarScroll = 0;
         this._isSidebarEditable = undefined;
@@ -146,7 +147,8 @@ class CustomSidebar {
     private _isSidebarEditable: boolean | undefined;
     private _renderer: HomeAssistantJavaScriptTemplatesRenderer;
     private _styleManager: HomeAssistantStylesManager;
-    private _items: HTMLAnchorElement[];
+    private _items: HTMLElement[];
+    private _itemsMap: Map<HTMLElement, HTMLAnchorElement>;
     private _logBookMessagesMap: Map<string, number>;
     private _itemTouchedBinded: () => Promise<void>;
     private _mouseEnterBinded: (event: MouseEvent) => void;
@@ -212,67 +214,60 @@ class CustomSidebar {
         return Object.fromEntries(finalEntries);
     };
 
-    private async _getElements(): Promise<[HTMLElement, NodeListOf<HTMLAnchorElement>, HTMLElement]> {
+    private async _getElements(): Promise<[HTMLElement, NodeListOf<HTMLElement>, HTMLElement]> {
         const promisableResultOptions = {
             retries: MAX_ATTEMPTS,
             delay: RETRY_DELAY,
             shouldReject: false
         };
-        const paperListBox = (await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element) as HTMLElement;
+        const sidebarItemsContainer = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element) as HTMLElement;
         const spacer = await getPromisableResult<HTMLElement>(
-            () => paperListBox.querySelector<HTMLElement>(`:scope > ${SELECTOR.SPACER}`),
+            () => sidebarItemsContainer.querySelector<HTMLElement>(`:scope > ${SELECTOR.SPACER}`),
             (spacer: HTMLElement): boolean => !! spacer,
             promisableResultOptions
         );
-        const items = await getPromisableResult<NodeListOf<HTMLAnchorElement>>(
-            () => paperListBox.querySelectorAll<HTMLAnchorElement>(`:scope > ${SELECTOR.ITEM}`),
-            (elements: NodeListOf<HTMLAnchorElement>): boolean => {
-                return Array.from(elements).every((element: HTMLAnchorElement): boolean => {
+        const items = await getPromisableResult<NodeListOf<HTMLElement>>(
+            () => sidebarItemsContainer.querySelectorAll<HTMLElement>(`:scope > ${ELEMENT.ITEM}`),
+            (elements: NodeListOf<HTMLElement>): boolean => {
+                return Array.from(elements).every((element: HTMLElement): boolean => {
                     const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
                     return text.length > 0;
                 });
             },
             promisableResultOptions
         );
-        return [paperListBox, items, spacer];
+        return [sidebarItemsContainer, items, spacer];
     }
 
-    private _hideAnchor(anchor: HTMLAnchorElement, hide: boolean): void {
+    private _getAnchorElement(element: HTMLElement): HTMLAnchorElement {
+        return element
+            .shadowRoot
+            .querySelector<HTMLAnchorElement>(ELEMENT.ANCHOR);
+    }
+
+    private _hideItem(item: HTMLElement, hide: boolean): void {
         if (hide) {
-            anchor.style.display = 'none';
+            item.style.display = 'none';
         } else {
-            anchor.style.removeProperty('display');
+            item.style.removeProperty('display');
         }
     }
 
-    private _buildNewItem(configItem: ConfigNewItem): HTMLAnchorElement {
+    private _buildNewItem(configItem: ConfigNewItem): HTMLElement {
 
-        const a = document.createElement('a');
-        a.href = configItem.href
-            ? configItem.href
-            : '#';
-        a.target = configItem.target || '';
-        a.tabIndex = -1;
-        a.setAttribute(ATTRIBUTE.ROLE, 'option');
-        a.setAttribute(ATTRIBUTE.PANEL, configItem.item.toLowerCase().replace(/\s+/, '-'));
+        const item = document.createElement('ha-md-list-item') as SidebarItem;
+        item.setAttribute(ATTRIBUTE.TYPE, 'link');
 
-        a.setAttribute(ATTRIBUTE.ARIA_SELECTED, 'false');
+        item.href = configItem.href ?? '#';
+        item.target = configItem.target ?? '';
+        item.tabIndex = -1;
 
-        a.innerHTML = `
-            <paper-icon-item
-                tabindex="0"
-                ${ATTRIBUTE.ROLE}="option"
-                ${ATTRIBUTE.ARIA_DISABLED}="false"
-            >
-                <span class="${CLASS.NOTIFICATIONS_BADGE} ${CLASS.NOTIFICATIONS_BADGE_COLLAPSED}"></span>
-                <span class="item-text">
-                    ${ configItem.item }
-                </span>
-                <span class="${CLASS.NOTIFICATIONS_BADGE}"></span>
-            </paper-icon-item>
-        `.trim();
+        item.innerHTML = `
+            <span class="item-text" slot="headline">${ configItem.item }</span>
+            <span class="badge" slot="end"></span>
+        `;
 
-        return a;
+        return item;
     }
 
     private async _getTemplateString(template: unknown): Promise<string> {
@@ -439,19 +434,19 @@ class CustomSidebar {
         );
     }
 
-    private _subscribeIcon(element: HTMLAnchorElement, icon: string): void {
+    private _subscribeIcon(element: HTMLElement, icon: string): void {
         this._subscribeTemplate(
             icon,
             (rendered: string): void => {
                 let haIcon = element.querySelector(ELEMENT.HA_ICON);
                 if (!haIcon) {
                     haIcon = document.createElement(ELEMENT.HA_ICON);
-                    haIcon.setAttribute('slot', 'item-icon');
+                    haIcon.setAttribute(ATTRIBUTE.SLOT, 'start');
                     const haSvgIcon = element.querySelector(ELEMENT.HA_SVG_ICON);
                     if (haSvgIcon) {
                         haSvgIcon.replaceWith(haIcon);
                     } else {
-                        element.querySelector(ELEMENT.PAPER_ICON_ITEM).prepend(haIcon);
+                        element.prepend(haIcon);
                     }
                 }
                 haIcon.setAttribute('icon', rendered);
@@ -469,32 +464,23 @@ class CustomSidebar {
         );
     }
 
-    private _subscribeNotification(element: HTMLAnchorElement, notification: string): void {
-        let badge = element.querySelector(`${SELECTOR.NOTIFICATION_BADGE}:not(${SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED})`);
-        let badgeCollapsed = element.querySelector(SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED);
+    private _subscribeNotification(element: HTMLElement, notification: string): void {
+
+        let badge = element.querySelector(SELECTOR.BADGE);
+
         if (!badge) {
             badge = document.createElement('span');
-            badge.classList.add(CLASS.NOTIFICATIONS_BADGE);
-            element
-                .querySelector(ELEMENT.PAPER_ICON_ITEM)
-                .append(badge);
-        }
-        if (!badgeCollapsed) {
-            badgeCollapsed = document.createElement('span');
-            badgeCollapsed.classList.add(CLASS.NOTIFICATIONS_BADGE, CLASS.NOTIFICATIONS_BADGE_COLLAPSED);
-            element
-                .querySelector(`${ELEMENT.HA_SVG_ICON}, ${ELEMENT.HA_ICON}`)
-                .after(badgeCollapsed);
+            badge.classList.add(CLASS.BADGE);
+            badge.setAttribute(ATTRIBUTE.SLOT, 'end');
+            element.append(badge);
         }
 
         const callback = (rendered: string): void => {
             if (rendered.length) {
                 badge.innerHTML = rendered;
-                badgeCollapsed.innerHTML = rendered;
                 element.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, 'true');
             } else {
                 badge.innerHTML = '';
-                badgeCollapsed.innerHTML = '';
                 element.removeAttribute(ATTRIBUTE.WITH_NOTIFICATION);
             }
         };
@@ -503,14 +489,14 @@ class CustomSidebar {
 
     }
 
-    private _subscribeHide(element: HTMLAnchorElement, hide: boolean | string) {
+    private _subscribeHide(element: HTMLElement, hide: boolean | string) {
         if (isBoolean(hide)) {
-            this._hideAnchor(element, hide);
+            this._hideItem(element, hide);
         } else {
             this._subscribeTemplate(
                 hide,
                 (rendered: string): void => {
-                    this._hideAnchor(
+                    this._hideItem(
                         element,
                         rendered === 'true'
                     );
@@ -604,7 +590,7 @@ class CustomSidebar {
         });
     }
 
-    private _focusItem(activeIndex: number, forward: boolean, focusPaperItem: boolean): void {
+    private _focusItem(activeIndex: number, forward: boolean): void {
 
         const length = this._items.length;
         const noneDisplay = 'none';
@@ -636,91 +622,103 @@ class CustomSidebar {
             }
         }
 
-        if (focusPaperItem) {
-            const paperItem = this._items[focusIndex].querySelector<HTMLElement>(ELEMENT.PAPER_ICON_ITEM);
-            paperItem.focus();
-        } else {
-            this._items[focusIndex].focus();
-            this._items[focusIndex].tabIndex = 0;
-        }
+        this._items[focusIndex].focus();
+        this._items[focusIndex].tabIndex = 0;
 
     }
 
-    private _focusItemByKeyboard(paperListBox: HTMLElement, forward: boolean): void {
+    private _focusItemByKeyboard(sidebarItemsContainer: HTMLElement, forward: boolean): void {
 
-        const activeAnchor = paperListBox.querySelector<HTMLAnchorElement>(
+        const activeItem = sidebarItemsContainer.querySelector<HTMLElement>(
             `
-                ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:not(.${CLASS.IRON_SELECTED}):focus,
-                ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:focus,
-                ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}:has(> ${ELEMENT.PAPER_ICON_ITEM}:focus)
+                ${SELECTOR.SCOPE} > ${ELEMENT.ITEM}:not(.${CLASS.ITEM_SELECTED}):focus,
+                ${SELECTOR.SCOPE} > ${ELEMENT.ITEM}:focus
             `
         );
 
         let activeIndex = 0;
 
-        this._items.forEach((anchor: HTMLAnchorElement, index: number): void => {
-            if (anchor === activeAnchor) {
+        this._items.forEach((item: HTMLElement, index: number): void => {
+            if (item === activeItem) {
                 activeIndex = index;
             }
-            anchor.tabIndex = -1;
+            item.tabIndex = -1;
         });
 
-        this._focusItem(activeIndex, forward, false);
+        this._focusItem(activeIndex, forward);
 
     }
 
-    private _focusItemByTab(sidebarShadowRoot: ShadowRoot, element: HTMLElement, forward: boolean): void {
+    private _focusItemByTab(sidebarShadowRoot: ShadowRoot, element: SidebarItem, forward: boolean): void {
 
-        if (element.nodeName === NODE_NAME.A) {
+        const notifications = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.SIDEBAR_NOTIFICATIONS);
+        const profile = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.USER);
+        const haIconButton = sidebarShadowRoot.querySelector<HTMLElement>(ELEMENT.HA_ICON_BUTTON);
+        const activeIndex = this._items.indexOf(element);
 
-            const anchor = element as HTMLAnchorElement;
-            const activeIndex = this._items.indexOf(anchor);
-            const lastIndex = this._items.length - 1;
+        if (
+            element === notifications ||
+            element === profile ||
+            activeIndex >= 0
+        ) {
 
-            if (
-                (forward && activeIndex < lastIndex) ||
-                (!forward && activeIndex > 0)
-            ) {
+            if (element === notifications) {
 
-                this._focusItem(activeIndex, forward, true);
+                if (forward) {
+                    profile.focus();
+                } else {
+                    this._focusItem(0, forward);
+                }
+
+            } else if (element === profile) {
+
+                notifications.focus();
 
             } else {
 
-                const element = forward
-                    ? sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.SIDEBAR_NOTIFICATIONS)
-                    : sidebarShadowRoot.querySelector<HTMLElement>(ELEMENT.HA_ICON_BUTTON);
-                element.focus();
+                const lastIndex = this._items.length - 1;
+
+                if (
+                    (forward && activeIndex < lastIndex) ||
+                    (!forward && activeIndex > 0)
+                ) {
+
+                    this._focusItem(activeIndex, forward);
+
+                } else {
+
+                    if (forward) {
+                        notifications.focus();
+                    } else {
+                        haIconButton.focus();
+                    }
+
+                }
 
             }
 
-        } else {
-            if (forward) {
-                const profile = sidebarShadowRoot.querySelector<HTMLElement>(`${SELECTOR.PROFILE} > ${ELEMENT.PAPER_ICON_ITEM}`);
-                profile.focus();
-            } else {
-                this._focusItem(0, forward, true);
-            }
         }
 
     }
 
-    private _getActivePaperIconElement(root: Document | ShadowRoot = document): Element | null {
+    private _getActiveElement(root: Document | ShadowRoot = document): Element | null {
         const activeEl = root.activeElement;
         if (activeEl) {
             if (
                 activeEl instanceof HTMLElement &&
                 (
-                    activeEl.nodeName === NODE_NAME.PAPER_ICON_ITEM ||
+                    activeEl.nodeName === NODE_NAME.ITEM
+                    ||
                     (
                         activeEl.nodeName === NODE_NAME.A &&
-                        activeEl.getAttribute('role') === 'option'
+                        activeEl.getAttribute('role') === 'listitem'
                     )
                 )
             ) {
                 return activeEl;
             }
             return activeEl.shadowRoot && CHECK_FOCUSED_SHADOW_ROOT.includes(activeEl.nodeName)
-                ? this._getActivePaperIconElement(activeEl.shadowRoot)
+                ? this._getActiveElement(activeEl.shadowRoot)
                 : null;
         }
         // In theory, activeElement could be null
@@ -858,8 +856,8 @@ class CustomSidebar {
             this._haDrawer.selector.$.query(SELECTOR.MC_DRAWER).element,
             this._sidebar.element,
             this._sidebar.selector.$.element,
-            this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element
-        ]).then(([mcDrawer, sidebar, sideBarShadowRoot, paperListBox]: [HTMLElement, HTMLElement, ShadowRoot, HTMLElement]) => {
+            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element
+        ]).then(([mcDrawer, sidebar, sideBarShadowRoot, sidebarItemsContainer]: [HTMLElement, HTMLElement, ShadowRoot, HTMLElement]) => {
 
             this._subscribeTemplateColorChanges(
                 this._config,
@@ -875,34 +873,31 @@ class CustomSidebar {
                 ]
             );
 
-            paperListBox.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+            sidebarItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
                 if (
                     event.key === KEY.ARROW_DOWN ||
                     event.key === KEY.ARROW_UP
                 ) {
                     event.preventDefault();
                     event.stopImmediatePropagation();
-                    this._focusItemByKeyboard(paperListBox, event.key === KEY.ARROW_DOWN);
+                    this._focusItemByKeyboard(sidebarItemsContainer, event.key === KEY.ARROW_DOWN);
                 }
             }, true);
 
             window.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
-                if (
-                    event.key === KEY.TAB
-                ) {
-                    const activePaperItem = this._getActivePaperIconElement();
-                    if (activePaperItem) {
-                        if (activePaperItem.nodeName === NODE_NAME.PAPER_ICON_ITEM) {
-                            const parentElement = activePaperItem.parentElement as HTMLElement;
-                            if (parentElement.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
+                if (event.key === KEY.TAB) {
+                    const activeElement = this._getActiveElement();
+                    if (activeElement) {
+                        const item = activeElement as SidebarItem;
+                        if (item.nodeName === NODE_NAME.ITEM) {
+                            if (
+                                !item.classList.contains(CLASS.USER) ||
+                                event.shiftKey
+                            ) {
                                 event.preventDefault();
                                 event.stopImmediatePropagation();
-                                this._focusItemByTab(sideBarShadowRoot, parentElement, !event.shiftKey);
+                                this._focusItemByTab(sideBarShadowRoot, item, !event.shiftKey);
                             }
-                        } else if (activePaperItem.getAttribute(ATTRIBUTE.HREF) !== PROFILE_PATH) {
-                            event.preventDefault();
-                            event.stopImmediatePropagation();
-                            this._focusItemByTab(sideBarShadowRoot, activePaperItem as HTMLElement, !event.shiftKey);
                         }
                     }
                 }
@@ -914,7 +909,7 @@ class CustomSidebar {
                 sideBarShadowRoot.addEventListener(EVENT.CLICK, (event: MouseEvent) => {
 
                     const clickedElement = event.target as HTMLElement;
-                    const itemClicked = clickedElement.closest(`${ SELECTOR.ITEM }, ${ELEMENT.PAPER_ICON_ITEM}${SELECTOR.SIDEBAR_NOTIFICATIONS}`);
+                    const itemClicked = clickedElement.closest(ELEMENT.ITEM);
 
                     if (itemClicked) {
                         const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText;
@@ -941,8 +936,6 @@ class CustomSidebar {
                     STYLES.DIVIDER_BOTTOM_COLOR_DIVIDER_COLOR,
                     STYLES.SCROLL_THUMB_COLOR,
                     STYLES.SIDEBAR_EDITABLE,
-                    STYLES.ITEM_BACKGROUND,
-                    STYLES.ITEM_BACKGROUND_HOVER,
                     STYLES.ITEM_DIVIDER_ITEM_DIVIDER_COLOR,
                     STYLES.ICON_COLOR,
                     STYLES.ICON_COLOR_SELECTED,
@@ -965,22 +958,48 @@ class CustomSidebar {
 
     }
 
+    private _addItemStyles(item: HTMLElement): void {
+        getPromisableResult(
+            () => item.shadowRoot,
+            (shadowRoot: ShadowRoot) => shadowRoot !== null
+        ).then((shadowRoot: ShadowRoot) => {
+            this._styleManager.addStyle(
+                [
+                    STYLES.ITEM_BACKGROUND
+                ],
+                shadowRoot
+            );
+            this._styleManager.addStyle(
+                [
+                    STYLES.ITEM_BACKGROUND_HOVER_AND_HOVER_OPACITY
+                ],
+                shadowRoot
+                    .querySelector(ELEMENT.MD_ITEM)
+                    .querySelector(ELEMENT.MD_RIPPLE)
+                    .shadowRoot
+            );
+        });
+    }
+
     private _rearrange(): void {
         this._getElements()
             .then((elements) => {
 
                 const { order, hide_all } = this._config;
-                const [paperListBox, items, spacer] = elements;
+                const [sidebarItemsContainer, items, spacer] = elements;
 
                 let orderIndex = 0;
                 let crossedBottom = false;
 
                 this._items = Array.from(items);
-                const matched: Set<Element> = new Set();
+                this._itemsMap = new Map(
+                    this._items.map((item: HTMLElement) => [item, this._getAnchorElement(item)])
+                );
+                const matched: Set<HTMLElement> = new Set();
 
                 if (hide_all) {
-                    this._items.forEach((element: HTMLAnchorElement): void => {
-                        this._hideAnchor(element, true);
+                    this._items.forEach((element: HTMLElement): void => {
+                        this._hideItem(element, true);
                     });
                 }
 
@@ -990,22 +1009,15 @@ class CustomSidebar {
                         const itemLowerCase = item.toLocaleLowerCase();
                         const element = new_item
                             ? undefined
-                            : this._items.find((element: Element): boolean => {
-                                const text = match === Match.DATA_PANEL
-                                    ? element.getAttribute(ATTRIBUTE.PANEL)
-                                    : (
-                                        match === Match.HREF
-                                            ? element.getAttribute(ATTRIBUTE.HREF)
-                                            : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim()
-                                    );
+                            : this._items.find((element: HTMLElement): boolean => {
+                                const anchor = this._itemsMap.get(element);
+                                const text = match === Match.HREF
+                                    ? anchor.getAttribute(ATTRIBUTE.HREF)
+                                    : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
 
                                 const matchText = (
                                     (!!exact && item === text) ||
-                                    // for non-admins, data-panel is not present in the config item
-                                    // due to this, text will be undefined in those cases
-                                    // as the tests run against an admin account, this cannot be covered
-                                    /* istanbul ignore next */
-                                    (!exact && !!text?.toLowerCase().includes(itemLowerCase))
+                                    (!exact && !!text.toLowerCase().includes(itemLowerCase))
                                 );
 
                                 if (matchText) {
@@ -1059,7 +1071,7 @@ class CustomSidebar {
                     if (orderItem.new_item) {
 
                         const newItem = this._buildNewItem(orderItem);
-                        paperListBox.append(newItem);
+                        sidebarItemsContainer.append(newItem);
 
                         orderItem.element = newItem;
 
@@ -1069,7 +1081,7 @@ class CustomSidebar {
 
                     } else if (orderItem.element) {
 
-                        const element = orderItem.element as HTMLAnchorElement;
+                        const element = orderItem.element as SidebarItem;
 
                         if (orderItem.href) {
                             element.href = orderItem.href;
@@ -1082,6 +1094,8 @@ class CustomSidebar {
                     }
 
                     orderItem.element.style.order = `${orderIndex}`;
+
+                    this._addItemStyles(orderItem.element);
 
                     if (!isUndefined(orderItem.attributes)) {
                         this._subscribeAttributes(
@@ -1165,9 +1179,9 @@ class CustomSidebar {
 
                 this._items.sort(
                     (
-                        linkA: HTMLAnchorElement,
-                        linkB: HTMLAnchorElement
-                    ): number => +linkA.style.order - +linkB.style.order
+                        itemA: HTMLElement,
+                        itemB: HTMLElement
+                    ): number => +itemA.style.order - +itemB.style.order
                 );
 
                 this._panelLoaded();
@@ -1176,9 +1190,9 @@ class CustomSidebar {
     }
 
     private async _itemTouched(): Promise<void> {
-        this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element
-            .then((paperListBox: HTMLElement): void => {
-                this._sidebarScroll = paperListBox.scrollTop;
+        this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element
+            .then((sidebarItemsContainer: HTMLElement): void => {
+                this._sidebarScroll = sidebarItemsContainer.scrollTop;
             });
     }
 
@@ -1192,7 +1206,7 @@ class CustomSidebar {
                     clearTimeout(sidebar._mouseLeaveTimeout);
                     sidebar._mouseLeaveTimeout = undefined;
                 }
-                sidebar._showTooltip(event.currentTarget as HTMLAnchorElement);
+                sidebar._showTooltip(event.currentTarget as HTMLElement);
             });
     }
 
@@ -1209,10 +1223,14 @@ class CustomSidebar {
     }
 
     private async _mouseClick(item: ConfigOrderWithItem, event: MouseEvent): Promise<void> {
+
         const { on_click: onClickAction } = item;
-        const anchor = event.currentTarget as HTMLAnchorElement;
+        const element = event.currentTarget as HTMLElement;
+        const textElement = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
+        const itemText = textElement.textContent.trim();
+        const anchor = this._itemsMap.get(element);
         const hasHashBangAsHref = anchor.getAttribute(ATTRIBUTE.HREF) === '#';
-        const dataPanel = anchor.getAttribute(ATTRIBUTE.PANEL);
+
         if (hasHashBangAsHref) {
             event.preventDefault();
         }
@@ -1225,7 +1243,7 @@ class CustomSidebar {
                 finalCode,
                 {
                     item,
-                    dataPanel
+                    itemText
                 }
             );
         };
@@ -1256,7 +1274,7 @@ class CustomSidebar {
                         Object.fromEntries(compiledDataEntries)
                     );
                 } else {
-                    console.warn(`${NAMESPACE} ignoring "${ActionType.CALL_SERVICE}" action in "${dataPanel}" item. The service parameter is malfomed.`);
+                    console.warn(`${NAMESPACE} ignoring "${ActionType.CALL_SERVICE}" action in "${itemText}" item. The service parameter is malfomed.`);
                 }
                 break;
             }
@@ -1275,7 +1293,7 @@ class CustomSidebar {
 
     private async _checkProfileEditableButton(): Promise<void> {
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
-        const pathName = panelResolver.__route.path;
+        const pathName = panelResolver.route.path;
         // Disable the edit sidebar button in the profile panel
         if (pathName === PROFILE_GENERAL_PATH) {
             const editSidebarButton = await this._partialPanelResolver.selector.query(SELECTOR.EDIT_SIDEBAR_BUTTON).element;
@@ -1293,45 +1311,57 @@ class CustomSidebar {
 
         // Select the right element in the sidebar
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
-        const pathName = panelResolver.__route.path;
-        const paperListBox = await this._sidebar.selector.$.query(ELEMENT.PAPER_LISTBOX).element as HTMLElement;
-        const activeLink = paperListBox.querySelector<HTMLAnchorElement>(
-            `
-               ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}"],
-               ${SELECTOR.SCOPE} > ${SELECTOR.ITEM}[href="${pathName}/dashboard"]
-            `
+        const pathName = panelResolver.route.path;
+        const sidebarItemsContainer = await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element as HTMLElement;
+
+        const items = Array.from(
+            sidebarItemsContainer.querySelectorAll<HTMLElement>(ELEMENT.ITEM)
         );
 
-        const activeParentLink = activeLink
-            ? null
-            : this._items.reduce((link: HTMLAnchorElement | null, anchor: HTMLAnchorElement): HTMLAnchorElement | null => {
-                const href = anchor.getAttribute(ATTRIBUTE.HREF);
-                if (pathName.startsWith(href)) {
-                    if (
-                        !link ||
-                        href.length > link.getAttribute(ATTRIBUTE.HREF).length
-                    ) {
-                        link = anchor;
-                    }
-                }
-                return link;
-            }, null);
+        const itemsMap = new Map(
+            items.map((item: HTMLElement) => [item, this._getAnchorElement(item)])
+        );
 
-        this._items.forEach((anchor: HTMLAnchorElement) => {
-            const isActive = (
-                activeLink &&
-                activeLink === anchor
-            ) ||
-            (
-                !activeLink &&
-                activeParentLink === anchor
+        const activeItem = items.find((item: HTMLElement): boolean => {
+            const anchor = itemsMap.get(item);
+            const href = anchor?.getAttribute(ATTRIBUTE.HREF);
+            return (
+                pathName === href ||
+                pathName === `${href}/dashboard`
             );
-            anchor.classList.toggle(CLASS.IRON_SELECTED, isActive);
-            anchor.setAttribute(ATTRIBUTE.ARIA_SELECTED, `${isActive}`);
         });
 
-        if (paperListBox.scrollTop !== this._sidebarScroll) {
-            paperListBox.scrollTop = this._sidebarScroll;
+        const activeParentElement = activeItem
+            ? null
+            : items.reduce((parent: HTMLElement | null, item: HTMLElement): HTMLElement | null => {
+                const anchor = itemsMap.get(item);
+                const href = anchor?.getAttribute(ATTRIBUTE.HREF);
+                if (pathName.startsWith(href)) {
+                    if (
+                        !parent ||
+                        href.length > itemsMap.get(parent)?.getAttribute(ATTRIBUTE.HREF).length
+                    ) {
+                        parent = item;
+                    }
+                }
+                return parent;
+            }, null);
+
+        items.forEach((item: HTMLElement) => {
+            const isActive = (
+                activeItem &&
+                activeItem === item
+            ) ||
+            (
+                !activeItem &&
+                activeParentElement === item
+            );
+            item.classList.toggle(CLASS.ITEM_SELECTED, isActive);
+            item.tabIndex = isActive ? 0 : -1;
+        });
+
+        if (sidebarItemsContainer.scrollTop !== this._sidebarScroll) {
+            sidebarItemsContainer.scrollTop = this._sidebarScroll;
         }
 
         this._checkProfileEditableButton();

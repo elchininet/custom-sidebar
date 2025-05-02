@@ -28,37 +28,39 @@ export const REGEXP_TO_STRING = '[object RegExp]';
 export const BLOCKED_PROPERTY = 'data-blocked';
 
 export enum ELEMENT {
-    SIDEBAR = 'ha-sidebar',
-    PAPER_LISTBOX = 'paper-listbox',
-    PAPER_ICON_ITEM = 'paper-icon-item',
+    ITEM = 'ha-md-list-item',
     HA_SVG_ICON = 'ha-svg-icon',
     HA_ICON = 'ha-icon',
-    HA_ICON_BUTTON = 'ha-icon-button'
+    HA_ICON_BUTTON = 'ha-icon-button',
+    ANCHOR = 'a',
+    MD_ITEM = 'md-item',
+    MD_RIPPLE = 'md-ripple'
 }
 
 export enum SELECTOR {
     HOST = ':host',
     HOST_EXPANDED = ':host([expanded])',
+    HOST_NOT_EXPANDED = ':host(:not([expanded]))',
+    SIDEBAR_ITEMS_CONTAINER = 'ha-md-list.ha-scrollbar',
     SCOPE = ':scope',
     TITLE = '.title',
-    ITEM = 'a[role="option"]',
-    ITEM_SELECTED = '.iron-selected',
-    ITEM_HOVER = 'a[role="option"]:hover',
+    ITEM_SELECTED = '.selected',
+    ITEM_HOVER = 'ha-md-list-item:hover',
+    SURFACE = '.surface',
+    SURFACE_HOVERED = '.surface.hovered',
     SPACER = '.spacer',
     ITEM_TEXT = '.item-text',
-    NOTIFICATION_BADGE = '.notification-badge',
-    NOTIFICATIONS_BADGE_COLLAPSED = '.notification-badge-collapsed',
-    CONFIGURATION_BADGE = '.configuration-badge',
+    BADGE = '.badge',
+    CONFIGURATION = '.configuration',
     HA_MENU_BUTTON = 'ha-panel-lovelace$ hui-root$ .toolbar > ha-menu-button',
     EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-settings-row mwc-button',
     SIDEBAR_NOTIFICATIONS_CONTAINER = '.notifications-container',
     SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER = '.notifications-container:hover',
     SIDEBAR_NOTIFICATIONS = '.notifications',
-    PROFILE = '.profile',
+    USER = '.user',
     MENU = '.menu',
     DIVIDER = '.divider',
     MC_DRAWER = '.mdc-drawer',
-    HA_SCROLLBAR = '.ha-scrollbar',
     DATA_INFO = '[data-info]'
 }
 
@@ -74,16 +76,19 @@ export enum HA_CSS_VARIABLES {
     SIDEBAR_TITLE_COLOR = '--sidebar-menu-button-text-color',
     SIDEBAR_BUTTON_COLOR = '--sidebar-icon-color',
     SIDEBAR_MENU_BUTTON_BACKGROUND_COLOR = '--sidebar-menu-button-background-color',
-
     SIDEBAR_ICON_COLOR = '--sidebar-icon-color',
-    SIDEBAR_SELECTED_ICON_COLOR= '--sidebar-selected-icon-color',
+    SIDEBAR_SELECTED_ICON_COLOR = '--sidebar-selected-icon-color',
     SIDEBAR_TEXT_COLOR = '--sidebar-text-color',
     SIDEBAR_SELECTED_TEXT_COLOR = '--sidebar-selected-text-color',
+    MD_RIPPLE_HOVER_COLOR = '--md-ripple-hover-color',
+    MD_RIPPLE_HOVER_OPACITY = '--md-ripple-hover-opacity',
+    MD_SYS_COLOR_ON_SURFACE = '--md-sys-color-on-surface',
     ACCENT_COLOR = '--accent-color',
     TEXT_ACCENT_COLOR = '--text-accent-color',
     TEXT_PRIMARY_COLOR = '--text-primary-color',
     PRIMARY_TEXT_COLOR = '--primary-text-color',
     DIVIDER_COLOR = '--divider-color',
+    DIVIDER_OPACITY = '--dark-divider-opacity',
     SCROLLBAR_THUMB_COLOR = '--scrollbar-thumb-color'
 }
 
@@ -98,9 +103,9 @@ export enum CUSTOM_SIDEBAR_CSS_VARIABLES {
     DIVIDER_TOP_COLOR = '--custom-sidebar-divider-top-color',
     DIVIDER_BOTTOM_COLOR = '--custom-sidebar-divider-bottom-color',
     SCROLLBAR_THUMB_COLOR = '--custom-sidebar-scrollbar-thumb-color',
-
     ITEM_BACKGROUND = '--custom-sidebar-item-background',
     ITEM_BACKGROUND_HOVER = '--custom-sidebar-item-background-hover',
+    ITEM_BACKGROUND_HOVER_OPACITY = '--custom-sidebar-item-background-hover-opacity',
     ICON_COLOR = '--custom-sidebar-icon-color',
     ICON_COLOR_SELECTED = '--custom-sidebar-icon-color-selected',
     ICON_COLOR_HOVER = '--custom-sidebar-icon-color-hover',
@@ -143,7 +148,8 @@ export const ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
 ];
 
 export const ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
-    'selection_opacity'
+    'selection_opacity',
+    'item_background_hover_opacity'
 ];
 
 export const ITEM_STRING_CONFIG_OPTIONS: SidebarStringConfigKeys[] = [
@@ -153,6 +159,7 @@ export const ITEM_STRING_CONFIG_OPTIONS: SidebarStringConfigKeys[] = [
 export const ITEM_OPTIONS_VARIABLES_MAP: [ItemColorConfigKeys, string][] = [
     ['item_background',                  CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND],
     ['item_background_hover',            CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER],
+    ['item_background_hover_opacity',    CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER_OPACITY],
     ['icon_color',                       CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR],
     ['icon_color_selected',              CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED],
     ['icon_color_hover',                 CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_HOVER],
@@ -186,22 +193,21 @@ export const SIDEBAR_OPTIONS_VARIABLES_MAP: [SidebarColorConfigKeys, string][] =
 ];
 
 export enum CLASS {
-    NOTIFICATIONS_BADGE = 'notification-badge',
-    NOTIFICATIONS_BADGE_COLLAPSED = 'notification-badge-collapsed',
-    IRON_SELECTED = 'iron-selected'
+    BADGE = 'badge',
+    ITEM_SELECTED = 'selected',
+    USER = 'user'
 }
 
 export enum ATTRIBUTE {
-    PANEL = 'data-panel',
     ROLE = 'role',
     PROCESSED = 'data-processed',
     WITH_NOTIFICATION = 'data-notification',
     WITH_DIVIDER = 'data-divider',
-    ARIA_SELECTED = 'aria-selected',
-    ARIA_DISABLED = 'aria-disabled',
+    TAB_INDEX = 'tabindex',
     DISABLED = 'disabled',
     HREF = 'href',
-    STYLE = 'style',
+    SLOT = 'slot',
+    TYPE = 'type',
     CUSTOM_SIDEBAR_ATTRIBUTES = 'data-custom-sidebar-attrs'
 }
 
@@ -224,7 +230,7 @@ export enum KEY {
 }
 
 export enum NODE_NAME {
-    PAPER_ICON_ITEM = 'PAPER-ICON-ITEM',
+    ITEM = 'HA-MD-LIST-ITEM',
     A = 'A'
 }
 
@@ -240,7 +246,6 @@ export const SIDEBAR_MODE_TO_DOCKED_SIDEBAR = {
     [SidebarMode.EXTENDED]: DockedSidebar.DOCKED
 };
 
-export const PROFILE_PATH = '/profile';
 export const PROFILE_GENERAL_PATH = '/profile/general';
 
 export const JS_TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;

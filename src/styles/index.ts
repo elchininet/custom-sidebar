@@ -9,68 +9,59 @@ import {
 } from '@constants';
 import { getCSSVariables } from '@utilities';
 
-const NOTIFICATION_COLOR_NOTIFICATION_TEXT_COLOR = {
+const BADGE_STYLES = {
     backgroundColor: getCSSVariables(
         CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR,
         HA_CSS_VARIABLES.ACCENT_COLOR
     ),
-    borderRadius: '20px',
     color: getCSSVariables(
         CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR,
         HA_CSS_VARIABLES.TEXT_ACCENT_COLOR,
         HA_CSS_VARIABLES.TEXT_PRIMARY_COLOR
     ),
-    fontSize: '0.65em',
+    display: 'block',
+    maxWidth: '80px',
     overflow: 'hidden',
-    padding: '0px 5px',
     textOverflow: 'ellipsis',
     textWrap: 'nowrap'
 };
 
 export const FUNCTIONALITY = {
-    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_NOTIFICATION }] > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
-        maxWidth: 'calc(100% - 100px)'
-    },
-    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.SIDEBAR_ITEMS_CONTAINER } > ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '5px',
-        lineHeight: '1'
+        gap: '0px',
+        lineHeight: '1',
+        maxWidth: 'unset'
     },
-    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ PSEUDO_SELECTOR.AFTER }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.SIDEBAR_ITEMS_CONTAINER } > ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }`]: {
+        gap: '5px'
+    },
+    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.SIDEBAR_ITEMS_CONTAINER } > ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
         content: 'attr(data-info)',
-        display: 'none',
+        display: 'block',
         fontSize: '11px',
         lineHeight: '1',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap'
     },
-    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }`]: {
+    [`${ SELECTOR.HOST } ${ ELEMENT.ITEM }:not([${ ATTRIBUTE.WITH_NOTIFICATION }], ${ SELECTOR.CONFIGURATION }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS }) > ${ SELECTOR.BADGE }`]: {
         opacity: '0'
     },
-    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
-        zIndex: '1'
-    },
-    [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED })`]: {
-        ...NOTIFICATION_COLOR_NOTIFICATION_TEXT_COLOR
-    },
-    [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM }:not(${ SELECTOR.SIDEBAR_NOTIFICATIONS }) > ${ SELECTOR.NOTIFICATION_BADGE }:not(${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED })`]: {
-        left: 'calc(var(--app-drawer-width, 248px) - 22px)',
-        maxWidth: '80px',
-        transform: 'translateX(-100%)'
-    },
-    [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.NOTIFICATIONS_BADGE_COLLAPSED }`]: {
-        ...NOTIFICATION_COLOR_NOTIFICATION_TEXT_COLOR,
+    [`${ SELECTOR.HOST } ${ ELEMENT.ITEM } > ${ SELECTOR.BADGE }`]: BADGE_STYLES,
+    [`${ SELECTOR.HOST_NOT_EXPANDED } ${ ELEMENT.ITEM } > ${ SELECTOR.BADGE }`]: {
+        ...BADGE_STYLES,
         display: 'flex',
-        bottom: '14px',
+        fontSize: '0.65em',
         justifyContent: 'center',
         left: '26px',
-        maxWidth: '20px',
-        textOverflow: 'unset'
-    },
-    [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.CONFIGURATION_BADGE }`]: {
-        ...NOTIFICATION_COLOR_NOTIFICATION_TEXT_COLOR
+        lineHeight: '2',
+        maxWidth: '5px',
+        textOverflow: 'unset',
+        top: '4px',
+        padding: '0 5px',
+        position: 'absolute'
     }
 };
 
@@ -156,13 +147,13 @@ export const SIDEBAR_BORDER_COLOR = {
 };
 
 export const SCROLL_THUMB_COLOR = {
-    [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_LISTBOX }${ SELECTOR.HA_SCROLLBAR }`]: {
+    [`${ SELECTOR.HOST } ${ SELECTOR.SIDEBAR_ITEMS_CONTAINER }`]: {
         scrollbarColor: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR,
             HA_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR
         ) + ' transparent'
     },
-    [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_LISTBOX }${ SELECTOR.HA_SCROLLBAR }${ PSEUDO_SELECTOR.WEBKIT_SCROLLBAR_THUMB }`]: {
+    [`${ SELECTOR.HOST } ${ SELECTOR.SIDEBAR_ITEMS_CONTAINER }${ PSEUDO_SELECTOR.WEBKIT_SCROLLBAR_THUMB }`]: {
         background: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR,
             HA_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR
@@ -180,7 +171,7 @@ export const SIDEBAR_EDITABLE = {
 };
 
 export const ITEM_BACKGROUND = {
-    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM }:not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM }`]: {
+    [`${ SELECTOR.HOST } ${ ELEMENT.ANCHOR }`]: {
         background: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND,
             'none'
@@ -188,33 +179,53 @@ export const ITEM_BACKGROUND = {
     }
 };
 
-export const ITEM_BACKGROUND_HOVER = {
-    [`${ SELECTOR.HOST } :is(${ SELECTOR.ITEM_HOVER }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER }):not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM }`]: {
-        background: getCSSVariables(
+export const ITEM_BACKGROUND_HOVER_AND_HOVER_OPACITY = {
+    [`${ SELECTOR.HOST } ${ SELECTOR.SURFACE }${ PSEUDO_SELECTOR.BEFORE }`]: {
+        backgroundColor: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER,
-            CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND,
-            'none'
+            HA_CSS_VARIABLES.MD_RIPPLE_HOVER_COLOR,
+            HA_CSS_VARIABLES.MD_SYS_COLOR_ON_SURFACE,
+            '#1d1b20'
+        )
+    },
+    [`${ SELECTOR.HOST } ${ SELECTOR.SURFACE_HOVERED }${ PSEUDO_SELECTOR.BEFORE }`]: {
+        opacity: getCSSVariables(
+            CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER_OPACITY,
+            HA_CSS_VARIABLES.MD_RIPPLE_HOVER_OPACITY,
+            '.08'
         )
     }
 };
 
 export const ITEM_DIVIDER_ITEM_DIVIDER_COLOR = {
-    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_DIVIDER }]`]: {
-        borderBottom: '1px solid',
-        borderBottomColor: getCSSVariables(
+    [`${ SELECTOR.HOST } ${ ELEMENT.ITEM }[${ ATTRIBUTE.WITH_DIVIDER }]`]: {
+        marginBottom: '10px',
+        paddingBottom: '10px',
+        position: 'relative'
+    },
+    [`${ SELECTOR.HOST } ${ ELEMENT.ITEM }[${ ATTRIBUTE.WITH_DIVIDER }]${ PSEUDO_SELECTOR.AFTER }`]: {
+        content: '""',
+        backgroundColor: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR,
             HA_CSS_VARIABLES.DIVIDER_COLOR
         ),
-        marginBottom: '10px',
-        paddingBottom: '10px'
+        bottom: 0,
+        height: '1px',
+        left: '-4px',
+        position: 'absolute',
+        right: '-4px'
     },
-    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM }:not(${SELECTOR.ITEM_SELECTED})[${ ATTRIBUTE.WITH_DIVIDER }]:focus::before`]: {
+    [`${ SELECTOR.HOST } ${ ELEMENT.ITEM }${SELECTOR.ITEM_SELECTED}[${ ATTRIBUTE.WITH_DIVIDER }]`]: {
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0
+    },
+    [`${ SELECTOR.HOST } ${ ELEMENT.ITEM }${SELECTOR.ITEM_SELECTED}[${ ATTRIBUTE.WITH_DIVIDER }]${ PSEUDO_SELECTOR.BEFORE }`]: {
         bottom: '10px'
     }
 };
 
 export const ICON_COLOR = {
-    [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON })`]: {
+    [`${ SELECTOR.HOST } ${ ELEMENT.ITEM } > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON })`]: {
         color: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR,
             HA_CSS_VARIABLES.SIDEBAR_ICON_COLOR
@@ -223,7 +234,7 @@ export const ICON_COLOR = {
 };
 
 export const ICON_COLOR_SELECTED = {
-    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON })`]: {
+    [`${ SELECTOR.HOST } ${ ELEMENT.ITEM }${ SELECTOR.ITEM_SELECTED } > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON })[slot="start"]`]: {
         color: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED,
             HA_CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR
@@ -232,7 +243,7 @@ export const ICON_COLOR_SELECTED = {
 };
 
 export const ICON_COLOR_HOVER = {
-    [`${ SELECTOR.HOST } :is(${ SELECTOR.ITEM_HOVER }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER }):not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON })`]: {
+    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM_HOVER }:not(${ SELECTOR.ITEM_SELECTED }) > :is(${ ELEMENT.HA_SVG_ICON }, ${ ELEMENT.HA_ICON })`]: {
         color: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_HOVER,
             CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR,
@@ -242,7 +253,7 @@ export const ICON_COLOR_HOVER = {
 };
 
 export const TEXT_COLOR = {
-    [`${ SELECTOR.HOST } ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
+    [`${ SELECTOR.HOST } ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
         color: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR,
             HA_CSS_VARIABLES.SIDEBAR_TEXT_COLOR
@@ -251,7 +262,7 @@ export const TEXT_COLOR = {
 };
 
 export const TEXT_COLOR_SELECTED = {
-    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
+    [`${ SELECTOR.HOST } ${ ELEMENT.ITEM }${ SELECTOR.ITEM_SELECTED } > ${ SELECTOR.ITEM_TEXT }`]: {
         color: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR_SELECTED,
             HA_CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR
@@ -260,7 +271,7 @@ export const TEXT_COLOR_SELECTED = {
 };
 
 export const TEXT_COLOR_HOVER = {
-    [`${ SELECTOR.HOST } :is(${ SELECTOR.ITEM_HOVER }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER }):not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
+    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM_HOVER }:not(${ SELECTOR.ITEM_SELECTED }) > ${ SELECTOR.ITEM_TEXT }`]: {
         color: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR_HOVER,
             CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR,
@@ -270,31 +281,30 @@ export const TEXT_COLOR_HOVER = {
 };
 
 export const SELECTION_BACKGROUND_SELECTION_OPACITY = {
-    [`${ SELECTOR.HOST } :is(${ SELECTOR.ITEM }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER }) > ${ ELEMENT.PAPER_ICON_ITEM }${ PSEUDO_SELECTOR.BEFORE }`]: {
-        background: getCSSVariables(
+    [`${ SELECTOR.HOST } ${ ELEMENT.ITEM }${ SELECTOR.ITEM_SELECTED }${ PSEUDO_SELECTOR.BEFORE }`]: {
+        backgroundColor: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_BACKGROUND,
             CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED,
             HA_CSS_VARIABLES.SIDEBAR_SELECTED_ICON_COLOR
         ),
         opacity: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_OPACITY,
-            '0.12'
+            HA_CSS_VARIABLES.DIVIDER_OPACITY
         )
     }
 };
 
 export const INFO_COLOR = {
-    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.SIDEBAR_ITEMS_CONTAINER } > ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
         color: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR,
             HA_CSS_VARIABLES.SIDEBAR_TEXT_COLOR
-        ),
-        display: 'block'
+        )
     }
 };
 
 export const INFO_COLOR_SELECTED = {
-    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.PAPER_LISTBOX } > ${ SELECTOR.ITEM }${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.SIDEBAR_ITEMS_CONTAINER } > ${ ELEMENT.ITEM }${ SELECTOR.ITEM_SELECTED } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
         color: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR_SELECTED,
             HA_CSS_VARIABLES.SIDEBAR_SELECTED_TEXT_COLOR
@@ -303,7 +313,7 @@ export const INFO_COLOR_SELECTED = {
 };
 
 export const INFO_COLOR_HOVER = {
-    [`${ SELECTOR.HOST_EXPANDED } :is(${ SELECTOR.ITEM_HOVER }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER }):not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.ITEM_HOVER }:not(${ SELECTOR.ITEM_SELECTED }) > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
         color: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR_HOVER,
             CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR,
@@ -313,7 +323,7 @@ export const INFO_COLOR_HOVER = {
 };
 
 export const NOTIFICATION_COLOR_SELECTED_NOTIFICATION_TEXT_COLOR_SELECTED = {
-    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM_SELECTED } > ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ SELECTOR.NOTIFICATION_BADGE }, ${ SELECTOR.CONFIGURATION_BADGE })`]: {
+    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM_SELECTED } > ${ SELECTOR.BADGE }`]: {
         backgroundColor: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR_SELECTED,
             CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR,
@@ -329,7 +339,7 @@ export const NOTIFICATION_COLOR_SELECTED_NOTIFICATION_TEXT_COLOR_SELECTED = {
 };
 
 export const NOTIFICATION_COLOR_HOVER_NOTIFICATION_TEXT_COLOR_HOVER = {
-    [`${ SELECTOR.HOST } :is(${ SELECTOR.ITEM_HOVER }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER }):not(${ SELECTOR.ITEM_SELECTED }) > ${ ELEMENT.PAPER_ICON_ITEM } > :is(${ SELECTOR.NOTIFICATION_BADGE }, ${ SELECTOR.CONFIGURATION_BADGE })`]: {
+    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM_HOVER }:not(${ SELECTOR.ITEM_SELECTED }) > ${ SELECTOR.BADGE }`]: {
         backgroundColor: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR_HOVER,
             CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR,

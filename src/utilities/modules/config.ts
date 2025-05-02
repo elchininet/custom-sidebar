@@ -223,10 +223,13 @@ class ConfigFlatter {
                     orderItem[option] === undefined &&
                     config[option] !== undefined
                 ) {
-                    if (option === 'selection_opacity') {
-                        orderItem.selection_opacity = config.selection_opacity;
-                    } else {
-                        orderItem[option] = config[option];
+                    switch (option) {
+                        case 'selection_opacity':
+                        case 'item_background_hover_opacity':
+                            orderItem[option] = config[option];
+                            break;
+                        default:
+                            orderItem[option] = config[option];
                     }
                 }
             });
