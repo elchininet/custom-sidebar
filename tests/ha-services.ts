@@ -1,6 +1,6 @@
 import { Browser, Page } from '@playwright/test';
 import { expect } from 'playwright-test-coverage';
-import { SELECTORS } from './selectors';
+import { SELECTORS } from './constants';
 
 interface Context {
     id: string;
@@ -28,7 +28,7 @@ export const haConfigRequest = async (browser: Browser, file: string) => {
             }
         );
     }, file);
-    page.close();
+    //page.close();
 };
 
 export const haSwitchStateRequest = async (page: Page, state: boolean) => {

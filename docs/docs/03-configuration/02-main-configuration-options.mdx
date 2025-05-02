@@ -68,7 +68,7 @@ These options are intended to change the functionality of the sidebar and to cha
 :::tip
 
 \* These options allow [JavaScript](../templates/javascript-templates) or [Jinja](../templates/jinja-templates) templates.<br/>
-\*\* When using a `call-service` action, the `data` parameter accepts [JavaScript templates](../templates/javascript-templates) in its values. The JavaScript templates used in the `on_click` parameter (either the ones in the `data` parameter of a `call-service` action or the ones in the `code` parameter of a `javascript` action) will have access to two variables, `item` and `dataPanel`. These variables are related to the clicked item, the first is the configuration object of the item (including an `element` property which is the HTML element relative to the anchor) and the second is its `data-panel` attribute.
+\*\* When using a `call-service` action, the `data` parameter accepts [JavaScript templates](../templates/javascript-templates) in its values. The JavaScript templates used in the `on_click` parameter (either the ones in the `data` parameter of a `call-service` action or the ones in the `code` parameter of a `javascript` action) will have access to two variables, `item` and `itemText`. These variables are related to the clicked item, the first is the configuration object of the item (including an `element` property which is the HTML element relative to the anchor) and the second is the text of the item.
 
 :::
 

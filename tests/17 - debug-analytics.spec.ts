@@ -1,9 +1,9 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import { CONFIG_FILES } from './constants';
+import { CONFIG_FILES, SELECTORS } from './constants';
 import { haConfigRequest } from './ha-services';
 import { addJsonExtendedRoute } from './utilities';
-import { SELECTORS } from './selectors';
+import { links } from './selectors';
 
 const PREFIX = 'custom-sidebar debug:';
 
@@ -87,15 +87,15 @@ test.describe('Analytics', () => {
 
         await page.waitForTimeout(1000);
 
-        await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).click();
+        await page.locator(links.INTEGRATIONS).click();
 
         await page.waitForTimeout(1000);
 
-        await page.locator(SELECTORS.SIDEBAR_ITEMS.OVERVIEW).click();
+        await page.locator(links.OVERVIEW).click();
 
         await page.waitForTimeout(1000);
 
-        await page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG).click();
+        await page.locator(links.CONFIG).click();
 
         await page.waitForTimeout(1000);
 

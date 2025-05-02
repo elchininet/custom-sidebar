@@ -1,9 +1,12 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import { CONFIG_FILES, SIDEBAR_CLIP } from './constants';
+import {
+    CONFIG_FILES,
+    SIDEBAR_CLIP,
+    SELECTORS
+} from './constants';
 import { haConfigRequest } from './ha-services';
 import { fulfillJson } from './utilities';
-import { SELECTORS } from './selectors';
 
 const getSelectedOrderItemExtendingColorOption = (
     optionBase: {

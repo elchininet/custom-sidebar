@@ -1,5 +1,5 @@
 import { test, expect } from 'playwright-test-coverage';
-import { SELECTORS } from './selectors';
+import { SELECTORS } from './constants';
 
 const ERROR_PREFIX = 'custom-sidebar:';
 

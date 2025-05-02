@@ -1,12 +1,12 @@
 import { test, expect } from 'playwright-test-coverage';
 import {
     CONFIG_FILES,
+    SELECTORS,
     SIDEBAR_CLIP,
     SIDEBAR_NARROW_CLIP
 } from './constants';
 import { haConfigRequest } from './ha-services';
 import { fulfillJson, changeToMobileViewport } from './utilities';
-import { SELECTORS } from './selectors';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);

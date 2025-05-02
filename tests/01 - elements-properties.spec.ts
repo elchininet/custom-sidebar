@@ -1,9 +1,19 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
-import { CONFIG_FILES, SIDEBAR_CLIP } from './constants';
+import {
+    CONFIG_FILES,
+    HREFS,
+    SELECTORS,
+    SIDEBAR_CLIP
+} from './constants';
 import { haConfigRequest } from './ha-services';
 import { fulfillJson } from './utilities';
-import { SELECTORS } from './selectors';
+import {
+    getSidebarItem,
+    getSidebarLinkSelector,
+    getSidebarItemLinkFromLocator,
+    links
+} from './selectors';
 
 const pageVisit = async (page: Page): Promise<void> => {
     await page.goto('/');
@@ -22,20 +32,21 @@ test('sidebar items should have a data-processed attribute after being processed
 
     await pageVisit(page);
 
-    const items = [
-        SELECTORS.SIDEBAR_ITEMS.OVERVIEW,
-        SELECTORS.SIDEBAR_ITEMS.TODO,
-        SELECTORS.SIDEBAR_ITEMS.LOGBOOK,
-        SELECTORS.SIDEBAR_ITEMS.MEDIA_BROWSER,
-        SELECTORS.SIDEBAR_ITEMS.CONFIG,
-        SELECTORS.SIDEBAR_ITEMS.DEV_TOOLS,
-        SELECTORS.SIDEBAR_ITEMS.ENERGY,
-        SELECTORS.SIDEBAR_ITEMS.MAP,
-        SELECTORS.SIDEBAR_ITEMS.HISTORY
+    const links = [
+        HREFS.OVERVIEW,
+        HREFS.TODO,
+        HREFS.LOGBOOK,
+        HREFS.MEDIA_BROWSER,
+        HREFS.CONFIG,
+        HREFS.DEV_TOOLS,
+        HREFS.ENERGY,
+        HREFS.MAP,
+        HREFS.HISTORY
     ];
 
-    for (const selector of items) {
-        await expect(page.locator(selector)).toHaveAttribute('data-processed', 'true');
+    for (const href of links) {
+        const item = getSidebarItem(page, href);
+        await expect(item).toHaveAttribute('data-processed', 'true');
     }
 
 });
@@ -44,38 +55,43 @@ test('new items should be added properly with all their attributes', async ({ pa
 
     await pageVisit(page);
 
-    const items = [
-        SELECTORS.SIDEBAR_ITEMS.GOOGLE,
-        SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS,
-        SELECTORS.SIDEBAR_ITEMS.ENTITIES,
-        SELECTORS.SIDEBAR_ITEMS.AUTOMATIONS
+    const hrefs = [
+        HREFS.GOOGLE,
+        HREFS.INTEGRATIONS,
+        HREFS.ENTITIES,
+        HREFS.AUTOMATIONS
     ];
 
-    for (const selector of items) {
-        await expect(page.locator(selector)).toBeVisible();
+    for (const href of hrefs) {
+        const item = getSidebarItem(page, href);
+        await expect(item).toBeVisible();
     }
 
-    const google = page.locator(SELECTORS.SIDEBAR_ITEMS.GOOGLE);
+    const google = getSidebarItem(page, HREFS.GOOGLE);
+    const googleLink = getSidebarItemLinkFromLocator(google);
     await expect(google).toHaveText('Google', { useInnerText: true });
-    await expect(google).toHaveAttribute('href', 'https://mrdoob.com/projects/chromeexperiments/google-gravity/');
-    await expect(google).toHaveAttribute('target', '_blank');
+    await expect(googleLink).toHaveAttribute('href', 'https://mrdoob.com/projects/chromeexperiments/google-gravity/');
+    await expect(googleLink).toHaveAttribute('target', '_blank');
 
-    const integrations = page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS);
+    const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
+    const integrationsLink = getSidebarItemLinkFromLocator(integrations);
     await expect(integrations).toHaveText('Integrations', { useInnerText: true });
-    await expect(integrations).toHaveAttribute('href', '/config/integrations');
-    await expect(integrations).not.toHaveAttribute('target', '_blank');
+    await expect(integrationsLink).toHaveAttribute('href', '/config/integrations');
+    await expect(integrationsLink).not.toHaveAttribute('target', '_blank');
 
-    const entities = page.locator(SELECTORS.SIDEBAR_ITEMS.ENTITIES);
+    const entities = getSidebarItem(page, HREFS.ENTITIES);
+    const entitiesLink = getSidebarItemLinkFromLocator(entities);
     await expect(entities).toHaveText('Entities', { useInnerText: true });
-    await expect(entities).toHaveAttribute('href', '/config/entities');
-    await expect(entities).not.toHaveAttribute('target', '_blank');
+    await expect(entitiesLink).toHaveAttribute('href', '/config/entities');
+    await expect(entitiesLink).not.toHaveAttribute('target', '_blank');
 
-    const automations = page.locator(SELECTORS.SIDEBAR_ITEMS.AUTOMATIONS);
+    const automations = getSidebarItem(page, HREFS.AUTOMATIONS);
+    const automationsLink = getSidebarItemLinkFromLocator(automations);
     await expect(automations).toHaveText('Automations', { useInnerText: true });
-    await expect(automations).toHaveAttribute('href', '/config/automation');
-    await expect(automations).not.toHaveAttribute('target', '_blank');
+    await expect(automationsLink).toHaveAttribute('href', '/config/automation');
+    await expect(automationsLink).not.toHaveAttribute('target', '_blank');
 
-    const hidden = page.locator(SELECTORS.SIDEBAR_ITEMS.HIDDEN);
+    const hidden = getSidebarItem(page, HREFS.HIDDEN);
     await expect(hidden).toBeAttached();
     await expect(hidden).not.toBeVisible();
 
@@ -83,12 +99,14 @@ test('new items should be added properly with all their attributes', async ({ pa
 
 test('should change href and target of an existing item', async ({ page }) => {
 
+    const PATH = '/config/system';
+
     await fulfillJson(page, {
         order: [
             {
                 item: 'config',
-                match: 'data-panel',
-                href: '/config/system',
+                match: 'href',
+                href: PATH,
                 target: '_blank'
             }
         ]
@@ -98,9 +116,10 @@ test('should change href and target of an existing item', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    const config = page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG);
-    await expect(config).toHaveAttribute('href', '/config/system');
-    await expect(config).toHaveAttribute('target', '_blank');
+    const oldConfig = page.locator(links.CONFIG);
+    const newConfig = page.locator(getSidebarLinkSelector(PATH));
+    await expect(oldConfig).not.toBeAttached();
+    await expect(newConfig).toHaveAttribute('target', '_blank');
 
 });
 
@@ -108,25 +127,25 @@ test('should apply the order propely', async ({ page }) => {
 
     await pageVisit(page);
 
-    const items = [
-        [SELECTORS.SIDEBAR_ITEMS.OVERVIEW, '0'],
-        [SELECTORS.SIDEBAR_ITEMS.GOOGLE, '1'],
-        [SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS, '2'],
-        [SELECTORS.SIDEBAR_ITEMS.ENTITIES, '3'],
-        [SELECTORS.SIDEBAR_ITEMS.AUTOMATIONS, '4'],
-        [SELECTORS.SIDEBAR_ITEMS.TODO, '5'],
-        [SELECTORS.SIDEBAR_ITEMS.ENERGY, '7'],
-        [SELECTORS.SIDEBAR_ITEMS.MAP, '8'],
-        [SELECTORS.SIDEBAR_ITEMS.HISTORY, '9'],
-        [SELECTORS.SIDEBAR_ITEMS.LOGBOOK, '12'],
-        [SELECTORS.SIDEBAR_ITEMS.MEDIA_BROWSER, '13'],
-        [SELECTORS.SIDEBAR_ITEMS.CONFIG, '14'],
-        [SELECTORS.SIDEBAR_ITEMS.DEV_TOOLS, '15']
+    const linkEntries = [
+        [HREFS.OVERVIEW, '0'],
+        [HREFS.GOOGLE, '1'],
+        [HREFS.INTEGRATIONS, '2'],
+        [HREFS.ENTITIES, '3'],
+        [HREFS.AUTOMATIONS, '4'],
+        [HREFS.TODO, '5'],
+        [HREFS.ENERGY, '7'],
+        [HREFS.MAP, '8'],
+        [HREFS.HISTORY, '9'],
+        [HREFS.LOGBOOK, '12'],
+        [HREFS.MEDIA_BROWSER, '13'],
+        [HREFS.CONFIG, '14'],
+        [HREFS.DEV_TOOLS, '15']
     ];
 
-    for (const entry of items) {
-        const [selector, index] = entry;
-        await expect(page.locator(selector)).toHaveCSS('order', index);
+    for (const linkEntry of linkEntries) {
+        const [href, index] = linkEntry;
+        await expect(getSidebarItem(page, href)).toHaveCSS('order', index);
     }
 });
 
@@ -134,14 +153,16 @@ test('should hide items properly', async ({ page }) => {
 
     await pageVisit(page);
 
-    const items = [
-        SELECTORS.SIDEBAR_ITEMS.ENERGY,
-        SELECTORS.SIDEBAR_ITEMS.MAP,
-        SELECTORS.SIDEBAR_ITEMS.HISTORY
+    const linksArray = [
+        HREFS.ENERGY,
+        HREFS.MAP,
+        HREFS.HISTORY
     ];
 
-    for (const selector of items) {
-        await expect(page.locator(selector)).not.toBeVisible();
+    for (const href of linksArray) {
+        const item = getSidebarItem(page, href);
+        await expect(item).toBeAttached();
+        await expect(item).not.toBeVisible();
     }
 
 });
@@ -160,10 +181,12 @@ test('should set an icon in an existent element', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    const logBookIcon = page.locator(`${SELECTORS.SIDEBAR_PAPER_ICON_ITEMS.LOGBOOK} > ${SELECTORS.HA_ICON}`);
+    const logbookItem = getSidebarItem(page, HREFS.LOGBOOK);
+
+    const logBookIcon = logbookItem.locator(SELECTORS.HA_ICON);
 
     await expect(logBookIcon).toBeVisible();
     await expect(logBookIcon).toHaveAttribute('icon', 'mdi:bullseye-arrow');
-    await expect(logBookIcon).toHaveAttribute('slot', 'item-icon');
+    await expect(logBookIcon).toHaveAttribute('slot', 'start');
 
 });

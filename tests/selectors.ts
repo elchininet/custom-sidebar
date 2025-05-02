@@ -1,39 +1,21 @@
-import { PANELS } from './constants';
-import { getSidebarItemSelector, getPaperIconSelector } from './utilities';
+import { Page, Locator } from '@playwright/test';
+import { SELECTORS, HREFS } from './constants';
 
-const SIDEBAR_ITEMS = Object.fromEntries(
-    Object.entries(PANELS).map(([key, value]) => [
-        key,
-        getSidebarItemSelector(value)
-    ])
-);
-
-const SIDEBAR_PAPER_ICON_ITEMS = Object.fromEntries(
-    Object.entries(PANELS).map(([key, value]) => [
-        key,
-        getPaperIconSelector(value)
-    ])
-);
-
-export const SELECTORS = {
-    MENU: '.menu',
-    TITLE: '.menu .title',
-    SIDEBAR_HA_ICON_BUTTON: '.menu ha-icon-button',
-    SIDEBAR_EDIT_BUTTON: '.menu mwc-button',
-    PROFILE_EDIT_BUTTON: '.content > ha-card ha-settings-row > mwc-button',
-    PROFILE_HIDE_SIDEBAR: '.content > ha-card ha-force-narrow-row ha-settings-row > ha-switch',
-    NOTIFICATIONS: '.notifications-container .notifications',
-    ITEM_NOTIFICATION_COLLAPSED: '.notification-badge-collapsed',
-    ITEM_NOTIFICATION: '.notification-badge:not(.notification-badge-collapsed)',
-    PROFILE: '.profile paper-icon-item',
-    HA_SIDEBAR: 'ha-sidebar',
-    HUI_VIEW: 'hui-view',
-    PAPER_LIST_BOX: 'paper-listbox',
-    TOOLTIP: '.tooltip',
-    HA_ICON: 'ha-icon',
-    PANEL_CONFIG: 'ha-panel-config',
-    ENTRY_CONTAINER: '.entry-container',
-    HA_LOGBOOK: 'ha-logbook',
-    SIDEBAR_ITEMS,
-    SIDEBAR_PAPER_ICON_ITEMS
+export const getSidebarLinkSelector = (href: string): string => {
+    return `${SELECTORS.HA_SIDEBAR} a[role="listitem"][href="${href}"]`;
 };
+
+export const getSidebarItem = (page: Page, href: string) => {
+    const items = page.locator(`${SELECTORS.HA_SIDEBAR} ${SELECTORS.SIDEBAR_ITEMS_CONTAINER} ${SELECTORS.SIDEBAR_ITEM}`);
+    return items.filter({
+        has: page.locator(`a[role="listitem"][href="${href}"]`)
+    });
+};
+
+export const getSidebarItemLinkFromLocator = (item: Locator) => item.locator('a[role="listitem"]');
+
+export const links = Object.fromEntries(
+    Object.entries(HREFS).map(([key, href]) => {
+        return [key, getSidebarLinkSelector(href)];
+    })
+) as Record<keyof typeof HREFS, string>;

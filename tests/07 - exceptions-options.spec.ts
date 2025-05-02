@@ -2,14 +2,15 @@ import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import {
     CONFIG_FILES,
+    SELECTORS,
     SIDEBAR_CLIP,
     SIDEBAR_NARROW_CLIP,
     ATTRIBUTES,
     BASE_NAME
 } from './constants';
 import { haConfigRequest } from './ha-services';
+import { links } from './selectors';
 import { addJsonExtendedRoute, changeToMobileViewport } from './utilities';
-import { SELECTORS } from './selectors';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
@@ -286,11 +287,11 @@ test.describe('extending from the base', () => {
                 clip: SIDEBAR_CLIP
             });
 
-            const google = page.locator(SELECTORS.SIDEBAR_ITEMS.GOOGLE);
+            const google = page.locator(links.GOOGLE);
             await expect(google).toHaveText('Search', { useInnerText: true });
             await expect(google).toHaveAttribute('href', 'https://google.com');
 
-            const googleIcon = page.locator(`${SELECTORS.SIDEBAR_ITEMS.GOOGLE} ha-icon[icon="mdi:web"]`);
+            const googleIcon = page.locator(`${links.GOOGLE} ha-icon[icon="mdi:web"]`);
             expect(googleIcon).toBeVisible();
 
         });

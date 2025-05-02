@@ -1,8 +1,11 @@
 import { test, expect } from 'playwright-test-coverage';
-import { CONFIG_FILES, SIDEBAR_CLIP_WITH_DIVIDERS } from './constants';
+import {
+    CONFIG_FILES,
+    SELECTORS,
+    SIDEBAR_CLIP_WITH_DIVIDERS
+} from './constants';
 import { haConfigRequest } from './ha-services';
 import { addJsonExtendedRoute } from './utilities';
-import { SELECTORS } from './selectors';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);

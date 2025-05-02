@@ -1,21 +1,42 @@
 export const BASE_URL = 'http://host.docker.internal:8123';
 export const JSON_PATH = 'local/sidebar-config.json*';
 
-export const PANELS = {
-    OVERVIEW: 'lovelace',
-    ENERGY: 'energy',
-    MAP: 'map',
-    LOGBOOK: 'logbook',
-    HISTORY: 'history',
-    MEDIA_BROWSER: 'media-browser',
-    TODO: 'todo',
-    DEV_TOOLS: 'developer-tools',
-    CONFIG: 'config',
-    GOOGLE: 'google',
-    INTEGRATIONS: 'integrations',
-    ENTITIES: 'entities',
-    AUTOMATIONS: 'automations',
-    HIDDEN: 'hidden'
+export const HREFS = {
+    OVERVIEW: '/lovelace',
+    ENERGY: '/energy',
+    MAP: '/map',
+    LOGBOOK: '/logbook',
+    HISTORY: '/history',
+    MEDIA_BROWSER: '/media-browser',
+    TODO: '/todo',
+    DEV_TOOLS: '/developer-tools',
+    CONFIG: '/config',
+    GOOGLE: 'https://mrdoob.com/projects/chromeexperiments/google-gravity/',
+    INTEGRATIONS: '/config/integrations',
+    ENTITIES: '/config/entities',
+    AUTOMATIONS: '/config/automation',
+    HIDDEN: '/hidden'
+};
+
+export const SELECTORS = {
+    MENU: '.menu',
+    TITLE: '.menu .title',
+    SIDEBAR_HA_ICON_BUTTON: '.menu ha-icon-button',
+    SIDEBAR_EDIT_BUTTON: '.menu mwc-button',
+    PROFILE_EDIT_BUTTON: '.content > ha-card ha-settings-row > mwc-button',
+    PROFILE_HIDE_SIDEBAR: '.content > ha-card ha-force-narrow-row ha-settings-row > ha-switch',
+    NOTIFICATIONS: 'ha-md-list-item.notifications',
+    ITEM_NOTIFICATION: 'span.badge',
+    PROFILE: 'ha-md-list-item.user',
+    HA_SIDEBAR: 'ha-sidebar',
+    HUI_VIEW: 'hui-view',
+    SIDEBAR_ITEMS_CONTAINER: 'ha-md-list.ha-scrollbar',
+    SIDEBAR_ITEM: 'ha-md-list-item',
+    TOOLTIP: '.tooltip',
+    HA_ICON: 'ha-icon',
+    PANEL_CONFIG: 'ha-panel-config',
+    ENTRY_CONTAINER: '.entry-container',
+    HA_LOGBOOK: 'ha-logbook'
 };
 
 export const ATTRIBUTES = {

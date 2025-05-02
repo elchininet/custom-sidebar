@@ -23,21 +23,23 @@ const BADGE_STYLES = {
     maxWidth: '80px',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    textWrap: 'nowrap'
+    textWrap: 'nowrap',
+    zIndex: 1
 };
 
 export const FUNCTIONALITY = {
-    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.SIDEBAR_ITEMS_CONTAINER } > ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM } > ${ ELEMENT.USER_BADGE }`]: {
+        zIndex: 1
+    },
+    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }`]: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '0px',
+        gap: '5px',
         lineHeight: '1',
-        maxWidth: 'unset'
+        position: 'relative',
+        zIndex: 1
     },
-    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.SIDEBAR_ITEMS_CONTAINER } > ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }`]: {
-        gap: '5px'
-    },
-    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.SIDEBAR_ITEMS_CONTAINER } > ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
         content: 'attr(data-info)',
         display: 'block',
         fontSize: '11px',
@@ -171,29 +173,20 @@ export const SIDEBAR_EDITABLE = {
 };
 
 export const ITEM_BACKGROUND = {
-    [`${ SELECTOR.HOST } ${ ELEMENT.ANCHOR }`]: {
+    [`${ SELECTOR.HOST }  ${ ELEMENT.ITEM }:not(${ SELECTOR.ITEM_SELECTED })${ PSEUDO_SELECTOR.BEFORE }`]: {
         background: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND,
             'none'
-        )
-    }
-};
-
-export const ITEM_BACKGROUND_HOVER_AND_HOVER_OPACITY = {
-    [`${ SELECTOR.HOST } ${ SELECTOR.SURFACE }${ PSEUDO_SELECTOR.BEFORE }`]: {
-        backgroundColor: getCSSVariables(
-            CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER,
-            HA_CSS_VARIABLES.MD_RIPPLE_HOVER_COLOR,
-            HA_CSS_VARIABLES.MD_SYS_COLOR_ON_SURFACE,
-            '#1d1b20'
-        )
-    },
-    [`${ SELECTOR.HOST } ${ SELECTOR.SURFACE_HOVERED }${ PSEUDO_SELECTOR.BEFORE }`]: {
-        opacity: getCSSVariables(
-            CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER_OPACITY,
-            HA_CSS_VARIABLES.MD_RIPPLE_HOVER_OPACITY,
-            '.08'
-        )
+        ),
+        bottom: '0px',
+        content: '""',
+        borderRadius: '4px',
+        display: 'block',
+        left: '0px',
+        position: 'absolute',
+        pointerEvents: 'none',
+        right: '0px',
+        top: '0px'
     }
 };
 

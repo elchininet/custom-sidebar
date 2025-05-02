@@ -36,6 +36,7 @@ import {
     SELECTOR,
     ATTRIBUTE,
     CUSTOM_SIDEBAR_CSS_VARIABLES,
+    ITEM_OPTIONS_NATIVE_VARIABLES_MAP,
     ITEM_OPTIONS_VARIABLES_MAP,
     SIDEBAR_OPTIONS_VARIABLES_MAP,
     KEY,
@@ -856,13 +857,36 @@ class CustomSidebar {
             this._haDrawer.selector.$.query(SELECTOR.MC_DRAWER).element,
             this._sidebar.element,
             this._sidebar.selector.$.element,
-            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element
-        ]).then(([mcDrawer, sidebar, sideBarShadowRoot, sidebarItemsContainer]: [HTMLElement, HTMLElement, ShadowRoot, HTMLElement]) => {
+            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element,
+            this._sidebar.selector.$.query(`${ ELEMENT.ITEM }${ SELECTOR.SIDEBAR_NOTIFICATIONS }`).element,
+            this._sidebar.selector.$.query(`${ ELEMENT.ITEM }${ SELECTOR.USER }`).element
+        ]).then((elements: [HTMLElement, HTMLElement, ShadowRoot, HTMLElement, HTMLElement, HTMLElement]) => {
+
+            const [
+                mcDrawer,
+                sidebar,
+                sideBarShadowRoot,
+                sidebarItemsContainer,
+                notifications,
+                profile
+            ] = elements;
 
             this._subscribeTemplateColorChanges(
                 this._config,
                 sidebar,
                 SIDEBAR_OPTIONS_VARIABLES_MAP
+            );
+
+            this._subscribeTemplateColorChanges(
+                this._config,
+                notifications,
+                ITEM_OPTIONS_NATIVE_VARIABLES_MAP
+            );
+
+            this._subscribeTemplateColorChanges(
+                this._config,
+                profile,
+                ITEM_OPTIONS_NATIVE_VARIABLES_MAP
             );
 
             this._subscribeTemplateColorChanges(
@@ -937,6 +961,7 @@ class CustomSidebar {
                     STYLES.SCROLL_THUMB_COLOR,
                     STYLES.SIDEBAR_EDITABLE,
                     STYLES.ITEM_DIVIDER_ITEM_DIVIDER_COLOR,
+                    STYLES.ITEM_BACKGROUND,
                     STYLES.ICON_COLOR,
                     STYLES.ICON_COLOR_SELECTED,
                     STYLES.ICON_COLOR_HOVER,
@@ -956,29 +981,6 @@ class CustomSidebar {
 
         });
 
-    }
-
-    private _addItemStyles(item: HTMLElement): void {
-        getPromisableResult(
-            () => item.shadowRoot,
-            (shadowRoot: ShadowRoot) => shadowRoot !== null
-        ).then((shadowRoot: ShadowRoot) => {
-            this._styleManager.addStyle(
-                [
-                    STYLES.ITEM_BACKGROUND
-                ],
-                shadowRoot
-            );
-            this._styleManager.addStyle(
-                [
-                    STYLES.ITEM_BACKGROUND_HOVER_AND_HOVER_OPACITY
-                ],
-                shadowRoot
-                    .querySelector(ELEMENT.MD_ITEM)
-                    .querySelector(ELEMENT.MD_RIPPLE)
-                    .shadowRoot
-            );
-        });
     }
 
     private _rearrange(): void {
@@ -1094,8 +1096,6 @@ class CustomSidebar {
                     }
 
                     orderItem.element.style.order = `${orderIndex}`;
-
-                    this._addItemStyles(orderItem.element);
 
                     if (!isUndefined(orderItem.attributes)) {
                         this._subscribeAttributes(
@@ -1224,14 +1224,12 @@ class CustomSidebar {
 
     private async _mouseClick(item: ConfigOrderWithItem, event: MouseEvent): Promise<void> {
 
-        const { on_click: onClickAction } = item;
-        const element = event.currentTarget as HTMLElement;
+        const { on_click: onClickAction, element } = item;
+        const sidebarItem = element as SidebarItem;
         const textElement = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
         const itemText = textElement.textContent.trim();
-        const anchor = this._itemsMap.get(element);
-        const hasHashBangAsHref = anchor.getAttribute(ATTRIBUTE.HREF) === '#';
 
-        if (hasHashBangAsHref) {
+        if (sidebarItem.href === '#') {
             event.preventDefault();
         }
 
