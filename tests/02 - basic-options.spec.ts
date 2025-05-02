@@ -2,12 +2,18 @@ import { test, expect } from 'playwright-test-coverage';
 import {
     CONFIG_FILES,
     SIDEBAR_CLIP_WITH_DIVIDERS,
-    BASE_URL
+    SELECTORS,
+    BASE_URL,
+    HREFS
 } from './constants';
 import { haConfigRequest } from './ha-services';
-import { fulfillJson, getSidebarItemSelector } from './utilities';
-import { SELECTORS } from './selectors';
+import { fulfillJson } from './utilities';
 import { NAMESPACE } from '../src/constants';
+import {
+    links,
+    getSidebarItem,
+    getSidebarLinkSelector
+} from './selectors';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
@@ -272,8 +278,8 @@ test.beforeAll(async ({ browser }) => {
                 .menu .title {
                     color: red !important;
                 }
-                a[role="option"] .item-text {
-                    color: blue;
+                ha-md-list-item .item-text {
+                    color: blue !important;
                 }
             `
         },
@@ -317,9 +323,11 @@ test('should apply attributes as an object to an item', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-yes', 'yes');
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-no', 'no');
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-custom-sidebar-attrs', 'data-yes|data-no');
+    const configItem = getSidebarItem(page, HREFS.CONFIG);
+
+    await expect(configItem).toHaveAttribute('data-yes', 'yes');
+    await expect(configItem).toHaveAttribute('data-no', 'no');
+    await expect(configItem).toHaveAttribute('data-custom-sidebar-attrs', 'data-yes|data-no');
 
 });
 
@@ -347,9 +355,11 @@ test('should apply attributes as a JavaScript template to an item', async ({ pag
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-js-yes', 'yes');
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-js-no', 'no');
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-custom-sidebar-attrs', 'data-js-yes|data-js-no');
+    const configItem = getSidebarItem(page, HREFS.CONFIG);
+
+    await expect(configItem).toHaveAttribute('data-js-yes', 'yes');
+    await expect(configItem).toHaveAttribute('data-js-no', 'no');
+    await expect(configItem).toHaveAttribute('data-custom-sidebar-attrs', 'data-js-yes|data-js-no');
 
 });
 
@@ -425,11 +435,13 @@ test('should throw a warning if the attributes property has a template that retu
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-prop1', 'correct');
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveAttribute('data-prop2');
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-prop3', '100');
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-prop4', 'true');
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveAttribute('data-custom-sidebar-attrs', 'data-prop1|data-prop3|data-prop4');
+    const configItem = getSidebarItem(page, HREFS.CONFIG);
+
+    await expect(configItem).toHaveAttribute('data-prop1', 'correct');
+    await expect(configItem).not.toHaveAttribute('data-prop2');
+    await expect(configItem).toHaveAttribute('data-prop3', '100');
+    await expect(configItem).toHaveAttribute('data-prop4', 'true');
+    await expect(configItem).toHaveAttribute('data-custom-sidebar-attrs', 'data-prop1|data-prop3|data-prop4');
 
     expect(warnings).toEqual(
         expect.arrayContaining([
@@ -471,7 +483,7 @@ test('should redirect to the default_path on refresh', async ({ page }) => {
     await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
     await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.TODO).click();
+    await getSidebarItem(page, HREFS.TODO).click();
 
     await expect(page).not.toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
 
@@ -517,19 +529,21 @@ test('should execute a call-service action without changing the URL', async ({ p
 
     await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
 
-    await page.locator(getSidebarItemSelector('check')).click();
+    await getSidebarItem(page, '#').click();
 
     await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom Title');
 
     await expect(page).not.toHaveURL(/.*#/);
 
-    await page.locator(getSidebarItemSelector('check')).click();
+    await getSidebarItem(page, '#').click();
 
     await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
 
 });
 
 test('should execute a call-service action changing the URL', async ({ page }) => {
+
+    const PATH = '/config/integrations';
 
     await fulfillJson(
         page,
@@ -545,7 +559,7 @@ test('should execute a call-service action changing the URL', async ({ page }) =
                     new_item: true,
                     item: 'Check',
                     icon: 'mdi:bullseye-arrow',
-                    href: '/config/integrations',
+                    href: PATH,
                     on_click: {
                         action: 'call-service',
                         service: 'input_boolean.toggle',
@@ -565,19 +579,21 @@ test('should execute a call-service action changing the URL', async ({ page }) =
 
     await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
 
-    await page.locator(getSidebarItemSelector('check')).click();
+    await getSidebarItem(page, PATH).click();
 
     await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom Title');
 
     await expect(page).toHaveURL(/\/config\/integrations/);
 
-    await page.locator(getSidebarItemSelector('check')).click();
+    await getSidebarItem(page, PATH).click();
 
     await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
 
 });
 
 test('should execute a call-service action compiling the data using JavaScript templates', async ({ page }) => {
+
+    const PATH = '/config/integrations';
 
     await fulfillJson(
         page,
@@ -602,7 +618,7 @@ test('should execute a call-service action compiling the data using JavaScript t
                     new_item: true,
                     item: 'Check',
                     icon: 'mdi:bullseye-arrow',
-                    href: '/config/integrations',
+                    href: PATH,
                     on_click: {
                         action: 'call-service',
                         service: 'input_boolean.toggle',
@@ -625,11 +641,11 @@ test('should execute a call-service action compiling the data using JavaScript t
 
     await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
 
-    await page.locator(getSidebarItemSelector('check')).click();
+    await getSidebarItem(page, PATH).click();
 
     await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom Title');
 
-    await page.locator(getSidebarItemSelector('check')).click();
+    await getSidebarItem(page, PATH).click();
 
     await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
 
@@ -640,7 +656,10 @@ test('should throw a warning if a call-service action has a malformed service', 
     const warnings: string[] = [];
 
     page.on('console', message => {
-        if (message.type() === 'warning') {
+        if (
+            message.type() === 'warning' &&
+            !message.text().includes('Vaadin 25') // Home Assistant >= 2025.4.x is throwing a warning  coming from the Vadding Material Theme
+        ) {
             warnings.push(message.text());
         }
     });
@@ -667,11 +686,11 @@ test('should throw a warning if a call-service action has a malformed service', 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await page.locator(getSidebarItemSelector('check')).click();
+    await getSidebarItem(page, '#').click();
 
     expect(warnings).toEqual(
         expect.arrayContaining([
-            'custom-sidebar ignoring "call-service" action in "check" item. The service parameter is malfomed.'
+            'custom-sidebar ignoring "call-service" action in "Check" item. The service parameter is malfomed.'
         ])
     );
 
@@ -710,7 +729,7 @@ test('should execute a javascript action without redirecting', async ({ page }) 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await page.locator(getSidebarItemSelector('check')).click();
+    await getSidebarItem(page, '#').click();
 
     await expect(page).toHaveURL(/\/config\/integrations/);
 
@@ -754,7 +773,7 @@ test('should execute a javascript action redirecting', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await page.locator(getSidebarItemSelector('check')).click();
+    await getSidebarItem(page, '/config/integrations').click();
 
     await expect(page).toHaveURL(/\/config\/integrations/);
 
@@ -801,7 +820,7 @@ test('should execute a javascript action using partials', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await page.locator(getSidebarItemSelector('check')).click();
+    await getSidebarItem(page, '/config/integrations').click();
 
     expect(logs).toEqual(
         expect.arrayContaining(['JavaScript code from partial executed'])
@@ -809,7 +828,7 @@ test('should execute a javascript action using partials', async ({ page }) => {
 
 });
 
-test('should execute a javascript action having the clicked item and the dataPanel as variables', async ({ page }) => {
+test('should execute a javascript action having the clicked item and the itemText as variables', async ({ page }) => {
 
     const logs: string[] = [];
 
@@ -829,7 +848,7 @@ test('should execute a javascript action having the clicked item and the dataPan
                     on_click: {
                         action: 'javascript',
                         code: `
-                            console.log('Clicked item is ' + item.item + ' and data-panel is ' + dataPanel);
+                            console.log('Clicked item is ' + itemText + ' and the icon is ' + item.icon);
                         `
                     }
                 }
@@ -842,10 +861,10 @@ test('should execute a javascript action having the clicked item and the dataPan
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await page.locator(getSidebarItemSelector('check')).click();
+    await getSidebarItem(page, '/config/integrations').click();
 
     expect(logs).toEqual(
-        expect.arrayContaining(['Clicked item is Check and data-panel is check'])
+        expect.arrayContaining(['Clicked item is Check and the icon is mdi:bullseye-arrow'])
     );
 
 });

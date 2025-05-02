@@ -2,12 +2,14 @@ import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import {
     CONFIG_FILES,
+    SELECTORS,
+    HREFS,
     SIDEBAR_CLIP,
     ATTRIBUTES
 } from './constants';
 import { haConfigRequest } from './ha-services';
 import { addJsonExtendedRoute, changeToMobileViewport } from './utilities';
-import { SELECTORS } from './selectors';
+import { links, getSidebarItem } from './selectors';
 
 const SELECTED_CLASSNAME = /(^|\s)iron-selected(\s|$)/;
 
@@ -29,31 +31,31 @@ test('Clicking on items with the same root path should select the proper item', 
     await visitHome(page);
     await page.waitForTimeout(600);
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).click();
+    await page.locator(links.INTEGRATIONS).click();
     await page.waitForTimeout(600);
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.INTEGRATIONS)).toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.ENTITIES).click();
+    await page.locator(links.ENTITIES).click();
     await page.waitForTimeout(600);
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.ENTITIES)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.ENTITIES)).toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.AUTOMATIONS).click();
+    await page.locator(links.AUTOMATIONS).click();
     await page.waitForTimeout(600);
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.AUTOMATIONS)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.AUTOMATIONS)).toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG).click();
+    await page.locator(links.CONFIG).click();
     await page.waitForTimeout(600);
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.CONFIG)).toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
 
 });
 
@@ -62,21 +64,21 @@ test('Hiting Enter with items focused should select the proper item', async ({ p
     await visitHome(page);
     await page.waitForTimeout(600);
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).focus();
+    await page.locator(links.INTEGRATIONS).focus();
     await page.waitForTimeout(600);
 
     await page.keyboard.press('Enter');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.INTEGRATIONS)).toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.ENTITIES).focus();
+    await page.locator(links.ENTITIES).focus();
     await page.waitForTimeout(600);
 
     await page.keyboard.press('Enter');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.ENTITIES)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.ENTITIES)).toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
 
 });
 
@@ -104,34 +106,34 @@ test('Visit a URL that matches with multiple items should select the proper item
     await page.goto('/config');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.CONFIG)).toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
 
     await page.goto('/config/integrations');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.INTEGRATIONS)).toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
 
     await page.goto('/config/entities');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.ENTITIES)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.ENTITIES)).toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
 
     await page.goto('/config/automation');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.AUTOMATIONS)).toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(page.locator(links.AUTOMATIONS)).toHaveClass(SELECTED_CLASSNAME);
 
 });
 
@@ -150,13 +152,13 @@ test('the scroll should be restored after clicking on an element', async ({ page
     });
     await page.waitForTimeout(600);
 
-    const scrollTopStart = await page.locator(SELECTORS.PAPER_LIST_BOX).evaluate(element => element.scrollTop);
+    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).click({ delay: 150 });
+    await page.locator(links.INTEGRATIONS).click({ delay: 150 });
     await page.waitForTimeout(600);
 
     expect(
-        await page.locator(SELECTORS.PAPER_LIST_BOX).evaluate(element => element.scrollTop)
+        await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
     ).toBe(scrollTopStart);
 
 });
@@ -176,14 +178,14 @@ test('the scroll should be restored after pressing Enter with an element focused
     });
     await page.waitForTimeout(600);
 
-    const scrollTopStart = await page.locator(SELECTORS.PAPER_LIST_BOX).evaluate(element => element.scrollTop);
+    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS).focus();
+    await page.locator(links.INTEGRATIONS).focus();
     await page.keyboard.press('Enter');
     await page.waitForTimeout(600);
 
     expect(
-        await page.locator(SELECTORS.PAPER_LIST_BOX).evaluate(element => element.scrollTop)
+        await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
     ).toBe(scrollTopStart);
 
 });
@@ -323,39 +325,39 @@ test('navigating with the keyboard up and down arrows should focus the proper it
 
     await visitHome(page);
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.OVERVIEW).focus();
+    await page.locator(links.OVERVIEW).focus();
 
     await page.keyboard.press('ArrowDown');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.GOOGLE)).toBeFocused();
+    await expect(page.locator(links.GOOGLE)).toBeFocused();
 
     await page.keyboard.press('ArrowDown');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.INTEGRATIONS)).toBeFocused();
+    await expect(page.locator(links.INTEGRATIONS)).toBeFocused();
 
     await page.keyboard.press('ArrowUp');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.GOOGLE)).toBeFocused();
+    await expect(page.locator(links.GOOGLE)).toBeFocused();
 
     await page.keyboard.press('ArrowUp');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.OVERVIEW)).toBeFocused();
+    await expect(page.locator(links.OVERVIEW)).toBeFocused();
 
     await page.keyboard.press('ArrowUp');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.DEV_TOOLS)).toBeFocused();
+    await expect(page.locator(links.DEV_TOOLS)).toBeFocused();
 
     await page.keyboard.press('ArrowUp');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG)).toBeFocused();
+    await expect(page.locator(links.CONFIG)).toBeFocused();
 
     await page.keyboard.press('ArrowDown');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.DEV_TOOLS)).toBeFocused();
+    await expect(page.locator(links.DEV_TOOLS)).toBeFocused();
 
     await page.keyboard.press('ArrowDown');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.OVERVIEW)).toBeFocused();
+    await expect(page.locator(links.OVERVIEW)).toBeFocused();
 
 });
 
@@ -363,24 +365,24 @@ test('navigating with the keyboard using tab should focus the proper items in or
 
     await visitHome(page);
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.OVERVIEW).focus();
+    await page.locator(links.OVERVIEW).focus();
 
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_PAPER_ICON_ITEMS.GOOGLE)).toBeFocused();
+    await expect(getSidebarItem(page, HREFS.GOOGLE)).toBeFocused();
 
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_PAPER_ICON_ITEMS.INTEGRATIONS)).toBeFocused();
+    await expect(getSidebarItem(page, HREFS.INTEGRATIONS)).toBeFocused();
 
     await page.keyboard.down('Shift');
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_PAPER_ICON_ITEMS.GOOGLE)).toBeFocused();
+    await expect(getSidebarItem(page, HREFS.GOOGLE)).toBeFocused();
 
     await page.keyboard.press('Tab');
 
-    await page.locator(SELECTORS.SIDEBAR_PAPER_ICON_ITEMS.OVERVIEW).focus();
+    await getSidebarItem(page, HREFS.OVERVIEW).focus();
 
     await page.keyboard.press('Tab');
 
@@ -389,13 +391,13 @@ test('navigating with the keyboard using tab should focus the proper items in or
     await page.keyboard.up('Shift');
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.OVERVIEW)).toBeFocused();
+    await expect(page.locator(links.OVERVIEW)).toBeFocused();
 
-    await page.locator(SELECTORS.SIDEBAR_ITEMS.CONFIG).focus();
+    await page.locator(links.CONFIG).focus();
 
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_PAPER_ICON_ITEMS.DEV_TOOLS)).toBeFocused();
+    await expect(getSidebarItem(page, HREFS.DEV_TOOLS)).toBeFocused();
 
     await page.keyboard.press('Tab');
 
@@ -412,7 +414,7 @@ test('navigating with the keyboard using tab should focus the proper items in or
 
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_PAPER_ICON_ITEMS.DEV_TOOLS)).toBeFocused();
+    await expect(getSidebarItem(page, HREFS.DEV_TOOLS)).toBeFocused();
 
 });
 
@@ -429,7 +431,7 @@ test('Pressing tab without being in the sidebar should not select any item', asy
 
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_ITEMS.OVERVIEW)).not.toBeFocused();
+    await expect(page.locator(links.OVERVIEW)).not.toBeFocused();
 
 });
 
@@ -437,7 +439,7 @@ test('new items should have tooltips', async ({ page }) => {
 
     await visitHome(page);
 
-    await page.locator(SELECTORS.SIDEBAR_PAPER_ICON_ITEMS.GOOGLE).hover();
+    await getSidebarItem(page, HREFS.GOOGLE).hover();
 
     await expect(page.locator(SELECTORS.TOOLTIP)).not.toBeVisible();
 
@@ -445,7 +447,7 @@ test('new items should have tooltips', async ({ page }) => {
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('expanded');
 
-    await page.locator(SELECTORS.SIDEBAR_PAPER_ICON_ITEMS.GOOGLE).hover();
+    await getSidebarItem(page, HREFS.GOOGLE).hover();
 
     await expect(page.locator(SELECTORS.TOOLTIP)).toBeVisible();
 

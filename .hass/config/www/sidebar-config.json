@@ -53,7 +53,7 @@
       },
       {
         "item": "config",
-        "match": "data-panel",
+        "match": "href",
         "bottom": true,
         "order": 8
       },
@@ -72,8 +72,8 @@
         "hide": true
       },
       {
-        "item": "energy",
-        "match": "data-panel",
+        "item": "/energy",
+        "match": "href",
         "exact": true,
         "hide": true
       },

@@ -1,9 +1,8 @@
 import { test, expect } from 'playwright-test-coverage';
 import { SidebarMode } from '../src/types';
 import { NAMESPACE } from '../src/constants';
-import { BASE_NAME } from './constants';
+import { BASE_NAME, SELECTORS } from './constants';
 import { fulfillJson } from './utilities';
-import { SELECTORS } from './selectors';
 
 const ERROR_PREFIX = `${NAMESPACE}: Invalid configuration`;
 
