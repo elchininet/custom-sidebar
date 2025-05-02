@@ -18,13 +18,14 @@ These options are only useful if you plan to change the appareance of the sideba
 | Options            | Type                               | Required | Description |
 | ------------------ | ---------------------------------- | -------- | ----------- |
 | title_color<sup>\*</sup> | String                       | no       | Sets the color of the sidebar title |
-| subtitle_color<sup>\*</sup> | String                    | no       | Sets the color of the sidebar subtitle |
+| subtitle_color<sup>\*</sup> | String                    | no       | Sets the color of the sidebar subtitle. If it is not set, the `title_color` will be used |
 | sidebar_background<sup>\*</sup> | String                | no       | Sets the background of the sidebar. It could be a color or [a background declaration] |
 | sidebar_border_color<sup>\*</sup> | String              | no       | Sets the border-right color of the sidebar |
 | menu_background<sup>\*</sup>    | String                | no       | Sets the background of the sidebar menu area (the one containing the menu button and the title). If it is not set, the `sidebar_background` option will be used. It could be a color or [a background declaration] |
 | sidebar_button_color<sup>\*</sup> | String              | no       | Sets the color of the sidebar hamburger menu |
 | item_background<sup>\*</sup> | String                   | no       | Sets the background of the sidebar items. It could be a color or [a background declaration] |
 | item_background_hover<sup>\*</sup> | String             | no       | Sets the background of the sidebar items in a hover state. It could be a color or [a background declaration] |
+| item_background_hover_opacity<sup>\*</sup> | Number or String | no | Sets the opacity of the items' background in a hover state. It should be a number between `0` (fully transparent) and `1` (fully opaque) |
 | icon_color<sup>\*</sup> | String                        | no       | Sets the color of the sidebar icons |
 | icon_color_selected<sup>\*</sup> | String               | no       | Sets the icon color of the selected sidebar item |
 | icon_color_hover<sup>\*</sup> | String                  | no       | Sets the icon color of the sidebar items in a hover state |
@@ -64,6 +65,7 @@ These options are only useful if you plan to change the appareance of the sideba
 | ------------------------- | ------- | --------- | ----------- |
 | item_background<sup>\*</sup> | String | no      | Sets the background of the items. It could be a color or [a background declaration] (it overrides the root `item_background` option) |
 | item_background_hover<sup>\*</sup> | String  | no | Sets the background of the items in a hover state. It could be a color or [a background declaration] (it overrides the rot `item_background_hover` option) |
+| item_background_hover_opacity<sup>\*</sup> | Number or String | no | Sets the opacity of the item background when it is hovered. It should be a number between `0` (fully transparent) and `1` (fully opaque). If it is not specified, the default `0.08` will be used (it overrides the root `item_background_hover_opacity` option) |
 | icon_color<sup>\*</sup>   | String  | no        | Sets the color of the icon (it overrides the root `icon_color` option) |
 | icon_color_selected<sup>\*</sup> | String | no  | Sets the icon color of the item when it is selected (it overrides the root `icon_color_selected` option) |
 | icon_color_hover<sup>\*</sup> | String | no     | Sets the item icon color in a hover state (it overrides the root `icon_color_hover` option) |
