@@ -36,7 +36,6 @@ import {
     SELECTOR,
     ATTRIBUTE,
     CUSTOM_SIDEBAR_CSS_VARIABLES,
-    ITEM_OPTIONS_NATIVE_VARIABLES_MAP,
     ITEM_OPTIONS_VARIABLES_MAP,
     SIDEBAR_OPTIONS_VARIABLES_MAP,
     KEY,
@@ -244,6 +243,12 @@ class CustomSidebar {
         return element
             .shadowRoot
             .querySelector<HTMLAnchorElement>(ELEMENT.ANCHOR);
+    }
+
+    private _getButtonElement(element: HTMLElement): HTMLAnchorElement {
+        return element
+            .shadowRoot
+            .querySelector<HTMLAnchorElement>(ELEMENT.BUTTON);
     }
 
     private _hideItem(item: HTMLElement, hide: boolean): void {
@@ -858,35 +863,19 @@ class CustomSidebar {
             this._sidebar.element,
             this._sidebar.selector.$.element,
             this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element,
-            this._sidebar.selector.$.query(`${ ELEMENT.ITEM }${ SELECTOR.SIDEBAR_NOTIFICATIONS }`).element,
-            this._sidebar.selector.$.query(`${ ELEMENT.ITEM }${ SELECTOR.USER }`).element
-        ]).then((elements: [HTMLElement, HTMLElement, ShadowRoot, HTMLElement, HTMLElement, HTMLElement]) => {
+        ]).then((elements: [HTMLElement, HTMLElement, ShadowRoot, HTMLElement]) => {
 
             const [
                 mcDrawer,
                 sidebar,
                 sideBarShadowRoot,
-                sidebarItemsContainer,
-                notifications,
-                profile
+                sidebarItemsContainer
             ] = elements;
 
             this._subscribeTemplateColorChanges(
                 this._config,
                 sidebar,
                 SIDEBAR_OPTIONS_VARIABLES_MAP
-            );
-
-            this._subscribeTemplateColorChanges(
-                this._config,
-                notifications,
-                ITEM_OPTIONS_NATIVE_VARIABLES_MAP
-            );
-
-            this._subscribeTemplateColorChanges(
-                this._config,
-                profile,
-                ITEM_OPTIONS_NATIVE_VARIABLES_MAP
             );
 
             this._subscribeTemplateColorChanges(
@@ -981,6 +970,25 @@ class CustomSidebar {
 
         });
 
+    }
+
+    private async _aplyItemRippleStyles(): Promise<void> {
+        const sidebarItemsContainer = (await this._sidebar.selector.$.query(ELEMENT.ITEM).all) as NodeListOf<HTMLElement>;
+        Array.from(sidebarItemsContainer).forEach((item: HTMLElement): void => {
+            const innerElement = item.getAttribute(ATTRIBUTE.TYPE) === 'link'
+                ? this._getAnchorElement(item)
+                : this._getButtonElement(item);
+            const surface = innerElement
+                .querySelector(ELEMENT.MD_RIPPLE)
+                .shadowRoot
+                .querySelector(SELECTOR.SURFACE);
+            this._styleManager.addStyle(
+                [
+                    STYLES.ITEM_BACKGROUND_HOVER_AND_HOVER_OPACITY
+                ],
+                surface
+            );
+        });
     }
 
     private _rearrange(): void {
@@ -1184,6 +1192,7 @@ class CustomSidebar {
                     ): number => +itemA.style.order - +itemB.style.order
                 );
 
+                this._aplyItemRippleStyles();
                 this._panelLoaded();
 
             });

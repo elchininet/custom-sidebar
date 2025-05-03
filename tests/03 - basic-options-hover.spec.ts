@@ -1,11 +1,12 @@
 import { test, expect } from 'playwright-test-coverage';
 import {
     CONFIG_FILES,
+    HREFS,
     SELECTORS,
     SIDEBAR_CLIP_WITH_DIVIDERS
 } from './constants';
 import { haConfigRequest } from './ha-services';
-import { links } from './selectors';
+import { getSidebarItem } from './selectors';
 import { fulfillJson } from './utilities';
 
 test.beforeAll(async ({ browser }) => {
@@ -18,7 +19,8 @@ test.beforeAll(async ({ browser }) => {
         json: {
             item_background_hover: `linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),
                                     linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%),
-                                    linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%)`
+                                    linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%)`,
+            item_background_hover_opacity: 1
         },
         screenshot: 'sidebar-item-background-hover.png'
     },
@@ -83,7 +85,7 @@ test.beforeAll(async ({ browser }) => {
         await page.goto('/');
         await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
         await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-        await page.hover(links.HISTORY);
+        await getSidebarItem(page, HREFS.HISTORY).hover();
         await expect(page).toHaveScreenshot(screenshot, {
             clip: SIDEBAR_CLIP_WITH_DIVIDERS
         });
