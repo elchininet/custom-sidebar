@@ -3,6 +3,7 @@ import { Page } from '@playwright/test';
 import {
     CONFIG_FILES,
     SELECTORS,
+    HREFS,
     SIDEBAR_CLIP
 } from './constants';
 import {
@@ -11,13 +12,11 @@ import {
     haSelectStateRequest
 } from './ha-services';
 import { fulfillJson } from './utilities';
-import { getSidebarLinkSelector, links } from './selectors';
-
-const ENERGY_ITEM = getSidebarLinkSelector('energy');
-const ENERGY_ITEM_TEXT = `${ENERGY_ITEM} .item-text`;
-const ENERGY_ITEM_NOTIFICATION = `${ENERGY_ITEM} ${SELECTORS.ITEM_NOTIFICATION}`;
-const FAN_ITEM = getSidebarLinkSelector('fan');
-const FAN_ITEM_NOTIFICATION = `${FAN_ITEM} ${SELECTORS.ITEM_NOTIFICATION}`;
+import {
+    getSidebarItem,
+    getSidebarItemText,
+    getSidebarItemBadge
+} from './selectors';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.JINJA_TEMPLATES);
@@ -32,14 +31,17 @@ const pageVisit = async (page: Page): Promise<void> => {
     });
 };
 
+const getEnergyItemText = (page: Page) => getSidebarItemText(page, HREFS.ENERGY);
+const getEnergyItemBadge = (page: Page) => getSidebarItemBadge(page, HREFS.ENERGY);
+const getFanItemBadge = (page: Page) => getSidebarItemBadge(page, '/my_fan');
+
 test('should have the default result of the templates', async ({ page }) => {
 
     await pageVisit(page);
 
-    await expect(page.locator(ENERGY_ITEM_TEXT)).toContainText('Energy (off)');
-    await expect(page.locator(ENERGY_ITEM_NOTIFICATION)).toContainText('2');
-
-    await expect(page.locator(FAN_ITEM_NOTIFICATION)).toContainText('1');
+    await expect(getEnergyItemText(page)).toContainText('Energy (off)');
+    await expect(getEnergyItemBadge(page)).toContainText('2');
+    await expect(getFanItemBadge(page)).toContainText('1');
 
 });
 
@@ -47,7 +49,13 @@ test('name and title using templates should update if one of their entities chan
 
     await pageVisit(page);
 
-    await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
+    const menu = page.locator(SELECTORS.MENU);
+    const haIconButton = page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON);
+    const energyItemText = getEnergyItemText(page);
+    const energyItemBadge = getEnergyItemBadge(page);
+    const fanItemBadge = getFanItemBadge(page);
+
+    await expect(menu).not.toHaveCSS('pointer-events', 'none');
     await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
 
     await haSwitchStateRequest(page, true);
@@ -56,23 +64,21 @@ test('name and title using templates should update if one of their entities chan
         clip: SIDEBAR_CLIP
     });
 
-    await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
-    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
+    await expect(menu).toHaveCSS('pointer-events', 'none');
+    await expect(haIconButton).toHaveCSS('pointer-events', 'all');
 
-    await expect(page.locator(ENERGY_ITEM_TEXT)).toContainText('Energy (on)');
-    await expect(page.locator(ENERGY_ITEM_NOTIFICATION)).toContainText('2');
-
-    await expect(page.locator(FAN_ITEM_NOTIFICATION)).toContainText('1');
+    await expect(energyItemText).toContainText('Energy (on)');
+    await expect(energyItemBadge).toContainText('2');
+    await expect(fanItemBadge).toContainText('1');
 
     await haSwitchStateRequest(page, false);
 
-    await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
-    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
+    await expect(menu).not.toHaveCSS('pointer-events', 'none');
+    await expect(haIconButton).not.toHaveCSS('pointer-events', 'all');
 
-    await expect(page.locator(ENERGY_ITEM_TEXT)).toContainText('Energy (off)');
-    await expect(page.locator(ENERGY_ITEM_NOTIFICATION)).toContainText('2');
-
-    await expect(page.locator(FAN_ITEM_NOTIFICATION)).toContainText('1');
+    await expect(energyItemText).toContainText('Energy (off)');
+    await expect(energyItemBadge).toContainText('2');
+    await expect(fanItemBadge).toContainText('1');
 
 });
 
@@ -80,26 +86,27 @@ test('notifications using a template should update if one of its entities change
 
     await pageVisit(page);
 
+    const energyItemText = getEnergyItemText(page);
+    const energyItemBadge = getEnergyItemBadge(page);
+    const fanItemBadge = getFanItemBadge(page);
+
     await haSelectStateRequest(page, 2);
 
-    await expect(page.locator(ENERGY_ITEM_TEXT)).toContainText('Energy (off)');
-    await expect(page.locator(ENERGY_ITEM_NOTIFICATION)).toContainText('4');
-
-    await expect(page.locator(FAN_ITEM_NOTIFICATION)).toContainText('2');
+    await expect(energyItemText).toContainText('Energy (off)');
+    await expect(energyItemBadge).toContainText('4');
+    await expect(fanItemBadge).toContainText('2');
 
     await haSelectStateRequest(page, 3);
 
-    await expect(page.locator(ENERGY_ITEM_TEXT)).toContainText('Energy (off)');
-    await expect(page.locator(ENERGY_ITEM_NOTIFICATION)).toContainText('6');
-
-    await expect(page.locator(FAN_ITEM_NOTIFICATION)).toContainText('3');
+    await expect(energyItemText).toContainText('Energy (off)');
+    await expect(energyItemBadge).toContainText('6');
+    await expect(fanItemBadge).toContainText('3');
 
     await haSelectStateRequest(page, 1);
 
-    await expect(page.locator(ENERGY_ITEM_TEXT)).toContainText('Energy (off)');
-    await expect(page.locator(ENERGY_ITEM_NOTIFICATION)).toContainText('2');
-
-    await expect(page.locator(FAN_ITEM_NOTIFICATION)).toContainText('1');
+    await expect(energyItemText).toContainText('Energy (off)');
+    await expect(energyItemBadge).toContainText('2');
+    await expect(fanItemBadge).toContainText('1');
 
 });
 
@@ -118,18 +125,21 @@ test('if the hide property is a template, item should get hidden when the templa
     );
 
     await page.goto('/');
+
+    const logBook = getSidebarItem(page, HREFS.LOGBOOK);
+
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await expect(page.locator(links.LOGBOOK)).toBeVisible();
+    await expect(logBook).toBeVisible();
 
     await haSwitchStateRequest(page, true);
 
-    await expect(page.locator(links.LOGBOOK)).not.toBeVisible();
+    await expect(logBook).not.toBeVisible();
 
     await haSwitchStateRequest(page, false);
 
-    await expect(page.locator(links.LOGBOOK)).toBeVisible();
+    await expect(logBook).toBeVisible();
 
 });
 
@@ -308,14 +318,17 @@ test('if the hide property is a template, item should get hidden when the templa
         await fulfillJson(page, json);
 
         await page.goto('/');
+
+        const title = page.locator(SELECTORS.TITLE);
+
         await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
         await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-        await expect(page.locator(SELECTORS.TITLE)).toContainText('False 123');
+        await expect(title).toContainText('False 123');
 
         await haSwitchStateRequest(page, true);
 
-        await expect(page.locator(SELECTORS.TITLE)).toContainText('True 123');
+        await expect(title).toContainText('True 123');
 
         await haSwitchStateRequest(page, false);
 

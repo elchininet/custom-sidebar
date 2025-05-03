@@ -27,6 +27,7 @@ export const SELECTORS = {
     PROFILE_HIDE_SIDEBAR: '.content > ha-card ha-force-narrow-row ha-settings-row > ha-switch',
     NOTIFICATIONS: 'ha-md-list-item.notifications',
     ITEM_NOTIFICATION: 'span.badge',
+    ITEM_TEXT: '.item-text',
     PROFILE: 'ha-md-list-item.user',
     HA_SIDEBAR: 'ha-sidebar',
     HUI_VIEW: 'hui-view',

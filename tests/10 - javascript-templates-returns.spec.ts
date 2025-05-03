@@ -3,6 +3,7 @@ import { Page } from '@playwright/test';
 import { SELECTORS } from './constants';
 import { haSwitchStateRequest, haSelectStateRequest } from './ha-services';
 import { fulfillJson } from './utilities';
+import { getSidebarItemText, getSidebarItemBadge } from './selectors';
 
 const pageVisit = async (page: Page): Promise<void> => {
     await page.goto('/');
@@ -10,9 +11,8 @@ const pageVisit = async (page: Page): Promise<void> => {
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 };
 
-const TEXT_SELECTOR = 'paper-listbox > a[data-panel="check"] .item-text';
-const NOTIFICATION_SELECTOR_1 = 'paper-listbox > a[data-panel="check"] .notification-badge-collapsed';
-const NOTIFICATION_SELECTOR_2 = 'paper-listbox > a[data-panel="check"] .notification-badge:not(.notification-badge-collapsed)';
+const getCheckItemText = (page: Page) => getSidebarItemText(page, '/check');
+const getCheckItemBadge = (page: Page) => getSidebarItemBadge(page, '/check');
 
 test.describe('title template returns', () => {
 
@@ -190,7 +190,7 @@ test.describe('name template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(TEXT_SELECTOR)).toBeEmpty();
+        await expect(getCheckItemText(page)).toBeEmpty();
 
     });
 
@@ -208,7 +208,7 @@ test.describe('name template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(TEXT_SELECTOR)).toBeEmpty();
+        await expect(getCheckItemText(page)).toBeEmpty();
 
     });
 
@@ -226,7 +226,7 @@ test.describe('name template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(TEXT_SELECTOR)).toHaveText('0');
+        await expect(getCheckItemText(page)).toHaveText('0');
 
     });
 
@@ -244,7 +244,7 @@ test.describe('name template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(TEXT_SELECTOR)).toHaveText('true');
+        await expect(getCheckItemText(page)).toHaveText('true');
 
     });
 
@@ -262,15 +262,17 @@ test.describe('name template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(TEXT_SELECTOR)).toHaveText('Check', { useInnerText: true });
+        const itemCheckText = getCheckItemText(page);
+
+        await expect(itemCheckText).toHaveText('Check', { useInnerText: true });
 
         await haSwitchStateRequest(page, true);
 
-        await expect(page.locator(TEXT_SELECTOR)).toBeEmpty();
+        await expect(itemCheckText).toBeEmpty();
 
         await haSwitchStateRequest(page, false);
 
-        await expect(page.locator(TEXT_SELECTOR)).toHaveText('Check', { useInnerText: true });
+        await expect(itemCheckText).toHaveText('Check', { useInnerText: true });
 
     });
 
@@ -288,7 +290,7 @@ test.describe('name template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(TEXT_SELECTOR)).toHaveText('{"total":2}');
+        await expect(getCheckItemText(page)).toHaveText('{"total":2}');
 
     });
 
@@ -319,8 +321,7 @@ test.describe('notification template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(NOTIFICATION_SELECTOR_1)).toBeEmpty();
-        await expect(page.locator(NOTIFICATION_SELECTOR_2)).toBeEmpty();
+        await expect(getCheckItemBadge(page)).toBeEmpty();
 
     });
 
@@ -338,8 +339,7 @@ test.describe('notification template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(NOTIFICATION_SELECTOR_1)).toBeEmpty();
-        await expect(page.locator(NOTIFICATION_SELECTOR_2)).toBeEmpty();
+        await expect(getCheckItemBadge(page)).toBeEmpty();
 
     });
 
@@ -357,8 +357,7 @@ test.describe('notification template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('-5');
-        await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('-5');
+        await expect(getCheckItemBadge(page)).toHaveText('-5');
 
     });
 
@@ -376,8 +375,7 @@ test.describe('notification template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('true');
-        await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('true');
+        await expect(getCheckItemBadge(page)).toHaveText('true');
 
     });
 
@@ -395,23 +393,21 @@ test.describe('notification template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('1', { useInnerText: true });
-        await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('1', { useInnerText: true });
+        const checkItemBadge = getCheckItemBadge(page);
+
+        await expect(checkItemBadge).toHaveText('1', { useInnerText: true });
 
         await haSelectStateRequest(page, 2);
 
-        await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('2', { useInnerText: true });
-        await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('2', { useInnerText: true });
+        await expect(checkItemBadge).toHaveText('2', { useInnerText: true });
 
         await haSelectStateRequest(page, 3);
 
-        await expect(page.locator(NOTIFICATION_SELECTOR_1)).toBeEmpty();
-        await expect(page.locator(NOTIFICATION_SELECTOR_2)).toBeEmpty();
+        await expect(checkItemBadge).toBeEmpty();
 
         await haSelectStateRequest(page, 1);
 
-        await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('1', { useInnerText: true });
-        await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('1', { useInnerText: true });
+        await expect(checkItemBadge).toHaveText('1', { useInnerText: true });
 
     });
 
@@ -429,8 +425,7 @@ test.describe('notification template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('{}');
-        await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('{}');
+        await expect(getCheckItemBadge(page)).toHaveText('{}');
 
     });
 
@@ -456,8 +451,7 @@ test.describe('notification template returns', () => {
 
         await pageVisit(page);
 
-        await expect(page.locator(NOTIFICATION_SELECTOR_1)).toHaveText('10');
-        await expect(page.locator(NOTIFICATION_SELECTOR_2)).toHaveText('10');
+        await expect(getCheckItemBadge(page)).toHaveText('10');
 
     });
 

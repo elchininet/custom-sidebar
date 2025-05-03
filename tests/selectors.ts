@@ -12,6 +12,18 @@ export const getSidebarItem = (page: Page, href: string) => {
     });
 };
 
+export const getSidebarItemText = (page: Page, href: string) => {
+    const sidebarItem = getSidebarItem(page, href);
+    const sidebarItemText = sidebarItem.locator(SELECTORS.ITEM_TEXT);
+    return sidebarItemText;
+};
+
+export const getSidebarItemBadge = (page: Page, href: string) => {
+    const sidebarItem = getSidebarItem(page, href);
+    const sidebarItemBadge = sidebarItem.locator(SELECTORS.ITEM_NOTIFICATION);
+    return sidebarItemBadge;
+};
+
 export const getSidebarItemLinkFromLocator = (item: Locator) => item.locator('a[role="listitem"]');
 
 export const links = Object.fromEntries(
