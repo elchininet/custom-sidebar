@@ -147,7 +147,7 @@ export interface ConfigNewItem extends Omit<ConfigItem, 'new_item'> {
 }
 
 export type ConfigOrder = ConfigItem | ConfigNewItem;
-export type ConfigOrderWithItem = ConfigOrder & { element?: HTMLElement };
+export type ConfigOrderWithItem = ConfigOrder & { element?: SidebarItem };
 
 export interface AnalyticsConfig {
     sidebar_item_clicked?: boolean;

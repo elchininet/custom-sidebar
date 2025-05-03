@@ -123,7 +123,6 @@ class CustomSidebar {
         this._debugLog('Starting the plugin...');
 
         this._items = [];
-        this._itemsMap = new Map();
         this._logBookMessagesMap = new Map<string, number>();
         this._sidebarScroll = 0;
         this._isSidebarEditable = undefined;
@@ -147,8 +146,7 @@ class CustomSidebar {
     private _isSidebarEditable: boolean | undefined;
     private _renderer: HomeAssistantJavaScriptTemplatesRenderer;
     private _styleManager: HomeAssistantStylesManager;
-    private _items: HTMLElement[];
-    private _itemsMap: Map<HTMLElement, HTMLAnchorElement>;
+    private _items: SidebarItem[];
     private _logBookMessagesMap: Map<string, number>;
     private _itemTouchedBinded: () => Promise<void>;
     private _mouseEnterBinded: (event: MouseEvent) => void;
@@ -214,7 +212,7 @@ class CustomSidebar {
         return Object.fromEntries(finalEntries);
     };
 
-    private async _getElements(): Promise<[HTMLElement, NodeListOf<HTMLElement>, HTMLElement]> {
+    private async _getElements(): Promise<[HTMLElement, NodeListOf<SidebarItem>, HTMLElement]> {
         const promisableResultOptions = {
             retries: MAX_ATTEMPTS,
             delay: RETRY_DELAY,
@@ -226,10 +224,10 @@ class CustomSidebar {
             (spacer: HTMLElement): boolean => !! spacer,
             promisableResultOptions
         );
-        const items = await getPromisableResult<NodeListOf<HTMLElement>>(
-            () => sidebarItemsContainer.querySelectorAll<HTMLElement>(`:scope > ${ELEMENT.ITEM}`),
-            (elements: NodeListOf<HTMLElement>): boolean => {
-                return Array.from(elements).every((element: HTMLElement): boolean => {
+        const items = await getPromisableResult<NodeListOf<SidebarItem>>(
+            () => sidebarItemsContainer.querySelectorAll<SidebarItem>(`:scope > ${ELEMENT.ITEM}`),
+            (elements: NodeListOf<SidebarItem>): boolean => {
+                return Array.from(elements).every((element: SidebarItem): boolean => {
                     const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
                     return text.length > 0;
                 });
@@ -259,7 +257,7 @@ class CustomSidebar {
         }
     }
 
-    private _buildNewItem(configItem: ConfigNewItem): HTMLElement {
+    private _buildNewItem(configItem: ConfigNewItem): SidebarItem {
 
         const item = document.createElement('ha-md-list-item') as SidebarItem;
         item.setAttribute(ATTRIBUTE.TYPE, 'link');
@@ -712,14 +710,7 @@ class CustomSidebar {
         if (activeEl) {
             if (
                 activeEl instanceof HTMLElement &&
-                (
-                    activeEl.nodeName === NODE_NAME.ITEM
-                    ||
-                    (
-                        activeEl.nodeName === NODE_NAME.A &&
-                        activeEl.getAttribute('role') === 'listitem'
-                    )
-                )
+                activeEl.nodeName === NODE_NAME.ITEM
             ) {
                 return activeEl;
             }
@@ -1002,13 +993,10 @@ class CustomSidebar {
                 let crossedBottom = false;
 
                 this._items = Array.from(items);
-                this._itemsMap = new Map(
-                    this._items.map((item: HTMLElement) => [item, this._getAnchorElement(item)])
-                );
                 const matched: Set<HTMLElement> = new Set();
 
                 if (hide_all) {
-                    this._items.forEach((element: HTMLElement): void => {
+                    this._items.forEach((element: SidebarItem): void => {
                         this._hideItem(element, true);
                     });
                 }
@@ -1019,10 +1007,9 @@ class CustomSidebar {
                         const itemLowerCase = item.toLocaleLowerCase();
                         const element = new_item
                             ? undefined
-                            : this._items.find((element: HTMLElement): boolean => {
-                                const anchor = this._itemsMap.get(element);
+                            : this._items.find((element: SidebarItem): boolean => {
                                 const text = match === Match.HREF
-                                    ? anchor.getAttribute(ATTRIBUTE.HREF)
+                                    ? element.href
                                     : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
 
                                 const matchText = (
@@ -1321,32 +1308,19 @@ class CustomSidebar {
         const pathName = panelResolver.route.path;
         const sidebarItemsContainer = await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element as HTMLElement;
 
-        const items = Array.from(
-            sidebarItemsContainer.querySelectorAll<HTMLElement>(ELEMENT.ITEM)
+        const items = Array.from<SidebarItem>(
+            sidebarItemsContainer.querySelectorAll<SidebarItem>(ELEMENT.ITEM)
         );
 
-        const itemsMap = new Map(
-            items.map((item: HTMLElement) => [item, this._getAnchorElement(item)])
-        );
-
-        const activeItem = items.find((item: HTMLElement): boolean => {
-            const anchor = itemsMap.get(item);
-            const href = anchor?.getAttribute(ATTRIBUTE.HREF);
-            return (
-                pathName === href ||
-                pathName === `${href}/dashboard`
-            );
-        });
+        const activeItem = items.find((item: SidebarItem): boolean => pathName === item.href);
 
         const activeParentElement = activeItem
             ? null
-            : items.reduce((parent: HTMLElement | null, item: HTMLElement): HTMLElement | null => {
-                const anchor = itemsMap.get(item);
-                const href = anchor?.getAttribute(ATTRIBUTE.HREF);
-                if (pathName.startsWith(href)) {
+            : items.reduce((parent: SidebarItem | null, item: SidebarItem): SidebarItem | null => {
+                if (pathName.startsWith(item.href)) {
                     if (
                         !parent ||
-                        href.length > itemsMap.get(parent)?.getAttribute(ATTRIBUTE.HREF).length
+                        item.href.length > parent.href.length
                     ) {
                         parent = item;
                     }
