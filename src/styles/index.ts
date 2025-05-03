@@ -214,7 +214,7 @@ export const ITEM_BACKGROUND_HOVER_AND_HOVER_OPACITY = {
 export const ITEM_DIVIDER_ITEM_DIVIDER_COLOR = {
     [`${ SELECTOR.HOST } ${ ELEMENT.ITEM }[${ ATTRIBUTE.WITH_DIVIDER }]`]: {
         marginBottom: '10px',
-        paddingBottom: '10px',
+        paddingBottom: '15px',
         position: 'relative'
     },
     [`${ SELECTOR.HOST } ${ ELEMENT.ITEM }[${ ATTRIBUTE.WITH_DIVIDER }]${ PSEUDO_SELECTOR.AFTER }`]: {
