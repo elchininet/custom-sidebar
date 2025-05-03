@@ -72,7 +72,6 @@ export enum PSEUDO_SELECTOR {
 }
 
 export enum HA_CSS_VARIABLES {
-    PRIMARY_BACKGROUND_COLOR = '--primary-background-color',
     SIDEBAR_BACKGROUND_COLOR = '--sidebar-background-color',
     SIDEBAR_TITLE_COLOR = '--sidebar-menu-button-text-color',
     SIDEBAR_BUTTON_COLOR = '--sidebar-icon-color',
