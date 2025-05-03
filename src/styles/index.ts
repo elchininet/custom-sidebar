@@ -32,7 +32,8 @@ export const FUNCTIONALITY = {
         zIndex: 1
     },
     [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
-         position: 'relative',
+        maxWidth: 'unset',
+        position: 'relative',
         zIndex: 1
     },
     [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }`]: {
@@ -51,7 +52,7 @@ export const FUNCTIONALITY = {
         whiteSpace: 'nowrap'
     },
     [`${ SELECTOR.HOST } ${ ELEMENT.ITEM }:not([${ ATTRIBUTE.WITH_NOTIFICATION }], ${ SELECTOR.CONFIGURATION }, ${ SELECTOR.SIDEBAR_NOTIFICATIONS }) > ${ SELECTOR.BADGE }`]: {
-        opacity: '0'
+        display: 'none'
     },
     [`${ SELECTOR.HOST } ${ ELEMENT.ITEM } > ${ SELECTOR.BADGE }`]: BADGE_STYLES,
     [`${ SELECTOR.HOST_NOT_EXPANDED } ${ ELEMENT.ITEM } > ${ SELECTOR.BADGE }`]: {
