@@ -11,7 +11,7 @@ import { haConfigRequest } from './ha-services';
 import { addJsonExtendedRoute, changeToMobileViewport } from './utilities';
 import { links, getSidebarItem } from './selectors';
 
-const SELECTED_CLASSNAME = /(^|\s)iron-selected(\s|$)/;
+const SELECTED_CLASSNAME = /(^|\s)selected(\s|$)/;
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
@@ -31,31 +31,36 @@ test('Clicking on items with the same root path should select the proper item', 
     await visitHome(page);
     await page.waitForTimeout(600);
 
-    await page.locator(links.INTEGRATIONS).click();
+    const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
+    const config = getSidebarItem(page, HREFS.CONFIG);
+    const entities = getSidebarItem(page, HREFS.ENTITIES);
+    const automations = getSidebarItem(page, HREFS.AUTOMATIONS);
+
+    await integrations.click();
     await page.waitForTimeout(600);
 
-    await expect(page.locator(links.INTEGRATIONS)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrations).toHaveClass(SELECTED_CLASSNAME);
+    await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
 
-    await page.locator(links.ENTITIES).click();
+    await entities.click();
     await page.waitForTimeout(600);
 
-    await expect(page.locator(links.ENTITIES)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(entities).toHaveClass(SELECTED_CLASSNAME);
+    await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
 
-    await page.locator(links.AUTOMATIONS).click();
+    await automations.click();
     await page.waitForTimeout(600);
 
-    await expect(page.locator(links.AUTOMATIONS)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automations).toHaveClass(SELECTED_CLASSNAME);
+    await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
 
-    await page.locator(links.CONFIG).click();
+    await config.click();
     await page.waitForTimeout(600);
 
-    await expect(page.locator(links.CONFIG)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(config).toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(entities).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automations).not.toHaveClass(SELECTED_CLASSNAME);
 
 });
 
@@ -64,21 +69,25 @@ test('Hiting Enter with items focused should select the proper item', async ({ p
     await visitHome(page);
     await page.waitForTimeout(600);
 
-    await page.locator(links.INTEGRATIONS).focus();
+    const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
+    const config = getSidebarItem(page, HREFS.CONFIG);
+    const entities = getSidebarItem(page, HREFS.ENTITIES);
+
+    await integrations.focus();
     await page.waitForTimeout(600);
 
     await page.keyboard.press('Enter');
 
-    await expect(page.locator(links.INTEGRATIONS)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrations).toHaveClass(SELECTED_CLASSNAME);
+    await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
 
-    await page.locator(links.ENTITIES).focus();
+    await entities.focus();
     await page.waitForTimeout(600);
 
     await page.keyboard.press('Enter');
 
-    await expect(page.locator(links.ENTITIES)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(entities).toHaveClass(SELECTED_CLASSNAME);
+    await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
 
 });
 
@@ -104,36 +113,43 @@ test('Visit a URL that matches with multiple items should select the proper item
     });
 
     await page.goto('/config');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
 
-    await expect(page.locator(links.CONFIG)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
+    const config = getSidebarItem(page, HREFS.CONFIG);
+    const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
+    const entities = getSidebarItem(page, HREFS.ENTITIES);
+    const automations = getSidebarItem(page, HREFS.AUTOMATIONS);
+
+    await expect(sidebar).toBeVisible();
+
+    await expect(config).toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(entities).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automations).not.toHaveClass(SELECTED_CLASSNAME);
 
     await page.goto('/config/integrations');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(sidebar).toBeVisible();
 
-    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.INTEGRATIONS)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrations).toHaveClass(SELECTED_CLASSNAME);
+    await expect(entities).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automations).not.toHaveClass(SELECTED_CLASSNAME);
 
     await page.goto('/config/entities');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(sidebar).toBeVisible();
 
-    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.ENTITIES)).toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.AUTOMATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(entities).toHaveClass(SELECTED_CLASSNAME);
+    await expect(automations).not.toHaveClass(SELECTED_CLASSNAME);
 
     await page.goto('/config/automation');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(sidebar).toBeVisible();
 
-    await expect(page.locator(links.CONFIG)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.INTEGRATIONS)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.ENTITIES)).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(page.locator(links.AUTOMATIONS)).toHaveClass(SELECTED_CLASSNAME);
+    await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(entities).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automations).toHaveClass(SELECTED_CLASSNAME);
 
 });
 
@@ -154,7 +170,7 @@ test('the scroll should be restored after clicking on an element', async ({ page
 
     const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
 
-    await page.locator(links.INTEGRATIONS).click({ delay: 150 });
+    await getSidebarItem(page, HREFS.INTEGRATIONS).click({ delay: 150 });
     await page.waitForTimeout(600);
 
     expect(
@@ -180,7 +196,7 @@ test('the scroll should be restored after pressing Enter with an element focused
 
     const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
 
-    await page.locator(links.INTEGRATIONS).focus();
+    await getSidebarItem(page, HREFS.INTEGRATIONS).focus();
     await page.keyboard.press('Enter');
     await page.waitForTimeout(600);
 
@@ -325,39 +341,45 @@ test('navigating with the keyboard up and down arrows should focus the proper it
 
     await visitHome(page);
 
-    await page.locator(links.OVERVIEW).focus();
+    const overview = getSidebarItem(page, HREFS.OVERVIEW);
+    const google = getSidebarItem(page, HREFS.GOOGLE);
+    const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
+    const devTools = getSidebarItem(page, HREFS.DEV_TOOLS);
+    const config = getSidebarItem(page, HREFS.CONFIG);
+
+    await overview.focus();
 
     await page.keyboard.press('ArrowDown');
 
-    await expect(page.locator(links.GOOGLE)).toBeFocused();
+    await expect(google).toBeFocused();
 
     await page.keyboard.press('ArrowDown');
 
-    await expect(page.locator(links.INTEGRATIONS)).toBeFocused();
+    await expect(integrations).toBeFocused();
 
     await page.keyboard.press('ArrowUp');
 
-    await expect(page.locator(links.GOOGLE)).toBeFocused();
+    await expect(google).toBeFocused();
 
     await page.keyboard.press('ArrowUp');
 
-    await expect(page.locator(links.OVERVIEW)).toBeFocused();
+    await expect(overview).toBeFocused();
 
     await page.keyboard.press('ArrowUp');
 
-    await expect(page.locator(links.DEV_TOOLS)).toBeFocused();
+    await expect(devTools).toBeFocused();
 
     await page.keyboard.press('ArrowUp');
 
-    await expect(page.locator(links.CONFIG)).toBeFocused();
+    await expect(config).toBeFocused();
 
     await page.keyboard.press('ArrowDown');
 
-    await expect(page.locator(links.DEV_TOOLS)).toBeFocused();
+    await expect(devTools).toBeFocused();
 
     await page.keyboard.press('ArrowDown');
 
-    await expect(page.locator(links.OVERVIEW)).toBeFocused();
+    await expect(overview).toBeFocused();
 
 });
 
@@ -365,56 +387,65 @@ test('navigating with the keyboard using tab should focus the proper items in or
 
     await visitHome(page);
 
-    await page.locator(links.OVERVIEW).focus();
+    const overview = getSidebarItem(page, HREFS.OVERVIEW);
+    const google = getSidebarItem(page, HREFS.GOOGLE);
+    const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
+    const config = getSidebarItem(page, HREFS.CONFIG);
+    const devTools = getSidebarItem(page, HREFS.DEV_TOOLS);
+    const notifications = page.locator(SELECTORS.NOTIFICATIONS);
+    const profile = page.locator(SELECTORS.PROFILE);
+    const haIconButton = page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON);
+
+    await overview.focus();
 
     await page.keyboard.press('Tab');
 
-    await expect(getSidebarItem(page, HREFS.GOOGLE)).toBeFocused();
+    await expect(google).toBeFocused();
 
     await page.keyboard.press('Tab');
 
-    await expect(getSidebarItem(page, HREFS.INTEGRATIONS)).toBeFocused();
+    await expect(integrations).toBeFocused();
 
     await page.keyboard.down('Shift');
     await page.keyboard.press('Tab');
 
-    await expect(getSidebarItem(page, HREFS.GOOGLE)).toBeFocused();
+    await expect(google).toBeFocused();
 
     await page.keyboard.press('Tab');
 
-    await getSidebarItem(page, HREFS.OVERVIEW).focus();
+    await overview.focus();
 
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toBeFocused();
+    await expect(haIconButton).toBeFocused();
 
     await page.keyboard.up('Shift');
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(links.OVERVIEW)).toBeFocused();
+    await expect(overview).toBeFocused();
 
-    await page.locator(links.CONFIG).focus();
-
-    await page.keyboard.press('Tab');
-
-    await expect(getSidebarItem(page, HREFS.DEV_TOOLS)).toBeFocused();
+    await config.focus();
 
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(SELECTORS.NOTIFICATIONS)).toBeFocused();
+    await expect(devTools).toBeFocused();
 
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(SELECTORS.PROFILE)).toBeFocused();
+    await expect(notifications).toBeFocused();
+
+    await page.keyboard.press('Tab');
+
+    await expect(profile).toBeFocused();
 
     await page.keyboard.down('Shift');
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(SELECTORS.NOTIFICATIONS)).toBeFocused();
+    await expect(notifications).toBeFocused();
 
     await page.keyboard.press('Tab');
 
-    await expect(getSidebarItem(page, HREFS.DEV_TOOLS)).toBeFocused();
+    await expect(devTools).toBeFocused();
 
 });
 
@@ -431,7 +462,7 @@ test('Pressing tab without being in the sidebar should not select any item', asy
 
     await page.keyboard.press('Tab');
 
-    await expect(page.locator(links.OVERVIEW)).not.toBeFocused();
+    await expect(getSidebarItem(page, HREFS.OVERVIEW)).not.toBeFocused();
 
 });
 
@@ -439,20 +470,25 @@ test('new items should have tooltips', async ({ page }) => {
 
     await visitHome(page);
 
-    await getSidebarItem(page, HREFS.GOOGLE).hover();
+    const google = getSidebarItem(page, HREFS.GOOGLE);
+    const tooltip = page.locator(SELECTORS.TOOLTIP);
+    const haIconButton = page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON);
+    const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
 
-    await expect(page.locator(SELECTORS.TOOLTIP)).not.toBeVisible();
+    await google.hover();
 
-    await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
+    await expect(tooltip).not.toBeVisible();
 
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('expanded');
+    await haIconButton.click();
 
-    await getSidebarItem(page, HREFS.GOOGLE).hover();
+    await expect(sidebar).not.toHaveAttribute('expanded');
 
-    await expect(page.locator(SELECTORS.TOOLTIP)).toBeVisible();
+    await google.hover();
 
-    await expect(page.locator(SELECTORS.TOOLTIP)).toContainText('Google');
+    await expect(tooltip).toBeVisible();
 
-    await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
+    await expect(tooltip).toContainText('Google');
+
+    await haIconButton.click();
 
 });
