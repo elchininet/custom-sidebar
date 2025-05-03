@@ -9,7 +9,7 @@ import {
     BASE_NAME
 } from './constants';
 import { haConfigRequest } from './ha-services';
-import { links } from './selectors';
+import { getSidebarItem, getSidebarItemLinkFromLocator } from './selectors';
 import { addJsonExtendedRoute, changeToMobileViewport } from './utilities';
 
 test.beforeAll(async ({ browser }) => {
@@ -262,6 +262,8 @@ test.describe('extending from the base', () => {
 
         test('should override a new_item from the base', async ({ page }) => {
 
+            const href = 'https://google.com';
+
             await addJsonExtendedRoute(page, {
                 exceptions: [
                     {
@@ -273,7 +275,7 @@ test.describe('extending from the base', () => {
                                 item: 'Google',
                                 name: 'Search',
                                 icon: 'mdi:web',
-                                href: 'https://google.com',
+                                href,
                                 order: -1
                             }
                         ]
@@ -287,11 +289,12 @@ test.describe('extending from the base', () => {
                 clip: SIDEBAR_CLIP
             });
 
-            const google = page.locator(links.GOOGLE);
+            const google = getSidebarItem(page, href);
+            const linkGoogle = getSidebarItemLinkFromLocator(google);
             await expect(google).toHaveText('Search', { useInnerText: true });
-            await expect(google).toHaveAttribute('href', 'https://google.com');
+            await expect(linkGoogle).toHaveAttribute('href', href);
 
-            const googleIcon = page.locator(`${links.GOOGLE} ha-icon[icon="mdi:web"]`);
+            const googleIcon = google.locator('ha-icon[icon="mdi:web"]');
             expect(googleIcon).toBeVisible();
 
         });
@@ -582,7 +585,7 @@ test.describe('without extending from the base', () => {
                             },
                             {
                                 item: 'config',
-                                match: 'data-panel',
+                                match: 'href',
                                 bottom: true
                             }
                         ]
