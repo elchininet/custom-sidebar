@@ -93,6 +93,17 @@ test('Hiting Enter with items focused should select the proper item', async ({ p
 
 test('Visit a URL that matches with multiple items should select the proper item', async ({ page }) => {
 
+    const integrationsBackupHref = '/config/integrations/integration/backup';
+    const automationNewHref = '/config/automation/edit/new';
+
+    const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
+    const config = getSidebarItem(page, HREFS.CONFIG);
+    const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
+    const integrationsBackup = getSidebarItem(page, integrationsBackupHref);
+    const entities = getSidebarItem(page, HREFS.ENTITIES);
+    const automations = getSidebarItem(page, HREFS.AUTOMATIONS);
+    const automationNew = getSidebarItem(page, automationNewHref);
+
     await addJsonExtendedRoute(page, {
         exceptions: [
             {
@@ -100,12 +111,16 @@ test('Visit a URL that matches with multiple items should select the proper item
                 extend_from: 'base',
                 order: [
                     {
-                        item: 'config',
-                        order: 1
+                        new_item: true,
+                        item: 'Integrations Backup',
+                        icon: 'mdi:puzzle',
+                        href: integrationsBackupHref
                     },
                     {
-                        item: 'Google',
-                        order: 8
+                        new_item: true,
+                        item: 'New Automation',
+                        icon: 'mdi:robot',
+                        href: automationNewHref
                     }
                 ]
             }
@@ -113,43 +128,74 @@ test('Visit a URL that matches with multiple items should select the proper item
     });
 
     await page.goto('/config');
-
-    const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
-    const config = getSidebarItem(page, HREFS.CONFIG);
-    const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
-    const entities = getSidebarItem(page, HREFS.ENTITIES);
-    const automations = getSidebarItem(page, HREFS.AUTOMATIONS);
-
     await expect(sidebar).toBeVisible();
 
     await expect(config).toHaveClass(SELECTED_CLASSNAME);
     await expect(integrations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrationsBackup).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(entities).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(automations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automationNew).not.toHaveClass(SELECTED_CLASSNAME);
 
     await page.goto('/config/integrations');
     await expect(sidebar).toBeVisible();
 
     await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(integrations).toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrationsBackup).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(entities).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(automations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automationNew).not.toHaveClass(SELECTED_CLASSNAME);
+
+    await page.goto(integrationsBackupHref);
+    await expect(sidebar).toBeVisible();
+
+    await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrationsBackup).toHaveClass(SELECTED_CLASSNAME);
+    await expect(entities).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automationNew).not.toHaveClass(SELECTED_CLASSNAME);
 
     await page.goto('/config/entities');
     await expect(sidebar).toBeVisible();
 
     await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(integrations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrationsBackup).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(entities).toHaveClass(SELECTED_CLASSNAME);
     await expect(automations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automationNew).not.toHaveClass(SELECTED_CLASSNAME);
 
     await page.goto('/config/automation');
     await expect(sidebar).toBeVisible();
 
     await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(integrations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrationsBackup).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(entities).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(automations).toHaveClass(SELECTED_CLASSNAME);
+    await expect(automationNew).not.toHaveClass(SELECTED_CLASSNAME);
+
+    await page.goto(automationNewHref);
+    await expect(sidebar).toBeVisible();
+
+    await expect(config).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrationsBackup).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(entities).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automationNew).toHaveClass(SELECTED_CLASSNAME);
+
+    await page.goto('/config/areas/dashboard');
+    await expect(sidebar).toBeVisible();
+
+    await expect(config).toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(integrationsBackup).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(entities).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automations).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(automationNew).not.toHaveClass(SELECTED_CLASSNAME);
 
 });
 
