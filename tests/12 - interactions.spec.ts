@@ -9,7 +9,7 @@ import {
 } from './constants';
 import { haConfigRequest } from './ha-services';
 import { addJsonExtendedRoute, changeToMobileViewport } from './utilities';
-import { links, getSidebarItem } from './selectors';
+import { getSidebarItem } from './selectors';
 
 const SELECTED_CLASSNAME = /(^|\s)selected(\s|$)/;
 
