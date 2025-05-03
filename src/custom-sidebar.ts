@@ -853,7 +853,7 @@ class CustomSidebar {
             this._haDrawer.selector.$.query(SELECTOR.MC_DRAWER).element,
             this._sidebar.element,
             this._sidebar.selector.$.element,
-            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element,
+            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element
         ]).then((elements: [HTMLElement, HTMLElement, ShadowRoot, HTMLElement]) => {
 
             const [

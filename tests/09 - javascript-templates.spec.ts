@@ -127,7 +127,7 @@ test('if the hide property is a template, item should get hidden when the templa
     await page.goto('/');
 
     const logBook = getSidebarItem(page, HREFS.LOGBOOK);
-    
+
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
