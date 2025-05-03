@@ -9,11 +9,7 @@ import {
 import { haConfigRequest } from './ha-services';
 import { fulfillJson } from './utilities';
 import { NAMESPACE } from '../src/constants';
-import {
-    links,
-    getSidebarItem,
-    getSidebarLinkSelector
-} from './selectors';
+import { getSidebarItem } from './selectors';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);

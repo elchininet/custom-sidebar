@@ -31,13 +31,15 @@ export const FUNCTIONALITY = {
     [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM } > ${ ELEMENT.USER_BADGE }`]: {
         zIndex: 1
     },
+    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
+         position: 'relative',
+        zIndex: 1
+    },
     [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }`]: {
         display: 'flex',
         flexDirection: 'column',
         gap: '5px',
-        lineHeight: '1',
-        position: 'relative',
-        zIndex: 1
+        lineHeight: '1'
     },
     [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
         content: 'attr(data-info)',
@@ -187,6 +189,24 @@ export const ITEM_BACKGROUND = {
         pointerEvents: 'none',
         right: '0px',
         top: '0px'
+    }
+};
+
+export const ITEM_BACKGROUND_HOVER_AND_HOVER_OPACITY = {
+    [`${ SELECTOR.HOST } ${ SELECTOR.SURFACE }${ PSEUDO_SELECTOR.BEFORE }`]: {
+        background: getCSSVariables(
+            CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER,
+            HA_CSS_VARIABLES.MD_RIPPLE_HOVER_COLOR,
+            HA_CSS_VARIABLES.MD_SYS_COLOR_ON_SURFACE,
+            '#1d1b20'
+        )
+    },
+    [`${ SELECTOR.HOST } ${ SELECTOR.SURFACE_HOVERED }${ PSEUDO_SELECTOR.BEFORE }`]: {
+        opacity: getCSSVariables(
+            CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER_OPACITY,
+            HA_CSS_VARIABLES.MD_RIPPLE_HOVER_OPACITY,
+            '.08'
+        )
     }
 };
 

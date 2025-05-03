@@ -33,6 +33,7 @@ export enum ELEMENT {
     HA_ICON = 'ha-icon',
     HA_ICON_BUTTON = 'ha-icon-button',
     ANCHOR = 'a',
+    BUTTON = 'button',
     MD_RIPPLE = 'md-ripple',
     USER_BADGE = 'ha-user-badge'
 }
@@ -104,6 +105,8 @@ export enum CUSTOM_SIDEBAR_CSS_VARIABLES {
     DIVIDER_BOTTOM_COLOR = '--custom-sidebar-divider-bottom-color',
     SCROLLBAR_THUMB_COLOR = '--custom-sidebar-scrollbar-thumb-color',
     ITEM_BACKGROUND = '--custom-sidebar-item-background',
+    ITEM_BACKGROUND_HOVER = '--custom-sidebar-item-background-hover',
+    ITEM_BACKGROUND_HOVER_OPACITY = '--custom-sidebar-item-background-hover-opacity',
     ICON_COLOR = '--custom-sidebar-icon-color',
     ICON_COLOR_SELECTED = '--custom-sidebar-icon-color-selected',
     ICON_COLOR_HOVER = '--custom-sidebar-icon-color-hover',
@@ -154,13 +157,10 @@ export const ITEM_STRING_CONFIG_OPTIONS: SidebarStringConfigKeys[] = [
     'default_path'
 ];
 
-export const ITEM_OPTIONS_NATIVE_VARIABLES_MAP: [ItemColorConfigKeys, string][] = [
-    ['item_background_hover',            HA_CSS_VARIABLES.MD_RIPPLE_HOVER_COLOR],
-    ['item_background_hover_opacity',    HA_CSS_VARIABLES.MD_RIPPLE_HOVER_OPACITY],
-];
-
 export const ITEM_OPTIONS_VARIABLES_MAP: [ItemColorConfigKeys, string][] = [
     ['item_background',                  CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND],
+    ['item_background_hover',            CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER],
+    ['item_background_hover_opacity',    CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER_OPACITY],
     ['icon_color',                       CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR],
     ['icon_color_selected',              CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED],
     ['icon_color_hover',                 CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_HOVER],
@@ -179,7 +179,6 @@ export const ITEM_OPTIONS_VARIABLES_MAP: [ItemColorConfigKeys, string][] = [
     ['notification_text_color_selected', CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_SELECTED],
     ['notification_text_color_hover',    CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_HOVER],
     ['divider_color',                    CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR],
-    ...ITEM_OPTIONS_NATIVE_VARIABLES_MAP
 ];
 
 export const SIDEBAR_OPTIONS_VARIABLES_MAP: [SidebarColorConfigKeys, string][] = [
