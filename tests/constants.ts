@@ -33,7 +33,7 @@ export const SELECTORS = {
     HUI_VIEW: 'hui-view',
     SIDEBAR_ITEMS_CONTAINER: 'ha-md-list.ha-scrollbar',
     SIDEBAR_ITEM: 'ha-md-list-item',
-    TOOLTIP: '.tooltip',
+    TOOLTIP: 'ha-sidebar .tooltip',
     HA_ICON: 'ha-icon',
     PANEL_CONFIG: 'ha-panel-config',
     ENTRY_CONTAINER: '.entry-container',
