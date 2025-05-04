@@ -386,11 +386,15 @@ test('should throw an error if the attributes property has a template that does 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
+    await page.waitForTimeout(1000);
+
     expect(errors).toEqual(
         expect.arrayContaining([
             `${NAMESPACE}: "attributes" template must always return an object`
         ])
     );
+
+    page.removeAllListeners();
 
 });
 
@@ -439,11 +443,15 @@ test('should throw a warning if the attributes property has a template that retu
     await expect(configItem).toHaveAttribute('data-prop4', 'true');
     await expect(configItem).toHaveAttribute('data-custom-sidebar-attrs', 'data-prop1|data-prop3|data-prop4');
 
+    await page.waitForTimeout(1000);
+
     expect(warnings).toEqual(
         expect.arrayContaining([
             `${NAMESPACE}: the property "data-prop2" in the attributes property of the item "settings" should be a string, a number or a boolean. This property will be omitted`
         ])
     );
+
+    page.removeAllListeners();
 
 });
 
@@ -652,10 +660,7 @@ test('should throw a warning if a call-service action has a malformed service', 
     const warnings: string[] = [];
 
     page.on('console', message => {
-        if (
-            message.type() === 'warning' &&
-            !message.text().includes('Vaadin 25') // Home Assistant >= 2025.4.x is throwing a warning  coming from the Vadding Material Theme
-        ) {
+        if (message.type() === 'warning') {
             warnings.push(message.text());
         }
     });
@@ -684,11 +689,15 @@ test('should throw a warning if a call-service action has a malformed service', 
 
     await getSidebarItem(page, '#').click();
 
+    await page.waitForTimeout(1000);
+
     expect(warnings).toEqual(
         expect.arrayContaining([
             'custom-sidebar ignoring "call-service" action in "Check" item. The service parameter is malfomed.'
         ])
     );
+
+    page.removeAllListeners();
 
 });
 
@@ -732,6 +741,8 @@ test('should execute a javascript action without redirecting', async ({ page }) 
     expect(logs).toEqual(
         expect.arrayContaining(['JavaScript code executed'])
     );
+
+    page.removeAllListeners();
 
 });
 
@@ -777,9 +788,13 @@ test('should execute a javascript action redirecting', async ({ page }) => {
         expect.arrayContaining(['JavaScript code executed'])
     );
 
+    page.removeAllListeners();
+
 });
 
 test('should execute a javascript action using partials', async ({ page }) => {
+
+    const href = '/config/integrations';
 
     const logs: string[] = [];
 
@@ -798,7 +813,7 @@ test('should execute a javascript action using partials', async ({ page }) => {
                     new_item: true,
                     item: 'Check',
                     icon: 'mdi:bullseye-arrow',
-                    href: '/config/integrations',
+                    href,
                     on_click: {
                         action: 'javascript',
                         code: `
@@ -816,11 +831,15 @@ test('should execute a javascript action using partials', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await getSidebarItem(page, '/config/integrations').click();
+    await getSidebarItem(page, href).click();
+
+    await page.waitForTimeout(1000);
 
     expect(logs).toEqual(
         expect.arrayContaining(['JavaScript code from partial executed'])
     );
+
+    page.removeAllListeners();
 
 });
 
@@ -862,5 +881,7 @@ test('should execute a javascript action having the clicked item and the itemTex
     expect(logs).toEqual(
         expect.arrayContaining(['Clicked item is Check and the icon is mdi:bullseye-arrow'])
     );
+
+    page.removeAllListeners();
 
 });

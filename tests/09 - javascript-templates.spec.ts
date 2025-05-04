@@ -371,9 +371,13 @@ test('if there are no partials and a partial statement is used, it should throw 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
+    await page.waitForTimeout(1000);
+
     expect(warnings).toEqual(
         expect.arrayContaining(['custom-sidebar: partial my_partial doesn\'t exist'])
     );
+
+    page.removeAllListeners();
 
 });
 
@@ -414,9 +418,13 @@ test('if a partial doesn\'t exist it should throw a warning', async ({ page }) =
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
+    await page.waitForTimeout(1000);
+
     expect(warnings).toEqual(
         expect.arrayContaining(['custom-sidebar: partial my_partial doesn\'t exist'])
     );
+
+    page.removeAllListeners();
 
 });
 

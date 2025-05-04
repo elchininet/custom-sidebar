@@ -35,11 +35,15 @@ test.describe('Debug messages', () => {
 
         await pageVisit(page);
 
+        await page.waitForTimeout(1000);
+
         expect(logs).toEqual(
             expect.not.arrayContaining([
                 `${PREFIX} HAQuerySelector init executed`
             ])
         );
+
+        page.removeAllListeners();
 
     });
 
@@ -55,6 +59,8 @@ test.describe('Debug messages', () => {
 
         await pageVisit(page, true);
 
+        await page.waitForTimeout(1000);
+
         expect(logs).toEqual(
             expect.not.arrayContaining([
                 `${PREFIX} HAQuerySelector init executed`,
@@ -62,6 +68,8 @@ test.describe('Debug messages', () => {
                 `${PREFIX} Executing plugin logic...`
             ])
         );
+
+        page.removeAllListeners();
 
     });
 

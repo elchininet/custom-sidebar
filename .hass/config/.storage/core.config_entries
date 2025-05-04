@@ -1,80 +1,15 @@
 {
   "version": 1,
-  "minor_version": 4,
+  "minor_version": 5,
   "key": "core.config_entries",
   "data": {
     "entries": [
-      {
-        "entry_id": "be26a900e88a562e5489f3bd7d023692",
-        "version": 1,
-        "domain": "sun",
-        "title": "Sun",
-        "data": {},
-        "options": {},
-        "pref_disable_new_entities": false,
-        "pref_disable_polling": false,
-        "source": "import",
-        "unique_id": null,
-        "disabled_by": null,
-        "minor_version": 1,
-        "created_at": "1970-01-01T00:00:00+00:00",
-        "modified_at": "1970-01-01T00:00:00+00:00",
-        "discovery_keys": {}
-      },
-      {
-        "entry_id": "2b569b49288de83eef7651b79d83ed63",
-        "version": 1,
-        "domain": "google_translate",
-        "title": "Google Translate text-to-speech",
-        "data": {
-          "language": "en",
-          "tld": "com"
-        },
-        "options": {},
-        "pref_disable_new_entities": false,
-        "pref_disable_polling": false,
-        "source": "onboarding",
-        "unique_id": null,
-        "disabled_by": null,
-        "minor_version": 1,
-        "created_at": "1970-01-01T00:00:00+00:00",
-        "modified_at": "1970-01-01T00:00:00+00:00",
-        "discovery_keys": {}
-      },
-      {
-        "entry_id": "780cc0ac75c927dd75bd8de858b61f74",
-        "version": 1,
-        "domain": "shopping_list",
-        "title": "Shopping list",
-        "data": {},
-        "options": {},
-        "pref_disable_new_entities": false,
-        "pref_disable_polling": false,
-        "source": "onboarding",
-        "unique_id": "shopping_list",
-        "disabled_by": null,
-        "minor_version": 1,
-        "created_at": "1970-01-01T00:00:00+00:00",
-        "modified_at": "1970-01-01T00:00:00+00:00",
-        "discovery_keys": {}
-      },
-      {
-        "entry_id": "94025d24627372e146c71929c4b15076",
-        "version": 1,
-        "domain": "radio_browser",
-        "title": "Radio Browser",
-        "data": {},
-        "options": {},
-        "pref_disable_new_entities": false,
-        "pref_disable_polling": false,
-        "source": "onboarding",
-        "unique_id": null,
-        "disabled_by": null,
-        "minor_version": 1,
-        "created_at": "1970-01-01T00:00:00+00:00",
-        "modified_at": "1970-01-01T00:00:00+00:00",
-        "discovery_keys": {}
-      }
+      {"created_at":"1970-01-01T00:00:00+00:00","data":{},"disabled_by":null,"discovery_keys":{},"domain":"sun","entry_id":"be26a900e88a562e5489f3bd7d023692","minor_version":1,"modified_at":"1970-01-01T00:00:00+00:00","options":{},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"import","subentries":[],"title":"Sun","unique_id":null,"version":1},
+      {"created_at":"1970-01-01T00:00:00+00:00","data":{"language":"en","tld":"com"},"disabled_by":null,"discovery_keys":{},"domain":"google_translate","entry_id":"2b569b49288de83eef7651b79d83ed63","minor_version":1,"modified_at":"1970-01-01T00:00:00+00:00","options":{},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"onboarding","subentries":[],"title":"Google Translate text-to-speech","unique_id":null,"version":1},
+      {"created_at":"1970-01-01T00:00:00+00:00","data":{},"disabled_by":null,"discovery_keys":{},"domain":"shopping_list","entry_id":"780cc0ac75c927dd75bd8de858b61f74","minor_version":1,"modified_at":"1970-01-01T00:00:00+00:00","options":{},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"onboarding","subentries":[],"title":"Shopping list","unique_id":"shopping_list","version":1},
+      {"created_at":"1970-01-01T00:00:00+00:00","data":{},"disabled_by":null,"discovery_keys":{},"domain":"radio_browser","entry_id":"94025d24627372e146c71929c4b15076","minor_version":1,"modified_at":"1970-01-01T00:00:00+00:00","options":{},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"onboarding","subentries":[],"title":"Radio Browser","unique_id":null,"version":1},
+      {"created_at":"2025-05-04T20:39:49.833093+00:00","data":{},"disabled_by":null,"discovery_keys":{},"domain":"go2rtc","entry_id":"01JTEGDJA9D3TPVN0ETFNHMS5N","minor_version":1,"modified_at":"2025-05-04T20:39:49.833097+00:00","options":{},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"system","subentries":[],"title":"go2rtc","unique_id":null,"version":1},
+      {"created_at":"2025-05-04T20:39:49.841834+00:00","data":{},"disabled_by":null,"discovery_keys":{},"domain":"backup","entry_id":"01JTEGDJAHABYZWFB3T49TMXBQ","minor_version":1,"modified_at":"2025-05-04T20:39:49.841836+00:00","options":{},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"system","subentries":[],"title":"Backup","unique_id":null,"version":1}
     ]
   }
 }

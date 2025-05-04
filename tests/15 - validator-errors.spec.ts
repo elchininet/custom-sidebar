@@ -39,6 +39,8 @@ const runErrorTests = (tests: TestSuit[]): void => {
             await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
             await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
+            await page.waitForTimeout(1000);
+
             if (error) {
                 expect(errors).toEqual(
                     expect.arrayContaining([error])
@@ -50,6 +52,8 @@ const runErrorTests = (tests: TestSuit[]): void => {
                     expect.arrayContaining([warning])
                 );
             }
+
+            page.removeAllListeners();
 
         });
 
