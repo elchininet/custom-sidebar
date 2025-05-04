@@ -18,20 +18,20 @@ const pageVisit = async (page: Page): Promise<void> => {
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 };
 
-test('if multiple items match the same element the last one should be used', async ({ page }) => {
+test('if there is a match the item should be marked and ignored by subsequent matches', async ({ page }) => {
 
     await fulfillJson(page, {
         order: [
             {
-                item: 'er',
+                item: 'er', // it should match also with "Developer tools" but it matches first with "overview"
                 name: 'Overview matched'
             },
             {
-                item: 'lo',
+                item: 'lo', // it should match also with "Developer tools" but it matches first with "Logbook"
                 name: 'Logbook matched'
             },
             {
-                item: 'oo',
+                item: 'oo', // it also matches with "Logbook" but as "Logbook" was already matched, it is ignored
                 name: 'Dev matched'
             }
         ]
