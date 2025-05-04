@@ -35,6 +35,8 @@ test.describe('title template returns', () => {
 
         await expect(page.locator(SELECTORS.TITLE)).toBeEmpty();
 
+        page.removeAllListeners();
+
     });
 
     test('if it returns an empty string it should be used', async ({ page }) => {
@@ -192,6 +194,8 @@ test.describe('name template returns', () => {
 
         await expect(getCheckItemText(page)).toBeEmpty();
 
+        page.removeAllListeners();
+
     });
 
     test('if it returns an empty string it should be used', async ({ page }) => {
@@ -322,6 +326,8 @@ test.describe('notification template returns', () => {
         await pageVisit(page);
 
         await expect(getCheckItemBadge(page)).toBeEmpty();
+
+        page.removeAllListeners();
 
     });
 

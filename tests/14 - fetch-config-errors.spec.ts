@@ -21,11 +21,16 @@ test('if the configuration is not found it should throw an error', async ({ page
 
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+
+    await page.waitForTimeout(1000);
+
     expect(errors).toEqual(
         expect.arrayContaining([
             `${ERROR_PREFIX} JSON config file not found.\nMake sure you have valid config in /config/www/sidebar-config.json file.`
         ])
     );
+
+    page.removeAllListeners();
 
 });
 
@@ -47,11 +52,16 @@ test('if there is an error loading the configuration it should be thrown', async
 
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+
+    await page.waitForTimeout(1000);
+
     expect(errors).toEqual(
         expect.arrayContaining([
             `${ERROR_PREFIX} JSON config file not found.\nMake sure you have valid config in /config/www/sidebar-config.json file.`
         ])
     );
+
+    page.removeAllListeners();
 
 });
 
@@ -69,11 +79,16 @@ test('if the configuration is malformed it should throw an error', async ({ page
 
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+
+    await page.waitForTimeout(1000);
+
     expect(errors).toEqual(
         expect.arrayContaining([
             `${ERROR_PREFIX} Unexpected token 'h', "html" is not valid JSON`
         ])
     );
+
+    page.removeAllListeners();
 
 });
 
@@ -94,10 +109,15 @@ test('if the id is in the configuration it should throw a warning', async ({ pag
 
     await page.goto('/');
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+
+    await page.waitForTimeout(1000);
+
     expect(warnings).toEqual(
         expect.arrayContaining([
             `${ERROR_PREFIX} You seem to be using the example configuration.\nMake sure you have valid config in /config/www/sidebar-config.json file.`
         ])
     );
+
+    page.removeAllListeners();
 
 });

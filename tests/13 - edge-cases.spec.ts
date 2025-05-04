@@ -78,6 +78,8 @@ test('Non new-items that don\'t match a sidebar item should trigger a warning', 
 
     await pageVisit(page);
 
+    await page.waitForTimeout(1000);
+
     expect(warnings).toEqual(
         expect.arrayContaining([
             `${MESSAGE} "medium"`,
@@ -90,5 +92,7 @@ test('Non new-items that don\'t match a sidebar item should trigger a warning', 
             `${MESSAGE} "bazinga"`
         ])
     );
+
+    page.removeAllListeners();
 
 });

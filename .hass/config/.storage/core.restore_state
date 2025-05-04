@@ -4,34 +4,34 @@
   "key": "core.restore_state",
   "data": [
     {
-      "state": {"entity_id":"person.test","state":"unknown","attributes":{"editable":true,"id":"test","device_trackers":[],"user_id":"ec313e3c38fb4d60b44e0db03cdc1250","friendly_name":"Test"},"last_changed":"2024-10-13T23:42:48.171340+00:00","last_reported":"2024-10-13T23:42:49.383302+00:00","last_updated":"2024-10-13T23:42:49.383302+00:00","context":{"id":"01JA446QH786ECWST8KYMJKHTD","parent_id":null,"user_id":null}},
+      "state": {"entity_id":"conversation.home_assistant","state":"unknown","attributes":{"friendly_name":"Home Assistant","supported_features":1},"last_changed":"2025-05-04T20:39:48.706388+00:00","last_reported":"2025-05-04T20:39:48.706388+00:00","last_updated":"2025-05-04T20:39:48.706388+00:00","context":{"id":"01JTEGDH723PKE68AHKPYC1K9W","parent_id":null,"user_id":null}},
       "extra_data": null,
-      "last_seen": "2024-10-13T23:45:45.544144+00:00"
+      "last_seen": "2025-05-04T20:40:30.647770+00:00"
     },
     {
-      "state": {"entity_id":"input_select.fan_speed","state":"1","attributes":{"options":["1","2","3"],"editable":false,"icon":"mdi:fan-plus","friendly_name":"Fan Speed"},"last_changed":"2024-10-13T23:44:41.905312+00:00","last_reported":"2024-10-13T23:44:41.905312+00:00","last_updated":"2024-10-13T23:44:41.905312+00:00","context":{"id":"01JA44A5DGBNXC3KSBH487VZ35","parent_id":null,"user_id":"ec313e3c38fb4d60b44e0db03cdc1250"}},
+      "state": {"entity_id":"tts.google_en_com","state":"unknown","attributes":{"friendly_name":"Google Translate en com"},"last_changed":"2025-05-04T20:39:49.441232+00:00","last_reported":"2025-05-04T20:39:49.441232+00:00","last_updated":"2025-05-04T20:39:49.441232+00:00","context":{"id":"01JTEGDHY11K8EKE7QBYY6Q0RG","parent_id":null,"user_id":null}},
       "extra_data": null,
-      "last_seen": "2024-10-13T23:45:45.544144+00:00"
+      "last_seen": "2025-05-04T20:40:30.647770+00:00"
     },
     {
-      "state": {"entity_id":"timer.laundry","state":"idle","attributes":{"duration":"0:01:00","editable":false},"last_changed":"2024-10-13T23:42:49.015738+00:00","last_reported":"2024-10-13T23:42:49.015738+00:00","last_updated":"2024-10-13T23:42:49.015738+00:00","context":{"id":"01JA446Q5QFZXJQWECG2TP9MWV","parent_id":null,"user_id":null}},
+      "state": {"entity_id":"person.test","state":"unknown","attributes":{"editable":true,"id":"test","device_trackers":[],"user_id":"ec313e3c38fb4d60b44e0db03cdc1250","friendly_name":"Test"},"last_changed":"2025-05-04T20:39:49.442196+00:00","last_reported":"2025-05-04T20:39:49.826232+00:00","last_updated":"2025-05-04T20:39:49.826232+00:00","context":{"id":"01JTEGDJA2VEFW9XYXFACYE0D5","parent_id":null,"user_id":null}},
       "extra_data": null,
-      "last_seen": "2024-10-13T23:45:45.544144+00:00"
+      "last_seen": "2025-05-04T20:40:30.647770+00:00"
     },
     {
-      "state": {"entity_id":"input_boolean.my_switch","state":"off","attributes":{"editable":false,"friendly_name":"My Switch"},"last_changed":"2024-10-13T23:44:40.880176+00:00","last_reported":"2024-10-13T23:44:40.880176+00:00","last_updated":"2024-10-13T23:44:40.880176+00:00","context":{"id":"01JA44A4DF4834FD6F7MYG56BG","parent_id":null,"user_id":"ec313e3c38fb4d60b44e0db03cdc1250"}},
+      "state": {"entity_id":"input_select.fan_speed","state":"1","attributes":{"options":["1","2","3"],"editable":false,"icon":"mdi:fan-plus","friendly_name":"Fan Speed"},"last_changed":"2025-05-04T20:39:49.442301+00:00","last_reported":"2025-05-04T20:39:49.442301+00:00","last_updated":"2025-05-04T20:39:49.442301+00:00","context":{"id":"01JTEGDHY2F9SKC8YKPNW9CHR5","parent_id":null,"user_id":null}},
       "extra_data": null,
-      "last_seen": "2024-10-13T23:45:45.544144+00:00"
+      "last_seen": "2025-05-04T20:40:30.647770+00:00"
     },
     {
-      "state": {"entity_id":"conversation.home_assistant","state":"unknown","attributes":{"friendly_name":"Home Assistant","supported_features":1},"last_changed":"2024-10-13T23:42:49.090754+00:00","last_reported":"2024-10-13T23:42:49.090754+00:00","last_updated":"2024-10-13T23:42:49.090754+00:00","context":{"id":"01JA446Q825QHGN1AANA5P25PS","parent_id":null,"user_id":null}},
+      "state": {"entity_id":"timer.laundry","state":"idle","attributes":{"duration":"0:01:00","editable":false},"last_changed":"2025-05-04T20:39:49.442373+00:00","last_reported":"2025-05-04T20:39:49.442373+00:00","last_updated":"2025-05-04T20:39:49.442373+00:00","context":{"id":"01JTEGDHY2E8FJ8WW8N3Z1YEYX","parent_id":null,"user_id":null}},
       "extra_data": null,
-      "last_seen": "2024-10-13T23:45:45.544144+00:00"
+      "last_seen": "2025-05-04T20:40:30.647770+00:00"
     },
     {
-      "state": {"entity_id":"tts.google_en_com","state":"unknown","attributes":{"friendly_name":"Google Translate en com"},"last_changed":"2024-10-13T23:42:49.237258+00:00","last_reported":"2024-10-13T23:42:49.237258+00:00","last_updated":"2024-10-13T23:42:49.237258+00:00","context":{"id":"01JA446QCNCEKHS40Y6F32ARNP","parent_id":null,"user_id":null}},
+      "state": {"entity_id":"input_boolean.my_switch","state":"off","attributes":{"editable":false,"friendly_name":"My Switch"},"last_changed":"2025-05-04T20:39:49.442431+00:00","last_reported":"2025-05-04T20:39:49.442431+00:00","last_updated":"2025-05-04T20:39:49.442431+00:00","context":{"id":"01JTEGDHY2NCZVZYGT9QXHMXW0","parent_id":null,"user_id":null}},
       "extra_data": null,
-      "last_seen": "2024-10-13T23:45:45.544144+00:00"
+      "last_seen": "2025-05-04T20:40:30.647770+00:00"
     }
   ]
 }

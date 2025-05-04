@@ -58,6 +58,17 @@
         "name": "Home Assistant Content",
         "system_generated": true,
         "local_only": false
+      },
+      {
+        "id": "e368f2e36ddd42db8e125cbc5f3ca1c6",
+        "group_ids": [
+          "system-read-only"
+        ],
+        "is_owner": false,
+        "is_active": true,
+        "name": "Home Assistant Content",
+        "system_generated": true,
+        "local_only": false
       }
     ],
     "groups": [
@@ -94,6 +105,41 @@
         }
       }
     ],
-    "refresh_tokens": []
+    "refresh_tokens": [
+      {
+        "id": "01d349140e864184a98dc7b40e6bdc66",
+        "user_id": "ec313e3c38fb4d60b44e0db03cdc1250",
+        "client_id": "http://localhost:8123/",
+        "client_name": null,
+        "client_icon": null,
+        "token_type": "normal",
+        "created_at": "2025-05-04T20:39:52.400301+00:00",
+        "access_token_expiration": 1800.0,
+        "token": "1b53afc53ed1f2a2a181d1cc731c08f845c95df79c1eb082864e535c1094bee59fe7f133c093c589602c1ce32a8fca6fe7a3d5535671d0c2146910fcc3a1cbeb",
+        "jwt_key": "a8408022df28baeab3a51b7677288059af95f232f6eb9f42a43f23dca0fc892f248f4c0d87ed76c304acd731f2e974ace8304c01b5304d876725a9e5b00dcbe5",
+        "last_used_at": "2025-05-04T20:39:52.400415+00:00",
+        "last_used_ip": "172.17.0.1",
+        "expire_at": 1754167192.400415,
+        "credential_id": "0ef96d1a528f4af5ad82b425af19836b",
+        "version": "2025.5.0b3"
+      },
+      {
+        "id": "a8d31ff77ae541acb209e08811355edf",
+        "user_id": "e368f2e36ddd42db8e125cbc5f3ca1c6",
+        "client_id": null,
+        "client_name": null,
+        "client_icon": null,
+        "token_type": "system",
+        "created_at": "2025-05-04T20:39:47.211411+00:00",
+        "access_token_expiration": 1800.0,
+        "token": "86574db536589aa4649298a070a40c65efcc095e5450c54aa96db8b3d2228f7e6686d882fd6193feec69edac223061f23d22f77a3399fa23db268248dc36ca1d",
+        "jwt_key": "5e5c5e586721e37659baca8b6a733ea20853b293caf713afcb522127ed51d0a4f9d10fe79bf3cfbc4da64de70a4794d953a8cb1cb4d5edecce13502771a165a8",
+        "last_used_at": null,
+        "last_used_ip": null,
+        "expire_at": null,
+        "credential_id": null,
+        "version": "2025.5.0b3"
+      }
+    ]
   }
 }
