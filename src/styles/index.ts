@@ -32,7 +32,6 @@ export const FUNCTIONALITY = {
         zIndex: 1
     },
     [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
-        maxWidth: 'unset',
         position: 'relative',
         zIndex: 1
     },
