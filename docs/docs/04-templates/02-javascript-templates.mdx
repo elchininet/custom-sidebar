@@ -3,18 +3,45 @@ sidebar_position: 2
 ---
 
 import JavaScriptTemplateExample from '@site/docs/_partials/04-templates/02-javascript-templates/_javascript-templates.mdx';
+import RestApisExample from '@site/docs/_partials/04-templates/02-javascript-templates/_rest-apis.mdx';
 
 # JavaScript Templates
 
 This templating system IS NOT [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). It is basically a `JavaScript` code block in which you can use certain client-side objects, variables and methods. To set a property as a `JavaScript` template block, include the code between three square brackets `[[[ JavaScript code ]]]`. If you don‘t use the square brackets, the property will be interpreted as a regular string.
 
-The `JavaScript` code will be taken as something that you want to return, but if you have a more complex logic, you can create your own variables and return the desired result at the end.
+:::tip
 
-The entities used in the templates will be stored, so if the state of an stored entity changes, all the templates that use this entity will be reevaluated and rerendered. On top of this, if the variable `panel_url` is used in a template, the template will be reevaluated every time that a new panel or a new view is loaded.
+`Custom Sidebar` uses [Home Assistant Javascript Templates] for the `JavaScript` templating system. To know all the objects, variables and methods available in the `JavaScript` templates, consult the [proper section](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#objects-and-methods-available-in-the-templates) in the repository.
+
+:::
+
+If the `JavaScript` code is used in an option, it will be taken as something that you want to return, but if you have a more complex logic, you can create your own variables and return the desired result at the end.
+
+The entities used in the templates will be stored, so if the state of an stored entity changes, all the templates that use this entity will be reevaluated and rerendered.
 
 `JavaScript` templates can make use of [Reactive JavaScript Variables](../advanced-configuration-options/javascript-variables#reactive-javascript-variables). If you use a reactive variable in some templates and you modify it in the `javascript` action of an `on_click` parameter of an item, all the templates in which the variable was used will be reevaluated in the device in which the action was performed.
 
-### Example
+On top of all the variables and methods provided by [Home Assistant Javascript Templates], the next variables and methods will be available in the templates:
+
+#### panel_url
+
+This variable returns the url of the current panel. It will be reevaluated every time that a new panel or a new view is loaded.
+
+#### checkConfig
+
+This method allows one to validate the `Home Assistant` configuration. It returns a promise which resolves in an object with a `result` property. The `result` property can have two values, `valid` or `invalid`. This object will also have two optional properties, `errors` and `warnings` that will be filled with the corresponding errors or warnings coming from the `Home Assistant` configuration check.
+
+#### renderTemplate
+
+This method accepts a [Jinja template string](https://www.home-assistant.io/docs/configuration/templating) as a paremeter and it will return a promise which resolves in the result of the template.
+
+#### callService
+
+This method will call a `Home Assistant` service (renamed some time ago to [actions](https://www.home-assistant.io/dashboards/actions/)). It allows one to call a service from a `JavaScript` template. This method needs three parameters, the first one is the domain, the second the type of service and the third an object with the data needed by the service.
+
+### Examples
+
+#### JavaScript templates as options
 
 The next example will set the next options:
 
@@ -25,10 +52,10 @@ The next example will set the next options:
 
 <JavaScriptTemplateExample />
 
-:::tip
+#### JavaScript template executed when an item is clicked
 
-`Custom Sidebar` uses [Home Assistant Javascript Templates] for the `JavaScript` templating system. To know all the objects, variables and methods available in the `JavaScript` templates, consult the [proper section](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#objects-and-methods-available-in-the-templates) in the repository.
+The next example will add an item to the sidebar that once pressed will check the home assistant configuration. If the configuration has errors it will show an alert with the corresponding error, otherwise it will restart `Home Assistant`.
 
-:::
+<RestApisExample />
 
 [Home Assistant Javascript Templates]: https://github.com/elchininet/home-assistant-javascript-templates
