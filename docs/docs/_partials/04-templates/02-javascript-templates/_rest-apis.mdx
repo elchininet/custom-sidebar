@@ -1,0 +1,45 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    order:
+      - new_item: true
+        item: 'restart'
+        icon: 'mdi:restart'
+        icon_color: 'var(--error-color)'
+        text_color: 'var(--error-color)'
+        on_click:
+          action: 'javascript'
+          code: |
+            checkConfig()
+              .then((response) => {
+                if (response.result === 'valid') {
+                  callService('homeassistant', 'restart');
+                } else {
+                  alert(response.errors);
+                }
+              });
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "order": [
+        {
+          "new_item": true,
+          "item": "restart",
+          "icon": "mdi:restart",
+          "icon_color": "var(--error-color)",
+          "text_color": "var(--error-color)",
+          "on_click": {
+            "action": "javascript",
+            "code": "checkConfig().then((response) => { if (response.result === 'valid') { callService('homeassistant', 'restart'); } else { alert(response.errors); } })"
+          }
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>

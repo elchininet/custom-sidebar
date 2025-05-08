@@ -66,7 +66,8 @@ import {
     isNumber,
     isObject,
     isArray,
-    isRegExp
+    isRegExp,
+    getRestApis
 } from '@utilities';
 import * as STYLES from '@styles';
 import { fetchConfig } from '@fetchers/json';
@@ -1384,7 +1385,10 @@ class CustomSidebar {
                                 this._debugLog('Compiled config', this._config);
                                 this._debugLog('Executing plugin logic...');
 
-                                this._renderer.variables = this._parseJavaScriptVariables();
+                                this._renderer.variables = {
+                                    ...this._parseJavaScriptVariables(),
+                                    ...getRestApis(this._ha)
+                                };
                                 this._processDefaultPath();
                                 this._processSidebar();
                                 this._subscribeTitle();
