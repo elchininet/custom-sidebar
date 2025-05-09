@@ -1,0 +1,45 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    order:
+      - new_item: true
+        item: 'Living-room lights'
+        icon: 'mdi:lightbulb-group'
+        icon_color: |
+          [[[
+            return is_state('light.living_room', 'on')
+              ? 'var(--accent-color)'
+              : 'var(--sidebar-icon-color)';
+          ]]]
+        on_click:
+          action: 'call-service'
+          service: 'light.toggle'
+          data:
+            entity_id: 'light.living_room'
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "order": [
+        {
+          "new_item": true,
+          "item": "Living-room lights",
+          "icon": "mdi:lightbulb-group",
+          "icon_color": "[[[ return is_state('light.living_room', 'on') ? 'var(--accent-color)' : 'var(--sidebar-icon-color)'; ]]]",
+          "on_click": {
+            "action": "call-service",
+            "service": "light.toggle",
+            "data": {
+              "entity_id": "light.living_room"
+            }
+          }
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
