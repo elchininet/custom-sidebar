@@ -1,0 +1,34 @@
+---
+sidebar_position: 4
+---
+
+import CallServiceAction from '@site/docs/_partials/03-configuration/04-the-on-click-property/_call-service-action.mdx';
+import JavaScriptAction from '@site/docs/_partials/03-configuration/04-the-on-click-property/_javascript-action.mdx';
+
+# The on_click property
+
+The `on_click` property allows one to attach click actions to specific sidebar items. These actions will be triggered every time that the sidebar item containing an `on_click` property is clicked. The `on_click` property doesn't stop redirecting to a dashboard or to an external page if it is provided together with an `href` property. But if the `href` property is `#` (or it is just omitted in new items), then the `on_click` action will be executed without redirecting to any dashboard or external page.
+
+### Call service action
+
+The `call-service` action allows one to call a specific service when a sidebar item is clicked. It rquires a `service` parameter indicating which is the service that one wants to execute and an optional `data` parameter in the cases that it is required by the service.
+
+:::tip
+
+The `data` parameter of a `call-service` action accepts [JavaScript templates](../templates/javascript-templates) in its values. The `JavaScript` templates used there will have access to two variables: `item` and `itemText`. These variables are related to the clicked item, the first is the configuration object of the item (including an `element` property which is the HTML element relative to the sidebar item) and the second is the text of the item.
+
+:::
+
+<CallServiceAction />
+
+### JavaScript action
+
+The `javascript` action allows one to execute an arbitrary `JavaScript` code when the isdebar item is clicked. It requires a `code` parameter with the `JavaScript` code without being enclosed between `[[[ ]]]`.
+
+:::tip
+
+The `JavaScript` code will have access to two variables: `item` and `itemText`. These variables are related to the clicked item, the first is the configuration object of the item (including an `element` property which is the HTML element relative to the sidebar item) and the second is the text of the item.
+
+:::
+
+<JavaScriptAction />

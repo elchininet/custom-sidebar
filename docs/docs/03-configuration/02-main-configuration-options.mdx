@@ -25,6 +25,7 @@ These options are intended to change the functionality of the sidebar and to cha
 | sidebar_mode       | String                             | no       | Defines the default status of the sidebar when Home Assistant is loaded. It has three possible values: "hidden" to make the sidebar hidden, "narrow" to make the sidebar visible in narrow state and "extended" to make sidebar visible in extended state. This option will show or hide the sidebar ignoring if it is a desktop or a mobile device or if the `Always hide the sidebar` switch in the profile page in on or off (depending on the value of this option, this switch will be switched on or off automatically) |
 | default_path                       | String             | no       | Defines the default URL path when the page loads. This path must start with `/` |
 | analytics                          | Boolean or Object  | no       | If this value is `true`, sidebar usage will be logged in [Logbook](https://www.home-assistant.io/integrations/logbook/). This option also allows an object, and in this way it is possible to decide which kinds of events will be logged. Consult the [Sidebar Analytics](./sidebar-analytics#decide-which-events-will-be-logged) section for more information about this |
+| exceptions                          | [exceptions](./exceptions)[]  | no       | List of exceptions to provide different configurations per user or device. Consult the [exceptions](./exceptions) section. |
 
 :::tip
 
@@ -60,15 +61,14 @@ These options are intended to change the functionality of the sidebar and to cha
 | bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
 | href                      | String  | no        | Specifies the `href` of the sidebar item |
 | target                    | String  | no        | Specifies the [target property] of the sidebar item |
-| on_click<sup>\*</sup><sup>\*</sup> | See below  | no     | Specifies the `onClick` property of the sidebar item. It allows two types of actions, service call actions or javascript actions. Take into account that setting this property will not prevent redirecting to an internal dashboard or an external URL if the `href` property is set. If you want to avoid navigating to a page, you should set the `href` option as `#` (in new items you can just omit it). Check the [Short Configuration Example](#short-configuration-example-1) below for an example of its usage |
+| on_click                  | [action](./the-on-click-property)  | no     | It allows to execute actions when the sidebar item is clicked. Consult [the on_click property](./the-on-click-property) section for more details |
 | attributes<sup>\*</sup>   | String or Object | no | Object that defines a group of attributes that will be applied to the sidebar item. The properties of this object must be strings, numbers or booleans |
 | divider                   | Boolean | no        | Adds a divider line below the item |
 | new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. If you use this property you need to provide an `icon` property and either a `href` or an `on_click` property |
 
 :::tip
 
-\* These options allow [JavaScript](../templates/javascript-templates) or [Jinja](../templates/jinja-templates) templates.<br/>
-\*\* When using a `call-service` action, the `data` parameter accepts [JavaScript templates](../templates/javascript-templates) in its values. The JavaScript templates used in the `on_click` parameter (either the ones in the `data` parameter of a `call-service` action or the ones in the `code` parameter of a `javascript` action) will have access to two variables, `item` and `itemText`. These variables are related to the clicked item, the first is the configuration object of the item (including an `element` property which is the HTML element relative to the anchor) and the second is the text of the item.
+\* These options allow [JavaScript](../templates/javascript-templates) or [Jinja](../templates/jinja-templates) templates.
 
 :::
 
@@ -80,8 +80,6 @@ These options are intended to change the functionality of the sidebar and to cha
 * If you use the `order` property in at least one item, make sure either all items (except hidden ones) have this property, or none of them (otherwise order may be messed up).
 * Notifications and user account are not part of the main sidebar items so you cannot change their properties. On the other hand, global color properties will affect these items.
 * If you set the order or hide items from the sidebar, it is recommended that you don't use Home Assistant functionality to reorder/hide items, because it will conflict with the functionality of the plugin.
-* Take into account that using the `on_click` parameter in an item will not stop redirecting to a page if the `href` parameter has a value. If you want to stop navigating to a page when you click on an item, for new items you can just omit the `href` parameter, but for existing items you should set the `href` parameter as `#`.
-* Take into account that the `code` parameter of an `javascript` action in the `on_click` parameter doesn't need to be enclosed between three square brackets (`[[[ ]]]`).
 
 :::
 
