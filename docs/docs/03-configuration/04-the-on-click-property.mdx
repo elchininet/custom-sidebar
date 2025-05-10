@@ -38,4 +38,10 @@ The `JavaScript` code will have access to two variables: `item` and `itemText`. 
 
 The `open-dialog` action allows one to open a dialog when a sidebar item is clicked. It requires a `type` parameter indicating which kind of dialog should be open. The `type` parameter allows two values, `more-info` to open a more info dialog of an entity or `restart` to open the dialog to restart `Home Assistant`. If one specifies the `type` parameter as `more-info`, the action will require an `entity_id` parameter indicating which entity should shown the more info dialog.
 
+:::warning[Important]
+
+Take into account when using the `open-dialog` action with a `restart` `type`, that even if every user can open the restart dialog, only admin users are authorized to restart `Home Assistant`.
+
+:::
+
 <OpenDialogAction />
