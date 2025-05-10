@@ -3,7 +3,12 @@ sidebar_position: 2
 ---
 
 import JavaScriptTemplateExample from '@site/docs/_partials/04-templates/02-javascript-templates/_javascript-templates.mdx';
-import RestApisExample from '@site/docs/_partials/04-templates/02-javascript-templates/_rest-apis.mdx';
+import OnclickWithJavaScriptCodeExample from '@site/docs/_partials/04-templates/02-javascript-templates/_on-click-with-javascript-code.mdx';
+
+import OpenAlertDialogCode from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-alert-dialog.mdx';
+import OpenConfirmDialogCode from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-confirm-dialog.mdx';
+import OpenMoreInfoDialogCode from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-more-info-dialog.mdx';
+import OpenRestartDialog from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-restart-dialog.mdx';
 
 # JavaScript Templates
 
@@ -27,6 +32,46 @@ On top of all the variables and methods provided by [Home Assistant Javascript T
 
 This variable returns the url of the current panel. It will be reevaluated every time that a new panel or a new view is loaded.
 
+---
+
+#### openAlertDialog
+
+This method will open an alert dialog. It accepts only one parameter wich is an object with the next properties: the `title` and the `text` of the alert dialog and two optional properties with a`confirmText` (text of the confirm button) and a `confirm` action that will be executed when the confirm button is clicked.
+
+<OpenAlertDialogCode />
+
+---
+
+#### openConfirmDialog
+
+This method will open a confirmation dialog that allow one to accept or decline what it states. It also accepts only one parameter which is an object with the same properties as the `openAlertDialog` method and on top of them it will also accept a `dismissText` property to indicate the text of the dismiss button, a `destructive` property to indicate if the confirmation dialog will execute a destructive action, and a `cancel` action that will be executed when the dismiss button is clicked.
+
+<OpenConfirmDialogCode />
+
+---
+
+#### openMoreInfoDialog
+
+This method will open a more info dialog of the specified entity. It rquires an `entityId` parameter which is the entity that will be open in the more info dialog.
+
+<OpenMoreInfoDialogCode />
+
+---
+
+#### openRestartDialog
+
+:::warning[Important]
+
+Take into account that only admins are able to restart `Home Assistant`.
+
+:::
+
+This method will open the dialog to restart `Home Assistant`.
+
+<OpenRestartDialog />
+
+---
+
 #### callService
 
 :::warning[Important]
@@ -36,6 +81,8 @@ Some services can be executed only by admin users, for example, restarting Home 
 :::
 
 This method will call a `Home Assistant` service (renamed some time ago to [actions](https://www.home-assistant.io/dashboards/actions/)). It allows one to call a service from a `JavaScript` template. This method needs three parameters, the first one is the domain, the second the type of service and the third an object with the data needed by the service.
+
+---
 
 #### checkConfig
 
@@ -47,6 +94,8 @@ This method can be executed only by admin users.
 
 This method allows one to validate the `Home Assistant` configuration. It returns a promise which resolves in an object with a `result` property. The `result` property can have two values, `valid` or `invalid`. This object will also have two optional properties, `errors` and `warnings` that will be filled with the corresponding errors or warnings coming from the `Home Assistant` configuration check.
 
+---
+
 #### renderTemplate
 
 :::warning[Important]
@@ -56,6 +105,8 @@ This method can be executed only by admin users.
 :::
 
 This method accepts a [Jinja template string](https://www.home-assistant.io/docs/configuration/templating) as a paremeter and it will return a promise which resolves in the result of the template.
+
+---
 
 ### Examples
 
@@ -74,6 +125,6 @@ The next example will set the next options:
 
 The next example will add an item to the sidebar that once pressed will check the home assistant configuration. If the configuration has errors it will show an alert with the corresponding error, otherwise it will restart `Home Assistant`.
 
-<RestApisExample />
+<OnclickWithJavaScriptCodeExample />
 
 [Home Assistant Javascript Templates]: https://github.com/elchininet/home-assistant-javascript-templates

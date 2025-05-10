@@ -81,8 +81,8 @@ export interface Sidebar extends HTMLElement {
 export type DialogImport = () => Promise<CustomElementConstructor>;
 
 export interface DialogBoxParameters {
-    text?: string;
     title?: string;
+    text?: string;
     confirmation?: boolean;
     confirmText?: string;
     dismissText?: string;

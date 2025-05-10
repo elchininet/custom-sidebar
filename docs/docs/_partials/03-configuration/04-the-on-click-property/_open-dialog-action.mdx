@@ -6,12 +6,18 @@ import TabItem from '@theme/TabItem';
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     order:
       - new_item: true
+        item: 'Living-room lights'
+        icon: 'mdi:lightbulb-group'
+        on_click:
+          action: 'open-dialog'
+          type: 'more-info'
+          entity_id: 'light.living_room'
+      - new_item: true
         item: 'Restart'
         icon: 'mdi:restart'
         on_click:
-          action: 'javascript'
-          code: |
-            callService('homeassistant', 'restart');
+          action: 'open-dialog'
+          type: 'restart'
     ```
   </TabItem>
   <TabItem value="json" label="JSON">
@@ -20,11 +26,21 @@ import TabItem from '@theme/TabItem';
       "order": [
         {
           "new_item": true,
+          "item": "Living-room lights",
+          "icon": "mdi:lightbulb-group",
+          "on_click": {
+            "action": "open-dialog",
+            "type": "more-info",
+            "entity_id": "light.living_room"
+          }
+        },
+        {
+          "new_item": true,
           "item": "Restart",
           "icon": "mdi:restart",
           "on_click": {
-            "action": "javascript",
-            "code": "callService('homeassistant', 'restart');"
+            "action": "open-dialog",
+            "type": "restart"
           }
         }
       ]
