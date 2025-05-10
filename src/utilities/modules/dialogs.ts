@@ -211,9 +211,26 @@ export const getDialogsMethods = (ha: HomeAsssistantExtended) => {
             );
         },
         openConfirmDialog: (dialogParams: DialogBoxParameters): void => {
+            const {
+                title,
+                text,
+                destructive,
+                confirmText,
+                dismissText,
+                confirm,
+                cancel
+            } = dialogParams;
             openConfirmDialog(
                 ha,
-                dialogParams
+                {
+                    title,
+                    text,
+                    destructive,
+                    confirmText,
+                    dismissText,
+                    confirm,
+                    cancel
+                }
             );
         },
         openRestartDialog: () => {
