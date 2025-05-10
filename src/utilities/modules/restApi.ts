@@ -1,8 +1,7 @@
 import {
     HomeAsssistantExtended,
     CheckConfigResponse,
-    Method,
-    EntityState
+    Method
 } from '@types';
 
 const ENDPOINTS = {
@@ -32,10 +31,10 @@ export const getRestApis = (ha: HomeAsssistantExtended) => {
             domain: string,
             service: string,
             data: Record<string, unknown>
-        ): Promise<EntityState> {
-            return ha.hass.callApi<EntityState>(
-                Method.POST,
-                `${ENDPOINTS.SERVICES}/${domain}/${service}`,
+        ): Promise<void> {
+            return ha.hass.callService(
+                domain,
+                service,
                 data
             );
         }

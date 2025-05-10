@@ -27,17 +27,35 @@ On top of all the variables and methods provided by [Home Assistant Javascript T
 
 This variable returns the url of the current panel. It will be reevaluated every time that a new panel or a new view is loaded.
 
+#### callService
+
+:::warning[Important]
+
+Some services can be executed only by admin users, for example, restarting Home Assistant.
+
+:::
+
+This method will call a `Home Assistant` service (renamed some time ago to [actions](https://www.home-assistant.io/dashboards/actions/)). It allows one to call a service from a `JavaScript` template. This method needs three parameters, the first one is the domain, the second the type of service and the third an object with the data needed by the service.
+
 #### checkConfig
+
+:::warning[Important]
+
+This method can be executed only by admin users.
+
+:::
 
 This method allows one to validate the `Home Assistant` configuration. It returns a promise which resolves in an object with a `result` property. The `result` property can have two values, `valid` or `invalid`. This object will also have two optional properties, `errors` and `warnings` that will be filled with the corresponding errors or warnings coming from the `Home Assistant` configuration check.
 
 #### renderTemplate
 
+:::warning[Important]
+
+This method can be executed only by admin users.
+
+:::
+
 This method accepts a [Jinja template string](https://www.home-assistant.io/docs/configuration/templating) as a paremeter and it will return a promise which resolves in the result of the template.
-
-#### callService
-
-This method will call a `Home Assistant` service (renamed some time ago to [actions](https://www.home-assistant.io/dashboards/actions/)). It allows one to call a service from a `JavaScript` template. This method needs three parameters, the first one is the domain, the second the type of service and the third an object with the data needed by the service.
 
 ### Examples
 

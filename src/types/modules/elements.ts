@@ -8,7 +8,7 @@ export enum Method {
 
 export interface HassExtended extends Hass {
     dockedSidebar: `${DockedSidebar}`;
-    callService: (domain: string, service: string, data: Record<string, unknown>) => void;
+    callService: (domain: string, service: string, data: Record<string, unknown>) => Promise<void>;
     callApi: <T>(
         method: `${Method}`,
         endPoint: string,
