@@ -4,6 +4,7 @@ sidebar_position: 4
 
 import CallServiceAction from '@site/docs/_partials/03-configuration/04-the-on-click-property/_call-service-action.mdx';
 import JavaScriptAction from '@site/docs/_partials/03-configuration/04-the-on-click-property/_javascript-action.mdx';
+import OpenDialogAction from '@site/docs/_partials/03-configuration/04-the-on-click-property/_open-dialog-action.mdx';
 
 # The on_click property
 
@@ -32,3 +33,9 @@ The `JavaScript` code will have access to two variables: `item` and `itemText`. 
 :::
 
 <JavaScriptAction />
+
+### Open dialog action
+
+The `open-dialog` action allows one to open a dialog when a sidebar item is clicked. It requires a `type` parameter indicating which kind of dialog should be open. The `type` parameter allows two values, `more-info` to open a more info dialog of an entity or `restart` to open the dialog to restart `Home Assistant`. If one specifies the `type` parameter as `more-info`, the action will require an `entity_id` parameter indicating which entity should shown the more info dialog.
+
+<OpenDialogAction />
