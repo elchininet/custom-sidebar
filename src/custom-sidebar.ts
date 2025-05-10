@@ -18,6 +18,7 @@ import {
     ConfigNewItem,
     ConfigOrder,
     ConfigOrderWithItem,
+    DialogType,
     ActionType,
     AnalyticsConfig,
     PartialPanelResolver,
@@ -67,7 +68,10 @@ import {
     isObject,
     isArray,
     isRegExp,
-    getRestApis
+    getRestApis,
+    openMoreInfoDialog,
+    openRestartDialog,
+    getDialogsMethods
 } from '@utilities';
 import * as STYLES from '@styles';
 import { fetchConfig } from '@fetchers/json';
@@ -1283,6 +1287,20 @@ class CustomSidebar {
                 );
                 break;
             }
+            case ActionType.OPEN_DIALOG: {
+                const { type } = onClickAction;
+                switch (type) {
+                    case DialogType.MORE_INFO:
+                        openMoreInfoDialog(
+                            this._ha,
+                            onClickAction.entity_id
+                        );
+                        break;
+                    case DialogType.RESTART:
+                        openRestartDialog(this._ha);
+                        break;
+                }
+            }
         }
     }
 
@@ -1387,7 +1405,8 @@ class CustomSidebar {
 
                                 this._renderer.variables = {
                                     ...this._parseJavaScriptVariables(),
-                                    ...getRestApis(this._ha)
+                                    ...getRestApis(this._ha),
+                                    ...getDialogsMethods(this._ha)
                                 };
                                 this._processDefaultPath();
                                 this._processSidebar();

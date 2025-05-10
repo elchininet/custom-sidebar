@@ -211,6 +211,16 @@ export enum ATTRIBUTE {
     CUSTOM_SIDEBAR_ATTRIBUTES = 'data-custom-sidebar-attrs'
 }
 
+export enum CUSTOM_ELEMENT {
+    PARTIAL_PANEL_RESOLVER = 'partial-panel-resolver',
+    HA_PANEL_CONFIG = 'ha-panel-config',
+    HA_CONFIG_BACKUP = 'ha-config-backup',
+    HA_CONFIG_BACKUP_BACKUPS = 'ha-config-backup-backups',
+    HA_CONFIG_SYSTEM_NAVIGATION = 'ha-config-system-navigation',
+    DIALOG_BOX = 'dialog-box',
+    DIALOG_RESTART = 'dialog-restart'
+}
+
 export enum EVENT {
     CLICK = 'click',
     MOUSEDOWN = 'mousedown',
@@ -219,7 +229,9 @@ export enum EVENT {
     KEYDOWN = 'keydown',
     HASS_EDIT_SIDEBAR = 'hass-edit-sidebar',
     RENDER_TEMPLATE = 'render_template',
-    LOCATION_CHANGED = 'location-changed'
+    LOCATION_CHANGED = 'location-changed',
+    HASS_MORE_INFO = 'hass-more-info',
+    SHOW_DIALOG = 'show-dialog'
 }
 
 export enum KEY {
@@ -239,6 +251,12 @@ export const CHECK_FOCUSED_SHADOW_ROOT = [
     'HOME-ASSISTANT-MAIN',
     'HA-SIDEBAR'
 ];
+
+export const ENDPOINTS = {
+    CHECK_CONFIG: 'config/core/check_config',
+    TEMPLATE: 'template',
+    SERVICES: 'services'
+};
 
 export const SIDEBAR_MODE_TO_DOCKED_SIDEBAR = {
     [SidebarMode.HIDDEN]: DockedSidebar.ALWAYS_HIDDEN,

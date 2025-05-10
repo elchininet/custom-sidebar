@@ -29,7 +29,14 @@ export enum Match {
 
 export enum ActionType {
     CALL_SERVICE = 'call-service',
-    JAVASCRIPT = 'javascript'
+    JAVASCRIPT = 'javascript',
+    OPEN_DIALOG = 'open-dialog'
+}
+
+export enum DialogType {
+    MORE_INFO = 'more-info',
+    ALERT = 'alert',
+    RESTART = 'restart'
 }
 
 export interface ServiceCallAction {
@@ -38,12 +45,30 @@ export interface ServiceCallAction {
     data?: Record<string, unknown>;
 }
 
-export interface JavaScriptAction{
+export interface JavaScriptAction {
     action: `${ActionType.JAVASCRIPT}`,
     code: string;
 }
 
-export type OnClickAction = ServiceCallAction | JavaScriptAction;
+export interface OpenMoreInfoDialogAction {
+    action: `${ActionType.OPEN_DIALOG}`;
+    type: `${DialogType.MORE_INFO}`;
+    entity_id: string;
+}
+
+export interface OpenRestartDialogAction {
+    action: `${ActionType.OPEN_DIALOG}`;
+    type: `${DialogType.RESTART}`;
+}
+
+export type OpenDialogAction =
+    | OpenMoreInfoDialogAction
+    | OpenRestartDialogAction;
+
+export type OnClickAction =
+    | ServiceCallAction
+    | JavaScriptAction
+    | OpenDialogAction;
 
 export interface ItemColorConfig {
     item_background?: string;

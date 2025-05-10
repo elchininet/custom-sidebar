@@ -3,12 +3,7 @@ import {
     CheckConfigResponse,
     Method
 } from '@types';
-
-const ENDPOINTS = {
-    CHECK_CONFIG: 'config/core/check_config',
-    TEMPLATE: 'template',
-    SERVICES: 'services'
-};
+import { ENDPOINTS } from '@constants';
 
 export const getRestApis = (ha: HomeAsssistantExtended) => {
     return {
