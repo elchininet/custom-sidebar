@@ -24,6 +24,9 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.26.0
+        version: 9.26.0
       '@playwright/test':
         specifier: 1.52.0
         version: 1.52.0
