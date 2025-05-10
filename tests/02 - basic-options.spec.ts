@@ -885,3 +885,157 @@ test('should execute a javascript action having the clicked item and the itemTex
     page.removeAllListeners();
 
 });
+
+test.describe('rest APIs in JavaScript templates', () => {
+
+    const item = {
+        new_item: true,
+        item: 'Check',
+        icon: 'mdi:bullseye-arrow'
+    };
+
+    test('checkConfig should return a result', async ({ page }) => {
+
+        const logs: string[] = [];
+
+        page.on('console', message => {
+            logs.push(message.text());
+        });
+
+        await fulfillJson(
+            page,
+            {
+                order: [
+                    {
+                        ...item,
+                        on_click: {
+                            action: 'javascript',
+                            code: `
+                                checkConfig()
+                                    .then((response) => {
+                                        console.log('The result is: ' + response.result);
+                                    })
+                            `
+                        }
+                    }
+                ]
+            }
+        );
+
+        await page.goto('/');
+
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+        await getSidebarItem(page, '#').click();
+
+        await page.waitForTimeout(500);
+
+        expect(logs).toEqual(
+            expect.arrayContaining(['The result is: valid'])
+        );
+
+        page.removeAllListeners();
+
+    });
+
+    test('renderTemplate should return the result of a Jinja template', async ({ page }) => {
+
+        const logs: string[] = [];
+
+        page.on('console', message => {
+            logs.push(message.text());
+        });
+
+        await fulfillJson(
+            page,
+            {
+                order: [
+                    {
+                        ...item,
+                        on_click: {
+                            action: 'javascript',
+                            code: `
+                                renderTemplate('The time is: {{ now() }}')
+                                    .then((response) => {
+                                        console.log(response);
+                                    })
+                            `
+                        }
+                    }
+                ]
+            }
+        );
+
+        await page.goto('/');
+
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+        await getSidebarItem(page, '#').click();
+
+        await page.waitForTimeout(500);
+
+        expect(logs).toEqual(
+            expect.arrayContaining([
+                expect.stringMatching(/The time is: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:.*/)
+            ])
+        );
+
+        page.removeAllListeners();
+
+    });
+
+    test('callService should execute the proper service', async ({ page }) => {
+
+        const input = page.locator('ha-entity-toggle .mdc-switch__thumb input');
+
+        const logs: string[] = [];
+
+        page.on('console', message => {
+            logs.push(message.text());
+        });
+
+        await fulfillJson(
+            page,
+            {
+                order: [
+                    {
+                        ...item,
+                        on_click: {
+                            action: 'javascript',
+                            code: `
+                                callService(
+                                    'input_boolean',
+                                    'toggle',
+                                    {
+                                        entity_id: 'input_boolean.my_switch'
+                                    }
+                                );
+                            `
+                        }
+                    }
+                ]
+            }
+        );
+
+        await page.goto('/');
+
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+
+        expect(input).not.toBeChecked();
+
+        await getSidebarItem(page, '#').click();
+
+        expect(input).toBeChecked();
+
+        await getSidebarItem(page, '#').click();
+
+        expect(input).not.toBeChecked();
+
+        page.removeAllListeners();
+
+    });
+
+});
