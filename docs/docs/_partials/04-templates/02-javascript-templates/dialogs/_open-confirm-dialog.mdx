@@ -1,18 +1,39 @@
-```typescript
-openConfirmDialog({
-  // The title of the dialog
-  title: string;
-  // The text of the dialog
-  text: string;
-  // The text of the confirm button
-  confirmText?: string;
-  // The text of the dismiss button
-  dismissText?: string;
-  // Indicates if the confirm dialog is destructive
-  destructive?: boolean;
-  // Function that will be executed when the confirm button is clicked
-  confirm?: () => void;
-  // Function that will be executed when the dismiss button is clicked
-  cancel?: () => void;
-})
-```
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    order:
+      - new_item: true
+        item: 'execute'
+        icon: 'mdi:script-text-outline'
+        on_click:
+          action: 'javascript'
+          code: |
+            openConfirmDialog({
+              title: 'Execute the script',
+              text: 'Do you want to execute the script?',
+              confirm: () => {
+                // execute the script
+              },
+              cancel: () => {
+                // do not execute the script
+              }
+            });
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "new_item": true,
+      "item": "execute",
+      "icon": "mdi:script-text-outline",
+      "on_click": {
+        "action": "javascript",
+        "code": "openConfirmDialog({ title: 'Execute the script', text: 'Do you want to execute the script?', confirm: () => { // execute the script }, cancel: () => { // do not execute the script } })"
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>

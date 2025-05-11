@@ -3,12 +3,15 @@ sidebar_position: 2
 ---
 
 import JavaScriptTemplateExample from '@site/docs/_partials/04-templates/02-javascript-templates/_javascript-templates.mdx';
-import OnclickWithJavaScriptCodeExample from '@site/docs/_partials/04-templates/02-javascript-templates/_on-click-with-javascript-code.mdx';
 
-import OpenAlertDialogCode from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-alert-dialog.mdx';
-import OpenConfirmDialogCode from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-confirm-dialog.mdx';
-import OpenMoreInfoDialogCode from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-more-info-dialog.mdx';
-import OpenRestartDialog from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-restart-dialog.mdx';
+import OpenAlertDialogExample from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-alert-dialog.mdx';
+import OpenConfirmDialogExample from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-confirm-dialog.mdx';
+import OpenMoreInfoDialogExample from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-more-info-dialog.mdx';
+import OpenRestartDialogExample from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-restart-dialog.mdx';
+
+import CheckConfigRestApiExample from '@site/docs/_partials/04-templates/02-javascript-templates/rest-apis/_check-config.mdx';
+import RenderTemplateRestApiExample from '@site/docs/_partials/04-templates/02-javascript-templates/rest-apis/_render-template.mdx';
+import CallServiceRestApiExample from '@site/docs/_partials/04-templates/02-javascript-templates/rest-apis/_call-service.mdx';
 
 # JavaScript Templates
 
@@ -34,29 +37,29 @@ This variable returns the url of the current panel. It will be reevaluated every
 
 ---
 
+:::info
+
+The next methods will be available in every `JavaScript` template, but they should not be used in the templates of regular options. They are intended to be used in [the `javascript` action of an `on_click` property](../configuration/the-on-click-property#javascript-action).
+
+:::
+
 #### openAlertDialog
 
 This method will open an alert dialog. It accepts only one parameter wich is an object with the next properties: the `title` and the `text` of the alert dialog and two optional properties with a `confirmText` (text of the confirm button) and a `confirm` action that will be executed when the confirm button is clicked.
 
-<OpenAlertDialogCode />
-
----
+<OpenAlertDialogExample />
 
 #### openConfirmDialog
 
 This method will open a confirmation dialog that allow one to accept or decline what it states. It also accepts only one parameter which is an object with the same properties as the `openAlertDialog` method and on top of them it will also accept a `dismissText` property to indicate the text of the dismiss button, a `destructive` property to indicate if the confirmation dialog will execute a destructive action, and a `cancel` action that will be executed when the dismiss button is clicked.
 
-<OpenConfirmDialogCode />
-
----
+<OpenConfirmDialogExample />
 
 #### openMoreInfoDialog
 
 This method will open a more info dialog of the specified entity. It requires an `entityId` parameter which is the entity that will be open in the more info dialog.
 
-<OpenMoreInfoDialogCode />
-
----
+<OpenMoreInfoDialogExample />
 
 #### openRestartDialog
 
@@ -68,21 +71,7 @@ Take into account that even if every user can open the restart dialog, only admi
 
 This method will open the dialog to restart `Home Assistant`.
 
-<OpenRestartDialog />
-
----
-
-#### callService
-
-:::warning[Important]
-
-Some services can be executed only by admin users, for example, restarting Home Assistant.
-
-:::
-
-This method will call a `Home Assistant` service (renamed some time ago to [actions](https://www.home-assistant.io/dashboards/actions/)). It allows one to call a service from a `JavaScript` template. This method needs three parameters, the first one is the domain, the second the type of service and the third an object with the data needed by the service.
-
----
+<OpenRestartDialogExample />
 
 #### checkConfig
 
@@ -94,7 +83,7 @@ This method can be executed only by admin users.
 
 This method allows one to validate the `Home Assistant` configuration. It returns a promise which resolves in an object with a `result` property. The `result` property can have two values, `valid` or `invalid`. This object will also have two optional properties, `errors` and `warnings` that will be filled with the corresponding errors or warnings coming from the `Home Assistant` configuration check.
 
----
+<CheckConfigRestApiExample />
 
 #### renderTemplate
 
@@ -106,25 +95,32 @@ This method can be executed only by admin users.
 
 This method accepts a [Jinja template string](https://www.home-assistant.io/docs/configuration/templating) as a parameter and it will return a promise which resolves in the result of the template.
 
+<RenderTemplateRestApiExample />
+
+#### callService
+
+:::warning[Important]
+
+Some services can be executed only by admin users, for example, restarting Home Assistant.
+
+:::
+
+This method will call a `Home Assistant` service (renamed some time ago to [actions](https://www.home-assistant.io/dashboards/actions/)). It allows one to call a service from a `JavaScript` template. This method needs three parameters, the first one is the domain, the second the type of service and the third an object with the data needed by the service.
+
+<CallServiceRestApiExample />
+
 ---
 
-### Examples
+### Complex Example
 
-#### JavaScript templates as options
-
-The next example will set the next options:
+The next example will create the next things:
 
 1. Sets the title of the sidebar as "My Home" followed by the current time.
 2. Sets the background of the sidebar `red` when the panel config is selected and `green` otherwise.
 3. Adds the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed.
 4. Creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses and the Operating System version in the info text.
+5. Creates a new item that when clicked opens the `Home Assistant` restart dialog, but if the user is not an admin, then it will open an alert with the title "Error", the text "Non-admin users cannot restart Home Assistant" and the text "Close" in the confirm button.
 
 <JavaScriptTemplateExample />
-
-#### JavaScript template executed when an item is clicked
-
-The next example will add an item to the sidebar that once pressed will check the home assistant configuration. If the configuration has errors it will show an alert with the corresponding error, otherwise it will restart `Home Assistant`.
-
-<OnclickWithJavaScriptCodeExample />
 
 [Home Assistant Javascript Templates]: https://github.com/elchininet/home-assistant-javascript-templates
