@@ -1,6 +1,30 @@
-```typescript
-openMoreInfoDialog(
-  // Entity id of the entity that should be open
-  entityId: string;
-)
-```
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    order:
+      - new_item: true
+        item: 'Living-room lights'
+        icon: 'mdi:lightbulb-group'
+        on_click:
+          action: 'javascript'
+          code: |
+            openMoreInfoDialog('light.living_room');
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "new_item": true,
+      "item": "Living-room lights",
+      "icon": "mdi:lightbulb-group",
+      "on_click": {
+        "action": "javascript",
+        "code": "openMoreInfoDialog('light.living_room');"
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>

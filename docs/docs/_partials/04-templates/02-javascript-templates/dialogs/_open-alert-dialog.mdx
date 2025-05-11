@@ -1,12 +1,41 @@
-```typescript
-openAlertDialog({
-  // The title of the dialog
-  title: string;
-  // The text of the dialog
-  text: string;
-  // The text of the confirm button
-  confirmText?: string;
-  // Function that will be executed when the confirm button is clicked
-  confirm?: () => void;
-})
-```
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    order:
+      - new_item: true
+        item: 'admin'
+        icon: 'mdi:account-key'
+        on_click:
+          action: 'javascript'
+          code: |
+            if (user_is_admin) {
+              // Execute some code only for admins
+            } else {
+              openAlertDialog({
+                title: 'Error',
+                text: 'Only admin users can execute this',
+                confirmText: 'Close',
+                confirm: () => {
+                  console.log('The close button was clicked');
+                }
+              });
+            }
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "new_item": true,
+      "item": "admin",
+      "icon": "mdi:account-key",
+      "on_click": {
+        "action": "javascript",
+        "code": "if (user_is_admin) { // Execute some code only for admins } else { openAlertDialog({ title: 'Error', text: 'Only admin users can execute this', confirmText: 'Close', confirm: () => { console.log('The close button was clicked'); } }); }"
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>

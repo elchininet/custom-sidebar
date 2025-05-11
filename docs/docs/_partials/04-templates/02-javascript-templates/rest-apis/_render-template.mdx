@@ -1,0 +1,37 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="config">
+  <TabItem value="yaml" label="YAML" default>
+    ```yaml title="<config directory>/www/sidebar-config.yaml"
+    order:
+      - new_item: true
+        item: 'date'
+        icon: 'mdi:clock-time-eight'
+        on_click:
+          action: 'javascript'
+          code: |
+            renderTemplate(
+              "The date is {{ as_timestamp(now()) | timestamp_custom('%Y-%m-%d') }}"
+            ).then((result) => {
+              openAlertDialog({
+                title: 'Date of today',
+                text: result
+              });
+            });
+    ```
+  </TabItem>
+  <TabItem value="json" label="JSON">
+    ```json title="<config directory>/www/sidebar-config.json"
+    {
+      "new_item": true,
+      "item": "date",
+      "icon": "mdi:clock-time-eight",
+      "on_click": {
+        "action": "javascript",
+        "code": "renderTemplate(\"The date is {{ as_timestamp(now()) | timestamp_custom('%Y-%m-%d') }}\").then((result) => { openAlertDialog({ title: 'Date of today', text: result }); });"
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>

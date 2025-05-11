@@ -32,6 +32,21 @@ import TabItem from '@theme/TabItem';
           ]]]
         href: '/config/info'
         icon: 'mdi:information-outline'
+      - new_item: true
+        item: 'restart'
+        icon: 'mdi:restart'
+        on_click:
+          action: 'javascript'
+          code: |
+            if (user_is_admin) {
+              openRestartDialog();
+            } else {
+              openAlertDialog({
+                title: 'Error',
+                text: 'Non-admin users cannot restart Home Assistant',
+                confirmText: 'Close'
+              });
+            }
     ```
   </TabItem>
   <TabItem value="json" label="JSON">
@@ -47,10 +62,19 @@ import TabItem from '@theme/TabItem';
         {
           "new_item": true,
           "item": "info",
-          "name": "[[[ return 'Info (' + state_attr('update.home_assistant_supervisor_update', 'latest_version') + ')'; ]]]",
-          "info": "[[[ return 'OS ' + state_attr('update.home_assistant_operating_system_update', 'latest_version'); ]]]",
+          "icon": "mdi:information-outline",
           "href": "/config/info",
-          "icon": "mdi:information-outline"
+          "name": "[[[ return 'Info (' + state_attr('update.home_assistant_supervisor_update', 'latest_version') + ')'; ]]]",
+          "info": "[[[ return 'OS ' + state_attr('update.home_assistant_operating_system_update', 'latest_version'); ]]]"          
+        },
+        {
+          "new_item": true,
+          "item": "restart",
+          "icon": "mdi:information-outline",
+          "on_click": {
+            "action": "javascript",
+            "code": "if (user_is_admin) { openRestartDialog(); } else { openAlertDialog({ title: 'Error', text: 'Non-admin users cannot restart Home Assistant', confirmText: 'Close' }); }"
+          }
         }
       ]
     }

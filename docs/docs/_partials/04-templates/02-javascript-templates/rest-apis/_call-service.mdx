@@ -6,23 +6,31 @@ import TabItem from '@theme/TabItem';
     ```yaml title="<config directory>/www/sidebar-config.yaml"
     order:
       - new_item: true
-        item: 'Restart'
-        icon: 'mdi:restart'
+        item: 'lights'
+        icon: 'mdi:lightbulb-on'
         on_click:
           action: 'javascript'
           code: |
-            openRestartDialog();
+            callService(
+              'light',
+              'toggle',
+              {
+                entity_id: user_name === 'Miriam'
+                  ? 'light.miriam_room'
+                  : 'light.my_room'
+              }
+            );
     ```
   </TabItem>
   <TabItem value="json" label="JSON">
     ```json title="<config directory>/www/sidebar-config.json"
     {
       "new_item": true,
-      "item": "Restart",
-      "icon": "mdi:restart",
+      "item": "lights",
+      "icon": "mdi:lightbulb-on",
       "on_click": {
         "action": "javascript",
-        "code": "openRestartDialog();"
+        "code": "callService('light', 'toggle', { entity_id: user_name === 'Miriam' ? 'light.miriam_room' : 'light.my_room' });"
       }
     }
     ```

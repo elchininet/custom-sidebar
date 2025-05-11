@@ -24,11 +24,11 @@ The `data` parameter of a `call-service` action accepts [JavaScript templates](.
 
 ### JavaScript action
 
-The `javascript` action allows one to execute an arbitrary `JavaScript` code when the isdebar item is clicked. It requires a `code` parameter with the `JavaScript` code without being enclosed between `[[[ ]]]`.
+The `javascript` action allows one to execute an arbitrary `JavaScript` code when the sidebar item is clicked. It requires a `code` parameter with the `JavaScript` template code without being enclosed between `[[[ ]]]`.
 
 :::tip
 
-The `JavaScript` code will have access to two variables: `item` and `itemText`. These variables are related to the clicked item, the first is the configuration object of the item (including an `element` property which is the HTML element relative to the sidebar item) and the second is the text of the item.
+All the properties and methods available in [JavaScript templates](../templates/javascript-templates) will be available in this `JavaScript` code. On top of this, it will also have access to two variables: `item` and `itemText`. These variables are related to the clicked item, the first is the configuration object of the item (including an `element` property which is the HTML element relative to the sidebar item) and the second is the text of the item. 
 
 :::
 
