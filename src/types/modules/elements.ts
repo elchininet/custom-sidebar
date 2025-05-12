@@ -1,4 +1,4 @@
-import { HomeAssistant, Hass } from 'home-assistant-javascript-templates';
+import { Hass, HomeAssistant } from 'home-assistant-javascript-templates';
 import { DockedSidebar } from './config';
 
 export enum Method {

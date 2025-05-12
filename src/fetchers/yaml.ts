@@ -1,9 +1,9 @@
 import jsYaml from 'js-yaml';
 import { Config } from '@types';
 import {
-    NAMESPACE,
     CONFIG_NAME,
-    CONFIG_PATH
+    CONFIG_PATH,
+    NAMESPACE
 } from '@constants';
 import { randomId } from '@utilities';
 import { validateConfig } from '@validators';

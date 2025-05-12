@@ -1,7 +1,7 @@
 import {
-    TYPE,
     OBJECT_TO_STRING,
-    REGEXP_TO_STRING
+    REGEXP_TO_STRING,
+    TYPE
 } from '@constants';
 
 export const isUndefined = (variable: unknown): variable is undefined => typeof variable === TYPE.UNDEFINED;

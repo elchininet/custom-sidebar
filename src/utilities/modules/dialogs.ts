@@ -1,13 +1,13 @@
 import {
-    HomeAsssistantExtended,
-    HassExtended,
-    PartialPanelResolver,
-    Router,
+    DialogBoxParameters,
+    DialogImport,
     HaConfigBackupBackups,
     HaConfigSystemNavigation,
+    HassExtended,
     HomeAssistantDialogEventDetail,
-    DialogImport,
-    DialogBoxParameters
+    HomeAsssistantExtended,
+    PartialPanelResolver,
+    Router
 } from '@types';
 import { CUSTOM_ELEMENT, EVENT } from '@constants';
 
