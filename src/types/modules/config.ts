@@ -1,8 +1,8 @@
 import { SidebarItem } from './elements';
 import {
     Primitive,
-    PrimitiveObject,
-    PrimitiveArray
+    PrimitiveArray,
+    PrimitiveObject
 } from './primitives';
 
 export enum SidebarMode {

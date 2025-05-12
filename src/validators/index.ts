@@ -1,30 +1,30 @@
 import {
+    ActionType,
     Config,
-    ConfigItem,
     ConfigException,
-    SidebarMode,
-    Primitive,
-    PrimitiveObject,
-    PrimitiveArray,
+    ConfigItem,
     MatchersCondition,
-    ActionType
+    Primitive,
+    PrimitiveArray,
+    PrimitiveObject,
+    SidebarMode
 } from '@types';
 import {
     BASE_NAME,
-    SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
+    ITEM_STRING_CONFIG_OPTIONS,
     ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
     ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS,
-    ITEM_STRING_CONFIG_OPTIONS,
+    JINJA_TEMPLATE_REG,
     JS_TEMPLATE_REG,
-    JINJA_TEMPLATE_REG
+    SIDEBAR_MODE_TO_DOCKED_SIDEBAR
 } from '@constants';
 import {
-    isUndefined,
-    isString,
+    isArray,
     isBoolean,
     isNumber,
     isObject,
-    isArray
+    isString,
+    isUndefined
 } from '@utilities';
 
 const ERROR_PREFIX = 'Invalid configuration';

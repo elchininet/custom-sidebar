@@ -10,7 +10,7 @@ import {
     ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
     ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS
 } from '@constants';
-import { getLowercaseArray, getArray } from './misc';
+import { getArray, getLowercaseArray } from './misc';
 import { isUndefined } from './predicates';
 
 const ITEM_TEMPLATE_OPTIONS = [

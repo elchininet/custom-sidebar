@@ -1,6 +1,6 @@
 import {
-    HomeAsssistantExtended,
     CheckConfigResponse,
+    HomeAsssistantExtended,
     Method
 } from '@types';
 import { ENDPOINTS } from '@constants';

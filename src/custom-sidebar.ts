@@ -1,9 +1,9 @@
 import { getPromisableResult } from 'get-promisable-result';
 import {
+    HAElement,
     HAQuerySelector,
     HAQuerySelectorEvent,
-    OnListenDetail,
-    HAElement
+    OnListenDetail
 } from 'home-assistant-query-selector';
 import HomeAssistantJavaScriptTemplates, {
     HomeAssistantJavaScriptTemplatesRenderer,
@@ -11,67 +11,68 @@ import HomeAssistantJavaScriptTemplates, {
 } from 'home-assistant-javascript-templates';
 import { HomeAssistantStylesManager } from 'home-assistant-styles-manager';
 import {
-    HomeAsssistantExtended,
-    HomeAssistantMain,
-    HaMenuButton,
+    ActionType,
+    AnalyticsConfig,
     Config,
     ConfigNewItem,
     ConfigOrder,
     ConfigOrderWithItem,
     DialogType,
-    ActionType,
-    AnalyticsConfig,
-    PartialPanelResolver,
-    Sidebar,
-    SidebarMode,
+    HaMenuButton,
+    HomeAssistantMain,
+    HomeAsssistantExtended,
     Match,
-    SidebarItem,
-    SubscriberTemplate,
+    PartialPanelResolver,
     Primitive,
+    PrimitiveArray,
     PrimitiveObject,
-    PrimitiveArray
+    Sidebar,
+    SidebarItem,
+    SidebarMode,
+    SubscriberTemplate
 } from '@types';
 import {
-    NAMESPACE,
-    ELEMENT,
-    SELECTOR,
     ATTRIBUTE,
-    CUSTOM_SIDEBAR_CSS_VARIABLES,
-    ITEM_OPTIONS_VARIABLES_MAP,
-    SIDEBAR_OPTIONS_VARIABLES_MAP,
-    KEY,
-    CLASS,
-    EVENT,
-    CHECK_FOCUSED_SHADOW_ROOT,
-    NODE_NAME,
-    JS_TEMPLATE_REG,
-    JINJA_TEMPLATE_REG,
-    PROFILE_GENERAL_PATH,
     BLOCKED_PROPERTY,
-    SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
-    MAX_ATTEMPTS,
-    RETRY_DELAY,
-    LOGBOOK_DELAY,
+    CHECK_FOCUSED_SHADOW_ROOT,
+    CLASS,
+    CUSTOM_SIDEBAR_CSS_VARIABLES,
+    DEBUG_URL_PARAMETER,
     DOMAIN_ENTITY_REGEXP,
+    ELEMENT,
+    EVENT,
+    ITEM_OPTIONS_VARIABLES_MAP,
+    JINJA_TEMPLATE_REG,
+    JS_TEMPLATE_REG,
+    KEY,
+    LOGBOOK_DELAY,
+    MAX_ATTEMPTS,
+    NAMESPACE,
+    NODE_NAME,
+    PROFILE_GENERAL_PATH,
     REF_VARIABLE_REGEXP,
-    DEBUG_URL_PARAMETER
+    RETRY_DELAY,
+    SELECTOR,
+    SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
+    SIDEBAR_OPTIONS_VARIABLES_MAP,
+    URL_WITH_PARAMS_REGEXP
 } from '@constants';
 import {
-    logVersionToConsole,
-    getConfig,
     flushPromise,
+    getConfig,
+    getDialogsMethods,
+    getRestApis,
     getTemplateWithPartials,
-    isUndefined,
-    isString,
+    isArray,
     isBoolean,
     isNumber,
     isObject,
-    isArray,
     isRegExp,
-    getRestApis,
+    isString,
+    isUndefined,
+    logVersionToConsole,
     openMoreInfoDialog,
-    openRestartDialog,
-    getDialogsMethods
+    openRestartDialog
 } from '@utilities';
 import * as STYLES from '@styles';
 import { fetchConfig } from '@fetchers/json';
@@ -1336,10 +1337,11 @@ class CustomSidebar {
         const activeParentElement = activeItem
             ? null
             : items.reduce((parent: SidebarItem | null, item: SidebarItem): SidebarItem | null => {
-                if (pathName.startsWith(item.href)) {
+                const href = item.href.replace(URL_WITH_PARAMS_REGEXP, '$1');
+                if (pathName.startsWith(href)) {
                     if (
                         !parent ||
-                        item.href.length > parent.href.length
+                        href.length > parent.href.replace(URL_WITH_PARAMS_REGEXP, '$1').length
                     ) {
                         parent = item;
                     }

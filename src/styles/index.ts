@@ -1,11 +1,11 @@
 import {
     ATTRIBUTE,
-    ELEMENT,
-    SELECTOR,
-    PSEUDO_SELECTOR,
+    BLOCKED_PROPERTY,
     CUSTOM_SIDEBAR_CSS_VARIABLES,
+    ELEMENT,
     HA_CSS_VARIABLES,
-    BLOCKED_PROPERTY
+    PSEUDO_SELECTOR,
+    SELECTOR
 } from '@constants';
 import { getCSSVariables } from '@utilities';
 

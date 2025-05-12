@@ -1,7 +1,7 @@
 import { getPromisableResult } from 'get-promisable-result';
 import {
-    NAMESPACE,
     MAX_ATTEMPTS,
+    NAMESPACE,
     RETRY_DELAY
 } from './constants/global';
 
