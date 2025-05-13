@@ -62,7 +62,7 @@ These options are intended to change the functionality of the sidebar and to cha
 | href                      | String  | no        | Specifies the `href` of the sidebar item |
 | target                    | String  | no        | Specifies the [target property] of the sidebar item |
 | on_click                  | [action](./the-on-click-property)  | no     | It allows to execute actions when the sidebar item is clicked. Consult [the on_click property](./the-on-click-property) section for more details |
-| attributes<sup>\*</sup>   | String or Object | no | Object that defines a group of attributes that will be applied to the sidebar item. The properties of this object must be strings, numbers or booleans |
+| attributes<sup>\*</sup>   | String or Object | no | Object (or a template string which returns an object) that defines a group of attributes that will be applied to the sidebar item. The properties of this object must be strings, numbers or booleans |
 | divider                   | Boolean | no        | Adds a divider line below the item |
 | new_item                  | Boolean | no        | Set this property to `true` to create a new item in the sidebar. If you use this property you need to provide an `icon` property and either a `href` or an `on_click` property |
 
