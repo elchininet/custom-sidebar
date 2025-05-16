@@ -39,7 +39,7 @@ test.describe('Debug messages', () => {
 
         expect(logs).toEqual(
             expect.not.arrayContaining([
-                `${PREFIX} HAQuerySelector init executed`
+                expect.stringContaining(`${PREFIX} Starting the plugin...`)
             ])
         );
 
@@ -62,10 +62,9 @@ test.describe('Debug messages', () => {
         await page.waitForTimeout(1000);
 
         expect(logs).toEqual(
-            expect.not.arrayContaining([
-                `${PREFIX} HAQuerySelector init executed`,
-                `${PREFIX} Starting the plugin...`,
-                `${PREFIX} Executing plugin logic...`
+            expect.arrayContaining([
+                expect.stringContaining(`${PREFIX} Starting the plugin...`),
+                expect.stringContaining(`${PREFIX} Executing plugin logic...`)
             ])
         );
 
