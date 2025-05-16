@@ -153,7 +153,7 @@ test.describe('methods in JavaScript templates', () => {
 
     });
 
-    test('@testing openAlertDialog should open an alert dialog', async ({ page }) => {
+    test('openAlertDialog should open an alert dialog', async ({ page }) => {
 
         const title = 'Alert title';
         const text = 'Alert text';

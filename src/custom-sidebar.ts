@@ -104,7 +104,9 @@ class CustomSidebar {
                         HA_SIDEBAR: this._sidebar,
                         PARTIAL_PANEL_RESOLVER: this._partialPanelResolver
                     },
-                    false
+                    {
+                        stringify: false
+                    }
                 );
 
             },
@@ -161,17 +163,28 @@ class CustomSidebar {
     private _debugLog(
         topic: string,
         metadata?: unknown,
-        stringify = true
+        config?: {
+            stringify?: boolean;
+            table?: boolean;
+        }
     ): void {
+        const {
+            stringify = true,
+            table = false
+        } = config ?? {};
         if (this._debug) {
             const topicMessage = `${NAMESPACE} debug: ${topic}`;
             if (metadata) {
                 console.groupCollapsed(topicMessage);
-                console.log(
-                    stringify
-                        ? JSON.stringify(metadata, null, 4)
-                        : metadata
-                );
+                if (table) {
+                    console.table(metadata);
+                } else {
+                    console.log(
+                        stringify
+                            ? JSON.stringify(metadata, null, 4)
+                            : metadata
+                    );
+                }
                 console.groupEnd();
             } else {
                 console.log(topicMessage);
@@ -240,6 +253,24 @@ class CustomSidebar {
             },
             promisableResultOptions
         );
+        if (this._debug) {
+            const elementsTable = Array.from(items).map((element: SidebarItem) => {
+                const href = element.href;
+                const intemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
+                const text = intemText.textContent.trim();
+                return {
+                    text,
+                    href
+                };
+            });
+            this._debugLog(
+                'Native sidebar items',
+                elementsTable,
+                {
+                    table: true
+                }
+            );
+        }
         return [sidebarItemsContainer, items, spacer];
     }
 
