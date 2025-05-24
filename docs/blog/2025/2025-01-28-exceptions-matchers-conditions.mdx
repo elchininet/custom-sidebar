@@ -6,7 +6,7 @@ tags: [sidebar, home-assistant, exceptions]
 hide_table_of_contents: true
 ---
 
-It is possible to add multiple matchers to an [exception](/custom-sidebar/configuration/exceptions) (`user`, `not_decice`, `is_admin`, etc). By default if at least one of the matchers matches, the exeeption will be picked, that is to say, the conditions of the matchers are by default `OR` conditions. But it is possible to change this behaviour.
+It is possible to add multiple matchers to an [exception](/custom-sidebar/configuration/exceptions) (`user`, `not_device`, `is_admin`, etc). By default if at least one of the matchers matches, the exception will be picked, that is to say, the conditions of the matchers are by default `OR` conditions. But it is possible to change this behaviour.
 
 {/* truncate */}
 
@@ -14,6 +14,6 @@ import Example from '@site/blog/2025/_partials/2025-01-28-exceptions-matchers-co
 
 ## matchers_conditions
 
-`matchers_conditions` is an optional paremeter of an exception (by default its value is `OR`). It allows to define how the matchers conditions behave. For example, the next example will show the configuration under the exception for all admin users that are not using an iPhone excluding the user `ElChiniNet`.
+`matchers_conditions` is an optional parameter of an exception (by default its value is `OR`). It allows to define how the matchers conditions behave. For example, the next example will show the configuration under the exception for all admin users that are not using an iPhone excluding the user `ElChiniNet`.
 
 <Example />

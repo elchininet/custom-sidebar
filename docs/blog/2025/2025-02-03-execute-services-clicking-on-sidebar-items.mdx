@@ -10,12 +10,12 @@ tags:
 hide_table_of_contents: true
 ---
 
-Since the beginning it is possible to assign the `href` of a sidebar item specificing this property. This property is useful if one wants to go to a dashboard or open an external website when clicking on sidebar items. But since some time, it is also possible to execute a [Home Assistant Service](https://www.home-assistant.io/docs/scripts/perform-actions) (renamed recently to `Actions`) if we specify the correct action in the `on_click` proprty of a sidebar item.
+Since the beginning it is possible to assign the `href` of a sidebar item specifying this property. This property is useful if one wants to go to a dashboard or open an external website when clicking on sidebar items. But since some time, it is also possible to execute a [Home Assistant Service](https://www.home-assistant.io/docs/scripts/perform-actions) (renamed recently to `Actions`) if we specify the correct action in the `on_click` property of a sidebar item.
 
 {/* truncate */}
 
 import Example from '@site/blog/2025/_partials/2025-02-03-execute-services-clicking-on-sidebar-items/_example.mdx';
 
-Turning on or turning off a light, reload automations, reload templates, among much others, are just some services examples that you can execute from the sidebar items using this feature. Let's check a very practical example, imagine having a sidebar item that once cliked sets a specific scene:
+Turning on or turning off a light, reload automations, reload templates, among much others, are just some services examples that you can execute from the sidebar items using this feature. Let's check a very practical example, imagine having a sidebar item that once clicked sets a specific scene:
 
 <Example />
