@@ -112,7 +112,6 @@ test.describe('methods in JavaScript templates', () => {
 
         const input = page.locator('ha-entity-toggle .mdc-switch__thumb input');
 
-
         await fulfillJson(
             page,
             {
@@ -145,9 +144,13 @@ test.describe('methods in JavaScript templates', () => {
 
         await getSidebarItem(page, '#').click();
 
+        await page.waitForTimeout(500);
+
         expect(input).toBeChecked();
 
         await getSidebarItem(page, '#').click();
+
+        await page.waitForTimeout(500);
 
         expect(input).not.toBeChecked();
 

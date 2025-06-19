@@ -18,7 +18,6 @@ import {
     ConfigOrder,
     ConfigOrderWithItem,
     DialogType,
-    HaMenuButton,
     HomeAssistantMain,
     HomeAsssistantExtended,
     Match,
@@ -58,7 +57,6 @@ import {
     URL_WITH_PARAMS_REGEXP
 } from '@constants';
 import {
-    flushPromise,
     getConfig,
     getDialogsMethods,
     getRestApis,
@@ -863,17 +861,25 @@ class CustomSidebar {
                 homeAssistantMain.hass.dockedSidebar = SIDEBAR_MODE_TO_DOCKED_SIDEBAR[sidebarMode];
 
                 const checkForNarrow = async (isNarrow: boolean): Promise<void> => {
+
+                    const huiRoot = await this._partialPanelResolver.selector.query(SELECTOR.HUI_ROOT).$.element;
+
+                    this._styleManager.removeStyle(huiRoot);
+
                     if (sidebarMode !== SidebarMode.HIDDEN) {
-                        await flushPromise();
+
                         homeAssistantMain.narrow = false;
-                        await flushPromise();
                         partialPanelResolver.narrow = isNarrow;
-                        await flushPromise();
+
                         if (isNarrow) {
-                            const haMenuButton = await this._partialPanelResolver.selector.query(SELECTOR.HA_MENU_BUTTON).element as HaMenuButton;
-                            haMenuButton.narrow = false;
+                            this._styleManager.addStyle(
+                                STYLES.HIDDEN_MENU_BUTTON_IN_NARROW_MODE,
+                                huiRoot
+                            );
                         }
+
                     }
+
                 };
 
                 mql.addEventListener('change', (event: MediaQueryListEvent): void => {

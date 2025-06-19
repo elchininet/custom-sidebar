@@ -10,7 +10,6 @@ export * from './global';
 export const LOCAL_PATH = '/local/';
 export const CONFIG_NAME = 'sidebar-config';
 export const CONFIG_PATH = `${LOCAL_PATH}${CONFIG_NAME}`;
-export const FLUSH_PROMISE_DELAY = 1;
 export const BASE_NAME = 'base';
 export const DEBUG_URL_PARAMETER = 'cs_debug';
 export const LOGBOOK_DELAY = 500;
@@ -53,7 +52,8 @@ export enum SELECTOR {
     ITEM_TEXT = '.item-text',
     BADGE = '.badge',
     CONFIGURATION = '.configuration',
-    HA_MENU_BUTTON = 'ha-panel-lovelace$ hui-root$ .toolbar > ha-menu-button',
+    HUI_ROOT = 'ha-panel-lovelace$ hui-root',
+    HA_MENU_BUTTON = '.header .toolbar > ha-menu-button',
     EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-settings-row mwc-button',
     SIDEBAR_NOTIFICATIONS_CONTAINER = '.notifications-container',
     SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER = '.notifications-container:hover',

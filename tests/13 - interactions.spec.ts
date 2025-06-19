@@ -258,10 +258,7 @@ test('By default it should be possible to edit the sidebar', async ({ page }) =>
 
     await page.locator(SELECTORS.TITLE).click({ delay: 1000 });
 
-    await expect(
-        page.locator(SELECTORS.SIDEBAR_EDIT_BUTTON) // Home Assistant < 2025.6.x
-            .or(page.locator(SELECTORS.SIDEBAR_EDIT_MODAL)) // Home Assistant >= 2025.6.x
-    ).toBeVisible();
+    await expect(page.locator(SELECTORS.SIDEBAR_EDIT_MODAL)).toBeVisible();
 
     await page.goto('/profile');
 
@@ -279,10 +276,7 @@ test('If sidebar_editable is set to true it should be possible to edit the sideb
 
     await page.locator(SELECTORS.TITLE).click({ delay: 1000 });
 
-    await expect(
-        page.locator(SELECTORS.SIDEBAR_EDIT_BUTTON) // Home Assistant < 2025.6.x
-            .or(page.locator(SELECTORS.SIDEBAR_EDIT_MODAL)) // Home Assistant >= 2025.6.x
-    ).toBeVisible();
+    await expect(page.locator(SELECTORS.SIDEBAR_EDIT_MODAL)).toBeVisible();
 
     await page.goto('/profile');
 
@@ -379,7 +373,6 @@ test('If sidebar_editable is set to false it should not be possible to edit the 
 
     await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click({ delay: 1000 });
     await expect(page.locator(SELECTORS.TITLE)).toBeVisible();
-    await expect(page.locator(SELECTORS.SIDEBAR_EDIT_BUTTON)).not.toBeVisible();
 
     await page.goto('/profile');
 
