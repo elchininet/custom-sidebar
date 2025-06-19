@@ -284,6 +284,27 @@ test('If sidebar_editable is set to true it should be possible to edit the sideb
 
 });
 
+test('If sidebar_editable is set to false it should not be possible to edit the sidebar', async ({ page }) => {
+
+    await addJsonExtendedRoute(page, {
+        sidebar_editable: false
+    });
+
+    await visitHome(page);
+
+    await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
+    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
+
+    await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click({ delay: 1000 });
+
+    await expect(page.locator(SELECTORS.SIDEBAR_EDIT_MODAL)).not.toBeVisible();
+
+    await page.goto('/profile');
+
+    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
+
+});
+
 test('If sidebar_mode is set to "hidden" it should not be possible to make the sidebar visible', async ({ page }) => {
 
     await addJsonExtendedRoute(page, {
@@ -357,26 +378,6 @@ test('If sidebar_mode is set to "extended" it should keep the extended mode when
     await page.waitForTimeout(5);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
-
-});
-
-test('If sidebar_editable is set to false it should not be possible to edit the sidebar', async ({ page }) => {
-
-    await addJsonExtendedRoute(page, {
-        sidebar_editable: false
-    });
-
-    await visitHome(page);
-
-    await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
-    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
-
-    await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click({ delay: 1000 });
-    await expect(page.locator(SELECTORS.TITLE)).toBeVisible();
-
-    await page.goto('/profile');
-
-    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
 
 });
 

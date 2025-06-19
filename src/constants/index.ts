@@ -227,7 +227,6 @@ export enum EVENT {
     MOUSEENTER = 'mouseenter',
     MOUSELEAVE = 'mouseleave',
     KEYDOWN = 'keydown',
-    HASS_EDIT_SIDEBAR = 'hass-edit-sidebar',
     RENDER_TEMPLATE = 'render_template',
     LOCATION_CHANGED = 'location-changed',
     HASS_MORE_INFO = 'hass-more-info',

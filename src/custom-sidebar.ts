@@ -370,26 +370,26 @@ class CustomSidebar {
             event.stopImmediatePropagation();
         };
 
-        const unblockSidebar = (homeAssistantMain: Element, menu: Element) => {
-            homeAssistantMain.removeEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
+        const unblockSidebar = (sidebar: Element, menu: Element) => {
+            sidebar.removeEventListener(EVENT.SHOW_DIALOG, sidebarEditListener, true);
             menu.removeAttribute(BLOCKED_PROPERTY);
         };
 
-        const blockSidebar = (homeAssistantMain: Element, menu: Element) => {
-            homeAssistantMain.removeEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
-            homeAssistantMain.addEventListener(EVENT.HASS_EDIT_SIDEBAR, sidebarEditListener, true);
+        const blockSidebar = (sidebar: Element, menu: Element) => {
+            sidebar.removeEventListener(EVENT.SHOW_DIALOG, sidebarEditListener, true);
+            sidebar.addEventListener(EVENT.SHOW_DIALOG, sidebarEditListener, true);
             menu.setAttribute(BLOCKED_PROPERTY, '');
         };
 
         // Apply sidebar edit blocker
         Promise.all([
-            this._main.element,
+            this._sidebar.element,
             this._sidebar.selector.$.query(SELECTOR.MENU).element
-        ]).then(([homeAssistantMain, menu]) => {
+        ]).then(([sidebar, menu]) => {
             if (isBoolean(this._config.sidebar_editable)) {
                 this._isSidebarEditable = this._config.sidebar_editable;
                 if (!this._isSidebarEditable) {
-                    blockSidebar(homeAssistantMain, menu);
+                    blockSidebar(sidebar, menu);
                 }
             }
             if (isString(this._config.sidebar_editable)) {
@@ -399,13 +399,13 @@ class CustomSidebar {
                         if (rendered === 'true' || rendered === 'false') {
                             this._isSidebarEditable = !(rendered === 'false');
                             if (this._isSidebarEditable) {
-                                unblockSidebar(homeAssistantMain, menu);
+                                unblockSidebar(sidebar, menu);
                             } else {
-                                blockSidebar(homeAssistantMain, menu);
+                                blockSidebar(sidebar, menu);
                             }
                         } else {
                             this._isSidebarEditable = undefined;
-                            unblockSidebar(homeAssistantMain, menu);
+                            unblockSidebar(sidebar, menu);
                         }
                         this._checkProfileEditableButton();
                     }
