@@ -366,3 +366,7 @@ export const NOTIFICATION_COLOR_HOVER_NOTIFICATION_TEXT_COLOR_HOVER = {
         )
     }
 };
+
+export const HIDDEN_MENU_BUTTON_IN_NARROW_MODE = {
+    [`${ SELECTOR.HA_MENU_BUTTON }`]: false
+};

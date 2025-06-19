@@ -67,10 +67,6 @@ export interface HomeAssistantMain extends HTMLElement {
     narrow: boolean;
 }
 
-export interface HaMenuButton extends HTMLElement {
-    narrow: boolean;
-}
-
 export interface Sidebar extends HTMLElement {
     alwaysExpand: boolean;
     _mouseLeaveTimeout?: number;

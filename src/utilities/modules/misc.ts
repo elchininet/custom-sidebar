@@ -1,4 +1,3 @@
-import { FLUSH_PROMISE_DELAY } from '@constants';
 import { isArray } from './predicates';
 
 export const getLowercaseArray = (value: string | string[]): string[] => {
@@ -16,7 +15,3 @@ export const getArray = (value: string | string[]): string[] => {
 };
 
 export const randomId = (): string => Math.random().toString(16).slice(2);
-
-export const flushPromise = () => new Promise((resolve) => {
-    setTimeout(resolve, FLUSH_PROMISE_DELAY);
-});
