@@ -64,6 +64,129 @@ test('Clicking on items with the same root path should select the proper item', 
 
 });
 
+test('Clicking on items inside the same lovelace dashboard should select the proper item', async ({ page }) => {
+
+    const home = '/lovelace/home';
+    const view1 = '/lovelace/view_1';
+    const view2 = '/lovelace/view_2';
+
+    const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
+    const huView = page.locator(SELECTORS.HUI_VIEW);
+    const homeItem = getSidebarItem(page, home);
+    const view1Item = getSidebarItem(page, view1);
+    const view2Item = getSidebarItem(page, view2);
+
+    const tabSelector = 'sl-tab';
+    const tabHome = page.locator(tabSelector, { hasText: 'Home' });
+    const tabView1 = page.locator(tabSelector, { hasText: 'View 1' });
+    const tabView2 = page.locator(tabSelector, { hasText: 'View 2' });
+
+    const homePanel = page.locator('hui-card hui-entities-card');
+    const view1Panel = page.getByText('View 1 panel');
+    const view2Panel = page.getByText('View 2 panel');
+
+    await addJsonExtendedRoute(page, {
+        order: [
+            {
+                item: 'overview',
+                href: home,
+                order: 0
+            },
+            {
+                new_item: true,
+                item: 'View 1',
+                icon: 'mdi:view-dashboard',
+                href: view1
+            },
+            {
+                new_item: true,
+                item: 'View 2',
+                icon: 'mdi:view-dashboard',
+                href: view2
+            }
+        ]
+    });
+
+    await page.goto('/');
+    await expect(sidebar).toBeVisible();
+    await expect(huView).toBeVisible();
+
+    await expect(homeItem).toHaveClass(SELECTED_CLASSNAME);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+
+    await expect(homePanel).toBeVisible();
+    await expect(view1Panel).not.toBeVisible();
+    await expect(view2Panel).not.toBeVisible();
+
+    await view1Item.click();
+    await page.waitForTimeout(600);
+
+    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view1Item).toHaveClass(SELECTED_CLASSNAME);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+
+    await expect(homePanel).not.toBeVisible();
+    await expect(view1Panel).toBeVisible();
+    await expect(view2Panel).not.toBeVisible();
+
+    await view2Item.click();
+    await page.waitForTimeout(600);
+
+    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view2Item).toHaveClass(SELECTED_CLASSNAME);
+
+    await expect(homePanel).not.toBeVisible();
+    await expect(view1Panel).not.toBeVisible();
+    await expect(view2Panel).toBeVisible();
+
+    await homeItem.click();
+    await page.waitForTimeout(600);
+
+    await expect(homeItem).toHaveClass(SELECTED_CLASSNAME);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+
+    await expect(homePanel).toBeVisible();
+    await expect(view1Panel).not.toBeVisible();
+    await expect(view2Panel).not.toBeVisible();
+
+    await tabView1.click();
+    await page.waitForTimeout(600);
+
+    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view1Item).toHaveClass(SELECTED_CLASSNAME);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+
+    await expect(homePanel).not.toBeVisible();
+    await expect(view1Panel).toBeVisible();
+    await expect(view2Panel).not.toBeVisible();
+
+    await tabView2.click();
+    await page.waitForTimeout(600);
+
+    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view2Item).toHaveClass(SELECTED_CLASSNAME);
+
+    await expect(homePanel).not.toBeVisible();
+    await expect(view1Panel).not.toBeVisible();
+    await expect(view2Panel).toBeVisible();
+
+    await tabHome.click();
+    await page.waitForTimeout(600);
+
+    await expect(homeItem).toHaveClass(SELECTED_CLASSNAME);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+
+    await expect(homePanel).toBeVisible();
+    await expect(view1Panel).not.toBeVisible();
+    await expect(view2Panel).not.toBeVisible();
+
+});
+
 test('Hiting Enter with items focused should select the proper item', async ({ page }) => {
 
     await visitHome(page);
@@ -196,6 +319,66 @@ test('Visit a URL that matches with multiple items should select the proper item
     await expect(entities).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(automations).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(automationNew).not.toHaveClass(SELECTED_CLASSNAME);
+
+});
+
+test('Visiting a URL of a lovelace view should select the proper item', async ({ page }) => {
+
+    const home = '/lovelace/home';
+    const view1 = '/lovelace/view_1';
+    const view2 = '/lovelace/view_2';
+
+    const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
+    const huView = page.locator(SELECTORS.HUI_VIEW);
+    const homeItem = getSidebarItem(page, home);
+    const view1Item = getSidebarItem(page, view1);
+    const view2Item = getSidebarItem(page, view2);
+
+    await addJsonExtendedRoute(page, {
+        order: [
+            {
+                item: 'overview',
+                href: home,
+                order: 0
+            },
+            {
+                new_item: true,
+                item: 'View 1',
+                icon: 'mdi:view-dashboard',
+                href: view1
+            },
+            {
+                new_item: true,
+                item: 'View 2',
+                icon: 'mdi:view-dashboard',
+                href: view2
+            }
+        ]
+    });
+
+    await page.goto(home);
+    await expect(sidebar).toBeVisible();
+    await expect(huView).toBeVisible();
+
+    await expect(homeItem).toHaveClass(SELECTED_CLASSNAME);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+
+    await page.goto(view1);
+    await expect(sidebar).toBeVisible();
+    await expect(huView).toBeVisible();
+
+    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view1Item).toHaveClass(SELECTED_CLASSNAME);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+
+    await page.goto(view2);
+    await expect(sidebar).toBeVisible();
+    await expect(huView).toBeVisible();
+
+    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(view2Item).toHaveClass(SELECTED_CLASSNAME);
 
 });
 
