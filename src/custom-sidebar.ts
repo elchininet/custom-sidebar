@@ -118,6 +118,10 @@ class CustomSidebar {
             this._panelLoaded.bind(this)
         );
 
+        this._huiViewContainerObserver = new MutationObserver(
+            this._watchHuiViewContainer.bind(this)
+        );
+
         selector.listen();
 
         this._styleManager = new HomeAssistantStylesManager({
@@ -154,6 +158,7 @@ class CustomSidebar {
     private _styleManager: HomeAssistantStylesManager;
     private _items: SidebarItem[];
     private _logBookMessagesMap: Map<string, number>;
+    private _huiViewContainerObserver: MutationObserver;
     private _itemTouchedBinded: () => Promise<void>;
     private _mouseEnterBinded: (event: MouseEvent) => void;
     private _mouseLeaveBinded: () => void;
@@ -1405,6 +1410,28 @@ class CustomSidebar {
 
         this._checkProfileEditableButton();
 
+        // If it is a lovelace dashboard add an observer for hui-view-container
+        this._huiViewContainerObserver.disconnect();
+
+        const lovelace = panelResolver.querySelector(ELEMENT.HA_PANEL_LOVELACE);
+
+        if (lovelace) {
+            this._partialPanelResolver
+                .selector
+                .query(ELEMENT.HA_PANEL_LOVELACE)
+                .$
+                .query(ELEMENT.HUI_ROOT)
+                .$
+                .query(ELEMENT.HUI_VIEW_CONTAINER)
+                .element
+                .then((huiViewContainer: HTMLElement) => {
+                    this._huiViewContainerObserver.observe(huiViewContainer, {
+                        subtree: true,
+                        childList: true
+                    });
+                });
+        }
+
         // If the config is not loaded yet, wait for it
         if (!this._config) {
             await getPromisableResult(
@@ -1418,6 +1445,16 @@ class CustomSidebar {
             this._logBookLog(`panel_visited: ${pathName}`);
         }
 
+    }
+
+    private _watchHuiViewContainer(mutations: MutationRecord[]): void {
+        mutations.forEach(({ addedNodes }): void => {
+            addedNodes.forEach((node: Element): void => {
+                if (node.localName === ELEMENT.HUI_VIEW) {
+                    this._panelLoaded();
+                }
+            });
+        });
     }
 
     private _process(): void {

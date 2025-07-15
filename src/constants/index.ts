@@ -34,7 +34,11 @@ export enum ELEMENT {
     ANCHOR = 'a',
     BUTTON = 'button',
     MD_RIPPLE = 'md-ripple',
-    USER_BADGE = 'ha-user-badge'
+    USER_BADGE = 'ha-user-badge',
+    HA_PANEL_LOVELACE = 'ha-panel-lovelace',
+    HUI_ROOT = 'hui-root',
+    HUI_VIEW_CONTAINER = 'hui-view-container',
+    HUI_VIEW = 'hui-view'
 }
 
 export enum SELECTOR {

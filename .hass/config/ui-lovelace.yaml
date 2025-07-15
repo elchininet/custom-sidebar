@@ -1,7 +1,6 @@
 title: Home
 views:
-  - theme: Backend-selected
-    title: Home
+  - title: Home
     path: home
     badges: []
     cards:
@@ -10,3 +9,15 @@ views:
         entities:
           - entity: input_boolean.my_switch
           - entity: input_select.fan_speed
+  - title: View 1
+    path: view_1
+    badges: []
+    cards:
+      - type: markdown
+        content: View 1 panel
+  - title: View 2
+    path: view_2
+    badges: []
+    cards:
+      - type: markdown
+        content: View 2 panel
