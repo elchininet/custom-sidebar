@@ -50,7 +50,7 @@ These options are intended to change the functionality of the sidebar and to cha
 | Property                  | Type    | Required  | Description |
 | ------------------------- | ------- | --------- | ----------- |
 | item                      | String  | yes       | This is a string that will be used to match each sidebar item by its text or its `href`. If the `exact` property is not set, it is case insensitive and it can be a substring such as `developer` instead of `Developer Tools` or `KITCHEN` instead of `kitchen-lights` |
-| match<sup>\*\*</sup>      | String  | no        | This property will define which string will be used to match the `item` property. It has two possible values "text" (default) to match the text content of the element, or "href" to match the `href` attribute of the element |
+| match<sup>\*\*</sup>      | String  | no        | This property defines what should be used to match the string in the `item` property. It has two possible values "text" (default) to use the text content of the sidebar item, or "href" to use the `href` attribute of the sidebar item |
 | exact                     | Boolean | no        | Specifies whether the `item` string match should be an exact match (`true`) or not (`false`) |
 | order                     | Number  | no        | Sets the order of the sidebar item |
 | hide<sup>\*</sup>         | Boolean or String | no | Setting this property to `true` will hide the sidebar item and if the property `hide_all` from the main configuration is `true`, setting this property as `false` will avoid hiding the item |
@@ -59,7 +59,7 @@ These options are intended to change the functionality of the sidebar and to cha
 | info<sup>\*</sup>         | String  | no        | Sets the content of the info text (a smaller secondary text below the main item text) |
 | notification<sup>\*</sup> | String  | no        | Add a notification badge to the sidebar item |
 | bottom                    | Boolean | no        | Setting this property to `true` will group the item with the bottom items (Configuration, Developer Tools, etc) |
-| href                      | String  | no        | Specifies the `href` of the sidebar item |
+| href                      | String  | no        | Specifies the `href` of the sidebar item. You don't need to specify this property if the item is an existing one (unless you want to change its `href`) |
 | target                    | String  | no        | Specifies the [target property] of the sidebar item |
 | on_click                  | [action](./the-on-click-property)  | no     | It allows to execute actions when the sidebar item is clicked. Consult [the on_click property](./the-on-click-property) section for more details |
 | attributes<sup>\*</sup>   | String or Object | no | Object (or a template string which returns an object) that defines a group of attributes that will be applied to the sidebar item. The properties of this object must be strings, numbers or booleans |
