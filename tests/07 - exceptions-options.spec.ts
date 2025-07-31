@@ -342,7 +342,10 @@ test.describe('extending from the base', () => {
 
             await page.goto('/profile');
 
-            await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
+            await expect(
+                // Remove PROFILE_EDIT_BUTTON_OLD after Home Assistant 2025.8.x
+                page.locator(SELECTORS.PROFILE_EDIT_BUTTON_OLD).or(page.locator(SELECTORS.PROFILE_EDIT_BUTTON))
+            ).toHaveAttribute(ATTRIBUTES.DISABLED);
 
         });
 
@@ -560,7 +563,10 @@ test.describe('extending from the base', () => {
 
             await page.goto('/profile');
 
-            await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
+            await expect(
+                // Remove PROFILE_EDIT_BUTTON_OLD after Home Assistant 2025.8.x
+                page.locator(SELECTORS.PROFILE_EDIT_BUTTON_OLD).or(page.locator(SELECTORS.PROFILE_EDIT_BUTTON))
+            ).toHaveAttribute(ATTRIBUTES.DISABLED);
 
         });
 
@@ -719,7 +725,10 @@ test.describe('without extending from the base', () => {
 
         await page.goto('/profile');
 
-        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
+        await expect(
+            // Remove PROFILE_EDIT_BUTTON_OLD after Home Assistant 2025.8.x
+            page.locator(SELECTORS.PROFILE_EDIT_BUTTON_OLD).or(page.locator(SELECTORS.PROFILE_EDIT_BUTTON))
+        ).toHaveAttribute(ATTRIBUTES.DISABLED);
 
     });
 
@@ -742,7 +751,10 @@ test.describe('without extending from the base', () => {
 
         await page.goto('/profile');
 
-        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
+        await expect(
+            // Remove PROFILE_EDIT_BUTTON_OLD after Home Assistant 2025.8.x
+            page.locator(SELECTORS.PROFILE_EDIT_BUTTON_OLD).or(page.locator(SELECTORS.PROFILE_EDIT_BUTTON))
+        ).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
     });
 
@@ -1728,7 +1740,10 @@ test.describe('exceptions that do not match', () => {
 
         await page.goto('/profile');
 
-        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
+        await expect(
+            // Remove PROFILE_EDIT_BUTTON_OLD after Home Assistant 2025.8.x
+            page.locator(SELECTORS.PROFILE_EDIT_BUTTON_OLD).or(page.locator(SELECTORS.PROFILE_EDIT_BUTTON))
+        ).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
     });
 
