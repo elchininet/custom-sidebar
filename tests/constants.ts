@@ -22,8 +22,9 @@ export const SELECTORS = {
     MENU: '.menu',
     TITLE: '.menu .title',
     SIDEBAR_HA_ICON_BUTTON: '.menu ha-icon-button',
-    SIDEBAR_EDIT_MODAL: 'dialog-edit-sidebar span[title="Edit sidebar"]', // Home Assistant >= 2025.6.x
-    PROFILE_EDIT_BUTTON: '.content > ha-card ha-settings-row > mwc-button',
+    SIDEBAR_EDIT_MODAL: 'dialog-edit-sidebar span[title="Edit sidebar"]',
+    PROFILE_EDIT_BUTTON_OLD: '.content > ha-card ha-settings-row > mwc-button', // Home Assistant < 2025.8.x
+    PROFILE_EDIT_BUTTON: '.content > ha-card ha-settings-row > ha-button',
     PROFILE_HIDE_SIDEBAR: '.content > ha-card ha-force-narrow-row ha-settings-row > ha-switch',
     NOTIFICATIONS: 'ha-md-list-item.notifications',
     ITEM_NOTIFICATION: 'span.badge',
