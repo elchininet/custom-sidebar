@@ -23,7 +23,7 @@ const pageVisit = async (page: Page, withDebug = false): Promise<void> => {
 
 test.describe('Debug messages', () => {
 
-    test('Debug messages shoud not be logged', async ({ page }) => {
+    test('debug messages shoud not be logged', async ({ page }) => {
 
         const logs: string[] = [];
 
@@ -47,7 +47,7 @@ test.describe('Debug messages', () => {
 
     });
 
-    test('Debug messages shoud be logged', async ({ page }) => {
+    test('debug messages shoud be logged', async ({ page }) => {
 
         const logs: string[] = [];
 
@@ -83,7 +83,7 @@ test.describe('Analytics', () => {
     }
 
     enum VISITED {
-        LOGBOOK = 'panel_visited: /logbook',
+        ACTIVITY = 'panel_visited: /logbook',
         CONFIG = 'panel_visited: /config',
         OVERVIEW = 'panel_visited: /lovelace',
         INTEGRATIONS = 'panel_visited: /config/integrations'
@@ -114,7 +114,7 @@ test.describe('Analytics', () => {
         await page.waitForTimeout(1000);
     };
 
-    test('Analytics should not be logged', async ({ page }) => {
+    test('analytics should not be logged', async ({ page }) => {
 
         await clickOnElements(page);
 
@@ -126,7 +126,7 @@ test.describe('Analytics', () => {
 
     });
 
-    test('All analytics messages should be logged properly when analytics is true', async ({ page }) => {
+    test('all analytics messages should be logged properly when analytics is true', async ({ page }) => {
 
         await addJsonExtendedRoute(page, {
             analytics: true
@@ -139,7 +139,7 @@ test.describe('Analytics', () => {
         });
 
         await expect(logbookEntries).toContainText([
-            VISITED.LOGBOOK,
+            VISITED.ACTIVITY,
             VISITED.CONFIG,
             CLICKED.CONFIG,
             VISITED.OVERVIEW,
@@ -151,7 +151,7 @@ test.describe('Analytics', () => {
 
     });
 
-    test('Only panel_visited analytics messages should be logged if analytics.panel_visited is true', async ({ page }) => {
+    test('only panel_visited analytics messages should be logged if analytics.panel_visited is true', async ({ page }) => {
 
         await addJsonExtendedRoute(page, {
             analytics: {
@@ -166,7 +166,7 @@ test.describe('Analytics', () => {
         });
 
         await expect(logbookEntries).toContainText([
-            VISITED.LOGBOOK,
+            VISITED.ACTIVITY,
             VISITED.CONFIG,
             VISITED.OVERVIEW,
             VISITED.INTEGRATIONS,
@@ -175,7 +175,7 @@ test.describe('Analytics', () => {
 
     });
 
-    test('Only sidebar_item_clicked analytics messages should be logged if analytics.sidebar_item_clicked is true', async ({ page }) => {
+    test('only sidebar_item_clicked analytics messages should be logged if analytics.sidebar_item_clicked is true', async ({ page }) => {
 
         await addJsonExtendedRoute(page, {
             analytics: {

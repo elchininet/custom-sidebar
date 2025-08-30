@@ -26,7 +26,7 @@ const visitHome = async (page: Page): Promise<void> => {
     });
 };
 
-test('Clicking on items with the same root path should select the proper item', async ({ page }) => {
+test('clicking on items with the same root path should select the proper item', async ({ page }) => {
 
     await visitHome(page);
     await page.waitForTimeout(600);
@@ -64,7 +64,7 @@ test('Clicking on items with the same root path should select the proper item', 
 
 });
 
-test('Clicking on items inside the same lovelace dashboard should select the proper item', async ({ page }) => {
+test('clicking on items inside the same lovelace dashboard should select the proper item', async ({ page }) => {
 
     const home = '/lovelace/home';
     const view1 = '/lovelace/view_1';
@@ -187,7 +187,7 @@ test('Clicking on items inside the same lovelace dashboard should select the pro
 
 });
 
-test('Hiting Enter with items focused should select the proper item', async ({ page }) => {
+test('hiting Enter with items focused should select the proper item', async ({ page }) => {
 
     await visitHome(page);
     await page.waitForTimeout(600);
@@ -214,7 +214,7 @@ test('Hiting Enter with items focused should select the proper item', async ({ p
 
 });
 
-test('Visit a URL that matches with multiple items should select the proper item', async ({ page }) => {
+test('visit a URL that matches with multiple items should select the proper item', async ({ page }) => {
 
     const integrationsBackupHref = '/config/integrations/integration/backup';
     const automationNewHref = '/config/automation/edit/new';
@@ -322,7 +322,7 @@ test('Visit a URL that matches with multiple items should select the proper item
 
 });
 
-test('Visiting a URL of a lovelace view should select the proper item', async ({ page }) => {
+test('visiting a URL of a lovelace view should select the proper item', async ({ page }) => {
 
     const home = '/lovelace/home';
     const view1 = '/lovelace/view_1';
@@ -435,7 +435,7 @@ test('the scroll should be restored after pressing Enter with an element focused
 
 });
 
-test('By default it should be possible to edit the sidebar', async ({ page }) => {
+test('by default it should be possible to edit the sidebar', async ({ page }) => {
 
     await visitHome(page);
 
@@ -452,7 +452,7 @@ test('By default it should be possible to edit the sidebar', async ({ page }) =>
 
 });
 
-test('If sidebar_editable is set to true it should be possible to edit the sidebar', async ({ page }) => {
+test('if sidebar_editable is set to true it should be possible to edit the sidebar', async ({ page }) => {
 
     await visitHome(page);
 
@@ -473,7 +473,7 @@ test('If sidebar_editable is set to true it should be possible to edit the sideb
 
 });
 
-test('If sidebar_editable is set to false it should not be possible to edit the sidebar', async ({ page }) => {
+test('if sidebar_editable is set to false it should not be possible to edit the sidebar', async ({ page }) => {
 
     await addJsonExtendedRoute(page, {
         sidebar_editable: false
@@ -497,7 +497,7 @@ test('If sidebar_editable is set to false it should not be possible to edit the 
 
 });
 
-test('If sidebar_mode is set to "hidden" it should not be possible to make the sidebar visible', async ({ page }) => {
+test('if sidebar_mode is set to "hidden" it should not be possible to make the sidebar visible', async ({ page }) => {
 
     await addJsonExtendedRoute(page, {
         sidebar_mode: 'hidden'
@@ -516,7 +516,7 @@ test('If sidebar_mode is set to "hidden" it should not be possible to make the s
 
 });
 
-test('If sidebar_mode is set to "narrow" it should not be possible to hide the sidebar', async ({ page }) => {
+test('if sidebar_mode is set to "narrow" it should not be possible to hide the sidebar', async ({ page }) => {
 
     await addJsonExtendedRoute(page, {
         sidebar_mode: 'narrow'
@@ -535,7 +535,7 @@ test('If sidebar_mode is set to "narrow" it should not be possible to hide the s
 
 });
 
-test('If sidebar_mode is set to "extended" it should not be possible to hide the sidebar', async ({ page }) => {
+test('if sidebar_mode is set to "extended" it should not be possible to hide the sidebar', async ({ page }) => {
 
     await addJsonExtendedRoute(page, {
         sidebar_mode: 'extended'
@@ -554,7 +554,7 @@ test('If sidebar_mode is set to "extended" it should not be possible to hide the
 
 });
 
-test('If sidebar_mode is set to "extended" it should keep the extended mode when changed to mobile', async ({ page }) => {
+test('if sidebar_mode is set to "extended" it should keep the extended mode when changed to mobile', async ({ page }) => {
 
     await addJsonExtendedRoute(page, {
         sidebar_mode: 'extended'
@@ -685,7 +685,7 @@ test('navigating with the keyboard using tab should focus the proper items in or
 
 });
 
-test('Pressing tab without being in the sidebar should not select any item', async ({ page }) => {
+test('pressing tab without being in the sidebar should not select any item', async ({ page }) => {
 
     await visitHome(page);
 
