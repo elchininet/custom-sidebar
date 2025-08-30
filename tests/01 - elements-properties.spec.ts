@@ -35,7 +35,7 @@ test('sidebar items should have a data-processed attribute after being processed
     const links = [
         HREFS.OVERVIEW,
         HREFS.TODO,
-        HREFS.LOGBOOK,
+        HREFS.ACTIVITY,
         HREFS.MEDIA_BROWSER,
         HREFS.CONFIG,
         HREFS.DEV_TOOLS,
@@ -137,7 +137,7 @@ test('should apply the order propely', async ({ page }) => {
         [HREFS.ENERGY, '7'],
         [HREFS.MAP, '8'],
         [HREFS.HISTORY, '9'],
-        [HREFS.LOGBOOK, '12'],
+        [HREFS.ACTIVITY, '12'],
         [HREFS.MEDIA_BROWSER, '13'],
         [HREFS.CONFIG, '14'],
         [HREFS.DEV_TOOLS, '15']
@@ -172,7 +172,7 @@ test('should set an icon in an existent element', async ({ page }) => {
     await fulfillJson(page, {
         order: [
             {
-                item: 'logbook',
+                item: 'activity',
                 icon: 'mdi:bullseye-arrow'
             }
         ]
@@ -181,7 +181,7 @@ test('should set an icon in an existent element', async ({ page }) => {
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    const logbookItem = getSidebarItem(page, HREFS.LOGBOOK);
+    const logbookItem = getSidebarItem(page, HREFS.ACTIVITY);
 
     const logBookIcon = logbookItem.locator(SELECTORS.HA_ICON);
 

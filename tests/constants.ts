@@ -5,7 +5,7 @@ export const HREFS = {
     OVERVIEW: '/lovelace',
     ENERGY: '/energy',
     MAP: '/map',
-    LOGBOOK: '/logbook',
+    ACTIVITY: '/logbook',
     HISTORY: '/history',
     MEDIA_BROWSER: '/media-browser',
     TODO: '/todo',
