@@ -117,7 +117,7 @@ test('if the hide property is a template, item should get hidden when the templa
         {
             order: [
                 {
-                    item: 'logbook',
+                    item: 'activity',
                     hide: '{{ is_state("input_boolean.my_switch", "on") }}'
                 }
             ]
@@ -126,7 +126,7 @@ test('if the hide property is a template, item should get hidden when the templa
 
     await page.goto('/');
 
-    const logBook = getSidebarItem(page, HREFS.LOGBOOK);
+    const logBook = getSidebarItem(page, HREFS.ACTIVITY);
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();

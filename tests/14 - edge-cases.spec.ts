@@ -27,12 +27,14 @@ test('if there is a match the item should be marked and ignored by subsequent ma
                 name: 'Overview matched'
             },
             {
-                item: 'lo', // it should match also with "Developer tools" but it matches first with "Logbook"
-                name: 'Logbook matched'
+                item: 'lo', // it should match also with "/developer-tools" but it matches first with "/logbook"
+                name: 'Activity matched',
+                match: 'href'
             },
             {
-                item: 'oo', // it also matches with "Logbook" but as "Logbook" was already matched, it is ignored
-                name: 'Dev matched'
+                item: 'oo', // it also matches with "/logbook" but as "Activity" was already matched, it is ignored
+                name: 'Dev matched',
+                match: 'href'
             }
         ]
     });
@@ -45,7 +47,7 @@ test('if there is a match the item should be marked and ignored by subsequent ma
 
 });
 
-test('Non new-items that don\'t match a sidebar item should trigger a warning', async ({ page }) => {
+test('non new-items that don\'t match a sidebar item should trigger a warning', async ({ page }) => {
 
     const MESSAGE = 'custom-sidebar: you have an order item in your configuration that didn\'t match any sidebar item:';
     const warnings: string[] = [];

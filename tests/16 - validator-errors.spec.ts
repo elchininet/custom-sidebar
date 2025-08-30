@@ -845,14 +845,14 @@ test.describe('order item property', () => {
             json: {
                 order: [
                     {
-                        item: 'logbook',
+                        item: 'activity',
                         partials: {
                             test: 'const a = "test";'
                         }
                     }
                 ]
             },
-            error: `${ERROR_PREFIX} in logbook, "partials" option can only be placed in the main config`
+            error: `${ERROR_PREFIX} in activity, "partials" option can only be placed in the main config`
         }
     ]);
 
