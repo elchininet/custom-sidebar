@@ -25,7 +25,7 @@ test.describe('title template returns', () => {
         page.on('console', message => {
             if (
                 message.type() === 'warning' &&
-                !message.text().includes('Vaadin 25') // Home Assistant 2025.4.x is throwing a warning  coming from the Vadding Material Theme
+                !message.text().includes('Vaadin 25') // Home Assistant is throwing a warning  coming from the Vadding Material Theme
             ) {
                 expect(message.text()).toContain('ReferenceError: titles is not defined');
             }
