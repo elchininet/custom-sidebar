@@ -42,7 +42,7 @@ order:
     icon: mdi:server
     bottom: true
     order: 8
-  - item: logbook
+  - item: activity
     bottom: true
     order: 9
   - new_item: true

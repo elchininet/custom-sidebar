@@ -76,7 +76,7 @@ test('clicking on items inside the same lovelace dashboard should select the pro
     const view1Item = getSidebarItem(page, view1);
     const view2Item = getSidebarItem(page, view2);
 
-    const tabSelector = 'sl-tab';
+    const tabSelector = 'ha-tab-group-tab';
     const tabHome = page.locator(tabSelector, { hasText: 'Home' });
     const tabView1 = page.locator(tabSelector, { hasText: 'View 1' });
     const tabView2 = page.locator(tabSelector, { hasText: 'View 2' });
@@ -445,10 +445,7 @@ test('by default it should be possible to edit the sidebar', async ({ page }) =>
 
     await page.goto('/profile');
 
-    await expect(
-        // Remove PROFILE_EDIT_BUTTON_OLD after Home Assistant 2025.8.x
-        page.locator(SELECTORS.PROFILE_EDIT_BUTTON_OLD).or(page.locator(SELECTORS.PROFILE_EDIT_BUTTON))
-    ).not.toHaveAttribute(ATTRIBUTES.DISABLED);
+    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
 });
 
@@ -466,10 +463,7 @@ test('if sidebar_editable is set to true it should be possible to edit the sideb
 
     await page.goto('/profile');
 
-    await expect(
-        // Remove PROFILE_EDIT_BUTTON_OLD after Home Assistant 2025.8.x
-        page.locator(SELECTORS.PROFILE_EDIT_BUTTON_OLD).or(page.locator(SELECTORS.PROFILE_EDIT_BUTTON))
-    ).not.toHaveAttribute(ATTRIBUTES.DISABLED);
+    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
 });
 
@@ -490,10 +484,7 @@ test('if sidebar_editable is set to false it should not be possible to edit the 
 
     await page.goto('/profile');
 
-    await expect(
-        // Remove PROFILE_EDIT_BUTTON_OLD after Home Assistant 2025.8.x
-        page.locator(SELECTORS.PROFILE_EDIT_BUTTON_OLD).or(page.locator(SELECTORS.PROFILE_EDIT_BUTTON))
-    ).toHaveAttribute(ATTRIBUTES.DISABLED);
+    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
 
 });
 
