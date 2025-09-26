@@ -76,7 +76,7 @@ test('clicking on items inside the same lovelace dashboard should select the pro
     const view1Item = getSidebarItem(page, view1);
     const view2Item = getSidebarItem(page, view2);
 
-    const tabSelector = 'sl-tab';
+    const tabSelector = 'ha-tab-group-tab';
     const tabHome = page.locator(tabSelector, { hasText: 'Home' });
     const tabView1 = page.locator(tabSelector, { hasText: 'View 1' });
     const tabView2 = page.locator(tabSelector, { hasText: 'View 2' });
