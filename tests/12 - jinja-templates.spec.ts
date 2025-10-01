@@ -1,6 +1,7 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import {
+    BASE_URL,
     CONFIG_FILES,
     SELECTORS,
     HREFS,
@@ -332,6 +333,79 @@ test('if the hide property is a template, item should get hidden when the templa
 
         await haSwitchStateRequest(page, false);
 
+    });
+
+});
+
+[
+    {
+        title: 'should redirect to the default_path on load',
+        json: {
+            default_path: `
+                {% if is_state("input_boolean.my_switch", "on") %}
+                    /config/integrations
+                {% else %}
+                    /config/automation
+                {% endif %}
+            `
+        }
+    },
+    {
+        title: 'should redirect to the default_path on load using variables',
+        json: {
+            jinja_variables: {
+                my_switch: 'input_boolean.my_switch'
+            },
+            default_path: `
+                {% if is_state(my_switch, "on") %}
+                    /config/integrations
+                {% else %}
+                    /config/automation
+                {% endif %}
+            `
+        }
+    },
+    {
+        title: 'should redirect to the default_path on load using variables and partials',
+        json: {
+            jinja_variables: {
+                my_switch: 'input_boolean.my_switch'
+            },
+            partials: {
+                custom_path: `
+                    {% if is_state(my_switch, "on") %}
+                        /config/integrations
+                    {% else %}
+                        /config/automation
+                    {% endif %}
+                `
+            },
+            default_path: '@partial custom_path'
+        }
+    }
+].forEach(({ title, json }) => {
+
+    test(title, async ({ page }) => {
+
+        await fulfillJson(page, json);
+
+        await page.goto('/');
+
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
+        await page.waitForTimeout(1000);
+        await expect(page).toHaveURL(`${BASE_URL}/config/automation/dashboard`);
+
+        await haSwitchStateRequest(page, true);
+
+        await page.reload();
+
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+        await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
+        await page.waitForTimeout(1000);
+        await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
+
+        await haSwitchStateRequest(page, false);
     });
 
 });

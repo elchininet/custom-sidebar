@@ -613,24 +613,27 @@ class CustomSidebar {
     private _createJinjaTemplateSubscription(
         template: string,
         callback?: (rendered: string) => void
-    ): void {
-        window.hassConnection.then((hassConnection: HassConnection): void => {
-            hassConnection.conn.subscribeMessage<SubscriberTemplate>(
-                (message: SubscriberTemplate): void => {
-                    callback(`${message.result}`);
-                },
-                {
-                    type: EVENT.RENDER_TEMPLATE,
-                    template,
-                    variables: {
-                        user_name: this._ha.hass.user.name,
-                        user_is_admin: this._ha.hass.user.is_admin,
-                        user_is_owner: this._ha.hass.user.is_owner,
-                        user_agent: window.navigator.userAgent,
-                        ...(this._config.jinja_variables)
+    ): ReturnType<HassConnection['conn']['subscribeMessage']> {
+        return new Promise((resolve) => {
+            window.hassConnection.then((hassConnection: HassConnection): void => {
+                const cancelSubscriptionPromise = hassConnection.conn.subscribeMessage<SubscriberTemplate>(
+                    (message: SubscriberTemplate): void => {
+                        callback(`${message.result}`);
+                    },
+                    {
+                        type: EVENT.RENDER_TEMPLATE,
+                        template,
+                        variables: {
+                            user_name: this._ha.hass.user.name,
+                            user_is_admin: this._ha.hass.user.is_admin,
+                            user_is_owner: this._ha.hass.user.is_owner,
+                            user_agent: window.navigator.userAgent,
+                            ...(this._config.jinja_variables)
+                        }
                     }
-                }
-            );
+                );
+                resolve(cancelSubscriptionPromise);
+            });
         });
     }
 
@@ -818,35 +821,62 @@ class CustomSidebar {
 
     private _processDefaultPath() {
 
-        const pathname = this._config.default_path;
+        const pathnameString = this._config.default_path;
 
-        if (pathname) {
+        if (pathnameString) {
 
-            if (pathname.startsWith('/')) {
+            const pathnameWithPartials = getTemplateWithPartials(pathnameString, this._config.partials);
 
-                const params: Parameters<typeof window.history.replaceState> = [
-                    null,
-                    '',
-                    pathname
-                ];
+            if (JS_TEMPLATE_REG.test(pathnameWithPartials)) {
 
-                window.history.replaceState(...params);
+                const pathname = this._renderer.renderTemplate(
+                    pathnameWithPartials.replace(JS_TEMPLATE_REG, '$1')
+                );
 
-                window.dispatchEvent(
-                    new CustomEvent(
-                        EVENT.LOCATION_CHANGED,
-                        {
-                            detail: {
-                                replace: pathname
-                            }
-                        }
-                    )
+                this._executeDefaultPath(pathname);
+
+            } else if (JINJA_TEMPLATE_REG.test(pathnameWithPartials)) {
+
+                const cancelSubscriptionPromise = this._createJinjaTemplateSubscription(
+                    pathnameWithPartials,
+                    (result: string) => {
+                        this._executeDefaultPath(result);
+                        cancelSubscriptionPromise.then((cancelSubscription: () => Promise<void>) => {
+                            cancelSubscription();
+                        });
+                    }
                 );
 
             } else {
-                console.warn(`${NAMESPACE}: ignoring default_path property as it doesn't start with "/".`);
+                this._executeDefaultPath(pathnameWithPartials);
             }
 
+        }
+    }
+
+    private _executeDefaultPath(pathname: string) {
+        if (pathname.startsWith('/')) {
+            const params: Parameters<typeof window.history.replaceState> = [
+                null,
+                '',
+                pathname
+            ];
+
+            window.history.replaceState(...params);
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    EVENT.LOCATION_CHANGED,
+                    {
+                        detail: {
+                            replace: pathname
+                        }
+                    }
+                )
+            );
+
+        } else {
+            console.warn(`${NAMESPACE}: ignoring default_path property "${pathname}" as it doesn't start with "/".`);
         }
     }
 

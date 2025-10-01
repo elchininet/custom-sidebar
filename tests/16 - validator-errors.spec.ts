@@ -157,7 +157,21 @@ test.describe('main options', () => {
             json: {
                 default_path: 'https://google.com'
             },
-            warning: `${NAMESPACE}: ignoring default_path property as it doesn't start with "/".`
+            warning: `${NAMESPACE}: ignoring default_path property "https://google.com" as it doesn't start with "/".`
+        },
+        {
+            title: 'should throw a warning if the default_path property as a JavaScript template does not start with "/"',
+            json: {
+                default_path: '[[[ return "https://google.com/javascript" ]]]'
+            },
+            warning: `${NAMESPACE}: ignoring default_path property "https://google.com/javascript" as it doesn't start with "/".`
+        },
+        {
+            title: 'should throw a warning if the default_path property as a Jinja template does not start with "/"',
+            json: {
+                default_path: '{{ "https://google.com/jinja" }}'
+            },
+            warning: `${NAMESPACE}: ignoring default_path property "https://google.com/jinja" as it doesn't start with "/".`
         },
         {
             title: 'should throw an error if the js_variables property is not an object',
@@ -1154,7 +1168,31 @@ test.describe('exceptions', () => {
                     }
                 ]
             },
-            warning: `${NAMESPACE}: ignoring default_path property as it doesn't start with "/".`
+            warning: `${NAMESPACE}: ignoring default_path property "http://localhost:8123/config" as it doesn't start with "/".`
+        },
+        {
+            title: 'should throw a warning if the default_path property as a JavaScript template does not start with "/"',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        default_path: '[[[ return "http://localhost:8123/javascript" ]]]'
+                    }
+                ]
+            },
+            warning: `${NAMESPACE}: ignoring default_path property "http://localhost:8123/javascript" as it doesn't start with "/".`
+        },
+        {
+            title: 'should throw a warning if the default_path property as a Jinja template does not start with "/"',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        default_path: '{{ "http://localhost:8123/jinja" }}'
+                    }
+                ]
+            },
+            warning: `${NAMESPACE}: ignoring default_path property "http://localhost:8123/jinja" as it doesn't start with "/".`
         },
         {
             title: 'should throw an error if a base config option is found in an exception order item',
