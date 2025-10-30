@@ -57,11 +57,10 @@ const getDialogBox = async (ha: HomeAsssistantExtended): Promise<CustomElementCo
     }
 
     const haPanelConfig = await getHaPanelConfig();
-    await getHaConfigBackupBackups(haPanelConfig);
-
-    const haConfigBackupBackups = document.createElement(CUSTOM_ELEMENT.HA_CONFIG_BACKUP_BACKUPS) as HaConfigBackupBackups;
+    const haConfigBackupBackups = await getHaConfigBackupBackups(haPanelConfig);
 
     haConfigBackupBackups.hass = ha.hass;
+    haConfigBackupBackups._overflowBackup = true;
 
     return new Promise<CustomElementConstructor>((resolve) => {
 
