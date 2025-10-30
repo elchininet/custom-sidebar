@@ -60,6 +60,7 @@ export interface HaConfigSystemNavigation extends HTMLElement {
 export interface HaConfigBackupBackups extends HTMLElement {
     hass: HassExtended;
     _deleteBackup: () => void;
+    _overflowBackup: boolean;
 }
 
 export interface HomeAssistantMain extends HTMLElement {
