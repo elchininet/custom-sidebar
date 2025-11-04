@@ -60,7 +60,6 @@ const getDialogBox = async (ha: HomeAsssistantExtended): Promise<CustomElementCo
     const haConfigBackupBackups = await getHaConfigBackupBackups(haPanelConfig);
 
     haConfigBackupBackups.hass = ha.hass;
-    haConfigBackupBackups._overflowBackup = true;
 
     return new Promise<CustomElementConstructor>((resolve) => {
 
@@ -73,7 +72,15 @@ const getDialogBox = async (ha: HomeAsssistantExtended): Promise<CustomElementCo
             { once: true }
         );
 
-        haConfigBackupBackups._deleteBackup();
+        haConfigBackupBackups._deleteBackup({
+            // Mock the event of the _deleteBackup method to make the condition to pass without errors
+            // https://github.com/home-assistant/frontend/blob/b03fa4bdc5507838c0e470468d6e100eff67314a/src/panels/config/backup/ha-config-backup-backups.ts#L581-L584
+            parentElement: {
+                anchorElement: {
+                    backup: true
+                }
+            }
+        });
 
     });
 
