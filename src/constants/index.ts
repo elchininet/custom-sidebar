@@ -33,7 +33,7 @@ export enum ELEMENT {
     HA_ICON_BUTTON = 'ha-icon-button',
     ANCHOR = 'a',
     BUTTON = 'button',
-    MD_RIPPLE = 'md-ripple',
+    HA_RIPPLE = 'ha-ripple',
     USER_BADGE = 'ha-user-badge',
     HA_PANEL_LOVELACE = 'ha-panel-lovelace',
     HUI_ROOT = 'hui-root',
