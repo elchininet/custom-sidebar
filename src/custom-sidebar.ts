@@ -1048,7 +1048,7 @@ class CustomSidebar {
                 ? this._getAnchorElement(item)
                 : this._getButtonElement(item);
             const surface = innerElement
-                .querySelector(ELEMENT.MD_RIPPLE)
+                .querySelector(ELEMENT.HA_RIPPLE)
                 .shadowRoot
                 .querySelector(SELECTOR.SURFACE);
             this._styleManager.addStyle(
