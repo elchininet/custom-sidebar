@@ -8,7 +8,11 @@ import {
     ATTRIBUTES
 } from './constants';
 import { haConfigRequest } from './ha-services';
-import { addJsonExtendedRoute, changeToMobileViewport } from './utilities';
+import {
+    fulfillJson,
+    addJsonExtendedRoute,
+    changeToMobileViewport
+} from './utilities';
 import { getSidebarItem } from './selectors';
 
 const SELECTED_CLASSNAME = /(^|\s)selected(\s|$)/;
@@ -397,9 +401,47 @@ test('the scroll should be restored after clicking on an element', async ({ page
     });
     await page.waitForTimeout(600);
 
+    const item = getSidebarItem(page, HREFS.INTEGRATIONS);
+
+    await item.scrollIntoViewIfNeeded();
+
     const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
 
-    await getSidebarItem(page, HREFS.INTEGRATIONS).click({ delay: 150 });
+    await item.click({ delay: 150 });
+    await page.waitForTimeout(600);
+
+    expect(
+        await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
+    ).toBe(scrollTopStart);
+
+});
+
+test('if no order items the scroll should be restored after clicking on an element', async ({ page }) => {
+
+    await fulfillJson(page, {
+        title: 'Sidebar no order'
+    });
+
+    await page.setViewportSize({ width: 1024, height: 500 });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('sidebar-without-order-small-viewport.png', {
+        clip: {
+            ...SIDEBAR_CLIP,
+            height: 378
+        }
+    });
+    await page.waitForTimeout(600);
+
+    const item = getSidebarItem(page, HREFS.TODO);
+
+    await item.scrollIntoViewIfNeeded();
+
+    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
+
+    await item.click({ delay: 150 });
     await page.waitForTimeout(600);
 
     expect(
@@ -423,9 +465,48 @@ test('the scroll should be restored after pressing Enter with an element focused
     });
     await page.waitForTimeout(600);
 
+    const item = getSidebarItem(page, HREFS.INTEGRATIONS);
+
+    await item.scrollIntoViewIfNeeded();
+
     const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
 
-    await getSidebarItem(page, HREFS.INTEGRATIONS).focus();
+    await item.focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(600);
+
+    expect(
+        await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
+    ).toBe(scrollTopStart);
+
+});
+
+test('if no order items the scroll should be restored after pressing Enter with an element focused', async ({ page }) => {
+
+    await fulfillJson(page, {
+        title: 'Sidebar no order'
+    });
+
+    await page.setViewportSize({ width: 1024, height: 500 });
+
+    await page.goto('/');
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await expect(page).toHaveScreenshot('sidebar-without-order-small-viewport.png', {
+        clip: {
+            ...SIDEBAR_CLIP,
+            height: 378
+        }
+    });
+    await page.waitForTimeout(600);
+
+    const item = getSidebarItem(page, HREFS.TODO);
+
+    await item.scrollIntoViewIfNeeded();
+
+    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
+
+    await item.focus();
     await page.keyboard.press('Enter');
     await page.waitForTimeout(600);
 
