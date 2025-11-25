@@ -1230,14 +1230,6 @@ class CustomSidebar {
 
                     }
 
-                    // When the item is clicked
-                    orderItem.element.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
-                    orderItem.element.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent): void => {
-                        if (event.key === KEY.ENTER) {
-                            this._itemTouchedBinded();
-                        }
-                    });
-
                     if (orderItem.on_click) {
                         orderItem.element.addEventListener(EVENT.CLICK, this._mouseClick.bind(this, orderItem), true);
                     }
@@ -1256,6 +1248,13 @@ class CustomSidebar {
                         itemB: HTMLElement
                     ): number => +itemA.style.order - +itemB.style.order
                 );
+
+                sidebarItemsContainer.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
+                sidebarItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent): void => {
+                    if (event.key === KEY.ENTER) {
+                        this._itemTouchedBinded();
+                    }
+                });
 
                 this._aplyItemRippleStyles();
                 this._panelLoaded();
