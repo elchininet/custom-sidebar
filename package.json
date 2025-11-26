@@ -1,6 +1,6 @@
 {
   "name": "custom-sidebar",
-  "version": "10.7.2",
+  "version": "10.7.3",
   "description": "Custom HACS plugin that allows you to rearrange, hide, and add menu items to Home Assistant's sidebar",
   "main": "dist/custom-sidebar.js",
   "repository": "git@github.com:elchininet/custom-sidebar.git",
