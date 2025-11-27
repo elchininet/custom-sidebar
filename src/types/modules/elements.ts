@@ -46,7 +46,6 @@ export interface Router extends HTMLElement {
 export interface PartialPanelResolver extends Router {
     narrow: boolean;
     route: {
-        prefix: string,
         path: string;
     };
     hass: HassExtended;

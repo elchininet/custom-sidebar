@@ -53,8 +53,7 @@ import {
     RETRY_DELAY,
     SELECTOR,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
-    SIDEBAR_OPTIONS_VARIABLES_MAP,
-    URL_WITH_PARAMS_REGEXP
+    SIDEBAR_OPTIONS_VARIABLES_MAP
 } from '@constants';
 import {
     getConfig,
@@ -1395,40 +1394,29 @@ class CustomSidebar {
     private async _panelLoaded(): Promise<void> {
 
         // Select the right element in the sidebar
+        const panelPath = `${location.pathname}${location.search}`;
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
-        const pathName = panelResolver.route.path;
         const sidebarItemsContainer = await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element as HTMLElement;
 
         const items = Array.from<SidebarItem>(
             sidebarItemsContainer.querySelectorAll<SidebarItem>(ELEMENT.ITEM)
         );
 
-        const activeItem = items.find((item: SidebarItem): boolean => pathName === item.href);
-
-        const activeParentElement = activeItem
-            ? null
-            : items.reduce((parent: SidebarItem | null, item: SidebarItem): SidebarItem | null => {
-                const href = item.href.replace(URL_WITH_PARAMS_REGEXP, '$1');
-                if (pathName.startsWith(href)) {
-                    if (
-                        !parent ||
-                        href.length > parent.href.replace(URL_WITH_PARAMS_REGEXP, '$1').length
-                    ) {
-                        parent = item;
-                    }
-                }
-                return parent;
-            }, null);
+        const activeItem = items.reduce((active: null | SidebarItem, item: SidebarItem): SidebarItem => {
+            if (
+                panelPath.startsWith(item.href) &&
+                (
+                    active === null ||
+                    item.href.length > active.href.length
+                )
+            ) {
+                return item;
+            }
+            return active;
+        }, null);
 
         items.forEach((item: HTMLElement) => {
-            const isActive = (
-                activeItem &&
-                activeItem === item
-            ) ||
-            (
-                !activeItem &&
-                activeParentElement === item
-            );
+            const isActive = activeItem === item;
             item.classList.toggle(CLASS.ITEM_SELECTED, isActive);
             item.tabIndex = isActive ? 0 : -1;
         });
@@ -1471,7 +1459,7 @@ class CustomSidebar {
 
         // If analytics is enabled log landings
         if (this._isAnalyticsOptionEnabled('panel_visited')) {
-            this._logBookLog(`panel_visited: ${pathName}`);
+            this._logBookLog(`panel_visited: ${panelPath}`);
         }
 
     }
