@@ -342,6 +342,9 @@ test.describe('extending from the base', () => {
 
             await page.goto('/profile');
 
+            await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
+            await page.waitForTimeout(500);
+
             await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
 
         });
@@ -560,6 +563,9 @@ test.describe('extending from the base', () => {
 
             await page.goto('/profile');
 
+            await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
+            await page.waitForTimeout(500);
+
             await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
 
         });
@@ -719,6 +725,9 @@ test.describe('without extending from the base', () => {
 
         await page.goto('/profile');
 
+        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
+        await page.waitForTimeout(500);
+
         await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
 
     });
@@ -741,6 +750,9 @@ test.describe('without extending from the base', () => {
         await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
 
         await page.goto('/profile');
+
+        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
+        await page.waitForTimeout(500);
 
         await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
@@ -1727,6 +1739,9 @@ test.describe('exceptions that do not match', () => {
         await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
 
         await page.goto('/profile');
+
+        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
+        await page.waitForTimeout(500);
 
         await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 

@@ -544,6 +544,9 @@ test('if sidebar_editable is set to true it should be possible to edit the sideb
 
     await page.goto('/profile');
 
+    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
+    await page.waitForTimeout(500);
+
     await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
 });
@@ -564,6 +567,9 @@ test('if sidebar_editable is set to false it should not be possible to edit the 
     await expect(page.locator(SELECTORS.SIDEBAR_EDIT_MODAL)).not.toBeVisible();
 
     await page.goto('/profile');
+
+    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
+    await page.waitForTimeout(500);
 
     await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
 
