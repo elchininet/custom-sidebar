@@ -37,8 +37,10 @@ export default defineConfig({
     expect: {
         timeout: 15000,
         toHaveScreenshot: {
-            maxDiffPixels: 15,
-            threshold: 0.5,
+            // After Home Assistant 2025.12.x is updated, update snapshots and restore this to 15
+            maxDiffPixels: 20,
+            // After Home Assistant 2025.12.x is updated, updated, update snapshots and restore this to 0.5
+            threshold: 0.75,
             animations: 'disabled'
         }
     },

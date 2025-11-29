@@ -163,7 +163,10 @@ test.describe('methods in JavaScript templates', () => {
         const confirmText = 'Confirm text';
         const logText = 'Text logged';
 
-        const dialog = page.locator('dialog-box ha-md-dialog');
+        const dialog = page
+            .locator('dialog-box ha-wa-dialog')
+            // Delete ha-md-dialog after Home Assistant has been updated to version 2025.12.x
+            .or(page.locator('dialog-box ha-md-dialog'));
 
         const logs: string[] = [];
 
@@ -237,7 +240,10 @@ test.describe('methods in JavaScript templates', () => {
         const confirmLogText = 'Confirm text logged';
         const dismissLogText = 'Dismiss text logged';
 
-        const dialog = page.locator('dialog-box ha-md-dialog');
+        const dialog = page
+            .locator('dialog-box ha-wa-dialog')
+            // Delete ha-md-dialog after Home Assistant has been updated to version 2025.12.x
+            .or(page.locator('dialog-box ha-md-dialog'));
 
         const logs: string[] = [];
 
