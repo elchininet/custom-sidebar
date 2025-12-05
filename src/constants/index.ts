@@ -268,7 +268,7 @@ export const SIDEBAR_MODE_TO_DOCKED_SIDEBAR = {
     [SidebarMode.EXTENDED]: DockedSidebar.DOCKED
 };
 
-export const PROFILE_GENERAL_PATH = '/profile/general';
+export const PROFILE_GENERAL_PATH_REGEXP = /\/profile(\/general)?$/;
 
 export const JS_TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;
 export const JINJA_TEMPLATE_REG = /\{\{[\s\S]*\}\}|\{%[\s\S]*%\}/;
