@@ -1,6 +1,7 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import {
+    ATTRIBUTES,
     BASE_URL,
     CONFIG_FILES,
     SELECTORS,
@@ -15,6 +16,7 @@ import {
 import {
     fulfillJson,
     navigateHome,
+    navigateToProfile,
     noCacheRoute,
     waitForWarning
 } from './utilities';
@@ -491,6 +493,64 @@ test('reactive variables in js_variables should be converted properly', async ({
     await checkItem.click();
 
     await expect(title).toContainText('Custom String');
+
+});
+
+test('reactive variables changes should trigger the templates values in which they are used', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            js_variables: {
+                is_sidebar_editable: 'ref(true)'
+            },
+            sidebar_editable: `
+                [[[
+                    return ref('is_sidebar_editable').value;
+                ]]]
+            `,
+            order: [
+                {
+                    new_item: true,
+                    item: 'Check',
+                    icon: 'mdi:bullseye-arrow',
+                    on_click: {
+                        action: 'javascript',
+                        code: `ref('is_sidebar_editable').value = !ref('is_sidebar_editable').value`
+                    }
+                }
+            ]
+        }
+    );
+
+    const checkItem = getSidebarItem(page, '#');
+
+    await navigateHome(page);
+
+    await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
+    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
+
+    await checkItem.click();
+
+    await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
+    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
+
+    await checkItem.click();
+
+    await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
+    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
+
+    await navigateToProfile(page);
+
+    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
+
+    await checkItem.click();
+
+    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
+
+    await checkItem.click();
+
+    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
 });
 

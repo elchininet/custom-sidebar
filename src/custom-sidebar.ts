@@ -1464,14 +1464,6 @@ class CustomSidebar {
                 });
         }
 
-        // If the config is not loaded yet, wait for it
-        if (!this._config) {
-            await getPromisableResult(
-                () => this._config,
-                (config: Config) => !!config
-            );
-        }
-
         // If analytics is enabled log landings
         if (this._isAnalyticsOptionEnabled('panel_visited')) {
             this._logBookLog(`panel_visited: ${pathName}`);
