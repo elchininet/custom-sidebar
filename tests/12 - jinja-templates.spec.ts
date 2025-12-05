@@ -12,7 +12,11 @@ import {
     haSwitchStateRequest,
     haSelectStateRequest
 } from './ha-services';
-import { fulfillJson } from './utilities';
+import {
+    fulfillJson,
+    navigateHome,
+    noCacheRoute
+} from './utilities';
 import {
     getSidebarItem,
     getSidebarItemText,
@@ -23,10 +27,10 @@ test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.JINJA_TEMPLATES);
 });
 
+test.beforeEach(noCacheRoute);
+
 const pageVisit = async (page: Page): Promise<void> => {
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
     await expect(page).toHaveScreenshot('sidebar-templates.png', {
         clip: SIDEBAR_CLIP
     });
@@ -125,12 +129,9 @@ test('if the hide property is a template, item should get hidden when the templa
         }
     );
 
-    await page.goto('/');
-
     const logBook = getSidebarItem(page, HREFS.ACTIVITY);
 
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
 
     await expect(logBook).toBeVisible();
 
@@ -318,12 +319,9 @@ test('if the hide property is a template, item should get hidden when the templa
 
         await fulfillJson(page, json);
 
-        await page.goto('/');
-
         const title = page.locator(SELECTORS.TITLE);
 
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
 
         await expect(title).toContainText('False 123');
 
@@ -393,8 +391,7 @@ test('if the hide property is a template, item should get hidden when the templa
 
         await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
         await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
-        await page.waitForTimeout(1000);
-        await expect(page).toHaveURL(`${BASE_URL}/config/automation/dashboard`);
+        await expect(page).toHaveURL(`${BASE_URL}/config/automation/dashboard`, { timeout: 30000 });
 
         await haSwitchStateRequest(page, true);
 
@@ -402,8 +399,7 @@ test('if the hide property is a template, item should get hidden when the templa
 
         await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
         await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
-        await page.waitForTimeout(1000);
-        await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
+        await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`, { timeout: 30000 });
 
         await haSwitchStateRequest(page, false);
     });

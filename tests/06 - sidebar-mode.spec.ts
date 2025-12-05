@@ -6,11 +6,19 @@ import {
     SIDEBAR_NARROW_CLIP
 } from './constants';
 import { haConfigRequest } from './ha-services';
-import { fulfillJson, changeToMobileViewport } from './utilities';
+import {
+    changeToMobileViewport,
+    fulfillJson,
+    navigateHome,
+    noCacheRoute,
+    waitForMainElements
+} from './utilities';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
+
+test.beforeEach(noCacheRoute);
 
 test('a new item with notification should behave propely when the sidebar is collapsed', async ({ page }) => {
 
@@ -26,9 +34,7 @@ test('a new item with notification should behave propely when the sidebar is col
         ]
     });
 
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
 
     await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
 
@@ -52,6 +58,8 @@ test('If sidebar_mode is set to "narrow" the sidebar should be visible in narrow
     await changeToMobileViewport(page);
 
     await page.goto('/');
+    await page.waitForURL(/.*\/lovelace/);
+    await waitForMainElements(page);
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
@@ -70,6 +78,8 @@ test('If sidebar_mode is set to "extended" the sidebar should be visible in exte
     await changeToMobileViewport(page);
 
     await page.goto('/');
+    await page.waitForURL(/.*\/lovelace/);
+    await waitForMainElements(page);
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
@@ -89,9 +99,7 @@ test('If sidebar_mode is set to "hidden" the sidebar should not be visible in de
     });
 
     await page.goto('/');
-
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toBeVisible();
+    await page.waitForURL(/.*\/lovelace/);
+    await waitForMainElements(page, false);
 
 });

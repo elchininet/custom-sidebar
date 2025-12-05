@@ -32,15 +32,14 @@ export default defineConfig({
 
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         trace: 'on-first-retry',
-        screenshot: 'only-on-failure'
+        screenshot: 'only-on-failure',
+        navigationTimeout: 30000
     },
     expect: {
         timeout: 15000,
         toHaveScreenshot: {
-            // After Home Assistant 2025.12.x is updated, update snapshots and restore this to 15
-            maxDiffPixels: 20,
-            // After Home Assistant 2025.12.x is updated, updated, update snapshots and restore this to 0.5
-            threshold: 0.75,
+            maxDiffPixels: 15,
+            threshold: 0.5,
             animations: 'disabled'
         }
     },
@@ -61,6 +60,9 @@ export default defineConfig({
                         '--disable-font-subpixel-positioning',
                         '--disable-lcd-text'
                     ]
+                },
+                contextOptions: {
+                    reducedMotion: 'reduce'
                 }
             }
         }

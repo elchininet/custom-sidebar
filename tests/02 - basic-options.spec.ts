@@ -7,13 +7,23 @@ import {
     HREFS
 } from './constants';
 import { haConfigRequest } from './ha-services';
-import { fulfillJson } from './utilities';
+import {
+    fulfillJson,
+    navigateHome,
+    noCacheRoute,
+    waithForError,
+    waitForLogMessages,
+    waitForWarning,
+    waitForMainElements
+} from './utilities';
 import { NAMESPACE } from '../src/constants';
 import { getSidebarItem } from './selectors';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
+
+test.beforeEach(noCacheRoute);
 
 [
     {
@@ -286,9 +296,7 @@ test.beforeAll(async ({ browser }) => {
     test(title, async ({ page }) => {
 
         await fulfillJson(page, json);
-        await page.goto('/');
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
         await expect(page).toHaveScreenshot(screenshot, {
             clip: SIDEBAR_CLIP_WITH_DIVIDERS
         });
@@ -314,10 +322,7 @@ test('should apply attributes as an object to an item', async ({ page }) => {
         }
     );
 
-    await page.goto('/');
-
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
 
     const configItem = getSidebarItem(page, HREFS.CONFIG);
 
@@ -346,10 +351,7 @@ test('should apply attributes as a JavaScript template to an item', async ({ pag
         }
     );
 
-    await page.goto('/');
-
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
 
     const configItem = getSidebarItem(page, HREFS.CONFIG);
 
@@ -360,12 +362,6 @@ test('should apply attributes as a JavaScript template to an item', async ({ pag
 });
 
 test('should throw an error if the attributes property has a template that does not return an object', async ({ page }) => {
-
-    const errors: string[] = [];
-
-    page.on('pageerror', error => {
-        errors.push(error.message);
-    });
 
     await fulfillJson(
         page,
@@ -382,31 +378,11 @@ test('should throw an error if the attributes property has a template that does 
     );
 
     await page.goto('/');
-
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-
-    await page.waitForTimeout(1000);
-
-    expect(errors).toEqual(
-        expect.arrayContaining([
-            `${NAMESPACE}: "attributes" template must always return an object`
-        ])
-    );
-
-    page.removeAllListeners();
+    await waithForError(page, `${NAMESPACE}: "attributes" template must always return an object`);
 
 });
 
 test('should throw a warning if the attributes property has a template that returns an object with a non allowed property', async ({ page }) => {
-
-    const warnings: string[] = [];
-
-    page.on('console', message => {
-        if (message.type() === 'warning') {
-            warnings.push(message.text());
-        }
-    });
 
     await fulfillJson(
         page,
@@ -432,8 +408,7 @@ test('should throw a warning if the attributes property has a template that retu
 
     await page.goto('/');
 
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await waitForWarning(page, `${NAMESPACE}: the property "data-prop2" in the attributes property of the item "settings" should be a string, a number or a boolean. This property will be omitted`);
 
     const configItem = getSidebarItem(page, HREFS.CONFIG);
 
@@ -442,16 +417,6 @@ test('should throw a warning if the attributes property has a template that retu
     await expect(configItem).toHaveAttribute('data-prop3', '100');
     await expect(configItem).toHaveAttribute('data-prop4', 'true');
     await expect(configItem).toHaveAttribute('data-custom-sidebar-attrs', 'data-prop1|data-prop3|data-prop4');
-
-    await page.waitForTimeout(1000);
-
-    expect(warnings).toEqual(
-        expect.arrayContaining([
-            `${NAMESPACE}: the property "data-prop2" in the attributes property of the item "settings" should be a string, a number or a boolean. This property will be omitted`
-        ])
-    );
-
-    page.removeAllListeners();
 
 });
 
@@ -465,8 +430,7 @@ test('should redirect to the default_path on load', async ({ page }) => {
     );
 
     await page.goto('/');
-
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await waitForMainElements(page);
     await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
     await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
 
@@ -482,8 +446,7 @@ test('should redirect to the default_path on refresh', async ({ page }) => {
     );
 
     await page.goto('/');
-
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await waitForMainElements(page);
     await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
     await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
 
@@ -492,7 +455,7 @@ test('should redirect to the default_path on refresh', async ({ page }) => {
     await expect(page).not.toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
 
     await page.reload();
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
+    await waitForMainElements(page);
     await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
     await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
 
@@ -532,10 +495,7 @@ test.describe('on_click property', () => {
             }
         );
 
-        await page.goto('/');
-
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
 
@@ -580,10 +540,7 @@ test.describe('on_click property', () => {
             }
         );
 
-        await page.goto('/');
-
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
 
@@ -640,10 +597,7 @@ test.describe('on_click property', () => {
             }
         );
 
-        await page.goto('/');
-
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
 
@@ -658,14 +612,6 @@ test.describe('on_click property', () => {
     });
 
     test('should throw a warning if a call-service action has a malformed service', async ({ page }) => {
-
-        const warnings: string[] = [];
-
-        page.on('console', message => {
-            if (message.type() === 'warning') {
-                warnings.push(message.text());
-            }
-        });
 
         await fulfillJson(
             page,
@@ -682,32 +628,15 @@ test.describe('on_click property', () => {
             }
         );
 
-        await page.goto('/');
+        await navigateHome(page);
 
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        getSidebarItem(page, '#').click();
 
-        await getSidebarItem(page, '#').click();
-
-        await page.waitForTimeout(1000);
-
-        expect(warnings).toEqual(
-            expect.arrayContaining([
-                'custom-sidebar ignoring "call-service" action in "Check" item. The service parameter is malfomed.'
-            ])
-        );
-
-        page.removeAllListeners();
+        await waitForWarning(page, 'custom-sidebar ignoring "call-service" action in "Check" item. The service parameter is malfomed.');
 
     });
 
     test('should execute a javascript action without redirecting', async ({ page }) => {
-
-        const logs: string[] = [];
-
-        page.on('console', message => {
-            logs.push(message.text());
-        });
 
         await fulfillJson(
             page,
@@ -727,30 +656,21 @@ test.describe('on_click property', () => {
             }
         );
 
-        await page.goto('/');
+        await navigateHome(page);
 
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        getSidebarItem(page, '#').click();
 
-        await getSidebarItem(page, '#').click();
-
-        await expect(page).toHaveURL(/\/config\/integrations/);
+        const logs = await waitForLogMessages(page);
 
         expect(logs).toEqual(
             expect.arrayContaining(['JavaScript code executed'])
         );
 
-        page.removeAllListeners();
+        await expect(page).toHaveURL(/\/config\/integrations/);
 
     });
 
     test('should execute a javascript action redirecting', async ({ page }) => {
-
-        const logs: string[] = [];
-
-        page.on('console', message => {
-            logs.push(message.text());
-        });
 
         await fulfillJson(
             page,
@@ -771,32 +691,23 @@ test.describe('on_click property', () => {
             }
         );
 
-        await page.goto('/');
+        await navigateHome(page);
 
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        getSidebarItem(page, '/config/integrations').click();
 
-        await getSidebarItem(page, '/config/integrations').click();
-
-        await expect(page).toHaveURL(/\/config\/integrations/);
+        const logs = await waitForLogMessages(page);
 
         expect(logs).toEqual(
             expect.arrayContaining(['JavaScript code executed'])
         );
 
-        page.removeAllListeners();
+        await expect(page).toHaveURL(/\/config\/integrations/);
 
     });
 
     test('should execute a javascript action using partials', async ({ page }) => {
 
         const href = '/config/integrations';
-
-        const logs: string[] = [];
-
-        page.on('console', message => {
-            logs.push(message.text());
-        });
 
         await fulfillJson(
             page,
@@ -820,30 +731,19 @@ test.describe('on_click property', () => {
             }
         );
 
-        await page.goto('/');
+        await navigateHome(page);
 
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        getSidebarItem(page, href).click();
 
-        await getSidebarItem(page, href).click();
-
-        await page.waitForTimeout(1000);
+        const logs = await waitForLogMessages(page);
 
         expect(logs).toEqual(
             expect.arrayContaining(['JavaScript code from partial executed'])
         );
 
-        page.removeAllListeners();
-
     });
 
     test('should execute a javascript action having the clicked item and the itemText as variables', async ({ page }) => {
-
-        const logs: string[] = [];
-
-        page.on('console', message => {
-            logs.push(message.text());
-        });
 
         await fulfillJson(
             page,
@@ -863,18 +763,15 @@ test.describe('on_click property', () => {
             }
         );
 
-        await page.goto('/');
+        await navigateHome(page);
 
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        getSidebarItem(page, '/config/integrations').click();
 
-        await getSidebarItem(page, '/config/integrations').click();
+        const logs = await waitForLogMessages(page);
 
         expect(logs).toEqual(
             expect.arrayContaining(['Clicked item is Check and the icon is mdi:bullseye-arrow'])
         );
-
-        page.removeAllListeners();
 
     });
 
@@ -896,10 +793,7 @@ test.describe('on_click property', () => {
             }
         );
 
-        await page.goto('/');
-
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
 
         await getSidebarItem(page, '#').click();
 
@@ -924,13 +818,10 @@ test.describe('on_click property', () => {
             }
         );
 
-        await page.goto('/');
-
         const dialog = page.locator('dialog-restart ha-dialog-header');
         const title = 'Restart Home Assistant';
 
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
 
         // It should load the dialog
         await getSidebarItem(page, '#').click();

@@ -1,8 +1,13 @@
-import { test, expect } from 'playwright-test-coverage';
+import { test } from 'playwright-test-coverage';
 import { SidebarMode } from '../src/types';
 import { NAMESPACE } from '../src/constants';
-import { BASE_NAME, SELECTORS } from './constants';
-import { fulfillJson } from './utilities';
+import { BASE_NAME } from './constants';
+import {
+    fulfillJson,
+    noCacheRoute,
+    waithForError,
+    waitForWarning
+} from './utilities';
 
 const ERROR_PREFIX = `${NAMESPACE}: Invalid configuration`;
 
@@ -13,47 +18,25 @@ interface TestSuit {
     warning?: string;
 }
 
+test.beforeEach(noCacheRoute);
+
 const runErrorTests = (tests: TestSuit[]): void => {
 
     tests.forEach(({ title, json, error, warning }): void => {
 
         test(title, async ({ page }) => {
 
-            const errors: string[] = [];
-            const warnings: string[] = [];
-
             await fulfillJson(page, json);
-
-            page.on('pageerror', error => {
-                errors.push(error.message);
-            });
-
-            page.on('console', message => {
-                if (message.type() === 'warning') {
-                    warnings.push(message.text());
-                }
-            });
 
             await page.goto('/');
 
-            await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-            await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-
-            await page.waitForTimeout(1000);
-
             if (error) {
-                expect(errors).toEqual(
-                    expect.arrayContaining([error])
-                );
+                await waithForError(page, error);
             }
 
             if (warning) {
-                expect(warnings).toEqual(
-                    expect.arrayContaining([warning])
-                );
+                await waitForWarning(page, warning);
             }
-
-            page.removeAllListeners();
 
         });
 

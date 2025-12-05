@@ -19,6 +19,7 @@ export const HREFS = {
 };
 
 export const SELECTORS = {
+    LAUNCH_SCREEN: '#ha-launch-screen',
     MENU: '.menu',
     TITLE: '.menu .title',
     SIDEBAR_HA_ICON_BUTTON: '.menu ha-icon-button',
@@ -29,6 +30,9 @@ export const SELECTORS = {
     ITEM_NOTIFICATION: 'span.badge',
     ITEM_TEXT: '.item-text',
     PROFILE: 'ha-md-list-item.user',
+    HOME_ASSISTANT: 'home-assistant',
+    HOME_ASSISTANT_MAIN: 'home-assistant-main',
+    HA_DRAWER: 'ha-drawer',
     HA_SIDEBAR: 'ha-sidebar',
     HUI_VIEW: 'hui-view',
     SIDEBAR_ITEMS_CONTAINER: 'ha-md-list.ha-scrollbar',

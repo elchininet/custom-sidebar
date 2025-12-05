@@ -1,5 +1,4 @@
 import { test, expect } from 'playwright-test-coverage';
-import { Page } from '@playwright/test';
 import {
     CONFIG_FILES,
     SELECTORS,
@@ -10,17 +9,20 @@ import {
 } from './constants';
 import { haConfigRequest } from './ha-services';
 import { getSidebarItem, getSidebarItemLinkFromLocator } from './selectors';
-import { addJsonExtendedRoute, changeToMobileViewport } from './utilities';
+import {
+    addJsonExtendedRoute,
+    changeToMobileViewport,
+    navigateHome,
+    navigateToProfile,
+    noCacheRoute,
+    waitForMainElements
+} from './utilities';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
 
-const pageVisit = async (page: Page): Promise<void> => {
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-};
+test.beforeEach(noCacheRoute);
 
 const json = {
     extend_from: BASE_NAME,
@@ -47,7 +49,7 @@ const runTest = ({ title, json, snapshot }: TestParams): void => {
 
         await addJsonExtendedRoute(page, json);
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page).toHaveScreenshot(snapshot, {
             clip: SIDEBAR_CLIP
@@ -283,7 +285,7 @@ test.describe('extending from the base', () => {
                 ]
             });
 
-            await pageVisit(page);
+            await navigateHome(page);
 
             await expect(page).toHaveScreenshot('sidebar-exceptions-new-item-override.png', {
                 clip: SIDEBAR_CLIP
@@ -314,7 +316,7 @@ test.describe('extending from the base', () => {
 
             await changeToMobileViewport(page);
 
-            await pageVisit(page);
+            await navigateHome(page);
 
             await expect(page).toHaveScreenshot('sidebar-exceptions-sidebar-mode-override.png', {
                 clip: SIDEBAR_NARROW_CLIP
@@ -335,16 +337,12 @@ test.describe('extending from the base', () => {
                 ]
             });
 
-            await pageVisit(page);
+            await navigateHome(page);
 
             await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
             await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
 
-            await page.goto('/profile');
-
-            await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
-            await page.waitForTimeout(500);
-
+            await navigateToProfile(page);
             await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
 
         });
@@ -535,7 +533,7 @@ test.describe('extending from the base', () => {
 
             await changeToMobileViewport(page);
 
-            await pageVisit(page);
+            await navigateHome(page);
 
             await expect(page).toHaveScreenshot('sidebar-exceptions-extend-sidebar-mode-from-base.png', {
                 clip: SIDEBAR_NARROW_CLIP
@@ -556,16 +554,12 @@ test.describe('extending from the base', () => {
                 ]
             });
 
-            await pageVisit(page);
+            await navigateHome(page);
 
             await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
             await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
 
-            await page.goto('/profile');
-
-            await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
-            await page.waitForTimeout(500);
-
+            await navigateToProfile(page);
             await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
 
         });
@@ -676,7 +670,7 @@ test.describe('without extending from the base', () => {
 
         await changeToMobileViewport(page);
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page).toHaveScreenshot('sidebar-exceptions-sidebar-mode-from-exception.png', {
             clip: SIDEBAR_NARROW_CLIP
@@ -699,9 +693,8 @@ test.describe('without extending from the base', () => {
         await changeToMobileViewport(page);
 
         await page.goto('/');
-
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toBeVisible();
+        await page.waitForURL(/.*\/lovelace/);
+        await waitForMainElements(page, false);
 
     });
 
@@ -718,16 +711,12 @@ test.describe('without extending from the base', () => {
             ]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
         await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
 
-        await page.goto('/profile');
-
-        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
-        await page.waitForTimeout(500);
-
+        await navigateToProfile(page);
         await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
 
     });
@@ -744,16 +733,12 @@ test.describe('without extending from the base', () => {
             ]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
         await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
 
-        await page.goto('/profile');
-
-        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
-        await page.waitForTimeout(500);
-
+        await navigateToProfile(page);
         await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
     });
@@ -1712,7 +1697,7 @@ test.describe('exceptions that do not match', () => {
 
         await changeToMobileViewport(page);
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page).toHaveScreenshot('sidebar-exceptions-no-match-sidebar-mode-from-base.png', {
             clip: SIDEBAR_NARROW_CLIP
@@ -1733,16 +1718,12 @@ test.describe('exceptions that do not match', () => {
             ]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
         await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
 
-        await page.goto('/profile');
-
-        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
-        await page.waitForTimeout(500);
-
+        await navigateToProfile(page);
         await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
     });

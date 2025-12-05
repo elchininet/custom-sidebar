@@ -7,7 +7,11 @@ import {
     SIDEBAR_CLIP
 } from './constants';
 import { haConfigRequest } from './ha-services';
-import { fulfillJson } from './utilities';
+import {
+    fulfillJson,
+    navigateHome,
+    noCacheRoute
+} from './utilities';
 import {
     getSidebarItem,
     getSidebarLinkSelector,
@@ -16,9 +20,7 @@ import {
 } from './selectors';
 
 const pageVisit = async (page: Page): Promise<void> => {
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
     await expect(page).toHaveScreenshot('sidebar.png', {
         clip: SIDEBAR_CLIP
     });
@@ -27,6 +29,8 @@ const pageVisit = async (page: Page): Promise<void> => {
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
+
+test.beforeEach(noCacheRoute);
 
 test('sidebar items should have a data-processed attribute after being processed', async ({ page }) => {
 
@@ -112,9 +116,7 @@ test('should change href and target of an existing item', async ({ page }) => {
         ]
     });
 
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
 
     const oldConfig = page.locator(links.CONFIG);
     const newConfig = page.locator(getSidebarLinkSelector(PATH));
@@ -177,9 +179,7 @@ test('should set an icon in an existent element', async ({ page }) => {
             }
         ]
     });
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
 
     const logbookItem = getSidebarItem(page, HREFS.ACTIVITY);
 

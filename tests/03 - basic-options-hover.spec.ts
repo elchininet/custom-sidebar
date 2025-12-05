@@ -2,16 +2,21 @@ import { test, expect } from 'playwright-test-coverage';
 import {
     CONFIG_FILES,
     HREFS,
-    SELECTORS,
     SIDEBAR_CLIP_WITH_DIVIDERS
 } from './constants';
 import { haConfigRequest } from './ha-services';
 import { getSidebarItem } from './selectors';
-import { fulfillJson } from './utilities';
+import {
+    fulfillJson,
+    navigateHome,
+    noCacheRoute
+} from './utilities';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
+
+test.beforeEach(noCacheRoute);
 
 [
     {
@@ -82,9 +87,7 @@ test.beforeAll(async ({ browser }) => {
     test(title, async ({ page }) => {
 
         await fulfillJson(page, json);
-        await page.goto('/');
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
         await getSidebarItem(page, HREFS.HISTORY).hover();
         await expect(page).toHaveScreenshot(screenshot, {
             clip: SIDEBAR_CLIP_WITH_DIVIDERS
