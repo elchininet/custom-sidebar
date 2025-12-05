@@ -1,13 +1,4 @@
-2025-05-04 20:39:47.384 WARNING (Recorder) [homeassistant.components.recorder.util] The system could not validate that the sqlite3 database at //config/home-assistant_v2.db was shutdown cleanly
-2025-05-04 20:39:49.836 WARNING (Recorder) [homeassistant.components.recorder.migration] The database is about to upgrade from schema version 47 to 50
-2025-05-04 20:39:49.836 WARNING (Recorder) [homeassistant.components.recorder.migration] Upgrading recorder db schema to version 48
-2025-05-04 20:39:49.854 WARNING (Recorder) [homeassistant.components.recorder.migration] Upgrade to version 48 done
-2025-05-04 20:39:49.854 WARNING (Recorder) [homeassistant.components.recorder.migration] Upgrading recorder db schema to version 49
-2025-05-04 20:39:49.854 WARNING (Recorder) [homeassistant.components.recorder.migration] Adding columns mean_type to table statistics_meta. Note: this may take several minutes on large databases and slow machines. Please be patient!
-2025-05-04 20:39:49.861 WARNING (Recorder) [homeassistant.components.recorder.migration] Adding columns mean_weight to table statistics. Note: this may take several minutes on large databases and slow machines. Please be patient!
-2025-05-04 20:39:49.872 WARNING (Recorder) [homeassistant.components.recorder.migration] Adding columns mean_weight to table statistics_short_term. Note: this may take several minutes on large databases and slow machines. Please be patient!
-2025-05-04 20:39:49.879 WARNING (Recorder) [homeassistant.components.recorder.migration] Upgrade to version 49 done
-2025-05-04 20:39:49.879 WARNING (Recorder) [homeassistant.components.recorder.migration] Upgrading recorder db schema to version 50
-2025-05-04 20:39:49.882 WARNING (Recorder) [homeassistant.components.recorder.migration] Upgrade to version 50 done
-2025-05-04 20:39:51.710 WARNING (MainThread) [homeassistant.components.http.ban] Login attempt or request with invalid authentication from 172.17.0.1 (172.17.0.1). Requested URL: '/api/websocket'. (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36)
-2025-05-04 20:39:51.959 WARNING (MainThread) [homeassistant.components.http.ban] Login attempt or request with invalid authentication from 172.17.0.1 (172.17.0.1). Requested URL: '/api/websocket'. (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36)
+2025-12-03 23:09:17.621 WARNING (Recorder) [homeassistant.components.recorder.util] The system could not validate that the sqlite3 database at //config/home-assistant_v2.db was shutdown cleanly
+2025-12-03 23:09:17.677 WARNING (Recorder) [homeassistant.components.recorder.util] Ended unfinished session (id=9 from 2025-12-03 23:05:29.991767)
+2025-12-03 23:09:19.422 WARNING (MainThread) [homeassistant.components.http.ban] Login attempt or request with invalid authentication from 172.17.0.1 (172.17.0.1). Requested URL: '/api/websocket'. (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36)
+2025-12-03 23:09:19.618 WARNING (MainThread) [homeassistant.components.http.ban] Login attempt or request with invalid authentication from 172.17.0.1 (172.17.0.1). Requested URL: '/api/websocket'. (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36)

@@ -1,12 +1,20 @@
 import { test, expect } from 'playwright-test-coverage';
-import { CONFIG_FILES, SELECTORS } from './constants';
+import { CONFIG_FILES } from './constants';
 import { haConfigRequest } from './ha-services';
-import { fulfillJson } from './utilities';
+import {
+    fulfillJson,
+    navigateHome,
+    noCacheRoute,
+    waitForLogMessage,
+    waitForLogMessages
+} from './utilities';
 import { getSidebarItem } from './selectors';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
+
+test.beforeEach(noCacheRoute);
 
 test.describe('methods in JavaScript templates', () => {
 
@@ -17,12 +25,6 @@ test.describe('methods in JavaScript templates', () => {
     };
 
     test('checkConfig should return a result', async ({ page }) => {
-
-        const logs: string[] = [];
-
-        page.on('console', message => {
-            logs.push(message.text());
-        });
 
         await fulfillJson(
             page,
@@ -44,30 +46,15 @@ test.describe('methods in JavaScript templates', () => {
             }
         );
 
-        await page.goto('/');
+        await navigateHome(page);
 
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        getSidebarItem(page, '#').click();
 
-        await getSidebarItem(page, '#').click();
-
-        await page.waitForTimeout(500);
-
-        expect(logs).toEqual(
-            expect.arrayContaining(['The result is: valid'])
-        );
-
-        page.removeAllListeners();
+        await waitForLogMessage(page, 'The result is: valid');
 
     });
 
     test('renderTemplate should return the result of a Jinja template', async ({ page }) => {
-
-        const logs: string[] = [];
-
-        page.on('console', message => {
-            logs.push(message.text());
-        });
 
         await fulfillJson(
             page,
@@ -89,22 +76,17 @@ test.describe('methods in JavaScript templates', () => {
             }
         );
 
-        await page.goto('/');
+        await navigateHome(page);
 
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        getSidebarItem(page, '#').click();
 
-        await getSidebarItem(page, '#').click();
-
-        await page.waitForTimeout(500);
+        const logs = await waitForLogMessages(page);
 
         expect(logs).toEqual(
             expect.arrayContaining([
                 expect.stringMatching(/The time is: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:.*/)
             ])
         );
-
-        page.removeAllListeners();
 
     });
 
@@ -135,10 +117,7 @@ test.describe('methods in JavaScript templates', () => {
             }
         );
 
-        await page.goto('/');
-
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
 
         expect(input).not.toBeChecked();
 
@@ -163,16 +142,10 @@ test.describe('methods in JavaScript templates', () => {
         const confirmText = 'Confirm text';
         const logText = 'Text logged';
 
-        const dialog = page
-            .locator('dialog-box ha-wa-dialog')
-            // Delete ha-md-dialog after Home Assistant has been updated to version 2025.12.x
-            .or(page.locator('dialog-box ha-md-dialog'));
-
-        const logs: string[] = [];
-
-        page.on('console', message => {
-            logs.push(message.text());
-        });
+        const dialog = page.locator('dialog-box ha-wa-dialog');
+        const dialogTitle = dialog.locator('#dialog-box-title');
+        const dialogDescription = dialog.locator('#dialog-box-description');
+        const dialogButton = dialog.locator('ha-button');
 
         await fulfillJson(
             page,
@@ -198,36 +171,26 @@ test.describe('methods in JavaScript templates', () => {
             }
         );
 
-        await page.goto('/');
-
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
 
         await getSidebarItem(page, '#').click();
 
-        await expect(dialog.locator('#dialog-box-title')).toHaveText(title);
-        await expect(dialog.locator('#dialog-box-description')).toHaveText(text);
-        await expect(dialog.locator('ha-button')).toHaveText(confirmText);
+        await expect(dialogTitle).toHaveText(title);
+        await expect(dialogDescription).toHaveText(text);
+        await expect(dialogButton).toHaveText(confirmText);
 
-        await dialog.locator('ha-button').click();
+        dialogButton.click();
 
-        await expect(dialog.locator('#dialog-box-title')).not.toBeVisible();
+        await waitForLogMessage(page, logText);
 
-        await page.waitForTimeout(500);
+        await expect(dialogTitle).not.toBeVisible();
 
-        expect(logs).toEqual(
-            expect.arrayContaining([logText])
-        );
-
-        // Should get the custom elements from the customElements registry
         await getSidebarItem(page, '#').click();
 
-        await expect(dialog.locator('#dialog-box-title')).toHaveText(title);
+        await expect(dialogTitle).toHaveText(title);
 
-        await dialog.locator('ha-button').click();
+        await dialogButton.click();
         await expect(dialog).not.toBeVisible();
-
-        page.removeAllListeners();
 
     });
 
@@ -240,16 +203,11 @@ test.describe('methods in JavaScript templates', () => {
         const confirmLogText = 'Confirm text logged';
         const dismissLogText = 'Dismiss text logged';
 
-        const dialog = page
-            .locator('dialog-box ha-wa-dialog')
-            // Delete ha-md-dialog after Home Assistant has been updated to version 2025.12.x
-            .or(page.locator('dialog-box ha-md-dialog'));
-
-        const logs: string[] = [];
-
-        page.on('console', message => {
-            logs.push(message.text());
-        });
+        const dialog = page.locator('dialog-box ha-wa-dialog');
+        const dialogTitle = dialog.locator('#dialog-box-title');
+        const dialogDescription = dialog.locator('#dialog-box-description');
+        const dialogFirstButton = dialog.locator('ha-button').first();
+        const dialogLastButton = dialog.locator('ha-button').last();
 
         await fulfillJson(
             page,
@@ -279,46 +237,28 @@ test.describe('methods in JavaScript templates', () => {
             }
         );
 
-        await page.goto('/');
-
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
 
         await getSidebarItem(page, '#').click();
 
-        await expect(dialog.locator('#dialog-box-title')).toHaveText(title);
-        await expect(dialog.locator('#dialog-box-description')).toHaveText(text);
-        await expect(dialog.locator('ha-button').first()).toHaveText(dismissText);
-        await expect(dialog.locator('ha-button').last()).toHaveText(confirmText);
+        await expect(dialogTitle).toHaveText(title);
+        await expect(dialogDescription).toHaveText(text);
+        await expect(dialogFirstButton).toHaveText(dismissText);
+        await expect(dialogLastButton).toHaveText(confirmText);
 
-        await dialog.locator('ha-button').last().click();
+        dialogLastButton.click();
 
-        await expect(dialog.locator('#dialog-box-title')).not.toBeVisible();
+        await waitForLogMessage(page, confirmLogText);
 
-        await page.waitForTimeout(500);
-
-        expect(logs).toEqual(
-            expect.arrayContaining([confirmLogText])
-        );
-
-        expect(logs).toEqual(
-            expect.not.arrayContaining([dismissLogText])
-        );
+        await expect(dialogTitle).not.toBeVisible();
 
         await getSidebarItem(page, '#').click();
 
-        await expect(dialog.locator('#dialog-box-title')).toBeVisible();
+        await expect(dialogTitle).toBeVisible();
 
-        await dialog.locator('ha-button').first().click();
+        dialogFirstButton.click();
 
-        expect(logs).toEqual(
-            expect.arrayContaining([
-                confirmLogText,
-                dismissLogText
-            ])
-        );
-
-        page.removeAllListeners();
+        await waitForLogMessage(page, dismissLogText);
 
     });
 
@@ -339,10 +279,7 @@ test.describe('methods in JavaScript templates', () => {
             }
         );
 
-        await page.goto('/');
-
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
 
         await getSidebarItem(page, '#').click();
 
@@ -383,10 +320,7 @@ test.describe('methods in JavaScript templates', () => {
             }
         );
 
-        await page.goto('/');
-
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await navigateHome(page);
 
         await getSidebarItem(page, '#').click();
 

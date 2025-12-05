@@ -9,9 +9,13 @@ import {
 } from './constants';
 import { haConfigRequest } from './ha-services';
 import {
-    fulfillJson,
     addJsonExtendedRoute,
-    changeToMobileViewport
+    changeToMobileViewport,
+    fulfillJson,
+    navigateHome,
+    navigateToProfile,
+    noCacheRoute,
+    waitForMainElements
 } from './utilities';
 import { getSidebarItem } from './selectors';
 
@@ -21,10 +25,10 @@ test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
 
+test.beforeEach(noCacheRoute);
+
 const visitHome = async (page: Page): Promise<void> => {
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
     await expect(page).toHaveScreenshot('sidebar.png', {
         clip: SIDEBAR_CLIP
     });
@@ -32,13 +36,13 @@ const visitHome = async (page: Page): Promise<void> => {
 
 test('clicking on items with the same root path should select the proper item', async ({ page }) => {
 
-    await visitHome(page);
-    await page.waitForTimeout(600);
-
     const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
     const config = getSidebarItem(page, HREFS.CONFIG);
     const entities = getSidebarItem(page, HREFS.ENTITIES);
     const automations = getSidebarItem(page, HREFS.AUTOMATIONS);
+
+    await visitHome(page);
+    await page.waitForTimeout(600);
 
     await integrations.click();
     await page.waitForTimeout(600);
@@ -114,6 +118,7 @@ test('clicking on items inside the same lovelace dashboard should select the pro
     await page.goto('/');
     await expect(sidebar).toBeVisible();
     await expect(huView).toBeVisible();
+    await page.waitForTimeout(600);
 
     await expect(homeItem).toHaveClass(SELECTED_CLASSNAME);
     await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
@@ -361,8 +366,7 @@ test('visiting a URL of a lovelace view should select the proper item', async ({
     });
 
     await page.goto(home);
-    await expect(sidebar).toBeVisible();
-    await expect(huView).toBeVisible();
+    await waitForMainElements(page);
 
     await expect(homeItem).toHaveClass(SELECTED_CLASSNAME);
     await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
@@ -377,8 +381,7 @@ test('visiting a URL of a lovelace view should select the proper item', async ({
     await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
 
     await page.goto(view2);
-    await expect(sidebar).toBeVisible();
-    await expect(huView).toBeVisible();
+    await waitForMainElements(page);
 
     await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME);
     await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
@@ -390,9 +393,7 @@ test('the scroll should be restored after clicking on an element', async ({ page
 
     await page.setViewportSize({ width: 1024, height: 500 });
 
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
     await expect(page).toHaveScreenshot('sidebar-small-viewport.png', {
         clip: {
             ...SIDEBAR_CLIP,
@@ -424,9 +425,7 @@ test('if no order items the scroll should be restored after clicking on an eleme
 
     await page.setViewportSize({ width: 1024, height: 500 });
 
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
     await expect(page).toHaveScreenshot('sidebar-without-order-small-viewport.png', {
         clip: {
             ...SIDEBAR_CLIP,
@@ -454,9 +453,7 @@ test('the scroll should be restored after pressing Enter with an element focused
 
     await page.setViewportSize({ width: 1024, height: 500 });
 
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
     await expect(page).toHaveScreenshot('sidebar-small-viewport.png', {
         clip: {
             ...SIDEBAR_CLIP,
@@ -489,9 +486,7 @@ test('if no order items the scroll should be restored after pressing Enter with 
 
     await page.setViewportSize({ width: 1024, height: 500 });
 
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
     await expect(page).toHaveScreenshot('sidebar-without-order-small-viewport.png', {
         clip: {
             ...SIDEBAR_CLIP,
@@ -524,7 +519,7 @@ test('by default it should be possible to edit the sidebar', async ({ page }) =>
 
     await expect(page.locator(SELECTORS.SIDEBAR_EDIT_MODAL)).toBeVisible();
 
-    await page.goto('/profile');
+    await navigateToProfile(page);
 
     await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
@@ -542,10 +537,7 @@ test('if sidebar_editable is set to true it should be possible to edit the sideb
 
     await expect(page.locator(SELECTORS.SIDEBAR_EDIT_MODAL)).toBeVisible();
 
-    await page.goto('/profile');
-
-    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
-    await page.waitForTimeout(500);
+    await navigateToProfile(page);
 
     await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
@@ -566,10 +558,7 @@ test('if sidebar_editable is set to false it should not be possible to edit the 
 
     await expect(page.locator(SELECTORS.SIDEBAR_EDIT_MODAL)).not.toBeVisible();
 
-    await page.goto('/profile');
-
-    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
-    await page.waitForTimeout(500);
+    await navigateToProfile(page);
 
     await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
 
@@ -638,10 +627,7 @@ test('if sidebar_mode is set to "extended" it should keep the extended mode when
         sidebar_mode: 'extended'
     });
 
-    await page.goto('/');
-
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
 
     await changeToMobileViewport(page);
 

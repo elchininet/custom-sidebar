@@ -12,7 +12,12 @@ import {
     haSwitchStateRequest,
     haSelectStateRequest
 } from './ha-services';
-import { fulfillJson } from './utilities';
+import {
+    fulfillJson,
+    navigateHome,
+    noCacheRoute,
+    waitForWarning
+} from './utilities';
 import {
     getSidebarItem,
     getSidebarItemText,
@@ -23,10 +28,10 @@ test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.JS_TEMPLATES);
 });
 
+test.beforeEach(noCacheRoute);
+
 const pageVisit = async (page: Page): Promise<void> => {
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
     await expect(page).toHaveScreenshot('sidebar-templates.png', {
         clip: SIDEBAR_CLIP
     });
@@ -125,12 +130,9 @@ test('if the hide property is a template, item should get hidden when the templa
         }
     );
 
-    await page.goto('/');
-
     const logBook = getSidebarItem(page, HREFS.ACTIVITY);
 
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
 
     await expect(logBook).toBeVisible();
 
@@ -323,14 +325,11 @@ test('if the hide property is a template, item should get hidden when the templa
 
     test(title, async ({ page }) => {
 
-        await fulfillJson(page, json);
-
-        await page.goto('/');
-
         const title = page.locator(SELECTORS.TITLE);
 
-        await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await fulfillJson(page, json);
+
+        await navigateHome(page);
 
         await expect(title).toContainText('false 123');
 
@@ -344,14 +343,6 @@ test('if the hide property is a template, item should get hidden when the templa
 });
 
 test('if there are no partials and a partial statement is used, it should throw a warning', async ({ page }) => {
-
-    const warnings: string[] = [];
-
-    page.on('console', message => {
-        if (message.type() === 'warning') {
-            warnings.push(message.text());
-        }
-    });
 
     await fulfillJson(
         page,
@@ -369,28 +360,12 @@ test('if there are no partials and a partial statement is used, it should throw 
     );
 
     await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await page.waitForTimeout(1000);
-
-    expect(warnings).toEqual(
-        expect.arrayContaining(['custom-sidebar: partial my_partial doesn\'t exist'])
-    );
-
-    page.removeAllListeners();
+    await waitForWarning(page, 'custom-sidebar: partial my_partial doesn\'t exist');
 
 });
 
 test('if a partial doesn\'t exist it should throw a warning', async ({ page }) => {
-
-    const warnings: string[] = [];
-
-    page.on('console', message => {
-        if (message.type() === 'warning') {
-            warnings.push(message.text());
-        }
-    });
 
     await fulfillJson(
         page,
@@ -416,16 +391,8 @@ test('if a partial doesn\'t exist it should throw a warning', async ({ page }) =
     );
 
     await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 
-    await page.waitForTimeout(1000);
-
-    expect(warnings).toEqual(
-        expect.arrayContaining(['custom-sidebar: partial my_partial doesn\'t exist'])
-    );
-
-    page.removeAllListeners();
+    await waitForWarning(page, 'custom-sidebar: partial my_partial doesn\'t exist');
 
 });
 
@@ -506,13 +473,10 @@ test('reactive variables in js_variables should be converted properly', async ({
         }
     );
 
-    await page.goto('/');
-
     const checkItem = getSidebarItem(page, '#');
     const title = page.locator(SELECTORS.TITLE);
 
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
 
     await expect(title).toContainText('Initial Value');
 
@@ -553,10 +517,7 @@ test('an item with a JavaScript template in the attributes property should modif
         }
     );
 
-    await page.goto('/');
-
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    await navigateHome(page);
 
     const configItem = getSidebarItem(page, HREFS.CONFIG);
 

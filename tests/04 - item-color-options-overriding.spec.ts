@@ -1,12 +1,14 @@
 import { test, expect } from 'playwright-test-coverage';
-import { Page } from '@playwright/test';
 import {
     CONFIG_FILES,
-    SELECTORS,
     SIDEBAR_CLIP
 } from './constants';
 import { haConfigRequest } from './ha-services';
-import { fulfillJson } from './utilities';
+import {
+    fulfillJson,
+    navigateHome,
+    noCacheRoute
+} from './utilities';
 
 const getOrderItemWithColorOption = (option: string, extraOptions: Record<string, unknown> = {}) => ({
     [option]: 'blue',
@@ -38,11 +40,7 @@ test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
 
-const pageVisit = async (page: Page): Promise<void> => {
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-};
+test.beforeEach(noCacheRoute);
 
 [
     {
@@ -115,7 +113,7 @@ const pageVisit = async (page: Page): Promise<void> => {
     test(title, async ({ page }) => {
 
         await fulfillJson(page, json);
-        await pageVisit(page);
+        await navigateHome(page);
         await expect(page).toHaveScreenshot(screenshot, {
             clip: SIDEBAR_CLIP
         });
@@ -139,7 +137,7 @@ test('should override the global selection_opacity option', async ({ page }) => 
             ]
         }
     );
-    await pageVisit(page);
+    await navigateHome(page);
     await expect(page).toHaveScreenshot('color-overriding-selection-opacity.png', {
         clip: SIDEBAR_CLIP
     });

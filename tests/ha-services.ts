@@ -1,6 +1,5 @@
 import { Browser, Page } from '@playwright/test';
-import { expect } from 'playwright-test-coverage';
-import { SELECTORS } from './constants';
+import { navigateHome } from './utilities';
 
 interface Context {
     id: string;
@@ -15,9 +14,8 @@ interface HomeAssistant extends HTMLElement {
 
 export const haConfigRequest = async (browser: Browser, file: string) => {
     const page = await browser.newPage();
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    page.route('**', route => route.continue());
+    await navigateHome(page);
     await page.evaluate(async (file: string) => {
         const homeAssistant = document.querySelector('home-assistant') as HomeAssistant;
         await homeAssistant.hass.callService(
@@ -28,7 +26,8 @@ export const haConfigRequest = async (browser: Browser, file: string) => {
             }
         );
     }, file);
-    //page.close();
+    await page.unrouteAll({ behavior: 'ignoreErrors' });
+    await page.close();
 };
 
 export const haSwitchStateRequest = async (page: Page, state: boolean) => {

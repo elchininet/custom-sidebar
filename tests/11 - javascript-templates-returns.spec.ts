@@ -2,17 +2,18 @@ import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import { SELECTORS } from './constants';
 import { haSwitchStateRequest, haSelectStateRequest } from './ha-services';
-import { fulfillJson } from './utilities';
+import {
+    fulfillJson,
+    navigateHome,
+    noCacheRoute,
+    waitForWarning
+} from './utilities';
 import { getSidebarItemText, getSidebarItemBadge } from './selectors';
-
-const pageVisit = async (page: Page): Promise<void> => {
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-};
 
 const getCheckItemText = (page: Page) => getSidebarItemText(page, '/check');
 const getCheckItemBadge = (page: Page) => getSidebarItemBadge(page, '/check');
+
+test.beforeEach(noCacheRoute);
 
 test.describe('title template returns', () => {
 
@@ -22,20 +23,11 @@ test.describe('title template returns', () => {
             title: '[[[ const title = "Custom"; return titles; ]]]'
         });
 
-        page.on('console', message => {
-            if (
-                message.type() === 'warning' &&
-                !message.text().includes('Vaadin 25') // Home Assistant is throwing a warning  coming from the Vadding Material Theme
-            ) {
-                expect(message.text()).toContain('ReferenceError: titles is not defined');
-            }
-        });
+        await page.goto('/');
 
-        await pageVisit(page);
+        await waitForWarning(page, 'ReferenceError: titles is not defined');
 
         await expect(page.locator(SELECTORS.TITLE)).toBeEmpty();
-
-        page.removeAllListeners();
 
     });
 
@@ -45,7 +37,7 @@ test.describe('title template returns', () => {
             title: '[[[ return ""; ]]]'
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.TITLE)).toBeEmpty();
 
@@ -57,7 +49,7 @@ test.describe('title template returns', () => {
             title: '[[[ return 5; ]]]'
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.TITLE)).toHaveText('5', { useInnerText: true });
 
@@ -69,7 +61,7 @@ test.describe('title template returns', () => {
             title: '[[[ return false; ]]]'
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.TITLE)).toHaveText('false', { useInnerText: true });
 
@@ -81,7 +73,7 @@ test.describe('title template returns', () => {
             title: '[[[ const title = "Custom"; return [ title ]; ]]]'
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.TITLE)).toHaveText('["Custom"]', { useInnerText: true });
 
@@ -93,7 +85,7 @@ test.describe('title template returns', () => {
             title: '[[[ return states("input_boolean.my_switch") === "on" ? "" : "My Home" ]]]'
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.TITLE)).toHaveText('My Home', { useInnerText: true });
 
@@ -121,7 +113,7 @@ test.describe('title template returns', () => {
             `
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.TITLE)).toHaveText('Promise title', { useInnerText: true });
 
@@ -137,7 +129,7 @@ test.describe('sidebar_editable template returns', () => {
             sidebar_editable: '[[[ const array = [1, 2, 3]; return array.length; ]]]'
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
         await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
@@ -158,7 +150,7 @@ test.describe('sidebar_editable template returns', () => {
             `
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
         await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
@@ -181,20 +173,11 @@ test.describe('name template returns', () => {
             }]
         });
 
-        page.on('console', message => {
-            if (
-                message.type() === 'warning' &&
-                !message.text().includes('Vaadin 25') // Home Assistant >= 2025.4.x is throwing a warning  coming from the Vadding Material Theme
-            ) {
-                expect(message.text()).toContain('ReferenceError: hello is not defined');
-            }
-        });
+        await page.goto('/');
 
-        await pageVisit(page);
+        await waitForWarning(page, 'ReferenceError: hello is not defined');
 
         await expect(getCheckItemText(page)).toBeEmpty();
-
-        page.removeAllListeners();
 
     });
 
@@ -210,7 +193,7 @@ test.describe('name template returns', () => {
             }]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(getCheckItemText(page)).toBeEmpty();
 
@@ -228,7 +211,7 @@ test.describe('name template returns', () => {
             }]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(getCheckItemText(page)).toHaveText('0');
 
@@ -246,7 +229,7 @@ test.describe('name template returns', () => {
             }]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(getCheckItemText(page)).toHaveText('true');
 
@@ -264,7 +247,7 @@ test.describe('name template returns', () => {
             }]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         const itemCheckText = getCheckItemText(page);
 
@@ -292,7 +275,7 @@ test.describe('name template returns', () => {
             }]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(getCheckItemText(page)).toHaveText('{"total":2}');
 
@@ -314,20 +297,11 @@ test.describe('notification template returns', () => {
             }]
         });
 
-        page.on('console', message => {
-            if (
-                message.type() === 'warning' &&
-                !message.text().includes('Vaadin 25') // Home Assistant >= 2025.4.x is throwing a warning  coming from the Vadding Material Theme
-            ) {
-                expect(message.text()).toContain('ReferenceError: total is not defined');
-            }
-        });
+        await page.goto('/');
 
-        await pageVisit(page);
+        await waitForWarning(page, 'ReferenceError: total is not defined');
 
         await expect(getCheckItemBadge(page)).toBeEmpty();
-
-        page.removeAllListeners();
 
     });
 
@@ -343,7 +317,7 @@ test.describe('notification template returns', () => {
             }]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(getCheckItemBadge(page)).toBeEmpty();
 
@@ -361,7 +335,7 @@ test.describe('notification template returns', () => {
             }]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(getCheckItemBadge(page)).toHaveText('-5');
 
@@ -379,7 +353,7 @@ test.describe('notification template returns', () => {
             }]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(getCheckItemBadge(page)).toHaveText('true');
 
@@ -397,7 +371,7 @@ test.describe('notification template returns', () => {
             }]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         const checkItemBadge = getCheckItemBadge(page);
 
@@ -429,7 +403,7 @@ test.describe('notification template returns', () => {
             }]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(getCheckItemBadge(page)).toHaveText('{}');
 
@@ -455,7 +429,7 @@ test.describe('notification template returns', () => {
             }]
         });
 
-        await pageVisit(page);
+        await navigateHome(page);
 
         await expect(getCheckItemBadge(page)).toHaveText('10');
 

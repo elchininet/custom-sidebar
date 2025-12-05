@@ -2,7 +2,12 @@ import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import { CONFIG_FILES, HREFS, SELECTORS } from './constants';
 import { haConfigRequest } from './ha-services';
-import { addJsonExtendedRoute } from './utilities';
+import {
+    addJsonExtendedRoute,
+    navigateHome,
+    noCacheRoute,
+    waitForLogMessages
+} from './utilities';
 import { getSidebarItem } from './selectors';
 
 const PREFIX = 'custom-sidebar debug:';
@@ -11,31 +16,23 @@ test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
 
+test.beforeEach(noCacheRoute);
+
 const pageVisit = async (page: Page, withDebug = false): Promise<void> => {
     await page.goto(
         withDebug
             ? '/?cs_debug'
             : '/'
     );
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 };
 
 test.describe('Debug messages', () => {
 
     test('debug messages shoud not be logged', async ({ page }) => {
 
-        const logs: string[] = [];
-
-        page.on('console', message => {
-            if (['log', 'startGroup', 'endGroup'].includes(message.type())) {
-                logs.push(message.text());
-            }
-        });
-
         await pageVisit(page);
 
-        await page.waitForTimeout(1000);
+        const logs = await waitForLogMessages(page);
 
         expect(logs).toEqual(
             expect.not.arrayContaining([
@@ -43,23 +40,13 @@ test.describe('Debug messages', () => {
             ])
         );
 
-        page.removeAllListeners();
-
     });
 
     test('debug messages shoud be logged', async ({ page }) => {
 
-        const logs: string[] = [];
-
-        page.on('console', message => {
-            if (['log', 'startGroup', 'endGroup'].includes(message.type())) {
-                logs.push(message.text());
-            }
-        });
-
         await pageVisit(page, true);
 
-        await page.waitForTimeout(1000);
+        const logs = await waitForLogMessages(page);
 
         expect(logs).toEqual(
             expect.arrayContaining([
@@ -67,8 +54,6 @@ test.describe('Debug messages', () => {
                 expect.stringContaining(`${PREFIX} Executing plugin logic...`)
             ])
         );
-
-        page.removeAllListeners();
 
     });
 
@@ -90,7 +75,7 @@ test.describe('Analytics', () => {
     }
 
     const clickOnElements = async (page: Page) => {
-        await pageVisit(page);
+        await navigateHome(page);
 
         await page.waitForTimeout(1000);
 

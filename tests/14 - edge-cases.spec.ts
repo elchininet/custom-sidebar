@@ -1,22 +1,18 @@
 import { test, expect } from 'playwright-test-coverage';
-import { Page } from '@playwright/test';
-import {
-    CONFIG_FILES,
-    SELECTORS,
-    SIDEBAR_CLIP
-} from './constants';
+import { CONFIG_FILES, SIDEBAR_CLIP } from './constants';
 import { haConfigRequest } from './ha-services';
-import { fulfillJson } from './utilities';
+import {
+    fulfillJson,
+    navigateHome,
+    noCacheRoute,
+    waitForWarnings
+} from './utilities';
 
 test.beforeAll(async ({ browser }) => {
     await haConfigRequest(browser, CONFIG_FILES.BASIC);
 });
 
-const pageVisit = async (page: Page): Promise<void> => {
-    await page.goto('/');
-    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-};
+test.beforeEach(noCacheRoute);
 
 test('if there is a match the item should be marked and ignored by subsequent matches', async ({ page }) => {
 
@@ -39,7 +35,7 @@ test('if there is a match the item should be marked and ignored by subsequent ma
         ]
     });
 
-    await pageVisit(page);
+    await navigateHome(page);
 
     await expect(page).toHaveScreenshot('multiple-matches.png', {
         clip: SIDEBAR_CLIP
@@ -50,7 +46,6 @@ test('if there is a match the item should be marked and ignored by subsequent ma
 test('non new-items that don\'t match a sidebar item should trigger a warning', async ({ page }) => {
 
     const MESSAGE = 'custom-sidebar: you have an order item in your configuration that didn\'t match any sidebar item:';
-    const warnings: string[] = [];
 
     await fulfillJson(page, {
         order: [
@@ -72,15 +67,9 @@ test('non new-items that don\'t match a sidebar item should trigger a warning', 
         ]
     });
 
-    page.on('console', message => {
-        if (message.type() === 'warning') {
-            warnings.push(message.text());
-        }
-    });
+    await page.goto('/');
 
-    await pageVisit(page);
-
-    await page.waitForTimeout(1000);
+    const warnings = await waitForWarnings(page);
 
     expect(warnings).toEqual(
         expect.arrayContaining([
@@ -94,7 +83,5 @@ test('non new-items that don\'t match a sidebar item should trigger a warning', 
             `${MESSAGE} "bazinga"`
         ])
     );
-
-    page.removeAllListeners();
 
 });
