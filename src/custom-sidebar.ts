@@ -48,7 +48,7 @@ import {
     MAX_ATTEMPTS,
     NAMESPACE,
     NODE_NAME,
-    PROFILE_GENERAL_PATH,
+    PROFILE_GENERAL_PATH_REGEXP,
     REF_VARIABLE_REGEXP,
     RETRY_DELAY,
     SELECTOR,
@@ -135,7 +135,6 @@ class CustomSidebar {
         this._items = [];
         this._logBookMessagesMap = new Map<string, number>();
         this._sidebarScroll = 0;
-        this._isSidebarEditable = undefined;
         this._itemTouchedBinded = this._itemTouched.bind(this);
         this._mouseEnterBinded = this._mouseEnter.bind(this);
         this._mouseLeaveBinded = this._mouseLeave.bind(this);
@@ -153,7 +152,6 @@ class CustomSidebar {
     private _partialPanelResolver: HAElement;
     private _sidebar: HAElement;
     private _sidebarScroll: number;
-    private _isSidebarEditable: boolean | undefined;
     private _renderer: HomeAssistantJavaScriptTemplatesRenderer;
     private _styleManager: HomeAssistantStylesManager;
     private _items: SidebarItem[];
@@ -392,8 +390,7 @@ class CustomSidebar {
             this._sidebar.selector.$.query(SELECTOR.MENU).element
         ]).then(([sidebar, menu]) => {
             if (isBoolean(this._config.sidebar_editable)) {
-                this._isSidebarEditable = this._config.sidebar_editable;
-                if (!this._isSidebarEditable) {
+                if (!this._config.sidebar_editable) {
                     blockSidebar(sidebar, menu);
                 }
             }
@@ -401,18 +398,19 @@ class CustomSidebar {
                 this._subscribeTemplate(
                     this._config.sidebar_editable,
                     (rendered: string) => {
+                        let isSidebarEditable: boolean | undefined = undefined;
                         if (rendered === 'true' || rendered === 'false') {
-                            this._isSidebarEditable = !(rendered === 'false');
-                            if (this._isSidebarEditable) {
+                            isSidebarEditable = !(rendered === 'false');
+                            if (isSidebarEditable) {
                                 unblockSidebar(sidebar, menu);
                             } else {
                                 blockSidebar(sidebar, menu);
                             }
                         } else {
-                            this._isSidebarEditable = undefined;
+                            isSidebarEditable = undefined;
                             unblockSidebar(sidebar, menu);
                         }
-                        this._checkProfileEditableButton();
+                        this._checkProfileEditableButton(isSidebarEditable);
                     }
                 );
             }
@@ -1376,14 +1374,18 @@ class CustomSidebar {
         }
     }
 
-    private async _checkProfileEditableButton(): Promise<void> {
+    private async _checkProfileEditableButton(isSidebarEditable: boolean | undefined = undefined): Promise<void> {
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
         const pathName = panelResolver.route.path;
         // Disable the edit sidebar button in the profile panel
-        if (pathName === PROFILE_GENERAL_PATH) {
+        if (PROFILE_GENERAL_PATH_REGEXP.test(pathName)) {
             const editSidebarButton = await this._partialPanelResolver.selector.query(SELECTOR.EDIT_SIDEBAR_BUTTON).element;
             if (editSidebarButton) {
-                if (this._isSidebarEditable === false) {
+                const isEditable = isBoolean(isSidebarEditable)
+                    ? isSidebarEditable
+                    : this._config.sidebar_editable;
+                if (!isBoolean(isEditable)) return;
+                if (isEditable === false) {
                     editSidebarButton.setAttribute(ATTRIBUTE.DISABLED, '');
                 } else {
                     editSidebarButton.removeAttribute(ATTRIBUTE.DISABLED);
@@ -1393,6 +1395,9 @@ class CustomSidebar {
     }
 
     private async _panelLoaded(): Promise<void> {
+
+        // Check the profile editable buton
+        this._checkProfileEditableButton();
 
         // Select the right element in the sidebar
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
@@ -1436,8 +1441,6 @@ class CustomSidebar {
         if (sidebarItemsContainer.scrollTop !== this._sidebarScroll) {
             sidebarItemsContainer.scrollTop = this._sidebarScroll;
         }
-
-        this._checkProfileEditableButton();
 
         // If it is a lovelace dashboard add an observer for hui-view-container
         this._huiViewContainerObserver.disconnect();
