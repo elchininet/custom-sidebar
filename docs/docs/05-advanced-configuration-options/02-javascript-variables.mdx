@@ -8,11 +8,11 @@ import ReactiveVariablesWorkingExample from '@site/docs/_partials/05-advanced-co
 
 # JavaScript Variables
 
-`js_variables` is an object to declare variables intended to be used inside [JavaScript templates](../templates/javascript-templates). This object can store `string`,  `number`, and `boolean` variables as well as `dictionaries` (or `objects`) and `lists` (or `arrays`). But on top of these types, it is also possible to store [Reactive JavaScript Variables](#reactive-javascript-variables). These variables will be available in any [partial](partials) or in any [template](../templates/javascript-templates).
+`js_variables` is an object to declare variables intended to be used inside [JavaScript templates](../templates/javascript-templates). This object can store `string`,  `number`, and `boolean` variables as well as `dictionaries` (or `objects`) and `lists` (or `arrays`). These variables will be available in any [partial](partials) or in any [template](../templates/javascript-templates).
 
 :::warning[Important]
 
-1. `js_variables` only allows `string`, `number` and `boolean` variables as well as `dictionaries` and `lists` containing other `dictionaries` or `lists` or the aforementioned primitives. They also allow [Reactive JavaScript Variables](#reactive-javascript-variables). Trying to send other kinds of variables will end in an error.
+1. `js_variables` only allows `string`, `number` and `boolean` variables as well as `dictionaries` and `lists` containing other `dictionaries` or `lists` or the aforementioned primitives. Trying to send other kinds of variables will end in an error.
 2. `js_variables` don't compile any template string. So if you set a variable as a template string, it will be interpreted as a string and a warning will be thrown in the console.
 
 :::
@@ -23,15 +23,22 @@ The next example will set "Title 80 dog" as the title of the page:
 
 <JavaScriptVariablesExample />
 
-## Reactive JavaScript Variables
+## Reactive JavaScript Variables (Refs)
 
-Reactive variables will make your templates be reactive to changes in local variables. Sometimes you want a template to be re-evaluated only in the device in which you are working instead of doing it for every user/device, for these situation reactive variables are a handy resource.
+The variables placed inside `js_variables` are static because their value never change. On the other hand, variables placed inside `js_refs` (called `refs`) can change their value and they are also reactive. Refs will make your templates be reactive to changes locally, this means that the template will be re-rendered only in the device in which the `refs` were modified. As regular `JavaScript` variables, `refs` will be also available in any [partial](partials) or in any [template](../templates/javascript-templates).
 
-You can define a reactive variable in the `js_variables` option, and later use or change its value in a template. To define a reactive variable with an initial value, just create a string variable in the `js_variables` wrapped by the special method `ref`. To use it in a template, just access it with the same special `ref` method and then retrieve its `value` property. For example, let's change the previous example to use reactive variables:
+:::warning[Important]
+
+1. `js_refs` only allows `string`, `number` and `boolean` variables as well as `dictionaries` and `lists` containing other `dictionaries` or `lists` or the aforementioned primitives. Trying to send other kinds of variables will end in an error.
+2. `js_refs` don't compile any template string. So if you set a variable as a template string, it will be interpreted as a string and a warning will be thrown in the console.
+
+:::
+
+To access a reactive variable you can use the `refs` object. Let's see how reactive variables work modifying the previous example to use them:
 
 <ReactiveVariablesExample />
 
-Now it is possible to change the value of any of these variables and the title template will be reevaluated using the new values. For example, let's modify the value of some of these variables when an item in the sidebar is clicked and let's check what will be the value of the `title` on each click.
+Until this point, there are no difference with the regular static variables. But the difference is that if we modify the value of these variables, the title template will be reevaluated using the new values. For example, let's modify the value of some of these variables when an item in the sidebar is clicked and let's check what will be the value of the `title` on each click.
 
 <ReactiveVariablesWorkingExample />
 
@@ -48,7 +55,7 @@ Now it is possible to change the value of any of these variables and the title t
 
 :::warning[Important]
 
-1. To make the templates detect that a reactive variable has been mutated, one needs to assign a new value to the reactive variable. For example, changing the items of an array using `push` or `pop` will not make the remplates using that variable to be reevaluated. You need to assign a new array to the value of the reactive variable to make the change been detected.
-2. To make the template aware that it contains a reactive variable, the `value` property of the variable should be accesed when the template is rendered. If the code accesing the `value` property is not executed when the template renders, then the reactive variable will not be tracked. That is why is recomendable to access the `value` property of the reactive variable outside any condition and build the logic using the retrieved value. In this way the template will track that the reactive variable is being used and any time that the variable changes, the template will get re-evaluated.
+1. To make the templates detect that a reactive variable has been mutated, one needs to assign a new value to the reactive variable. For example, changing the items of an array using `push` or `pop` will not make the remplates using that variable to be reevaluated. You need to assign a new array to the value of the reactive variable to make the change be detected.
+2. To make the template aware that it contains a reactive variable, it should be accesed when the template is rendered. If the code accesing the ref variable is not executed when the template renders, then the reactive variable will not be tracked. That is why is recomendable to access reactive variables outside any condition and build the logic using the retrieved value. In this way the template will track that the reactive variable is being used and any time that the variable changes, the template will get re-evaluated.
 
 :::
