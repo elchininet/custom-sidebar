@@ -592,6 +592,7 @@ export const validateConfig = (config: Config): void => {
     }
 
     validateVariables('js_variables', config.js_variables);
+    validateVariables('js_refs', config.js_refs);
     validateVariables('jinja_variables', config.jinja_variables);
     validateAnalytics(config, `${ERROR_PREFIX},`);
     config.order?.forEach(validateConfigItem);

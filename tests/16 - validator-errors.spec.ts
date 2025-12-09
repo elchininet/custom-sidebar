@@ -246,6 +246,95 @@ test.describe('main options', () => {
             warning: '"js_variables" property should not have templates. "TEST_2 > NESTED > [3] > NESTED_OBJECT_PROP3" seems to be a template'
         },
         {
+            title: 'should throw an error if the js_refs property is not an object',
+            json: {
+                js_refs: [1, 'two', true]
+            },
+            error: `${ERROR_PREFIX}, "js_refs" property should be an object`
+        },
+        {
+            title: 'should throw an error if the js_refs property contains a non valid variable',
+            json: {
+                js_refs: {
+                    TEST_1: 3,
+                    TEST_2: null
+                }
+            },
+            error: `${ERROR_PREFIX}, "js_refs: TEST_2" has a wrong type [object Null]`
+        },
+        {
+            title: 'should throw an error if the js_refs property contains a non valid variable in a nested array',
+            json: {
+                js_refs: {
+                    TEST_1: 3,
+                    TEST_2: {
+                        NESTED: [1, 'two', null, 4]
+                    }
+                }
+            },
+            error: `${ERROR_PREFIX}, "js_refs: TEST_2 > NESTED > [2]" has a wrong type [object Null]`
+        },
+        {
+            title: 'should throw an error if the js_refs property contains a non valid variable in a nested object',
+            json: {
+                js_refs: {
+                    TEST_1: 3,
+                    TEST_2: {
+                        NESTED: [
+                            'one',
+                            2,
+                            {
+                                NESTED_OBJECT_PROP1: 100,
+                                NESTED_OBJECT_PROP3: null
+                            }
+                        ]
+                    }
+                }
+            },
+            error: `${ERROR_PREFIX}, "js_refs: TEST_2 > NESTED > [2] > NESTED_OBJECT_PROP3" has a wrong type [object Null]`
+        },
+        {
+            title: 'should throw a warning if the js_refs property contains templates',
+            json: {
+                js_refs: {
+                    TEST_1: 'TEST_1',
+                    TEST_2: '[[[ return 3; ]]]'
+                }
+            },
+            warning: '"js_refs" property should not have templates. "TEST_2" seems to be a template'
+        },
+        {
+            title: 'should throw a warning if the js_refs property contains templates in a nested array',
+            json: {
+                js_refs: {
+                    TEST_1: 'TEST_1',
+                    TEST_2: [1, 'two', 3, '[[[ return 3; ]]]', 5]
+                }
+            },
+            warning: '"js_refs" property should not have templates. "TEST_2 > [3]" seems to be a template'
+        },
+        {
+            title: 'should throw a warning if the js_refs property contains templates in a nested object',
+            json: {
+                js_refs: {
+                    TEST_1: 'TEST_1',
+                    TEST_2: {
+                        NESTED: [
+                            1,
+                            'two',
+                            3,
+                            {
+                                NESTED_OBJECT_PROP1: 100,
+                                NESTED_OBJECT_PROP3: '[[[ return 3; ]]]'
+                            },
+                            5
+                        ]
+                    }
+                }
+            },
+            warning: '"js_refs" property should not have templates. "TEST_2 > NESTED > [3] > NESTED_OBJECT_PROP3" seems to be a template'
+        },
+        {
             title: 'should throw an error if the jinja_variables property is not an object',
             json: {
                 jinja_variables: 'var test = 1'

@@ -4,30 +4,21 @@ import TabItem from '@theme/TabItem';
 <Tabs groupId="config">
   <TabItem value="yaml" label="YAML" default>
     ```yaml title="<config directory>/www/sidebar-config.yaml"
-    js_variables:
-      my_string: 'ref("Title")'
-      my_number: 'ref(100)'
-      my_boolean: 'ref(true)'
-      my_object: |
-        ref({
-          prop1: 4,
-          prop2: 5
-        })
-      my_array: |
-        ref([
-          'cat',
-          'dog',
-          'bird'
-        ])
+    js_refs:
+      my_string: 'Title'
+      my_number: 100
+      my_boolean: true
+      my_object:
+        prop1: 4
+        prop2: 5
+      my_array:
+        - 'cat'
+        - 'dog'
+        - 'bird'
     title: |
       [[[
-        const my_boolean = ref('my_boolean').value;
-        const my_string = ref('my_string').value;
-        const my_number = ref('my_number').value;
-        const my_object = ref('my_object').value;
-        const my_array = ref('my_array').value;
-        if (my_boolean) {
-          return `${my_string} ${(my_number * my_object.prop1) / my_object.prop2} ${my_array[1]}`;
+        if (refs.my_boolean) {
+          return `${refs.my_string} ${(refs.my_number * refs.my_object.prop1) / refs.my_object.prop2} ${refs.my_array[1]}`;
         }
         return 'Home Assistant';
       ]]]
@@ -36,14 +27,17 @@ import TabItem from '@theme/TabItem';
   <TabItem value="json" label="JSON">
     ```json title="<config directory>/www/sidebar-config.json"
     {
-      "js_variables": {
-        "my_string": "ref('Title')",
-        "my_number": "ref(100)",
-        "my_boolean": "ref(true)",
-        "my_object": "ref({ prop1: 4, prop2: 5 })",
-        "my_array": "ref(['cat', 'dog', 'bird'])"
+      "js_refs": {
+        "my_string": "Title",
+        "my_number": 100,
+        "my_boolean": true,
+        "my_object": {
+          "prop1": 4,
+          "prop2": 5
+        },
+        "my_array": ["cat", "dog", "bird"]
       },
-      "title": "[[[ const my_boolean = ref('my_boolean').value, my_string = ref('my_string').value, my_number = ref('my_number').value, my_object = ref('my_object').value, my_array = ref('my_array').value; return my_boolean ? `${my_string} ${(my_number * my_object.prop1) / my_object.prop2} ${my_array[1]}` : 'Home Assistant' ]]]"
+      "title": "[[[ return refs.my_boolean ? `${refs.my_string} ${(refs.my_number * refs.my_object.prop1) / refs.my_object.prop2} ${refs.my_array[1]}` : 'Home Assistant' ]]]"
     }
     ```
   </TabItem>
