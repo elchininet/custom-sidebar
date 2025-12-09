@@ -22,9 +22,6 @@ import {
     HomeAsssistantExtended,
     Match,
     PartialPanelResolver,
-    Primitive,
-    PrimitiveArray,
-    PrimitiveObject,
     Sidebar,
     SidebarItem,
     SidebarMode,
@@ -49,7 +46,6 @@ import {
     NAMESPACE,
     NODE_NAME,
     PROFILE_GENERAL_PATH_REGEXP,
-    REF_VARIABLE_REGEXP,
     RETRY_DELAY,
     SELECTOR,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
@@ -209,28 +205,6 @@ class CustomSidebar {
                 );
             });
     }
-
-    private _parseJavaScriptVariables = (): Record<string, Primitive | PrimitiveObject | PrimitiveArray> => {
-        const jsVariables = this._config.js_variables ?? {};
-        const entries = Object.entries(jsVariables);
-        const finalEntries = entries.filter((entry: [string, Primitive | PrimitiveObject | PrimitiveArray]): boolean => {
-            const [name, value] = entry;
-            if (
-                isString(value) &&
-                REF_VARIABLE_REGEXP.test(value)
-            ) {
-                const refValue = value.replace(REF_VARIABLE_REGEXP, '$1');
-                this._renderer.renderTemplate(`
-                    const myRef = ref('${name}');
-                    myRef.value = ${refValue};
-                    return;
-                `);
-                return false;
-            }
-            return true;
-        });
-        return Object.fromEntries(finalEntries);
-    };
 
     private async _getElements(): Promise<[HTMLElement, NodeListOf<SidebarItem>, HTMLElement]> {
         const promisableResultOptions = {
@@ -1311,8 +1285,10 @@ class CustomSidebar {
             return this._renderer.renderTemplate(
                 finalCode,
                 {
-                    item,
-                    itemText
+                    variables: {
+                        item,
+                        itemText
+                    }
                 }
             );
         };
@@ -1502,12 +1478,12 @@ class CustomSidebar {
 
                                 this._debugLog('Compiled config', this._config);
                                 this._debugLog('Executing plugin logic...');
-
                                 this._renderer.variables = {
-                                    ...this._parseJavaScriptVariables(),
+                                    ...(this._config.js_variables ?? {}),
                                     ...getRestApis(this._ha),
                                     ...getDialogsMethods(this._ha)
                                 };
+                                this._renderer.refs = this._config.js_refs ?? {};
                                 this._processDefaultPath();
                                 this._processSidebar();
                                 this._subscribeTitle();

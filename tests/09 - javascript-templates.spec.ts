@@ -398,159 +398,241 @@ test('if a partial doesn\'t exist it should throw a warning', async ({ page }) =
 
 });
 
-test('reactive variables in js_variables should be converted properly', async ({ page }) => {
-
-    await fulfillJson(
-        page,
-        {
-            js_variables: {
-                reactive_array: `ref(
-                    [1, 2, 3]
-                )`,
-                reactive_object: `ref(
-                    {
-                        propA: 'A',
-                        propB: 'B',
-                        propC: 'C'
-                    }
-                )`,
-                reactive_string: 'ref("String")',
-                reactive_count: 'ref([0])'
+[
+    {
+        js_refs: {
+            array: [1, 2, 3],
+            object: {
+                propA: 'A',
+                propB: 'B',
+                propC: 'C'
             },
-            title: `
-                [[[
-                    const array = ref('reactive_array').value;
-                    const object = ref('reactive_object').value;
-                    const string = ref('reactive_string').value;
-                    const count = ref('reactive_count').value;
-
-                    switch (count[0]) {
-                        case 1:
-                            return array.join(' | ');
-                        case 2:
-                            return Object.values(object).join(' | ');
-                        case 3:
-                            return string;
-                        default:
-                            return 'Initial Value';
-                    }
-                ]]]
-            `,
-            order: [
-                {
-                    new_item: true,
-                    item: 'Check',
-                    icon: 'mdi:bullseye-arrow',
-                    on_click: {
-                        action: 'javascript',
-                        code: `
-                            const array = ref('reactive_array');
-                            const object = ref('reactive_object');
-                            const string = ref('reactive_string');
-                            const count = ref('reactive_count');
-
-                            count.value[0]++;
-
-                            switch (count.value[0]) {
-                                case 1:
-                                    array.value = [
-                                        ...array.value,
-                                        4
-                                    ];
-                                    break;
-                                case 2:
-                                    object.value = {
-                                        ...object.value,
-                                        propD: 'D'
-                                    };
-                                    break;
-                                case 3:
-                                    string.value = 'Custom ' + string.value;
-                                    break;
-                            }
-                        `
-                    }
+            string: 'String',
+            count: 0
+        },
+        title: `
+            [[[
+                switch (refs.count) {
+                    case 1:
+                        return refs.array.join(' | ');
+                    case 2:
+                        return Object.values(refs.object).join(' | ');
+                    case 3:
+                        return refs.string;
+                    default:
+                        return 'Initial Value';
                 }
-            ]
-        }
-    );
+            ]]]
+        `,
+        order: [
+            {
+                new_item: true,
+                item: 'Check',
+                icon: 'mdi:bullseye-arrow',
+                on_click: {
+                    action: 'javascript',
+                    code: `
+                        refs.count++;
 
-    const checkItem = getSidebarItem(page, '#');
-    const title = page.locator(SELECTORS.TITLE);
+                        switch (refs.count) {
+                            case 1:
+                                refs.array = [
+                                    ...refs.array,
+                                    4
+                                ];
+                                break;
+                            case 2:
+                                refs.object = {
+                                    ...refs.object,
+                                    propD: 'D'
+                                };
+                                break;
+                            case 3:
+                                refs.string = 'Custom ' + refs.string;
+                                break;
+                        }
+                    `
+                }
+            }
+        ]
+    },
+    {
+        js_refs: {
+            array: [1, 2, 3],
+            object: {
+                propA: 'A',
+                propB: 'B',
+                propC: 'C'
+            },
+            string: 'String',
+            count: 0
+        },
+        title: `
+            [[[
+                const array = ref('array').value;
+                const object = ref('object').value;
+                const string = ref('string').value;
+                const count = ref('count').value;
 
-    await navigateHome(page);
+                switch (count) {
+                    case 1:
+                        return array.join(' | ');
+                    case 2:
+                        return Object.values(object).join(' | ');
+                    case 3:
+                        return string;
+                    default:
+                        return 'Initial Value';
+                }
+            ]]]
+        `,
+        order: [
+            {
+                new_item: true,
+                item: 'Check',
+                icon: 'mdi:bullseye-arrow',
+                on_click: {
+                    action: 'javascript',
+                    code: `
+                        const array = ref('array');
+                        const object = ref('object');
+                        const string = ref('string');
+                        const count = ref('count');
 
-    await expect(title).toContainText('Initial Value');
+                        count.value++;
 
-    await checkItem.click();
+                        switch (count.value) {
+                            case 1:
+                                array.value = [
+                                    ...array.value,
+                                    4
+                                ];
+                                break;
+                            case 2:
+                                object.value = {
+                                    ...object.value,
+                                    propD: 'D'
+                                };
+                                break;
+                            case 3:
+                                string.value = 'Custom ' + string.value;
+                                break;
+                        }
+                    `
+                }
+            }
+        ]
+    }
+].forEach((config: Record<string, unknown>, index: number): void => {
 
-    await expect(title).toContainText('1 | 2 | 3 | 4');
+    test(`reactive refs should be available in the templates if declared case # ${ index }`, async ({ page }) => {
 
-    await checkItem.click();
+        await fulfillJson(
+            page,
+            config
+        );
 
-    await expect(title).toContainText('A | B | C | D');
+        const checkItem = getSidebarItem(page, '#');
+        const title = page.locator(SELECTORS.TITLE);
 
-    await checkItem.click();
+        await navigateHome(page);
 
-    await expect(title).toContainText('Custom String');
+        await expect(title).toContainText('Initial Value');
+
+        await checkItem.click();
+
+        await expect(title).toContainText('1 | 2 | 3 | 4');
+
+        await checkItem.click();
+
+        await expect(title).toContainText('A | B | C | D');
+
+        await checkItem.click();
+
+        await expect(title).toContainText('Custom String');
+
+    });
 
 });
 
-test('reactive variables changes should trigger the templates values in which they are used', async ({ page }) => {
-
-    await fulfillJson(
-        page,
-        {
-            js_variables: {
-                is_sidebar_editable: 'ref(true)'
-            },
-            sidebar_editable: `
-                [[[
-                    return ref('is_sidebar_editable').value;
-                ]]]
-            `,
-            order: [
-                {
-                    new_item: true,
-                    item: 'Check',
-                    icon: 'mdi:bullseye-arrow',
-                    on_click: {
-                        action: 'javascript',
-                        code: `ref('is_sidebar_editable').value = !ref('is_sidebar_editable').value`
-                    }
+[
+    {
+        js_refs: {
+            is_sidebar_editable: true
+        },
+        sidebar_editable: '[[[ refs.is_sidebar_editable ]]]',
+        order: [
+            {
+                new_item: true,
+                item: 'Check',
+                icon: 'mdi:bullseye-arrow',
+                on_click: {
+                    action: 'javascript',
+                    code: 'refs.is_sidebar_editable = !refs.is_sidebar_editable'
                 }
-            ]
-        }
-    );
+            }
+        ]
+    },
+    {
+        js_refs: {
+            is_sidebar_editable: true
+        },
+        sidebar_editable: `
+            [[[
+                return ref('is_sidebar_editable').value;
+            ]]]
+        `,
+        order: [
+            {
+                new_item: true,
+                item: 'Check',
+                icon: 'mdi:bullseye-arrow',
+                on_click: {
+                    action: 'javascript',
+                    code: `ref('is_sidebar_editable').value = !ref('is_sidebar_editable').value`
+                }
+            }
+        ]
+    }
+].forEach((config: Record<string, unknown>, index: number): void => {
 
-    const checkItem = getSidebarItem(page, '#');
+    test(`reactive refs changes should trigger the templates values in which they are used case # ${ index }`, async ({ page }) => {
 
-    await navigateHome(page);
+        await fulfillJson(
+            page,
+            config
+        );
 
-    await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
-    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
+        const checkItem = getSidebarItem(page, '#');
 
-    await checkItem.click();
+        await navigateHome(page);
 
-    await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
-    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
+        await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
+        await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
 
-    await checkItem.click();
+        await checkItem.click();
 
-    await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
-    await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
+        await expect(page.locator(SELECTORS.MENU)).toHaveCSS('pointer-events', 'none');
+        await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).toHaveCSS('pointer-events', 'all');
 
-    await navigateToProfile(page);
+        await checkItem.click();
 
-    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
+        await expect(page.locator(SELECTORS.MENU)).not.toHaveCSS('pointer-events', 'none');
+        await expect(page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON)).not.toHaveCSS('pointer-events', 'all');
 
-    await checkItem.click();
+        await navigateToProfile(page);
 
-    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
+        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
 
-    await checkItem.click();
+        await checkItem.click();
 
-    await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
+        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
+
+        await checkItem.click();
+
+        await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).not.toHaveAttribute(ATTRIBUTES.DISABLED);
+
+    });
 
 });
 
