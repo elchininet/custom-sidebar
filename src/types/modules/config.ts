@@ -187,6 +187,7 @@ export type ConfigException = ConfigExceptionUser & ConfigExceptionDevice;
 export interface Config extends BaseConfig {
     id?: string;
     js_variables?: Record<string, Primitive | PrimitiveObject | PrimitiveArray>;
+    js_refs?: Record<string, Primitive | PrimitiveObject | PrimitiveArray>;
     jinja_variables?: Record<string, Primitive | PrimitiveObject | PrimitiveArray>;
     partials?: Record<string, string>;
     exceptions?: ConfigException[];
