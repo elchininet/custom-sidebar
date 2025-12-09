@@ -274,5 +274,3 @@ export const JS_TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;
 export const JINJA_TEMPLATE_REG = /\{\{[\s\S]*\}\}|\{%[\s\S]*%\}/;
 export const PARTIAL_REGEXP = /@partial\s+([\w-]+)/g;
 export const DOMAIN_ENTITY_REGEXP = /^\s*([a-z_]+)\.([\w-]+)\s*$/;
-
-export const URL_WITH_PARAMS_REGEXP = /^([^?]+).*$/;
