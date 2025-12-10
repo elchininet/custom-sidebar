@@ -14,7 +14,7 @@ interface HomeAssistant extends HTMLElement {
 
 export const haConfigRequest = async (browser: Browser, file: string) => {
     const page = await browser.newPage();
-    page.route('**', route => route.continue());
+    await page.route('**', route => route.continue());
     await navigateHome(page);
     await page.evaluate(async (file: string) => {
         const homeAssistant = document.querySelector('home-assistant') as HomeAssistant;

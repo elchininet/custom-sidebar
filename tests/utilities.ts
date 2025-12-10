@@ -25,14 +25,14 @@ export const addJsonExtendedRoute = async (page: Page, options: Record<string, u
     });
 };
 
-export const changeToMobileViewport = async (page: Page): Promise<void> => {
-    await page.setViewportSize(MOBILE_VIEWPORT_SIZE);
-};
-
 export const fulfillJson = async (page: Page, json: Record<string, unknown>): Promise<void> => {
     await page.route(JSON_PATH, async route => {
         await route.fulfill({ json });
     });
+};
+
+export const changeToMobileViewport = async (page: Page): Promise<void> => {
+    await page.setViewportSize(MOBILE_VIEWPORT_SIZE);
 };
 
 export const waitForMainElements = async (page: Page, includeSidebar = true): Promise<void> => {
@@ -70,6 +70,26 @@ export const waithForError = async (page: Page, errorMessage: string): Promise<v
             }
         };
         page.on('pageerror', listener);
+    });
+};
+
+export const waitForErrors = async (page: Page, timeoutDelay = 1000): Promise<string[]> => {
+    return new Promise((resolve) => {
+        let timeout: NodeJS.Timeout | undefined = undefined;
+        const errors: string[] = [];
+        const resolvePromise = (): void => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                page.off('pageerror', listener);
+                resolve(errors);
+            }, timeoutDelay);
+        };
+        const listener = (error: Error): void => {
+            errors.push(error.message);
+            resolvePromise();
+        };
+        page.on('pageerror', listener);
+        resolvePromise();
     });
 };
 
@@ -147,6 +167,6 @@ export const waitForLogMessages = async (page: Page): Promise<string[]> => {
     });
 };
 
-export const noCacheRoute = ({ page }: PlaywrightTestArgs): void => {
-    page.route('**', route => route.continue());
+export const noCacheRoute = async ({ page }: PlaywrightTestArgs): Promise<void> => {
+    await page.route('**', route => route.continue());
 };

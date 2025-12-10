@@ -102,6 +102,8 @@ class CustomSidebar {
                     }
                 );
 
+                this._process();
+
             },
             {
                 once: true
@@ -116,8 +118,6 @@ class CustomSidebar {
         this._huiViewContainerObserver = new MutationObserver(
             this._watchHuiViewContainer.bind(this)
         );
-
-        selector.listen();
 
         this._styleManager = new HomeAssistantStylesManager({
             prefix: NAMESPACE,
@@ -134,7 +134,8 @@ class CustomSidebar {
         this._mouseEnterBinded = this._mouseEnter.bind(this);
         this._mouseLeaveBinded = this._mouseLeave.bind(this);
         this._configPromise = fetchConfig();
-        this._process();
+
+        selector.listen();
     }
 
     private _debug: boolean;
@@ -211,10 +212,17 @@ class CustomSidebar {
             delay: RETRY_DELAY,
             shouldReject: false
         };
+        const sidebarShadowRoot = await this._sidebar.selector.$.element;
+        // If sidebar is loading, wait for the looading to finish
+        await getPromisableResult(
+            () => sidebarShadowRoot.querySelector(SELECTOR.SIDEBAR_LOADER),
+            (sidebarLoader: Element | null) => sidebarLoader === null,
+            promisableResultOptions
+        );
         const sidebarItemsContainer = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element) as HTMLElement;
         const spacer = await getPromisableResult<HTMLElement>(
             () => sidebarItemsContainer.querySelector<HTMLElement>(`:scope > ${SELECTOR.SPACER}`),
-            (spacer: HTMLElement): boolean => !! spacer,
+            (spacer: HTMLElement): boolean => !!spacer,
             promisableResultOptions
         );
         const items = await getPromisableResult<NodeListOf<SidebarItem>>(
@@ -1426,6 +1434,19 @@ class CustomSidebar {
                         childList: true
                     });
                 });
+        }
+
+        // If the config is not loaded yet, wait for it
+        if (!this._config) {
+            await getPromisableResult(
+                () => this._config,
+                (config: Config) => !!config,
+                {
+                    retries: MAX_ATTEMPTS,
+                    delay: RETRY_DELAY,
+                    shouldReject: false
+                }
+            );
         }
 
         // If analytics is enabled log landings
