@@ -45,6 +45,7 @@ export enum SELECTOR {
     HOST = ':host',
     HOST_EXPANDED = ':host([expanded])',
     HOST_NOT_EXPANDED = ':host(:not([expanded]))',
+    SIDEBAR_LOADER = 'ha-fade-in',
     SIDEBAR_ITEMS_CONTAINER = 'ha-md-list.ha-scrollbar',
     SCOPE = ':scope',
     TITLE = '.title',

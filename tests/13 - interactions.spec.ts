@@ -78,8 +78,6 @@ test('clicking on items inside the same lovelace dashboard should select the pro
     const view1 = '/lovelace/view_1';
     const view2 = '/lovelace/view_2';
 
-    const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
-    const huView = page.locator(SELECTORS.HUI_VIEW);
     const homeItem = getSidebarItem(page, home);
     const view1Item = getSidebarItem(page, view1);
     const view2Item = getSidebarItem(page, view2);
@@ -115,80 +113,74 @@ test('clicking on items inside the same lovelace dashboard should select the pro
         ]
     });
 
-    await page.goto('/');
-    await expect(sidebar).toBeVisible();
-    await expect(huView).toBeVisible();
-    await page.waitForTimeout(600);
+    const timeout = { timeout: 30000 };
 
-    await expect(homeItem).toHaveClass(SELECTED_CLASSNAME);
-    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await page.goto(home);
+    await waitForMainElements(page);
+
+    await expect(homeItem).toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME, timeout);
 
     await expect(homePanel).toBeVisible();
     await expect(view1Panel).not.toBeVisible();
     await expect(view2Panel).not.toBeVisible();
 
     await view1Item.click();
-    await page.waitForTimeout(600);
 
-    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(view1Item).toHaveClass(SELECTED_CLASSNAME);
-    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view1Item).toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME, timeout);
 
     await expect(homePanel).not.toBeVisible();
     await expect(view1Panel).toBeVisible();
     await expect(view2Panel).not.toBeVisible();
 
     await view2Item.click();
-    await page.waitForTimeout(600);
 
-    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(view2Item).toHaveClass(SELECTED_CLASSNAME);
+    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view2Item).toHaveClass(SELECTED_CLASSNAME, timeout);
 
     await expect(homePanel).not.toBeVisible();
     await expect(view1Panel).not.toBeVisible();
     await expect(view2Panel).toBeVisible();
 
     await homeItem.click();
-    await page.waitForTimeout(600);
 
-    await expect(homeItem).toHaveClass(SELECTED_CLASSNAME);
-    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(homeItem).toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME, timeout);
 
     await expect(homePanel).toBeVisible();
     await expect(view1Panel).not.toBeVisible();
     await expect(view2Panel).not.toBeVisible();
 
     await tabView1.click();
-    await page.waitForTimeout(600);
 
-    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(view1Item).toHaveClass(SELECTED_CLASSNAME);
-    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view1Item).toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME, timeout);
 
     await expect(homePanel).not.toBeVisible();
     await expect(view1Panel).toBeVisible();
     await expect(view2Panel).not.toBeVisible();
 
     await tabView2.click();
-    await page.waitForTimeout(600);
 
-    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(view2Item).toHaveClass(SELECTED_CLASSNAME);
+    await expect(homeItem).not.toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view2Item).toHaveClass(SELECTED_CLASSNAME, timeout);
 
     await expect(homePanel).not.toBeVisible();
     await expect(view1Panel).not.toBeVisible();
     await expect(view2Panel).toBeVisible();
 
     await tabHome.click();
-    await page.waitForTimeout(600);
 
-    await expect(homeItem).toHaveClass(SELECTED_CLASSNAME);
-    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME);
-    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(homeItem).toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view1Item).not.toHaveClass(SELECTED_CLASSNAME, timeout);
+    await expect(view2Item).not.toHaveClass(SELECTED_CLASSNAME, timeout);
 
     await expect(homePanel).toBeVisible();
     await expect(view1Panel).not.toBeVisible();
