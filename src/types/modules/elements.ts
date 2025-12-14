@@ -100,3 +100,21 @@ export interface HomeAssistantDialogEventDetail {
     dialogImport: DialogImport;
     dialogParams: Record<string, unknown>;
 }
+
+export enum HuiTimestampDisplayDateFormat {
+    DATE = 'date',
+    DATETIME = 'datetime',
+    TIME = 'time',
+    RELATIVE = 'relative'
+}
+
+export interface HuiTimestampDisplay extends HTMLElement {
+    ts: Date;
+    hass: HassExtended;
+    format: HuiTimestampDisplayDateFormat;
+    capitalize: boolean;
+    _updateRelative: () => void;
+    render: () => {
+        values: string[];
+    };
+}

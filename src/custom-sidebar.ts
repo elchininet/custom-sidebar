@@ -54,6 +54,7 @@ import {
 import {
     getConfig,
     getDialogsMethods,
+    getFormatDateMethods,
     getRestApis,
     getTemplateWithPartials,
     isArray,
@@ -1490,7 +1491,8 @@ class CustomSidebar {
                                 this._renderer.variables = {
                                     ...(this._config.js_variables ?? {}),
                                     ...getRestApis(this._ha),
-                                    ...getDialogsMethods(this._ha)
+                                    ...getDialogsMethods(this._ha),
+                                    ...getFormatDateMethods(this._ha)
                                 };
                                 this._renderer.refs = this._config.js_refs ?? {};
                                 this._processDefaultPath();
