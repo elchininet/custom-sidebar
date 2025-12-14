@@ -2,7 +2,10 @@
 sidebar_position: 2
 ---
 
-import JavaScriptTemplateExample from '@site/docs/_partials/04-templates/02-javascript-templates/_javascript-templates.mdx';
+import FormatDateExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_format_date.mdx';
+import FormatDateTimeExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_format_date_time.mdx';
+import FormatTimeExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_format_time.mdx';
+import GetRelativeTimeExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_get_relative_time.mdx';
 
 import OpenAlertDialogExample from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-alert-dialog.mdx';
 import OpenConfirmDialogExample from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-confirm-dialog.mdx';
@@ -12,6 +15,8 @@ import OpenRestartDialogExample from '@site/docs/_partials/04-templates/02-javas
 import CheckConfigRestApiExample from '@site/docs/_partials/04-templates/02-javascript-templates/rest-apis/_check-config.mdx';
 import RenderTemplateRestApiExample from '@site/docs/_partials/04-templates/02-javascript-templates/rest-apis/_render-template.mdx';
 import CallServiceRestApiExample from '@site/docs/_partials/04-templates/02-javascript-templates/rest-apis/_call-service.mdx';
+
+import JavaScriptTemplateExample from '@site/docs/_partials/04-templates/02-javascript-templates/_javascript-templates.mdx';
 
 # JavaScript Templates
 
@@ -29,13 +34,43 @@ The entities used in the templates will be stored, so if the state of an stored 
 
 `JavaScript` templates can make use of [Reactive JavaScript Variables](../advanced-configuration-options/javascript-variables#reactive-javascript-variables-refs). If you use a reactive variable in some templates and you modify it in the `javascript` action of an `on_click` parameter of an item, all the templates in which the variable was used will be reevaluated in the device in which the action was performed.
 
-On top of all the variables and methods provided by [Home Assistant Javascript Templates], the next variables and methods will be available in the templates:
+On top of all the variables and methods provided by [Home Assistant Javascript Templates], the next methods will be available in the templates:
 
-#### panel_url
+:::info
 
-This variable returns the url of the current panel. It will be reevaluated every time that a new panel or a new view is loaded.
+The next methods depend on the locale that the user has configured in Home Assistant, so the result of these methods is not deterministic. For the examples, a specific locale has been used.
 
----
+:::
+
+:::warning[Important]
+
+When you open Home Assistant and it is loading, it is possible that the locale data is not ready yet until the system finished to load all the resources. If you try to render a template using these methods at the beginning of this loading process, it is possible that the formatting wouldn't follow your language settings. This will be corrected if the template is reevaluated later, but to avoid any wrong formatting at the beginning, it is recommended to delay the formatting in the first rendering using a Promise or to force a re-rendering of the template using [JavaScript reactive variables](../advanced-configuration-options/javascript-variables#reactive-javascript-variables-refs) or any other technique that mitigates this issue.
+
+:::
+
+#### formatDate
+
+This method formats a date using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date or a number representing the [timestamp] in milliseconds.
+
+<FormatDateExample />
+
+#### formatDateTime
+
+This method formats a date with time using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date or a number representing the [timestamp] in milliseconds.
+
+<FormatDateTimeExample />
+
+#### formatTime
+
+This method formats a time using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date, a number representing the [timestamp] in milliseconds, or a string representation of a time in the format `HH:MM` or `HH:MM:SS`.
+
+<FormatTimeExample />
+
+#### getRelativeTime
+
+This method get the relative time of a date using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date or a number representing the [timestamp] in milliseconds. This method also accepts a secondary optional boolean parameter to define if the result should be capitalized or not (by default it is `false`).
+
+<GetRelativeTimeExample />
 
 :::info
 
@@ -124,3 +159,5 @@ The next example will create the next things:
 <JavaScriptTemplateExample />
 
 [Home Assistant Javascript Templates]: https://github.com/elchininet/home-assistant-javascript-templates
+[ISO 8601]: https://en.wikipedia.org/wiki/ISO_8601
+[timestamp]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#the_epoch_timestamps_and_invalid_date
