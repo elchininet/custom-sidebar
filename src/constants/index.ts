@@ -224,7 +224,8 @@ export enum CUSTOM_ELEMENT {
     HA_CONFIG_BACKUP_BACKUPS = 'ha-config-backup-backups',
     HA_CONFIG_SYSTEM_NAVIGATION = 'ha-config-system-navigation',
     DIALOG_BOX = 'dialog-box',
-    DIALOG_RESTART = 'dialog-restart'
+    DIALOG_RESTART = 'dialog-restart',
+    HUI_TIMESTAMP_DISPLAY = 'hui-timestamp-display'
 }
 
 export enum EVENT {
