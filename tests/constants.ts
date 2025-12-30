@@ -23,7 +23,9 @@ export const SELECTORS = {
     MENU: '.menu',
     TITLE: '.menu .title',
     SIDEBAR_HA_ICON_BUTTON: '.menu ha-icon-button',
-    SIDEBAR_EDIT_MODAL: 'dialog-edit-sidebar span[title="Edit sidebar"]',
+    // Remove when Home Assistant 2026.1.x is released
+    SIDEBAR_EDIT_MODAL_OLD: 'dialog-edit-sidebar span[title="Edit sidebar"]',
+    SIDEBAR_EDIT_MODAL: 'dialog-edit-sidebar ha-wa-dialog[header-title="Edit sidebar"] ha-dialog-header',
     PROFILE_EDIT_BUTTON: '.content > ha-card ha-settings-row > ha-button',
     PROFILE_HIDE_SIDEBAR: '.content > ha-card ha-force-narrow-row ha-settings-row > ha-switch',
     NOTIFICATIONS: 'ha-md-list-item.notifications',
@@ -41,7 +43,15 @@ export const SELECTORS = {
     HA_ICON: 'ha-icon',
     PANEL_CONFIG: 'ha-panel-config',
     ENTRY_CONTAINER: '.entry-container',
-    HA_LOGBOOK: 'ha-logbook'
+    HA_LOGBOOK: 'ha-logbook',
+    // Remove when Home Assistant 2026.1.x is released
+    RESTART_RIALOG_OLD: 'dialog-restart ha-dialog-header',
+    RESTART_RIALOG_TITLE_OLD: 'dialog-restart ha-dialog-header span[slot="title"]',
+    RESTART_DIALOG_CLOSE_BUTTON_OLD: 'dialog-restart ha-dialog-header ha-icon-button',
+    // End remove when Home Assistant 2026.1.x is released
+    RESTART_RIALOG: 'dialog-restart ha-adaptive-dialog .content',
+    RESTART_RIALOG_TITLE: 'dialog-restart ha-dialog-header span[slot="title"]',
+    RESTART_DIALOG_CLOSE_BUTTON: 'dialog-restart ha-adaptive-dialog slot[slot="headerNavigationIcon"] ha-icon-button'
 };
 
 export const ATTRIBUTES = {
