@@ -818,7 +818,16 @@ test.describe('on_click property', () => {
             }
         );
 
-        const dialog = page.locator('dialog-restart ha-dialog-header');
+        const dialog = page.locator(SELECTORS.RESTART_RIALOG)
+            // Remove when Home Assistant 2026.1.x is released
+            .or(page.locator(SELECTORS.RESTART_RIALOG_OLD));
+        const dialogTitle = page.locator(SELECTORS.RESTART_RIALOG_TITLE)
+            // Remove when Home Assistant 2026.1.x is released
+            .or(page.locator(SELECTORS.RESTART_RIALOG_TITLE_OLD));
+        const dialogCloseButton = page.locator(SELECTORS.RESTART_DIALOG_CLOSE_BUTTON)
+            // Remove when Home Assistant 2026.1.x is released
+            .or(page.locator(SELECTORS.RESTART_DIALOG_CLOSE_BUTTON_OLD))
+            .first();
         const title = 'Restart Home Assistant';
 
         await navigateHome(page);
@@ -826,18 +835,18 @@ test.describe('on_click property', () => {
         // It should load the dialog
         await getSidebarItem(page, '#').click();
 
-        await expect(dialog.locator('span[slot="title"]')).toContainText(title);
+        await expect(dialogTitle).toContainText(title);
 
-        await dialog.locator('ha-icon-button').click();
+        await dialogCloseButton.click();
 
         await expect(dialog).not.toBeVisible();
 
         // It should reuse the dialog already registered in customComponents
         await getSidebarItem(page, '#').click();
 
-        await expect(dialog.locator('span[slot="title"]')).toContainText(title);
+        await expect(dialogTitle).toContainText(title);
 
-        await dialog.locator('ha-icon-button').click();
+        await dialogCloseButton.click();
 
         await expect(dialog).not.toBeVisible();
 
