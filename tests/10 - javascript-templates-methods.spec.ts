@@ -283,10 +283,12 @@ test.describe('methods in JavaScript templates', () => {
 
         const dialog = page.locator(SELECTORS.RESTART_RIALOG)
             // Remove when Home Assistant 2026.1.x is released
-            .or(page.locator(SELECTORS.RESTART_RIALOG_OLD));
+            .or(page.locator(SELECTORS.RESTART_RIALOG_OLD))
+            .first();
         const dialogTitle = page.locator(SELECTORS.RESTART_RIALOG_TITLE)
             // Remove when Home Assistant 2026.1.x is released
-            .or(page.locator(SELECTORS.RESTART_RIALOG_TITLE_OLD));
+            .or(page.locator(SELECTORS.RESTART_RIALOG_TITLE_OLD))
+            .first();
         const dialogCloseButton = page.locator(SELECTORS.RESTART_DIALOG_CLOSE_BUTTON)
             // Remove when Home Assistant 2026.1.x is released
             .or(page.locator(SELECTORS.RESTART_DIALOG_CLOSE_BUTTON_OLD))
