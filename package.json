@@ -8,7 +8,7 @@
   "license": "Apache-2.0",
   "private": false,
   "scripts": {
-    "build": "rollup --config rollup.config.js",
+    "build": "rollup --config rollup.config.mjs",
     "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\" \"docs/**/*.ts\"",
     "lint:fix": "pnpm lint --fix",
     "test:clean": "rm -rf dist .nyc_output coverage || true",
