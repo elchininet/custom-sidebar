@@ -32,7 +32,6 @@ import {
     BLOCKED_PROPERTY,
     CHECK_FOCUSED_SHADOW_ROOT,
     CLASS,
-    CUSTOM_SIDEBAR_CSS_VARIABLES,
     DEBUG_URL_PARAMETER,
     DOMAIN_ENTITY_REGEXP,
     ELEMENT,
@@ -48,8 +47,10 @@ import {
     PROFILE_GENERAL_PATH_REGEXP,
     RETRY_DELAY,
     SELECTOR,
+    SIDEBAR_BORDER_COLOR_VARIABLES_MAP,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
-    SIDEBAR_OPTIONS_VARIABLES_MAP
+    SIDEBAR_OPTIONS_VARIABLES_MAP,
+    SIDEBAR_WIDTH_VARIABLES_MAP
 } from '@constants';
 import {
     getConfig,
@@ -529,7 +530,7 @@ class CustomSidebar {
         }
     }
 
-    private _subscribeTemplateColorChanges<T, K extends keyof T>(
+    private _subscribeTemplateVariableChanges<T, K extends keyof T>(
         config: T,
         element: HTMLElement,
         dictionary: [K, string][]
@@ -908,31 +909,37 @@ class CustomSidebar {
 
         // Process sidebar
         Promise.all([
+            this._main.element,
             this._haDrawer.selector.$.query(SELECTOR.MC_DRAWER).element,
             this._sidebar.element,
             this._sidebar.selector.$.element,
             this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element
-        ]).then((elements: [HTMLElement, HTMLElement, ShadowRoot, HTMLElement]) => {
+        ]).then((elements: [HTMLElement, HTMLElement, HTMLElement, ShadowRoot, HTMLElement]) => {
 
             const [
+                homeAssistantMain,
                 mcDrawer,
                 sidebar,
                 sideBarShadowRoot,
                 sidebarItemsContainer
             ] = elements;
 
-            this._subscribeTemplateColorChanges(
+            this._subscribeTemplateVariableChanges(
+                this._config,
+                homeAssistantMain,
+                SIDEBAR_WIDTH_VARIABLES_MAP
+            );
+
+            this._subscribeTemplateVariableChanges(
                 this._config,
                 sidebar,
                 SIDEBAR_OPTIONS_VARIABLES_MAP
             );
 
-            this._subscribeTemplateColorChanges(
+            this._subscribeTemplateVariableChanges(
                 this._config,
                 mcDrawer,
-                [
-                    ['sidebar_border_color',    CUSTOM_SIDEBAR_CSS_VARIABLES.BORDER_COLOR]
-                ]
+                SIDEBAR_BORDER_COLOR_VARIABLES_MAP
             );
 
             sidebarItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
@@ -983,7 +990,15 @@ class CustomSidebar {
             }
 
             this._styleManager.addStyle(
-                STYLES.SIDEBAR_BORDER_COLOR,
+                STYLES.SIDEBAR_WIDTH_DESKTOP,
+                homeAssistantMain.shadowRoot
+            );
+
+            this._styleManager.addStyle(
+                [
+                    STYLES.SIDEBAR_BORDER_COLOR,
+                    STYLES.SIDEBAR_WIDTH_MOBILE
+                ],
                 mcDrawer
             );
 
@@ -1196,7 +1211,7 @@ class CustomSidebar {
                         );
                     }
 
-                    this._subscribeTemplateColorChanges(
+                    this._subscribeTemplateVariableChanges(
                         orderItem,
                         orderItem.element,
                         ITEM_OPTIONS_VARIABLES_MAP

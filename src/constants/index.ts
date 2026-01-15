@@ -3,7 +3,8 @@ import{
     ItemColorConfigKeys,
     SidebarColorConfigKeys,
     SidebarMode,
-    SidebarStringConfigKeys
+    SidebarStringConfigKeys,
+    SidebarWidthConfigKeys
 } from '@types';
 
 export * from './global';
@@ -45,6 +46,8 @@ export enum SELECTOR {
     HOST = ':host',
     HOST_EXPANDED = ':host([expanded])',
     HOST_NOT_EXPANDED = ':host(:not([expanded]))',
+    HOST_EXPANDED_NOT_MODAL = ':host([expanded]:not([modal]))',
+    HOST_EXPANDED_NOT_NAROW = ':host([expanded]:not([narrow]))',
     SIDEBAR_LOADER = 'ha-fade-in',
     SIDEBAR_ITEMS_CONTAINER = 'ha-md-list.ha-scrollbar',
     SCOPE = ':scope',
@@ -68,6 +71,8 @@ export enum SELECTOR {
     MENU = '.menu',
     DIVIDER = '.divider',
     MC_DRAWER = '.mdc-drawer',
+    MC_DRAWER_MODAL = '.mdc-drawer.mdc-drawer--modal',
+    MC_DRAWER_OPEN_FIX = '.mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing)+.mdc-drawer-app-content',
     DATA_INFO = '[data-info]'
 }
 
@@ -89,6 +94,7 @@ export enum HA_CSS_VARIABLES {
     MD_RIPPLE_HOVER_COLOR = '--md-ripple-hover-color',
     MD_RIPPLE_HOVER_OPACITY = '--md-ripple-hover-opacity',
     MD_SYS_COLOR_ON_SURFACE = '--md-sys-color-on-surface',
+    MDC_DRAWER_WIDTH = '--mdc-drawer-width',
     ACCENT_COLOR = '--accent-color',
     TEXT_ACCENT_COLOR = '--text-accent-color',
     TEXT_PRIMARY_COLOR = '--text-primary-color',
@@ -128,7 +134,9 @@ export enum CUSTOM_SIDEBAR_CSS_VARIABLES {
     NOTIFICATION_COLOR_HOVER = '--custom-sidebar-notification-color-hover',
     NOTIFICATION_TEXT_COLOR = '--custom-sidebar-notification-text-color',
     NOTIFICATION_TEXT_COLOR_SELECTED = '--custom-sidebar-notification-text-color-selected',
-    NOTIFICATION_TEXT_COLOR_HOVER = '--custom-sidebar-notification-text-color-hover'
+    NOTIFICATION_TEXT_COLOR_HOVER = '--custom-sidebar-notification-text-color-hover',
+    WIDTH = '--custom-sidebar-width',
+    WIDTH_MODAL = '--custom-sidebar-width-modal'
 }
 
 export const ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
@@ -196,6 +204,15 @@ export const SIDEBAR_OPTIONS_VARIABLES_MAP: [SidebarColorConfigKeys, string][] =
     ['divider_top_color',                CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_TOP_COLOR],
     ['divider_bottom_color',             CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_BOTTOM_COLOR],
     ...ITEM_OPTIONS_VARIABLES_MAP
+];
+
+export const SIDEBAR_BORDER_COLOR_VARIABLES_MAP: [SidebarColorConfigKeys, string][] = [
+    ['sidebar_border_color', CUSTOM_SIDEBAR_CSS_VARIABLES.BORDER_COLOR]
+];
+
+export const SIDEBAR_WIDTH_VARIABLES_MAP: [SidebarWidthConfigKeys, string][] = [
+    ['width', CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH],
+    ['width_modal', CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_MODAL]
 ];
 
 export enum CLASS {

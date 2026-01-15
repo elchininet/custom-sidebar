@@ -42,6 +42,8 @@ const BASE_CONFIG_OPTIONS = [
     'divider_top_color',
     'divider_bottom_color',
     'scrollbar_thumb_color',
+    'width',
+    'width_modal',
     'styles',
     ...ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
     ...ITEM_STRING_CONFIG_OPTIONS

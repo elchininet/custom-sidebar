@@ -28,6 +28,12 @@ const BADGE_STYLES = {
 };
 
 export const FUNCTIONALITY = {
+    [`${ SELECTOR.HOST_EXPANDED_NOT_NAROW } ${ SELECTOR.MENU }`]: {
+        width: '100%'
+    },
+    [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM }`]: {
+        width: 'calc(100% - var(--ha-space-2)) !important'
+    },
     [`${ SELECTOR.HOST_EXPANDED } ${ ELEMENT.ITEM } > ${ ELEMENT.USER_BADGE }`]: {
         zIndex: 1
     },
@@ -372,4 +378,26 @@ export const NOTIFICATION_COLOR_HOVER_NOTIFICATION_TEXT_COLOR_HOVER = {
 
 export const HIDDEN_MENU_BUTTON_IN_NARROW_MODE = {
     [`${ SELECTOR.HA_MENU_BUTTON }`]: false
+};
+
+export const SIDEBAR_WIDTH_DESKTOP = {
+    [`${ SELECTOR.HOST_EXPANDED_NOT_MODAL }`]: {
+        MdcDrawerWidth: getCSSVariables(
+            CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH,
+            'calc(256px + var(--safe-area-inset-left, 0px))'
+        )
+    }
+};
+
+export const SIDEBAR_WIDTH_MOBILE = {
+    [`${ SELECTOR.HOST } > ${SELECTOR.MC_DRAWER_MODAL}`]: {
+        width: getCSSVariables(
+            CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_MODAL,
+            HA_CSS_VARIABLES.MDC_DRAWER_WIDTH,
+            '256px'
+        )
+    },
+    [`${ SELECTOR.HOST } > ${SELECTOR.MC_DRAWER_OPEN_FIX}`]: {
+        marginLeft: '0px'
+    }
 };
