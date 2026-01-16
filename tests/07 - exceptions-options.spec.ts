@@ -11,7 +11,9 @@ import { haConfigRequest } from './ha-services';
 import { getSidebarItem, getSidebarItemLinkFromLocator } from './selectors';
 import {
     addJsonExtendedRoute,
+    getSidebarWidth,
     changeToMobileViewport,
+    fulfillJson,
     navigateHome,
     navigateToProfile,
     noCacheRoute,
@@ -347,6 +349,51 @@ test.describe('extending from the base', () => {
 
         });
 
+        test('should override sidebar width from the base', async ({ page }) => {
+            const overrideWidth = 280;
+            await fulfillJson(
+                page,
+                {
+                    width: '300px',
+                    exceptions: [
+                        {
+                            user: 'Test',
+                            width: `${overrideWidth}px`,
+                            extend_from: BASE_NAME
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+            const sidebarWidth = await getSidebarWidth(page);
+            expect(sidebarWidth).toBe(overrideWidth);
+
+        });
+
+        test('should override sidebar width_modal from the base', async ({ page }) => {
+            const overrideWidth = 280;
+            await fulfillJson(
+                page,
+                {
+                    width_modal: '300px',
+                    exceptions: [
+                        {
+                            user: 'Test',
+                            width_modal: `${overrideWidth}px`,
+                            extend_from: BASE_NAME
+                        }
+                    ]
+                }
+            );
+            await changeToMobileViewport(page);
+            await navigateHome(page, false);
+            await page.locator(SELECTORS.HA_MENU_BUTTON).click();
+            const sidebarWidth = await getSidebarWidth(page);
+            expect(sidebarWidth).toBe(overrideWidth);
+
+        });
+
     });
 
     test.describe('extending options from the base', () => {
@@ -561,6 +608,49 @@ test.describe('extending from the base', () => {
 
             await navigateToProfile(page);
             await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toHaveAttribute(ATTRIBUTES.DISABLED);
+
+        });
+
+        test('should take width from the base', async ({ page }) => {
+            const width = 280;
+            await fulfillJson(
+                page,
+                {
+                    width: `${width}px`,
+                    exceptions: [
+                        {
+                            user: 'Test',
+                            extend_from: BASE_NAME
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+            const sidebarWidth = await getSidebarWidth(page);
+            expect(sidebarWidth).toBe(width);
+
+        });
+
+        test('should take width_modal from the base', async ({ page }) => {
+            const width = 280;
+            await fulfillJson(
+                page,
+                {
+                    width_modal: `${width}px`,
+                    exceptions: [
+                        {
+                            user: 'Test',
+                            extend_from: BASE_NAME
+                        }
+                    ]
+                }
+            );
+            await changeToMobileViewport(page);
+            await navigateHome(page, false);
+            await page.locator(SELECTORS.HA_MENU_BUTTON).click();
+            const sidebarWidth = await getSidebarWidth(page);
+            expect(sidebarWidth).toBe(width);
 
         });
 

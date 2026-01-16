@@ -530,6 +530,21 @@ class CustomSidebar {
         }
     }
 
+    private _setElementVariables = <T, K extends keyof T>(
+        config: T,
+        element: HTMLElement,
+        dictionary: [K, string][]
+    ) => {
+        dictionary.forEach(([option, cssVariable]) => {
+            if (config[option]) {
+                element.style.setProperty(
+                    cssVariable,
+                    config[option] as string
+                );
+            }
+        });
+    };
+
     private _subscribeTemplateVariableChanges<T, K extends keyof T>(
         config: T,
         element: HTMLElement,
@@ -924,7 +939,7 @@ class CustomSidebar {
                 sidebarItemsContainer
             ] = elements;
 
-            this._subscribeTemplateVariableChanges(
+            this._setElementVariables(
                 this._config,
                 homeAssistantMain,
                 SIDEBAR_WIDTH_VARIABLES_MAP

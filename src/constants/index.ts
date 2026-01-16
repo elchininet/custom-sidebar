@@ -161,6 +161,11 @@ export const ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
     'divider_color'
 ];
 
+export const SIDEBAR_WIDTH_OPTIONS: SidebarWidthConfigKeys[] = [
+    'width',
+    'width_modal'
+];
+
 export const ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
     'selection_opacity',
     'item_background_hover_opacity'
@@ -286,6 +291,8 @@ export const SIDEBAR_MODE_TO_DOCKED_SIDEBAR = {
     [SidebarMode.NARROW]: DockedSidebar.AUTO,
     [SidebarMode.EXTENDED]: DockedSidebar.DOCKED
 };
+
+export const ALLOWED_UNITS = ['ex', 'px', 'rem', 'vh', 'vw', 'vmax', 'vmin', '%'];
 
 export const PROFILE_GENERAL_PATH_REGEXP = /\/profile(\/general)?$/;
 

@@ -10,13 +10,15 @@ import {
     SidebarMode
 } from '@types';
 import {
+    ALLOWED_UNITS,
     BASE_NAME,
     ITEM_STRING_CONFIG_OPTIONS,
     ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
     ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS,
     JINJA_TEMPLATE_REG,
     JS_TEMPLATE_REG,
-    SIDEBAR_MODE_TO_DOCKED_SIDEBAR
+    SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
+    SIDEBAR_WIDTH_OPTIONS
 } from '@constants';
 import {
     isArray,
@@ -42,9 +44,8 @@ const BASE_CONFIG_OPTIONS = [
     'divider_top_color',
     'divider_bottom_color',
     'scrollbar_thumb_color',
-    'width',
-    'width_modal',
     'styles',
+    ...SIDEBAR_WIDTH_OPTIONS,
     ...ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
     ...ITEM_STRING_CONFIG_OPTIONS
 ] as const;
@@ -55,6 +56,18 @@ const ONLY_BASE_CONFIG_OPTIONS = [
     'partials',
     'extendable_configs'
 ] as const;
+
+const validateWidthOptions = <T, K extends keyof T>(obj: T, props: K[]): void => {
+    const widthRegExp = new RegExp(`^\\d+(?:${ALLOWED_UNITS.join('|')})$`);
+    props.forEach((prop: K): void => {
+        if (
+            !isUndefined(obj[prop]) &&
+            !widthRegExp.test(obj[prop] as string)
+        ) {
+            throw new SyntaxError(`${ERROR_PREFIX}, "${obj[prop]}" is not a valid "${String(prop)}". You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')})`);
+        }
+    });
+};
 
 const validateStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
     props.forEach((prop: K): void => {
@@ -361,6 +374,13 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
         `${ERROR_PREFIX}, exceptions`
     );
 
+    validateWidthOptions(
+        exception,
+        [
+            ...SIDEBAR_WIDTH_OPTIONS
+        ]
+    );
+
     validateStringOrNumberOptions(
         exception,
         [
@@ -530,6 +550,13 @@ export const validateConfig = (config: Config): void => {
             ...BASE_CONFIG_OPTIONS
         ],
         `${ERROR_PREFIX},`
+    );
+
+    validateWidthOptions(
+        config,
+        [
+            ...SIDEBAR_WIDTH_OPTIONS
+        ]
     );
 
     validateStringOrArrayOfStringsOptions(
