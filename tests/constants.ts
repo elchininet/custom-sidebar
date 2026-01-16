@@ -23,6 +23,7 @@ export const SELECTORS = {
     MENU: '.menu',
     TITLE: '.menu .title',
     SIDEBAR_HA_ICON_BUTTON: '.menu ha-icon-button',
+    HA_MENU_BUTTON: '.header ha-menu-button ha-icon-button',
     SIDEBAR_EDIT_MODAL: 'dialog-edit-sidebar ha-wa-dialog[header-title="Edit sidebar"] ha-dialog-header',
     PROFILE_EDIT_BUTTON: '.content > ha-card ha-settings-row > ha-button',
     PROFILE_HIDE_SIDEBAR: '.content > ha-card ha-force-narrow-row ha-settings-row > ha-switch',

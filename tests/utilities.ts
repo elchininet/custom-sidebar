@@ -47,10 +47,10 @@ export const waitForMainElements = async (page: Page, includeSidebar = true): Pr
     }
 };
 
-export const navigateHome = async (page: Page): Promise<void> => {
+export const navigateHome = async (page: Page, includeSidebar = true): Promise<void> => {
     await page.goto('/');
     await page.waitForURL(/.*\/lovelace/);
-    await waitForMainElements(page);
+    await waitForMainElements(page, includeSidebar);
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
 };
 
@@ -59,6 +59,12 @@ export const navigateToProfile = async (page: Page): Promise<void> => {
     await page.waitForURL(/.*\/profile\/general$/);
     await waitForMainElements(page);
     await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
+};
+
+export const getSidebarWidth = async (page: Page): Promise<number> => {
+    const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
+    const sidebarWidth = await sidebar.evaluate((element: HTMLElement) => element.offsetWidth);
+    return sidebarWidth + 1;
 };
 
 export const waithForError = async (page: Page, errorMessage: string): Promise<void> => {

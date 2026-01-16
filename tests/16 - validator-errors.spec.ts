@@ -1,6 +1,6 @@
 import { test } from 'playwright-test-coverage';
 import { SidebarMode } from '../src/types';
-import { NAMESPACE } from '../src/constants';
+import { NAMESPACE, ALLOWED_UNITS } from '../src/constants';
 import { BASE_NAME } from './constants';
 import {
     fulfillJson,
@@ -120,6 +120,34 @@ test.describe('main options', () => {
                 }
             },
             error: `${ERROR_PREFIX}, "styles" property should be a string`
+        },
+        {
+            title: 'should throw an error if the width property is not a string',
+            json: {
+                width: 100
+            },
+            error: `${ERROR_PREFIX}, "width" property should be a string`
+        },
+        {
+            title: 'should throw an error if the width_modal property is not a string',
+            json: {
+                width_modal: 400
+            },
+            error: `${ERROR_PREFIX}, "width_modal" property should be a string`
+        },
+        {
+            title: 'should throw an error if the width property is not an allowed dimension',
+            json: {
+                width: '100pt'
+            },
+            error: `${ERROR_PREFIX}, "100pt" is not a valid "width". You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')})`
+        },
+        {
+            title: 'should throw an error if the width_modal property is not an allowed dimension',
+            json: {
+                width_modal: '400cm'
+            },
+            error: `${ERROR_PREFIX}, "400cm" is not a valid "width_modal". You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')})`
         },
         {
             title: 'should throw an error if the order property is not an array',
