@@ -203,4 +203,3 @@ export interface Config extends BaseConfig {
 export type ItemColorConfigKeys = keyof ItemColorConfig;
 export type SidebarColorConfigKeys = keyof SidebarColorConfig;
 export type SidebarStringConfigKeys = keyof Pick<BaseConfig, 'default_path'>;
-export type SidebarWidthConfigKeys = keyof Pick<BaseConfig, 'width'>;
