@@ -96,12 +96,14 @@ const validateWidthOptions = (config: Config, prefix: string): void => {
         ) {
             throw new SyntaxError(`${prefix} "width.hidden" property should be a number or a string`);
         }
+        widthRegExp.lastIndex = 0;
         if (
             isString(extended) &&
             !widthRegExp.test(extended)
         ) {
             throw new SyntaxError(`${prefix} "width.extended" property has an invalid format. ${errorFormatSuffix}`);
         }
+        widthRegExp.lastIndex = 0;
         if (
             isString(hidden) &&
             !widthRegExp.test(hidden)

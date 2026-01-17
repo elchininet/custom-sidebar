@@ -282,7 +282,7 @@ export const SIDEBAR_MODE_TO_DOCKED_SIDEBAR = {
     [SidebarMode.EXTENDED]: DockedSidebar.DOCKED
 };
 
-export const ALLOWED_UNITS = ['ex', 'px', 'rem', 'vh', 'vw', 'vmax', 'vmin', '%'];
+export const ALLOWED_UNITS = ['%', 'em', 'ex', 'px', 'rem', 'vh', 'vmax', 'vmin', 'vw'];
 
 export const PROFILE_GENERAL_PATH_REGEXP = /\/profile(\/general)?$/;
 
