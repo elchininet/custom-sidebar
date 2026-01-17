@@ -384,6 +384,7 @@ export const SIDEBAR_WIDTH_DESKTOP = {
     [`${ SELECTOR.HOST_EXPANDED_NOT_MODAL }`]: {
         MdcDrawerWidth: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH,
+            CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_EXTENDED,
             'calc(256px + var(--safe-area-inset-left, 0px))'
         )
     }
@@ -392,7 +393,8 @@ export const SIDEBAR_WIDTH_DESKTOP = {
 export const SIDEBAR_WIDTH_MOBILE = {
     [`${ SELECTOR.HOST } > ${SELECTOR.MC_DRAWER_MODAL}`]: {
         width: getCSSVariables(
-            CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_MODAL,
+            CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH,
+            CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_HIDDEN,
             HA_CSS_VARIABLES.MDC_DRAWER_WIDTH,
             '256px'
         )

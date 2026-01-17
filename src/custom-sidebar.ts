@@ -25,6 +25,7 @@ import {
     Sidebar,
     SidebarItem,
     SidebarMode,
+    SidebarWidth,
     SubscriberTemplate
 } from '@types';
 import {
@@ -32,6 +33,7 @@ import {
     BLOCKED_PROPERTY,
     CHECK_FOCUSED_SHADOW_ROOT,
     CLASS,
+    CUSTOM_SIDEBAR_CSS_VARIABLES,
     DEBUG_URL_PARAMETER,
     DOMAIN_ENTITY_REGEXP,
     ELEMENT,
@@ -49,8 +51,7 @@ import {
     SELECTOR,
     SIDEBAR_BORDER_COLOR_VARIABLES_MAP,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
-    SIDEBAR_OPTIONS_VARIABLES_MAP,
-    SIDEBAR_WIDTH_VARIABLES_MAP
+    SIDEBAR_OPTIONS_VARIABLES_MAP
 } from '@constants';
 import {
     getConfig,
@@ -67,7 +68,8 @@ import {
     isUndefined,
     logVersionToConsole,
     openMoreInfoDialog,
-    openRestartDialog
+    openRestartDialog,
+    parseWidth
 } from '@utilities';
 import * as STYLES from '@styles';
 import { fetchConfig } from '@fetchers/json';
@@ -530,16 +532,15 @@ class CustomSidebar {
         }
     }
 
-    private _setElementVariables = <T, K extends keyof T>(
-        config: T,
+    private _setElementVariables = (
         element: HTMLElement,
-        dictionary: [K, string][]
+        dictionary: [string, string][]
     ) => {
-        dictionary.forEach(([option, cssVariable]) => {
-            if (config[option]) {
+        dictionary.forEach(([cssVariable, value]) => {
+            if (value) {
                 element.style.setProperty(
                     cssVariable,
-                    config[option] as string
+                    value
                 );
             }
         });
@@ -939,11 +940,25 @@ class CustomSidebar {
                 sidebarItemsContainer
             ] = elements;
 
-            this._setElementVariables(
-                this._config,
-                homeAssistantMain,
-                SIDEBAR_WIDTH_VARIABLES_MAP
-            );
+            // Set width variables
+            const { width } = this._config;
+
+            if (isObject<SidebarWidth>(width)) {
+                this._setElementVariables(
+                    homeAssistantMain,
+                    [
+                        [CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_EXTENDED, parseWidth(width.extended)],
+                        [CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_HIDDEN, parseWidth(width.hidden)]
+                    ]
+                );
+            } else {
+                this._setElementVariables(
+                    homeAssistantMain,
+                    [
+                        [CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH, parseWidth(width)]
+                    ]
+                );
+            }
 
             this._subscribeTemplateVariableChanges(
                 this._config,

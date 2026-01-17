@@ -354,11 +354,11 @@ test.describe('extending from the base', () => {
             await fulfillJson(
                 page,
                 {
-                    width: '300px',
+                    width: 300,
                     exceptions: [
                         {
                             user: 'Test',
-                            width: `${overrideWidth}px`,
+                            width: overrideWidth,
                             extend_from: BASE_NAME
                         }
                     ]
@@ -366,29 +366,6 @@ test.describe('extending from the base', () => {
             );
 
             await navigateHome(page);
-            const sidebarWidth = await getSidebarWidth(page);
-            expect(sidebarWidth).toBe(overrideWidth);
-
-        });
-
-        test('should override sidebar width_modal from the base', async ({ page }) => {
-            const overrideWidth = 280;
-            await fulfillJson(
-                page,
-                {
-                    width_modal: '300px',
-                    exceptions: [
-                        {
-                            user: 'Test',
-                            width_modal: `${overrideWidth}px`,
-                            extend_from: BASE_NAME
-                        }
-                    ]
-                }
-            );
-            await changeToMobileViewport(page);
-            await navigateHome(page, false);
-            await page.locator(SELECTORS.HA_MENU_BUTTON).click();
             const sidebarWidth = await getSidebarWidth(page);
             expect(sidebarWidth).toBe(overrideWidth);
 
@@ -616,7 +593,7 @@ test.describe('extending from the base', () => {
             await fulfillJson(
                 page,
                 {
-                    width: `${width}px`,
+                    width,
                     exceptions: [
                         {
                             user: 'Test',
@@ -627,28 +604,6 @@ test.describe('extending from the base', () => {
             );
 
             await navigateHome(page);
-            const sidebarWidth = await getSidebarWidth(page);
-            expect(sidebarWidth).toBe(width);
-
-        });
-
-        test('should take width_modal from the base', async ({ page }) => {
-            const width = 280;
-            await fulfillJson(
-                page,
-                {
-                    width_modal: `${width}px`,
-                    exceptions: [
-                        {
-                            user: 'Test',
-                            extend_from: BASE_NAME
-                        }
-                    ]
-                }
-            );
-            await changeToMobileViewport(page);
-            await navigateHome(page, false);
-            await page.locator(SELECTORS.HA_MENU_BUTTON).click();
             const sidebarWidth = await getSidebarWidth(page);
             expect(sidebarWidth).toBe(width);
 

@@ -4,10 +4,12 @@ import {
     ConfigException,
     ConfigItem,
     MatchersCondition,
+    OnClickAction,
     Primitive,
     PrimitiveArray,
     PrimitiveObject,
-    SidebarMode
+    SidebarMode,
+    SidebarWidth
 } from '@types';
 import {
     ALLOWED_UNITS,
@@ -17,8 +19,7 @@ import {
     ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS,
     JINJA_TEMPLATE_REG,
     JS_TEMPLATE_REG,
-    SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
-    SIDEBAR_WIDTH_OPTIONS
+    SIDEBAR_MODE_TO_DOCKED_SIDEBAR
 } from '@constants';
 import {
     isArray,
@@ -45,7 +46,6 @@ const BASE_CONFIG_OPTIONS = [
     'divider_bottom_color',
     'scrollbar_thumb_color',
     'styles',
-    ...SIDEBAR_WIDTH_OPTIONS,
     ...ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS,
     ...ITEM_STRING_CONFIG_OPTIONS
 ] as const;
@@ -57,16 +57,58 @@ const ONLY_BASE_CONFIG_OPTIONS = [
     'extendable_configs'
 ] as const;
 
-const validateWidthOptions = <T, K extends keyof T>(obj: T, props: K[]): void => {
+const validateWidthOptions = (config: Config, prefix: string): void => {
+    const errorFormatSuffix = `You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')})`;
     const widthRegExp = new RegExp(`^\\d+(?:${ALLOWED_UNITS.join('|')})$`);
-    props.forEach((prop: K): void => {
+    const width = config.width;
+    if (
+        !isUndefined(width) &&
+        !isString(width) &&
+        !isNumber(width) &&
+        !isObject(width)
+    ) {
+        throw new SyntaxError(`${prefix} "width" property should be a number, a string or an object`);
+    }
+    if (
+        isString(width) &&
+        !widthRegExp.test(width)
+    ) {
+        throw new SyntaxError(`${prefix} "width" property has an invalid format. ${errorFormatSuffix}`);
+    } else if(isObject<SidebarWidth>(width)) {
+        const { extended, hidden } = width;
         if (
-            !isUndefined(obj[prop]) &&
-            !widthRegExp.test(obj[prop] as string)
+            isUndefined(extended) &&
+            isUndefined(hidden)
         ) {
-            throw new SyntaxError(`${ERROR_PREFIX}, "${obj[prop]}" is not a valid "${String(prop)}". You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')})`);
+            throw new SyntaxError(`${prefix} if "width" property is an object it should have an "extended" or a "hidden" property`);
         }
-    });
+        if (
+            !isUndefined(extended) &&
+            !isNumber(extended) &&
+            !isString(extended)
+        ) {
+            throw new SyntaxError(`${prefix} "width.extended" property should be a number or a string`);
+        }
+        if (
+            !isUndefined(hidden) &&
+            !isNumber(hidden) &&
+            !isString(hidden)
+        ) {
+            throw new SyntaxError(`${prefix} "width.hidden" property should be a number or a string`);
+        }
+        if (
+            isString(extended) &&
+            !widthRegExp.test(extended)
+        ) {
+            throw new SyntaxError(`${prefix} "width.extended" property has an invalid format. ${errorFormatSuffix}`);
+        }
+        if (
+            isString(hidden) &&
+            !widthRegExp.test(hidden)
+        ) {
+            throw new SyntaxError(`${prefix} "width.hidden" property has an invalid format. ${errorFormatSuffix}`);
+        }
+    }
 };
 
 const validateStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
@@ -170,7 +212,7 @@ const validateAttributes = (
 
 const validateOnClickOption = (configItem: ConfigItem, errorPrefix: string): void => {
     if (!isUndefined(configItem.on_click)) {
-        if (!isObject(configItem.on_click)) {
+        if (!isObject<OnClickAction>(configItem.on_click)) {
             throw new SyntaxError(`${errorPrefix} "on_click" property should be an object`);
         }
         if (!isString(configItem.on_click.action)) {
@@ -374,12 +416,7 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
         `${ERROR_PREFIX}, exceptions`
     );
 
-    validateWidthOptions(
-        exception,
-        [
-            ...SIDEBAR_WIDTH_OPTIONS
-        ]
-    );
+    validateWidthOptions(exception, `${ERROR_PREFIX}, exceptions`);
 
     validateStringOrNumberOptions(
         exception,
@@ -552,12 +589,7 @@ export const validateConfig = (config: Config): void => {
         `${ERROR_PREFIX},`
     );
 
-    validateWidthOptions(
-        config,
-        [
-            ...SIDEBAR_WIDTH_OPTIONS
-        ]
-    );
+    validateWidthOptions(config, `${ERROR_PREFIX},`);
 
     validateStringOrArrayOfStringsOptions(
         [

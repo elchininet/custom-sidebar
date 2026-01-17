@@ -307,91 +307,106 @@ test.beforeEach(noCacheRoute);
 
 });
 
-test('should set sidebar width', async ({ page }) => {
-    const width = 280;
-    await fulfillJson(
-        page,
-        {
-            width: `${width}px`
-        }
-    );
-    await navigateHome(page);
-    const sidebarWidth = await getSidebarWidth(page);
-    expect(sidebarWidth).toBe(width);
-    await expect(page).toHaveScreenshot('sidebar-width.png', {
-        clip: {
-            ...SIDEBAR_CLIP_WITH_DIVIDERS,
-            width
-        }
-    });
-    await changeToMobileViewport(page);
-    await page.reload();
-    await waitForMainElements(page, false);
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await page.locator(SELECTORS.HA_MENU_BUTTON).click();
-    const mobileSidebarWidth = await getSidebarWidth(page);
-    expect(mobileSidebarWidth).not.toBe(width);
-});
+[
+    true,
+    false
+].forEach((asNumber) => {
 
-test('should set sidebar width_modal', async ({ page }) => {
     const width = 280;
-    await fulfillJson(
-        page,
-        {
-            width_modal: `${width}px`
-        }
-    );
-    await navigateHome(page);
-    const sidebarWidth = await getSidebarWidth(page);
-    expect(sidebarWidth).not.toBe(width);
-    await changeToMobileViewport(page);
-    await page.reload();
-    await waitForMainElements(page, false);
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await page.locator(SELECTORS.HA_MENU_BUTTON).click();
-    const mobileSidebarWidth = await getSidebarWidth(page);
-    expect(mobileSidebarWidth).toBe(width);
-    await expect(page).toHaveScreenshot('sidebar-width-modal.png', {
-        clip: {
-            ...SIDEBAR_CLIP_WITH_DIVIDERS,
-            height: 547,
-            width
-        }
-    });
-});
+    const titleSuffix = asNumber
+        ? 'as a number'
+        : 'as a string';
+    const widthValue = asNumber
+        ? width
+        : `${width}px`;
 
-test('should set sidebar width and width_modal', async ({ page }) => {
-    const width = 280;
-    await fulfillJson(
-        page,
-        {
-            width: `${width}px`,
-            width_modal: `${width}px`
-        }
-    );
-    await navigateHome(page);
-    const sidebarWidth = await getSidebarWidth(page);
-    expect(sidebarWidth).toBe(width);
-    await expect(page).toHaveScreenshot('sidebar-width.png', {
-        clip: {
-            ...SIDEBAR_CLIP_WITH_DIVIDERS,
-            width
-        }
+    test(`should set sidebar width ${titleSuffix}`, async ({ page }) => {
+        await fulfillJson(
+            page,
+            {
+                width: widthValue
+            }
+        );
+        await navigateHome(page);
+        const sidebarWidth = await getSidebarWidth(page);
+        expect(sidebarWidth).toBe(width);
+        await expect(page).toHaveScreenshot('sidebar-width-extended.png', {
+            clip: {
+                ...SIDEBAR_CLIP_WITH_DIVIDERS,
+                width
+            }
+        });
+        await changeToMobileViewport(page);
+        await page.reload();
+        await waitForMainElements(page, false);
+        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await page.locator(SELECTORS.HA_MENU_BUTTON).click();
+        const mobileSidebarWidth = await getSidebarWidth(page);
+        expect(mobileSidebarWidth).toBe(width);
+        await expect(page).toHaveScreenshot('sidebar-width-hidden.png', {
+            clip: {
+                ...SIDEBAR_CLIP_WITH_DIVIDERS,
+                height: 547,
+                width
+            }
+        });
     });
-    await changeToMobileViewport(page);
-    await page.reload();
-    await waitForMainElements(page, false);
-    await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
-    await page.locator(SELECTORS.HA_MENU_BUTTON).click();
-    const mobileSidebarWidth = await getSidebarWidth(page);
-    expect(mobileSidebarWidth).toBe(width);
-    await expect(page).toHaveScreenshot('sidebar-width-modal.png', {
-        clip: {
-            ...SIDEBAR_CLIP_WITH_DIVIDERS,
-            height: 547,
-            width
-        }
+
+    test(`should set sidebar width.extended ${titleSuffix}`, async ({ page }) => {
+        await fulfillJson(
+            page,
+            {
+                width: {
+                    extended: widthValue
+                }
+            }
+        );
+        await navigateHome(page);
+        const sidebarWidth = await getSidebarWidth(page);
+        expect(sidebarWidth).toBe(width);
+        await expect(page).toHaveScreenshot('sidebar-width-extended.png', {
+            clip: {
+                ...SIDEBAR_CLIP_WITH_DIVIDERS,
+                width
+            }
+        });
+        await changeToMobileViewport(page);
+        await page.reload();
+        await waitForMainElements(page, false);
+        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await page.locator(SELECTORS.HA_MENU_BUTTON).click();
+        const mobileSidebarWidth = await getSidebarWidth(page);
+        expect(mobileSidebarWidth).not.toBe(width);
     });
+
+    test(`should set sidebar width.hidden ${titleSuffix}`, async ({ page }) => {
+        await fulfillJson(
+            page,
+            {
+                width: {
+                    hidden: widthValue
+                }
+            }
+        );
+        await navigateHome(page);
+        const sidebarWidth = await getSidebarWidth(page);
+        expect(sidebarWidth).not.toBe(width);
+        await changeToMobileViewport(page);
+        await page.reload();
+        await waitForMainElements(page, false);
+        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await page.locator(SELECTORS.HA_MENU_BUTTON).click();
+        const mobileSidebarWidth = await getSidebarWidth(page);
+        expect(mobileSidebarWidth).toBe(width);
+        await expect(page).toHaveScreenshot('sidebar-width-hidden.png', {
+            clip: {
+                ...SIDEBAR_CLIP_WITH_DIVIDERS,
+                height: 547,
+                width
+            }
+        });
+    });
+
 });
 
 test('should apply attributes as an object to an item', async ({ page }) => {
