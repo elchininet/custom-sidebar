@@ -39,6 +39,11 @@ export enum DialogType {
     RESTART = 'restart'
 }
 
+export interface SidebarWidth {
+    extended?: string;
+    hidden?: string;
+}
+
 export interface ServiceCallAction {
     action: `${ActionType.CALL_SERVICE}`;
     service: string;
@@ -148,8 +153,7 @@ export interface BaseConfig extends SidebarColorConfig {
     sidebar_editable?: boolean | string;
     sidebar_mode?: `${SidebarMode}`;
     default_path?: string;
-    width?: string;
-    width_modal?: string;
+    width?: number | string | SidebarWidth;
     styles?: string;
     extend_from?: string | string[];
     analytics?: boolean | AnalyticsConfig;
@@ -199,4 +203,4 @@ export interface Config extends BaseConfig {
 export type ItemColorConfigKeys = keyof ItemColorConfig;
 export type SidebarColorConfigKeys = keyof SidebarColorConfig;
 export type SidebarStringConfigKeys = keyof Pick<BaseConfig, 'default_path'>;
-export type SidebarWidthConfigKeys = keyof Pick<BaseConfig, 'width' | 'width_modal'>;
+export type SidebarWidthConfigKeys = keyof Pick<BaseConfig, 'width'>;

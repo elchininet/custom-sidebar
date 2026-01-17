@@ -10,6 +10,7 @@ import {
 } from './utilities';
 
 const ERROR_PREFIX = `${NAMESPACE}: Invalid configuration`;
+const WIDTH_ERROR_FORMAT_SUFFIX = `You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')})`;
 
 interface TestSuit {
     title: string;
@@ -122,32 +123,63 @@ test.describe('main options', () => {
             error: `${ERROR_PREFIX}, "styles" property should be a string`
         },
         {
-            title: 'should throw an error if the width property is not a string',
+            title: 'should throw an error if the width property is not a number, a string or an object',
             json: {
-                width: 100
+                width: [100, 200]
             },
-            error: `${ERROR_PREFIX}, "width" property should be a string`
+            error: `${ERROR_PREFIX}, "width" property should be a number, a string or an object`
         },
         {
-            title: 'should throw an error if the width_modal property is not a string',
-            json: {
-                width_modal: 400
-            },
-            error: `${ERROR_PREFIX}, "width_modal" property should be a string`
-        },
-        {
-            title: 'should throw an error if the width property is not an allowed dimension',
+            title: 'should throw an error if the width property as a string has an invalid format',
             json: {
                 width: '100pt'
             },
-            error: `${ERROR_PREFIX}, "100pt" is not a valid "width". You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')})`
+            error: `${ERROR_PREFIX}, "width" property has an invalid format. ${WIDTH_ERROR_FORMAT_SUFFIX}`
         },
         {
-            title: 'should throw an error if the width_modal property is not an allowed dimension',
+            title: 'should throw an error if the width property as an object do not have the allowed properties',
             json: {
-                width_modal: '400cm'
+                width: {
+                    size: 100
+                }
             },
-            error: `${ERROR_PREFIX}, "400cm" is not a valid "width_modal". You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')})`
+            error: `${ERROR_PREFIX}, if "width" property is an object it should have an "extended" or a "hidden" property`
+        },
+        {
+            title: 'should throw an error if the width.extended property is not a number or a string',
+            json: {
+                width: {
+                    extended: { size: 100 }
+                }
+            },
+            error: `${ERROR_PREFIX}, "width.extended" property should be a number or a string`
+        },
+        {
+            title: 'should throw an error if the width.extended property has an invalid format',
+            json: {
+                width: {
+                    extended: '400cm'
+                }
+            },
+            error: `${ERROR_PREFIX}, "width.extended" property has an invalid format. ${WIDTH_ERROR_FORMAT_SUFFIX}`
+        },
+        {
+            title: 'should throw an error if the width.hidden property is not a number or a string',
+            json: {
+                width: {
+                    hidden: { size: 100 }
+                }
+            },
+            error: `${ERROR_PREFIX}, "width.hidden" property should be a number or a string`
+        },
+        {
+            title: 'should throw an error if the width.hidden property has an invalid format',
+            json: {
+                width: {
+                    hidden: '400dm'
+                }
+            },
+            error: `${ERROR_PREFIX}, "width.hidden" property has an invalid format. ${WIDTH_ERROR_FORMAT_SUFFIX}`
         },
         {
             title: 'should throw an error if the order property is not an array',

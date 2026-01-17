@@ -1,4 +1,4 @@
-import { isArray } from './predicates';
+import { isArray, isNumber } from './predicates';
 
 export const getLowercaseArray = (value: string | string[]): string[] => {
     if (isArray(value)) {
@@ -15,3 +15,9 @@ export const getArray = (value: string | string[]): string[] => {
 };
 
 export const randomId = (): string => Math.random().toString(16).slice(2);
+
+export const parseWidth = (width: undefined | number | string): undefined | string => {
+    return isNumber(width)
+        ? `${width}px`
+        : width;
+};

@@ -3,8 +3,7 @@ import{
     ItemColorConfigKeys,
     SidebarColorConfigKeys,
     SidebarMode,
-    SidebarStringConfigKeys,
-    SidebarWidthConfigKeys
+    SidebarStringConfigKeys
 } from '@types';
 
 export * from './global';
@@ -136,7 +135,8 @@ export enum CUSTOM_SIDEBAR_CSS_VARIABLES {
     NOTIFICATION_TEXT_COLOR_SELECTED = '--custom-sidebar-notification-text-color-selected',
     NOTIFICATION_TEXT_COLOR_HOVER = '--custom-sidebar-notification-text-color-hover',
     WIDTH = '--custom-sidebar-width',
-    WIDTH_MODAL = '--custom-sidebar-width-modal'
+    WIDTH_EXTENDED = '--custom-sidebar-width-extended',
+    WIDTH_HIDDEN = '--custom-sidebar-width-hidden'
 }
 
 export const ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
@@ -159,11 +159,6 @@ export const ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
     'notification_text_color_selected',
     'notification_text_color_hover',
     'divider_color'
-];
-
-export const SIDEBAR_WIDTH_OPTIONS: SidebarWidthConfigKeys[] = [
-    'width',
-    'width_modal'
 ];
 
 export const ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
@@ -213,11 +208,6 @@ export const SIDEBAR_OPTIONS_VARIABLES_MAP: [SidebarColorConfigKeys, string][] =
 
 export const SIDEBAR_BORDER_COLOR_VARIABLES_MAP: [SidebarColorConfigKeys, string][] = [
     ['sidebar_border_color', CUSTOM_SIDEBAR_CSS_VARIABLES.BORDER_COLOR]
-];
-
-export const SIDEBAR_WIDTH_VARIABLES_MAP: [SidebarWidthConfigKeys, string][] = [
-    ['width', CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH],
-    ['width_modal', CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_MODAL]
 ];
 
 export enum CLASS {
