@@ -3,6 +3,14 @@
   "minor_version": 2,
   "key": "repairs.issue_registry",
   "data": {
-    "issues": []
+    "issues": [
+      {
+        "created": "2026-01-30T21:14:47.395689+00:00",
+        "dismissed_version": null,
+        "domain": "lovelace",
+        "is_persistent": false,
+        "issue_id": "yaml_mode_deprecated"
+      }
+    ]
   }
 }
