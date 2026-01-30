@@ -124,6 +124,23 @@
         "version": "2025.12.0"
       },
       {
+        "id": "3c062e27152d4366aaa0804ae023bbbd",
+        "user_id": "ec313e3c38fb4d60b44e0db03cdc1250",
+        "client_id": "http://localhost:8123/",
+        "client_name": null,
+        "client_icon": null,
+        "token_type": "normal",
+        "created_at": "2026-01-30T21:15:33.551331+00:00",
+        "access_token_expiration": 1800.0,
+        "token": "c2a7f9e1bd9bdbfaf6d3d7fc8ca06d2ac4d4ee97f74614c4e023db9179d2181ff2d1d64a5209fdee1587b6c8a1eec716ae496f4e84ca8ca47091d93c8273af56",
+        "jwt_key": "09ef95118451fa44e3f1cc65054e2ca53471220a10b203f022d4a1ec8827c26d1c1724f16ec8e50de0bd8ef88cd5cf579063fef86cb1892605653c2b4caa5d52",
+        "last_used_at": "2026-01-30T21:15:33.551422+00:00",
+        "last_used_ip": "192.168.65.1",
+        "expire_at": 1777583733.551422,
+        "credential_id": "0ef96d1a528f4af5ad82b425af19836b",
+        "version": "2026.2.0b1"
+      },
+      {
         "id": "a8d31ff77ae541acb209e08811355edf",
         "user_id": "e368f2e36ddd42db8e125cbc5f3ca1c6",
         "client_id": null,
