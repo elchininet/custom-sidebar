@@ -42,7 +42,6 @@ test('sidebar items should have a data-processed attribute after being processed
         HREFS.ACTIVITY,
         HREFS.MEDIA_BROWSER,
         HREFS.CONFIG,
-        HREFS.DEV_TOOLS,
         HREFS.ENERGY,
         HREFS.MAP,
         HREFS.HISTORY
@@ -136,13 +135,13 @@ test('should apply the order propely', async ({ page }) => {
         [HREFS.ENTITIES, '3'],
         [HREFS.AUTOMATIONS, '4'],
         [HREFS.TODO, '5'],
-        [HREFS.ENERGY, '7'],
-        [HREFS.MAP, '8'],
-        [HREFS.HISTORY, '9'],
-        [HREFS.ACTIVITY, '12'],
-        [HREFS.MEDIA_BROWSER, '13'],
-        [HREFS.CONFIG, '14'],
-        [HREFS.DEV_TOOLS, '15']
+        [HREFS.ENERGY, '10'],
+        [HREFS.MAP, '10'],
+        [HREFS.HISTORY, '10'],
+        [HREFS.ACTIVITY, '6'],
+        [HREFS.MEDIA_BROWSER, '7'],
+        [HREFS.CONFIG, '8'],
+        [HREFS.DEV_TOOLS, '9']
     ];
 
     for (const linkEntry of linkEntries) {

@@ -40,7 +40,7 @@ test('should set scrollbar_thumb_color', async ({ page }) => {
     await expect(page).toHaveScreenshot('sidebar-scrollbar-thumb-color.png', {
         clip: {
             ...SIDEBAR_CLIP_WITH_DIVIDERS,
-            height: 429
+            height: 550
         }
     });
 

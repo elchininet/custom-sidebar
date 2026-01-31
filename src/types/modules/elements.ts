@@ -118,3 +118,10 @@ export interface HuiTimestampDisplay extends HTMLElement {
         values: string[];
     };
 }
+
+export interface ElementsStore {
+    topItemsContainer: HTMLElement;
+    bottomItemsContainer: HTMLElement;
+    topItems: NodeListOf<SidebarItem>;
+    bottomItems: NodeListOf<SidebarItem>;
+}

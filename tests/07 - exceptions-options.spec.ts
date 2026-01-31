@@ -625,13 +625,18 @@ test.describe('without extending from the base', () => {
                         order: [
                             ...json.order,
                             {
-                                item: 'dev',
+                                new_item: true,
+                                item: 'developer tools',
+                                href: '/config/developer-tools',
+                                name: 'Dev tools',
+                                icon: 'mdi:tools',
                                 bottom: true
                             },
                             {
                                 item: 'config',
                                 match: 'href',
-                                bottom: true
+                                order: 11,
+                                bottom: false
                             }
                         ]
                     }

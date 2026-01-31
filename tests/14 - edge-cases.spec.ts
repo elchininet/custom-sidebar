@@ -25,18 +25,17 @@ test('if there is a match the item should be marked and ignored by subsequent ma
     await fulfillJson(page, {
         order: [
             {
-                item: 'er', // it should match also with "Developer tools" but it matches first with "overview"
+                item: 'er', // it should match also with "Energy" but it matches first with "overview"
                 name: 'Overview matched'
             },
             {
-                item: 'lo', // it should match also with "/developer-tools" but it matches first with "/logbook"
+                item: 'g', // it should match also with "/energy" but it matches first with "/logbook"
                 name: 'Activity matched',
                 match: 'href'
             },
             {
-                item: 'oo', // it also matches with "/logbook" but as "Activity" was already matched, it is ignored
-                name: 'Dev matched',
-                match: 'href'
+                item: 'e', // it also matches with "Overview" and "Energy" but as they were already matched, they are ignored
+                name: 'Energy matched'
             }
         ]
     });
@@ -77,18 +76,9 @@ test('non new-items that don\'t match a sidebar item should trigger a warning', 
 
     const warnings = await waitForWarnings(page);
 
-    expect(warnings).toEqual(
-        expect.arrayContaining([
-            `${MESSAGE} "medium"`,
-            `${MESSAGE} "logboek"`
-        ])
-    );
-
-    expect(warnings).toEqual(
-        expect.not.arrayContaining([
-            `${MESSAGE} "bazinga"`
-        ])
-    );
+    expect(warnings).toContain(`${MESSAGE} "medium"`);
+    expect(warnings).toContain(`${MESSAGE} "logboek"`);
+    expect(warnings).not.toContain(`${MESSAGE} "bazinga"`);
 
 });
 
