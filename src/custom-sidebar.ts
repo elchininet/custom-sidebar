@@ -135,8 +135,6 @@ class CustomSidebar {
 
         this._items = [];
         this._logBookMessagesMap = new Map<string, number>();
-        this._sidebarScroll = 0;
-        this._itemTouchedBinded = this._itemTouched.bind(this);
         this._mouseEnterBinded = this._mouseEnter.bind(this);
         this._mouseLeaveBinded = this._mouseLeave.bind(this);
         this._configPromise = fetchConfig();
@@ -153,13 +151,11 @@ class CustomSidebar {
     private _ha: HomeAsssistantExtended;
     private _partialPanelResolver: HAElement;
     private _sidebar: HAElement;
-    private _sidebarScroll: number;
     private _renderer: HomeAssistantJavaScriptTemplatesRenderer;
     private _styleManager: HomeAssistantStylesManager;
     private _items: SidebarItem[];
     private _logBookMessagesMap: Map<string, number>;
     private _huiViewContainerObserver: MutationObserver;
-    private _itemTouchedBinded: () => Promise<void>;
     private _mouseEnterBinded: (event: MouseEvent) => void;
     private _mouseLeaveBinded: () => void;
 
@@ -1165,7 +1161,7 @@ class CustomSidebar {
                     []
                 );
 
-                configItems.forEach((orderItem: ConfigOrderWithItem, index: number): void => {
+                configItems.forEach((orderItem: ConfigOrderWithItem): void => {
 
                     if (orderItem.new_item) {
 
@@ -1198,8 +1194,8 @@ class CustomSidebar {
                     }
 
                     if (isUndefined(orderItem.order)) {
-                        orderItem.element.style.order = `${index}`;
-                        lastOrder = index + 1;
+                        orderItem.element.style.order = `${lastOrder}`;
+                        lastOrder ++;
                     } else {
                         orderItem.element.style.order = `${orderItem.order}`;
                         lastOrder = orderItem.order + 1;
@@ -1289,23 +1285,9 @@ class CustomSidebar {
                 topItemsContainer.appendChild(topItemsFragment);
                 bottomItemsContainer.appendChild(bottomItemsFragment);
 
-                topItemsContainer.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
-                topItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent): void => {
-                    if (event.key === KEY.ENTER) {
-                        this._itemTouchedBinded();
-                    }
-                });
-
                 this._aplyItemRippleStyles();
                 this._panelLoaded();
 
-            });
-    }
-
-    private async _itemTouched(): Promise<void> {
-        this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element
-            .then((sidebarItemsContainer: HTMLElement): void => {
-                this._sidebarScroll = sidebarItemsContainer.scrollTop;
             });
     }
 
@@ -1475,10 +1457,6 @@ class CustomSidebar {
             item.classList.toggle(CLASS.ITEM_SELECTED, isActive);
             item.tabIndex = isActive ? 0 : -1;
         });
-
-        if (sidebarTopItemsContainer.scrollTop !== this._sidebarScroll) {
-            sidebarTopItemsContainer.scrollTop = this._sidebarScroll;
-        }
 
         // If it is a lovelace dashboard add an observer for hui-view-container
         this._huiViewContainerObserver.disconnect();

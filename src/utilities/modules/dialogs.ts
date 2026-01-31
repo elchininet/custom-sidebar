@@ -3,29 +3,13 @@ import {
     DialogImport,
     HaConfigBackupBackups,
     HaConfigSystemNavigation,
-    HassExtended,
     HomeAssistantDialogEventDetail,
     HomeAsssistantExtended,
-    PartialPanelResolver,
     Router
 } from '@types';
 import { CUSTOM_ELEMENT, EVENT } from '@constants';
 
 const getHaPanelConfig = async (): Promise<Router> => {
-    if (!customElements.get(CUSTOM_ELEMENT.HA_PANEL_CONFIG)) {
-        const partialPanelResolver = document.createElement(CUSTOM_ELEMENT.PARTIAL_PANEL_RESOLVER) as PartialPanelResolver;
-        partialPanelResolver.hass = {
-            panels: [
-                {
-                    url_path: 'config',
-                    component_name: 'config'
-                }
-            ]
-        } as HassExtended;
-        partialPanelResolver._updateRoutes();
-        await partialPanelResolver.routerOptions.routes.config.load();
-        await customElements.whenDefined(CUSTOM_ELEMENT.HA_PANEL_CONFIG);
-    }
     const haPanelConfig = document.createElement(CUSTOM_ELEMENT.HA_PANEL_CONFIG) as Router;
     return haPanelConfig;
 };

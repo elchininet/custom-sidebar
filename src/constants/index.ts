@@ -224,7 +224,6 @@ export enum ATTRIBUTE {
 }
 
 export enum CUSTOM_ELEMENT {
-    PARTIAL_PANEL_RESOLVER = 'partial-panel-resolver',
     HA_PANEL_CONFIG = 'ha-panel-config',
     HA_CONFIG_BACKUP = 'ha-config-backup',
     HA_CONFIG_BACKUP_BACKUPS = 'ha-config-backup-backups',
@@ -236,7 +235,6 @@ export enum CUSTOM_ELEMENT {
 
 export enum EVENT {
     CLICK = 'click',
-    MOUSEDOWN = 'mousedown',
     MOUSEENTER = 'mouseenter',
     MOUSELEAVE = 'mouseleave',
     KEYDOWN = 'keydown',
