@@ -22,10 +22,8 @@ order:
     href: "/config/automation"
     icon: mdi:robot
     order: 4
-  - item: terminal
-    order: 5
   - item: hacs
-    order: 6
+    order: 5
     notification: |
       [[[
         const outdatedHacsEntities = Object.values(entities.update).filter(
@@ -35,27 +33,29 @@ order:
       ]]]
   - item: config
     bottom: true
-    order: 7
+    order: 6
   - new_item: true
     item: Server Controls
     href: "/config/server_control"
     icon: mdi:server
     bottom: true
-    order: 8
+    order: 7
   - item: activity
     bottom: true
-    order: 9
+    order: 8
   - new_item: true
     item: Logs
     bottom: true
     href: "/config/logs"
     icon: mdi:math-log
-    order: 10
-  - item: developer tools
+    order: 9
+  - new_item: true
+    item: developer tools
     name: Dev tools
     icon: mdi:tools
+    href: "/config/developer-tools"
     bottom: true
-    order: 11
+    order: 10
   - item: history
     hide: true
   - item: snapshots
@@ -81,7 +81,7 @@ exceptions:
     extend_from: base
     order:
       - item: history
-        order: 12
+        order: 11
       - item: media
-        order: 13
+        order: 12
 id: example_yaml (remove this from your config or replace with any other string)
