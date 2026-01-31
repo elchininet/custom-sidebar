@@ -18,10 +18,12 @@ import {
     ConfigOrder,
     ConfigOrderWithItem,
     DialogType,
+    ElementsStore,
     HomeAssistantMain,
     HomeAsssistantExtended,
     Match,
     PartialPanelResolver,
+    PromisableOptions,
     Sidebar,
     SidebarItem,
     SidebarMode,
@@ -210,8 +212,37 @@ class CustomSidebar {
             });
     }
 
-    private async _getElements(): Promise<[HTMLElement, NodeListOf<SidebarItem>, HTMLElement]> {
-        const promisableResultOptions = {
+    private async _getContainerItems(
+        container: HTMLElement,
+        promisableResultOptions: PromisableOptions
+    ): Promise<NodeListOf<SidebarItem>> {
+        const items = await getPromisableResult<NodeListOf<SidebarItem>>(
+            () => container.querySelectorAll<SidebarItem>(`:scope > ${ELEMENT.ITEM}`),
+            (elements: NodeListOf<SidebarItem>): boolean => {
+                return Array.from(elements).every((element: SidebarItem): boolean => {
+                    const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
+                    return text.length > 0;
+                });
+            },
+            promisableResultOptions
+        );
+        return items;
+    }
+
+    private _mapItemsForDebug(items: NodeListOf<SidebarItem>): ({text: string, href: string})[] {
+        return Array.from(items).map((element: SidebarItem) => {
+            const href = element.href;
+            const intemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
+            const text = intemText.textContent.trim();
+            return {
+                text,
+                href
+            };
+        });
+    }
+
+    private async _getElements(): Promise<ElementsStore> {
+        const promisableResultOptions: PromisableOptions = {
             retries: MAX_ATTEMPTS,
             delay: RETRY_DELAY,
             shouldReject: false
@@ -223,41 +254,37 @@ class CustomSidebar {
             (sidebarLoader: Element | null) => sidebarLoader === null,
             promisableResultOptions
         );
-        const sidebarItemsContainer = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element) as HTMLElement;
-        const spacer = await getPromisableResult<HTMLElement>(
-            () => sidebarItemsContainer.querySelector<HTMLElement>(`:scope > ${SELECTOR.SPACER}`),
-            (spacer: HTMLElement): boolean => !!spacer,
-            promisableResultOptions
-        );
-        const items = await getPromisableResult<NodeListOf<SidebarItem>>(
-            () => sidebarItemsContainer.querySelectorAll<SidebarItem>(`:scope > ${ELEMENT.ITEM}`),
-            (elements: NodeListOf<SidebarItem>): boolean => {
-                return Array.from(elements).every((element: SidebarItem): boolean => {
-                    const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
-                    return text.length > 0;
-                });
-            },
-            promisableResultOptions
-        );
+        const topItemsContainer = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element) as HTMLElement;
+        const bottomItemsContainer = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element) as HTMLElement;
+
+        const topItems = await this._getContainerItems(topItemsContainer, promisableResultOptions);
+        const bottomItems = await this._getContainerItems(bottomItemsContainer, promisableResultOptions);
+
         if (this._debug) {
-            const elementsTable = Array.from(items).map((element: SidebarItem) => {
-                const href = element.href;
-                const intemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
-                const text = intemText.textContent.trim();
-                return {
-                    text,
-                    href
-                };
-            });
+            const topItemsTable = this._mapItemsForDebug(topItems);
+            const bottomItemsTable = this._mapItemsForDebug(bottomItems);
+
             this._debugLog(
-                'Native sidebar items',
-                elementsTable,
+                'Top Native sidebar items',
+                topItemsTable,
+                {
+                    table: true
+                }
+            );
+            this._debugLog(
+                'Bottom Native sidebar items',
+                bottomItemsTable,
                 {
                     table: true
                 }
             );
         }
-        return [sidebarItemsContainer, items, spacer];
+        return {
+            topItemsContainer,
+            bottomItemsContainer,
+            topItems,
+            bottomItems
+        };
     }
 
     private _getAnchorElement(element: HTMLElement): HTMLAnchorElement {
@@ -695,50 +722,19 @@ class CustomSidebar {
 
     private _focusItemByTab(sidebarShadowRoot: ShadowRoot, element: SidebarItem, forward: boolean): void {
 
-        const notifications = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.SIDEBAR_NOTIFICATIONS);
-        const profile = sidebarShadowRoot.querySelector<HTMLElement>(SELECTOR.USER);
         const haIconButton = sidebarShadowRoot.querySelector<HTMLElement>(ELEMENT.HA_ICON_BUTTON);
         const activeIndex = this._items.indexOf(element);
+        const lastIndex = this._items.length - 1;
 
-        if (
-            element === notifications ||
-            element === profile ||
-            activeIndex >= 0
-        ) {
+        if (activeIndex >= 0) {
 
-            if (element === notifications) {
-
-                if (forward) {
-                    profile.focus();
-                } else {
-                    this._focusItem(0, forward);
-                }
-
-            } else if (element === profile) {
-
-                notifications.focus();
-
-            } else {
-
-                const lastIndex = this._items.length - 1;
-
-                if (
-                    (forward && activeIndex < lastIndex) ||
-                    (!forward && activeIndex > 0)
-                ) {
-
-                    this._focusItem(activeIndex, forward);
-
-                } else {
-
-                    if (forward) {
-                        notifications.focus();
-                    } else {
-                        haIconButton.focus();
-                    }
-
-                }
-
+            if (
+                (forward && activeIndex < lastIndex) ||
+                (!forward && activeIndex > 0)
+            ) {
+                this._focusItem(activeIndex, forward);
+            } else if(!forward) {
+                haIconButton.focus();
             }
 
         }
@@ -929,15 +925,17 @@ class CustomSidebar {
             this._haDrawer.selector.$.query(SELECTOR.MC_DRAWER).element,
             this._sidebar.element,
             this._sidebar.selector.$.element,
-            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element
-        ]).then((elements: [HTMLElement, HTMLElement, HTMLElement, ShadowRoot, HTMLElement]) => {
+            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element,
+            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element
+        ]).then((elements: [HTMLElement, HTMLElement, HTMLElement, ShadowRoot, HTMLElement, HTMLElement]) => {
 
             const [
                 homeAssistantMain,
                 mcDrawer,
                 sidebar,
                 sideBarShadowRoot,
-                sidebarItemsContainer
+                sidebarTopItemsContainer,
+                sidebarBottomItemsContainer
             ] = elements;
 
             // Set width variables
@@ -972,14 +970,25 @@ class CustomSidebar {
                 SIDEBAR_BORDER_COLOR_VARIABLES_MAP
             );
 
-            sidebarItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+            sidebarTopItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
                 if (
                     event.key === KEY.ARROW_DOWN ||
                     event.key === KEY.ARROW_UP
                 ) {
                     event.preventDefault();
                     event.stopImmediatePropagation();
-                    this._focusItemByKeyboard(sidebarItemsContainer, event.key === KEY.ARROW_DOWN);
+                    this._focusItemByKeyboard(sidebarTopItemsContainer, event.key === KEY.ARROW_DOWN);
+                }
+            }, true);
+
+            sidebarBottomItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                if (
+                    event.key === KEY.ARROW_DOWN ||
+                    event.key === KEY.ARROW_UP
+                ) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    this._focusItemByKeyboard(sidebarBottomItemsContainer, event.key === KEY.ARROW_DOWN);
                 }
             }, true);
 
@@ -1040,7 +1049,6 @@ class CustomSidebar {
                     STYLES.SIDEBAR_BUTTON_COLOR,
                     STYLES.SIDEBAR_BACKGROUND,
                     STYLES.MENU_BACKGROUND_DIVIDER_TOP_COLOR,
-                    STYLES.DIVIDER_BOTTOM_COLOR_DIVIDER_COLOR,
                     STYLES.SCROLL_THUMB_COLOR,
                     STYLES.SIDEBAR_EDITABLE,
                     STYLES.ITEM_DIVIDER_ITEM_DIVIDER_COLOR,
@@ -1087,16 +1095,26 @@ class CustomSidebar {
 
     private _rearrange(): void {
         this._getElements()
-            .then((elements) => {
+            .then((elementsStore: ElementsStore) => {
 
                 const { order, hide_all } = this._config;
-                const [sidebarItemsContainer, items, spacer] = elements;
+                const {
+                    topItemsContainer,
+                    bottomItemsContainer,
+                    topItems,
+                    bottomItems
+                } = elementsStore;
 
-                let orderIndex = 0;
-                let crossedBottom = false;
+                let lastOrder = 0;
+                const topItemsFragment = document.createDocumentFragment();
+                const bottomItemsFragment = document.createDocumentFragment();
 
-                this._items = Array.from(items);
+                this._items = [
+                    ...Array.from(topItems),
+                    ...Array.from(bottomItems)
+                ];
                 const matched: Set<HTMLElement> = new Set();
+                const totalItems = this._items.length;
 
                 if (hide_all) {
                     this._items.forEach((element: SidebarItem): void => {
@@ -1121,7 +1139,6 @@ class CustomSidebar {
                                 );
 
                                 if (matchText) {
-
                                     if (matched.has(element)) {
                                         return false;
                                     } else {
@@ -1148,30 +1165,11 @@ class CustomSidebar {
                     []
                 );
 
-                const processBottom = () => {
-                    if (!crossedBottom) {
-                        this._items.forEach((element: HTMLElement) => {
-                            if (!element.hasAttribute(ATTRIBUTE.PROCESSED)) {
-                                element.style.order = `${orderIndex}`;
-                            }
-                        });
-                        orderIndex ++;
-                        (spacer as HTMLDivElement).style.order = `${orderIndex}`;
-                        orderIndex ++;
-                        crossedBottom = true;
-                    }
-                };
-
-                configItems.forEach((orderItem: ConfigOrderWithItem): void => {
-
-                    if (orderItem.bottom) {
-                        processBottom();
-                    }
+                configItems.forEach((orderItem: ConfigOrderWithItem, index: number): void => {
 
                     if (orderItem.new_item) {
 
                         const newItem = this._buildNewItem(orderItem);
-                        sidebarItemsContainer.append(newItem);
 
                         orderItem.element = newItem;
 
@@ -1193,7 +1191,19 @@ class CustomSidebar {
 
                     }
 
-                    orderItem.element.style.order = `${orderIndex}`;
+                    if (orderItem.bottom) {
+                        bottomItemsFragment.appendChild(orderItem.element);
+                    } else {
+                        topItemsFragment.appendChild(orderItem.element);
+                    }
+
+                    if (isUndefined(orderItem.order)) {
+                        orderItem.element.style.order = `${index}`;
+                        lastOrder = index + 1;
+                    } else {
+                        orderItem.element.style.order = `${orderItem.order}`;
+                        lastOrder = orderItem.order + 1;
+                    }
 
                     if (!isUndefined(orderItem.attributes)) {
                         this._subscribeAttributes(
@@ -1259,13 +1269,15 @@ class CustomSidebar {
                         orderItem.element.addEventListener(EVENT.CLICK, this._mouseClick.bind(this, orderItem), true);
                     }
 
-                    orderIndex++;
-
                 });
 
-                if (configItems.length) {
-                    processBottom();
-                }
+                this._items.forEach((element: HTMLElement) => {
+                    if (!element.hasAttribute(ATTRIBUTE.PROCESSED)) {
+                        element.style.order = lastOrder > 0
+                            ? `${lastOrder}`
+                            : `${totalItems}`;
+                    }
+                });
 
                 this._items.sort(
                     (
@@ -1274,8 +1286,11 @@ class CustomSidebar {
                     ): number => +itemA.style.order - +itemB.style.order
                 );
 
-                sidebarItemsContainer.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
-                sidebarItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent): void => {
+                topItemsContainer.appendChild(topItemsFragment);
+                bottomItemsContainer.appendChild(bottomItemsFragment);
+
+                topItemsContainer.addEventListener(EVENT.MOUSEDOWN, this._itemTouchedBinded);
+                topItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent): void => {
                     if (event.key === KEY.ENTER) {
                         this._itemTouchedBinded();
                     }
@@ -1288,7 +1303,7 @@ class CustomSidebar {
     }
 
     private async _itemTouched(): Promise<void> {
-        this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element
+        this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element
             .then((sidebarItemsContainer: HTMLElement): void => {
                 this._sidebarScroll = sidebarItemsContainer.scrollTop;
             });
@@ -1431,11 +1446,16 @@ class CustomSidebar {
         // Select the right element in the sidebar
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
         const panelPath = `${location.pathname}${location.search}`;
-        const sidebarItemsContainer = await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_ITEMS_CONTAINER).element as HTMLElement;
+        const sidebarTopItemsContainer = await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element as HTMLElement;
+        const sidebarBottomItemsContainer = await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element as HTMLElement;
 
-        const items = Array.from<SidebarItem>(
-            sidebarItemsContainer.querySelectorAll<SidebarItem>(ELEMENT.ITEM)
+        const topItems = Array.from<SidebarItem>(
+            sidebarTopItemsContainer.querySelectorAll<SidebarItem>(ELEMENT.ITEM)
         );
+        const bottomItems = Array.from<SidebarItem>(
+            sidebarBottomItemsContainer.querySelectorAll<SidebarItem>(ELEMENT.ITEM)
+        );
+        const items = [...topItems, ...bottomItems];
 
         const activeItem = items.reduce((active: null | SidebarItem, item: SidebarItem): SidebarItem => {
             if (
@@ -1456,8 +1476,8 @@ class CustomSidebar {
             item.tabIndex = isActive ? 0 : -1;
         });
 
-        if (sidebarItemsContainer.scrollTop !== this._sidebarScroll) {
-            sidebarItemsContainer.scrollTop = this._sidebarScroll;
+        if (sidebarTopItemsContainer.scrollTop !== this._sidebarScroll) {
+            sidebarTopItemsContainer.scrollTop = this._sidebarScroll;
         }
 
         // If it is a lovelace dashboard add an observer for hui-view-container

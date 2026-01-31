@@ -106,9 +106,6 @@ export interface SidebarColorConfig extends ItemColorConfig {
     sidebar_background?: string;
     menu_background?: string;
     scrollbar_thumb_color?: string;
-    divider_color?: string;
-    divider_top_color?: string;
-    divider_bottom_color?: string;
     sidebar_border_color?: string;
 }
 

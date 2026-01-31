@@ -1,6 +1,7 @@
 import { test, expect } from 'playwright-test-coverage';
 import {
     CONFIG_FILES,
+    SIDEBAR_CLIP,
     SIDEBAR_CLIP_WITH_DIVIDERS,
     SELECTORS,
     BASE_URL,
@@ -257,27 +258,11 @@ test.beforeEach(noCacheRoute);
         screenshot: 'sidebar-hide-all.png'
     },
     {
-        title: 'If divider_color is set it should set all the dividers in that color',
+        title: 'If divider_color is set it should set the divider in that color',
         json: {
             divider_color: 'red'
         },
         screenshot: 'sidebar-divider-color.png'
-    },
-    {
-        title: 'If divider_top_color is set it should override divider_color',
-        json: {
-            divider_color: 'red',
-            divider_top_color: 'green'
-        },
-        screenshot: 'sidebar-divider-top-color.png'
-    },
-    {
-        title: 'If divider_bottom_color is set it should override divider_color',
-        json: {
-            divider_color: 'red',
-            divider_bottom_color: 'green'
-        },
-        screenshot: 'sidebar-divider-bottom-color.png'
     },
     {
         title: 'should apply custom styles',
@@ -332,7 +317,7 @@ test.beforeEach(noCacheRoute);
         expect(sidebarWidth).toBe(width);
         await expect(page).toHaveScreenshot('sidebar-width-extended.png', {
             clip: {
-                ...SIDEBAR_CLIP_WITH_DIVIDERS,
+                ...SIDEBAR_CLIP,
                 width
             }
         });
@@ -345,8 +330,8 @@ test.beforeEach(noCacheRoute);
         expect(mobileSidebarWidth).toBe(width);
         await expect(page).toHaveScreenshot('sidebar-width-hidden.png', {
             clip: {
-                ...SIDEBAR_CLIP_WITH_DIVIDERS,
-                height: 547,
+                ...SIDEBAR_CLIP,
+                height: 667,
                 width
             }
         });
@@ -366,7 +351,7 @@ test.beforeEach(noCacheRoute);
         expect(sidebarWidth).toBe(width);
         await expect(page).toHaveScreenshot('sidebar-width-extended.png', {
             clip: {
-                ...SIDEBAR_CLIP_WITH_DIVIDERS,
+                ...SIDEBAR_CLIP,
                 width
             }
         });
@@ -400,8 +385,8 @@ test.beforeEach(noCacheRoute);
         expect(mobileSidebarWidth).toBe(width);
         await expect(page).toHaveScreenshot('sidebar-width-hidden.png', {
             clip: {
-                ...SIDEBAR_CLIP_WITH_DIVIDERS,
-                height: 547,
+                ...SIDEBAR_CLIP,
+                height: 667,
                 width
             }
         });

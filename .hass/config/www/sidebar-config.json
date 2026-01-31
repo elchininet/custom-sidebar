@@ -1,91 +1,18 @@
 {
-    "title": "Custom Title",
-    "order": [
-      {
-        "item": "overview",
-        "order": 0
-      },
-      {
-        "new_item": true,
-        "item": "Google",
-        "href": "https://mrdoob.com/projects/chromeexperiments/google-gravity/",
-        "icon": "mdi:earth",
-        "target": "_blank",
-        "order": 1
-      },
-      {
-        "new_item": true,
-        "item": "Integrations",
-        "href": "/config/integrations",
-        "icon": "mdi:puzzle",
-        "order": 2
-      },
-      {
-        "new_item": true,
-        "item": "Entities",
-        "href": "/config/entities",
-        "icon": "mdi:hexagon-multiple",
-        "order": 3
-      },
-      {
-        "new_item": true,
-        "item": "Automations",
-        "href": "/config/automation",
-        "icon": "mdi:robot",
-        "order": 4
-      },
-      {
-        "item": "lists",
-        "icon": "mdi:list-box-outline",
-        "name": "To-do",
-        "notification": "3",
-        "order": 5
-      },
-      {
-        "item": "activity",
-        "bottom": true,
-        "order": 6
-      },
-      {
-        "item": "media",
-        "bottom": true,
-        "order": 7
-      },
-      {
-        "item": "config",
-        "match": "href",
-        "bottom": true,
-        "order": 8
-      },
-      {
-        "item": "developer tools",
-        "name": "Dev tools",
-        "icon": "mdi:tools",
-        "bottom": true,
-        "order": 9
-      },
-      {
-        "new_item": true,
-        "item": "Hidden",
-        "icon": "mdi:file-hidden",
-        "href": "/hidden",
-        "hide": true
-      },
-      {
-        "item": "/energy",
-        "match": "href",
-        "exact": true,
-        "hide": true
-      },
-      {
-        "item": "/map",
-        "match": "href",
-        "exact": true,
-        "hide": true
-      },
-      {
-        "item": "history",
-        "hide": true
-      }
-    ]
-  }
+  "title": "[[[ 'Power: ' + states('input_boolean.my_switch') ]]]",
+  "sidebar_editable": "[[[ is_state('input_boolean.my_switch', 'off') ]]]",
+  "order": [
+    {
+      "item": "energy",
+      "name": "[[[ const name = 'Energy '; const inputs = states.input_boolean; const mySwitch = inputs.my_switch; const mySwitchState = mySwitch.state; return `${name}(${mySwitchState})`; ]]]",
+      "notification": "[[[ +states('input_select.fan_speed') * 2 ]]]"
+    },
+    {
+      "new_item": true,
+      "item": "Fan",
+      "href": "/my_fan",
+      "icon": "mdi:fan-plus",
+      "notification": "[[[ states('input_select.fan_speed') ]]]"
+    }
+  ]
+}

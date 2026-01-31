@@ -58,7 +58,9 @@
         "order": 8
       },
       {
+        "new_item": true,
         "item": "developer tools",
+        "href": "/config/developer-tools",
         "name": "Dev tools",
         "icon": "mdi:tools",
         "bottom": true,

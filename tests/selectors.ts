@@ -6,7 +6,7 @@ export const getSidebarLinkSelector = (href: string): string => {
 };
 
 export const getSidebarItem = (page: Page, href: string) => {
-    const items = page.locator(`${SELECTORS.HA_SIDEBAR} ${SELECTORS.SIDEBAR_ITEMS_CONTAINER} ${SELECTORS.SIDEBAR_ITEM}`);
+    const items = page.locator(`${SELECTORS.HA_SIDEBAR} ${SELECTORS.SIDEBAR_ITEM}`);
     return items.filter({
         has: page.locator(`a[role="listitem"][href="${href}"]`)
     });

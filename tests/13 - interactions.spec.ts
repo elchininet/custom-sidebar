@@ -389,7 +389,7 @@ test('the scroll should be restored after clicking on an element', async ({ page
     await expect(page).toHaveScreenshot('sidebar-small-viewport.png', {
         clip: {
             ...SIDEBAR_CLIP,
-            height: 378
+            height: 500
         }
     });
     await page.waitForTimeout(600);
@@ -398,13 +398,13 @@ test('the scroll should be restored after clicking on an element', async ({ page
 
     await item.scrollIntoViewIfNeeded();
 
-    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
+    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_TOP_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
 
     await item.click({ delay: 150 });
     await page.waitForTimeout(600);
 
     expect(
-        await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
+        await page.locator(SELECTORS.SIDEBAR_TOP_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
     ).toBe(scrollTopStart);
 
 });
@@ -421,7 +421,7 @@ test('if no order items the scroll should be restored after clicking on an eleme
     await expect(page).toHaveScreenshot('sidebar-without-order-small-viewport.png', {
         clip: {
             ...SIDEBAR_CLIP,
-            height: 378
+            height: 500
         }
     });
     await page.waitForTimeout(600);
@@ -430,13 +430,13 @@ test('if no order items the scroll should be restored after clicking on an eleme
 
     await item.scrollIntoViewIfNeeded();
 
-    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
+    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_TOP_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
 
     await item.click({ delay: 150 });
     await page.waitForTimeout(600);
 
     expect(
-        await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
+        await page.locator(SELECTORS.SIDEBAR_TOP_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
     ).toBe(scrollTopStart);
 
 });
@@ -449,7 +449,7 @@ test('the scroll should be restored after pressing Enter with an element focused
     await expect(page).toHaveScreenshot('sidebar-small-viewport.png', {
         clip: {
             ...SIDEBAR_CLIP,
-            height: 378
+            height: 500
         }
     });
     await page.waitForTimeout(600);
@@ -458,14 +458,14 @@ test('the scroll should be restored after pressing Enter with an element focused
 
     await item.scrollIntoViewIfNeeded();
 
-    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
+    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_TOP_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
 
     await item.focus();
     await page.keyboard.press('Enter');
     await page.waitForTimeout(600);
 
     expect(
-        await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
+        await page.locator(SELECTORS.SIDEBAR_TOP_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
     ).toBe(scrollTopStart);
 
 });
@@ -482,7 +482,7 @@ test('if no order items the scroll should be restored after pressing Enter with 
     await expect(page).toHaveScreenshot('sidebar-without-order-small-viewport.png', {
         clip: {
             ...SIDEBAR_CLIP,
-            height: 378
+            height: 500
         }
     });
     await page.waitForTimeout(600);
@@ -491,14 +491,14 @@ test('if no order items the scroll should be restored after pressing Enter with 
 
     await item.scrollIntoViewIfNeeded();
 
-    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
+    const scrollTopStart = await page.locator(SELECTORS.SIDEBAR_TOP_ITEMS_CONTAINER).evaluate(element => element.scrollTop);
 
     await item.focus();
     await page.keyboard.press('Enter');
     await page.waitForTimeout(600);
 
     expect(
-        await page.locator(SELECTORS.SIDEBAR_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
+        await page.locator(SELECTORS.SIDEBAR_TOP_ITEMS_CONTAINER).evaluate(element => element.scrollTop)
     ).toBe(scrollTopStart);
 
 });
@@ -638,6 +638,8 @@ test('navigating with the keyboard up and down arrows should focus the proper it
     const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
     const devTools = getSidebarItem(page, HREFS.DEV_TOOLS);
     const config = getSidebarItem(page, HREFS.CONFIG);
+    const profile = page.locator(SELECTORS.PROFILE);
+    const notifications = page.locator(SELECTORS.NOTIFICATIONS);
 
     await overview.focus();
 
@@ -659,6 +661,14 @@ test('navigating with the keyboard up and down arrows should focus the proper it
 
     await page.keyboard.press('ArrowUp');
 
+    await expect(profile).toBeFocused();
+
+    await page.keyboard.press('ArrowUp');
+
+    await expect(notifications).toBeFocused();
+
+    await page.keyboard.press('ArrowUp');
+
     await expect(devTools).toBeFocused();
 
     await page.keyboard.press('ArrowUp');
@@ -668,6 +678,14 @@ test('navigating with the keyboard up and down arrows should focus the proper it
     await page.keyboard.press('ArrowDown');
 
     await expect(devTools).toBeFocused();
+
+    await page.keyboard.press('ArrowDown');
+
+    await expect(notifications).toBeFocused();
+
+    await page.keyboard.press('ArrowDown');
+
+    await expect(profile).toBeFocused();
 
     await page.keyboard.press('ArrowDown');
 
@@ -705,7 +723,7 @@ test('navigating with the keyboard using tab should focus the proper items in or
 
     await page.keyboard.press('Tab');
 
-    await overview.focus();
+    await expect(overview).toBeFocused();
 
     await page.keyboard.press('Tab');
 

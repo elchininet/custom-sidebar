@@ -9,7 +9,7 @@ export const HREFS = {
     HISTORY: '/history',
     MEDIA_BROWSER: '/media-browser',
     TODO: '/todo',
-    DEV_TOOLS: '/developer-tools',
+    DEV_TOOLS: '/config/developer-tools',
     CONFIG: '/config',
     GOOGLE: 'https://mrdoob.com/projects/chromeexperiments/google-gravity/',
     INTEGRATIONS: '/config/integrations',
@@ -36,7 +36,7 @@ export const SELECTORS = {
     HA_DRAWER: 'ha-drawer',
     HA_SIDEBAR: 'ha-sidebar',
     HUI_VIEW: 'hui-view',
-    SIDEBAR_ITEMS_CONTAINER: 'ha-md-list.ha-scrollbar',
+    SIDEBAR_TOP_ITEMS_CONTAINER: '.panels-list > .wrapper > ha-md-list',
     SIDEBAR_ITEM: 'ha-md-list-item',
     TOOLTIP: 'ha-sidebar .tooltip',
     HA_ICON: 'ha-icon',
@@ -67,14 +67,14 @@ export const SIDEBAR_CLIP = {
     x: 0,
     y: 0,
     width: 255,
-    height: 598
+    height: 720
 };
 
 export const SIDEBAR_CLIP_WITH_DIVIDERS = {
     x: 0,
     y: 0,
     width: 256,
-    height: 599
+    height: 720
 };
 
 export const SIDEBAR_NARROW_CLIP = {
