@@ -1,4 +1,4 @@
-import { getPromisableResult } from 'get-promisable-result';
+import { getPromisableResult, PromisableOptions } from 'get-promisable-result';
 import {
     HAElement,
     HAQuerySelector,
@@ -23,7 +23,6 @@ import {
     HomeAsssistantExtended,
     Match,
     PartialPanelResolver,
-    PromisableOptions,
     Sidebar,
     SidebarItem,
     SidebarMode,
