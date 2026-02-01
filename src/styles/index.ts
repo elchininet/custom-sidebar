@@ -392,3 +392,9 @@ export const SIDEBAR_WIDTH_MOBILE = {
         marginLeft: '0px'
     }
 };
+
+export const SIDEBAR_BOTTOM_LIST_EMPTY = {
+    [`${ SELECTOR.HOST } > ${ SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER }[${ ATTRIBUTE.EMPTY }]`]: {
+        display: 'none'
+    }
+};

@@ -52,6 +52,21 @@ export const navigateHome = async (page: Page, includeSidebar = true): Promise<v
     await page.waitForURL(/.*\/lovelace/);
     await waitForMainElements(page, includeSidebar);
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+    // If there is a notification visible, dismiss it
+    const notifications = page.locator(SELECTORS.NOTIFICATIONS);
+    const notificationBadge = notifications.locator('span.badge');
+    const isBadgeVisible = await notificationBadge.isVisible();
+    // Avoid screenshots failing because a notification badge appearing
+    if (isBadgeVisible) {
+        const notificationsDrawer = page.locator(SELECTORS.NOTIFICATIONS_DRAWER);
+        const closeNotificationDrawer = notificationsDrawer.locator(SELECTORS.CLOSE_NOTIFICATIONS_DRAWER);
+        await notifications.click();
+        await expect(closeNotificationDrawer).toBeVisible();
+        const notificationItem = notificationsDrawer.locator(SELECTORS.DISMISS_NOTIFICATION_ITEM).first();
+        await notificationItem.click();
+        await expect(closeNotificationDrawer).not.toBeVisible();
+        await expect(notificationBadge).not.toBeVisible();
+    }
 };
 
 export const navigateToProfile = async (page: Page): Promise<void> => {

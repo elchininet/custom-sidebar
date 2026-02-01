@@ -11,6 +11,7 @@ import { haConfigRequest } from './ha-services';
 import {
     addJsonExtendedRoute,
     changeToMobileViewport,
+    fulfillJson,
     navigateHome,
     navigateToProfile,
     noCacheRoute,
@@ -678,4 +679,64 @@ test('new items should have tooltips', async ({ page }) => {
 
     await haIconButton.click();
 
+});
+
+test('if the sidebar bottom list gets empty, it should be hidden', async ({ page }) => {
+
+    const bottomListContainer = page.locator(SELECTORS.SIDEBAR_BOTTOM_ITEMS_CONTAINER);
+    const overview = getSidebarItem(page, HREFS.OVERVIEW);
+
+    await fulfillJson(page, {
+        js_refs: {
+            hide: true
+        },
+        order: [
+            {
+                item: 'overview',
+                order: 0,
+                on_click: {
+                    action: 'javascript',
+                    code: 'refs.hide = !refs.hide'
+                }
+            },
+            {
+                item: 'config',
+                match: 'href',
+                bottom: true,
+                hide: '[[[ refs.hide ]]]'
+            },
+            {
+                item: 'notifications',
+                bottom: true,
+                hide: true
+            },
+            {
+                item: 'profile',
+                match: 'href',
+                bottom: true,
+                hide: true
+            }
+        ]
+    });
+    await navigateHome(page);
+    await expect(page).toHaveScreenshot('sidebar-without-bottom-items.png', {
+        clip: SIDEBAR_CLIP
+    });
+    await expect(bottomListContainer).toBeHidden();
+
+    await overview.click();
+
+    await expect(page).toHaveScreenshot('sidebar-without-bottom-items-config-visible.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+    await expect(bottomListContainer).toBeVisible();
+
+    await overview.click();
+
+    await expect(page).toHaveScreenshot('sidebar-without-bottom-items.png', {
+        clip: SIDEBAR_CLIP
+    });
+
+    await expect(bottomListContainer).toBeHidden();
 });

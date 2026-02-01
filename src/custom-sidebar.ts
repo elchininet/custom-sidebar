@@ -538,6 +538,17 @@ class CustomSidebar {
 
     }
 
+    private async _checkEmptyBottomList(): Promise<void> {
+        const container = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element) as HTMLElement;
+        const items = container.querySelectorAll<SidebarItem>(`:scope > ${ELEMENT.ITEM}`);
+        const hasVisibleItems = Array.from(items).some((item: SidebarItem): boolean => item.style.display === '');
+        if (hasVisibleItems) {
+            container.removeAttribute(ATTRIBUTE.EMPTY);
+        } else {
+            container.setAttribute(ATTRIBUTE.EMPTY, '');
+        }
+    }
+
     private _subscribeHide(element: HTMLElement, hide: boolean | string) {
         if (isBoolean(hide)) {
             this._hideItem(element, hide);
@@ -549,6 +560,7 @@ class CustomSidebar {
                         element,
                         rendered === 'true'
                     );
+                    this._checkEmptyBottomList();
                 }
             );
         }
@@ -1060,6 +1072,7 @@ class CustomSidebar {
                     STYLES.INFO_COLOR_HOVER,
                     STYLES.NOTIFICATION_COLOR_SELECTED_NOTIFICATION_TEXT_COLOR_SELECTED,
                     STYLES.NOTIFICATION_COLOR_HOVER_NOTIFICATION_TEXT_COLOR_HOVER,
+                    STYLES.SIDEBAR_BOTTOM_LIST_EMPTY,
                     this._config.styles || ''
                 ],
                 sideBarShadowRoot
@@ -1286,6 +1299,7 @@ class CustomSidebar {
 
                 this._aplyItemRippleStyles();
                 this._panelLoaded();
+                this._checkEmptyBottomList();
 
             });
     }
