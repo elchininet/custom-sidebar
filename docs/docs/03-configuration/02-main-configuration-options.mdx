@@ -84,7 +84,7 @@ These options are intended to change the functionality of the sidebar and to cha
 * The items will be ordered according to their `order` property OR in the order of appearance.
 * If you use the `order` property in at least one item, make sure either all items (except hidden ones) have this property, or none of them (otherwise order may be messed up).
 * `Notifications` item doesn't have a `href` because it is a button and it doesn't redirect to any dashboard. This means that it should be matched only by its text, it cannot be matched by `href`.
-* Take into account that if you don't set the `bottom` property in an item from the bottom list, it will take it as `false` and therefore it will move this item to the top.
+* Take into account that if you add an item from the bottom list to the `order` option and you don't set its `bottom` property, it will take it as `false` and therefore it will move this item to the top.
 * If you set the order or hide items from the sidebar, it is recommended that you don't use Home Assistant functionality to reorder/hide items, because it will conflict with the functionality of the plugin.
 
 :::
