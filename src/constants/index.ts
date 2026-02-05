@@ -24,21 +24,30 @@ export enum TYPE {
 export const OBJECT_TO_STRING = '[object Object]';
 export const REGEXP_TO_STRING = '[object RegExp]';
 
-export const BLOCKED_PROPERTY = 'data-blocked';
-
 export enum ELEMENT {
-    ITEM = 'ha-md-list-item',
-    HA_SVG_ICON = 'ha-svg-icon',
-    HA_ICON = 'ha-icon',
-    HA_ICON_BUTTON = 'ha-icon-button',
     ANCHOR = 'a',
     BUTTON = 'button',
-    HA_RIPPLE = 'ha-ripple',
-    USER_BADGE = 'ha-user-badge',
+    SPAN = 'span'
+}
+
+export enum CUSTOM_ELEMENT {
+    DIALOG_BOX = 'dialog-box',
+    DIALOG_RESTART = 'dialog-restart',
+    HA_PANEL_CONFIG = 'ha-panel-config',
+    HA_CONFIG_BACKUP = 'ha-config-backup',
+    HA_CONFIG_BACKUP_BACKUPS = 'ha-config-backup-backups',
+    HA_CONFIG_SYSTEM_NAVIGATION = 'ha-config-system-navigation',
+    HA_ICON = 'ha-icon',
+    HA_ICON_BUTTON = 'ha-icon-button',
     HA_PANEL_LOVELACE = 'ha-panel-lovelace',
+    HA_RIPPLE = 'ha-ripple',
+    HA_SVG_ICON = 'ha-svg-icon',
     HUI_ROOT = 'hui-root',
+    HUI_TIMESTAMP_DISPLAY = 'hui-timestamp-display',
+    HUI_VIEW = 'hui-view',
     HUI_VIEW_CONTAINER = 'hui-view-container',
-    HUI_VIEW = 'hui-view'
+    ITEM = 'ha-md-list-item',
+    USER_BADGE = 'ha-user-badge',
 }
 
 export enum SELECTOR {
@@ -77,6 +86,69 @@ export enum PSEUDO_SELECTOR {
     BEFORE = '::before',
     WEBKIT_SCROLLBAR_THUMB = '::-webkit-scrollbar-thumb'
 }
+
+export enum CLASS {
+    BADGE = 'badge',
+    ITEM_SELECTED = 'selected',
+    ITEM_TEXT = 'item-text',
+    USER = 'user',
+}
+
+export enum ATTRIBUTE {
+    BLOCKED = 'data-blocked',
+    CUSTOM_SIDEBAR_ATTRIBUTES = 'data-custom-sidebar-attrs',
+    DISABLED = 'disabled',
+    EMPTY = 'data-empty',
+    HREF = 'href',
+    ICON = 'icon',
+    PROCESSED = 'data-processed',
+    ROLE = 'role',
+    SLOT = 'slot',
+    TAB_INDEX = 'tabindex',
+    TYPE = 'type',
+    WITH_DIVIDER = 'data-divider',
+    WITH_NOTIFICATION = 'data-notification',
+}
+
+export enum ATTRIBUTE_VALUE {
+    EMPTY = '',
+    END = 'end',
+    FALSE = 'false',
+    HEADLINE = 'headline',
+    LINK = 'link',
+    START = 'start',
+    TRUE = 'true'
+}
+
+export enum EVENT {
+    CHANGE = 'change',
+    CLICK = 'click',
+    MOUSEENTER = 'mouseenter',
+    MOUSELEAVE = 'mouseleave',
+    KEYDOWN = 'keydown',
+    RENDER_TEMPLATE = 'render_template',
+    LOCATION_CHANGED = 'location-changed',
+    HASS_MORE_INFO = 'hass-more-info',
+    SHOW_DIALOG = 'show-dialog'
+}
+
+export enum KEY {
+    ARROW_DOWN = 'ArrowDown',
+    ARROW_UP = 'ArrowUp',
+    ENTER = 'Enter',
+    TAB = 'Tab'
+}
+
+export enum NODE_NAME {
+    ITEM = 'HA-MD-LIST-ITEM',
+    A = 'A'
+}
+
+export const CHECK_FOCUSED_SHADOW_ROOT = [
+    'HOME-ASSISTANT',
+    'HOME-ASSISTANT-MAIN',
+    'HA-SIDEBAR'
+];
 
 export enum HA_CSS_VARIABLES {
     SIDEBAR_BACKGROUND_COLOR = '--sidebar-background-color',
@@ -201,65 +273,6 @@ export const SIDEBAR_OPTIONS_VARIABLES_MAP: [SidebarColorConfigKeys, string][] =
 
 export const SIDEBAR_BORDER_COLOR_VARIABLES_MAP: [SidebarColorConfigKeys, string][] = [
     ['sidebar_border_color', CUSTOM_SIDEBAR_CSS_VARIABLES.BORDER_COLOR]
-];
-
-export enum CLASS {
-    BADGE = 'badge',
-    ITEM_SELECTED = 'selected',
-    USER = 'user'
-}
-
-export enum ATTRIBUTE {
-    ROLE = 'role',
-    PROCESSED = 'data-processed',
-    WITH_NOTIFICATION = 'data-notification',
-    WITH_DIVIDER = 'data-divider',
-    TAB_INDEX = 'tabindex',
-    DISABLED = 'disabled',
-    HREF = 'href',
-    SLOT = 'slot',
-    TYPE = 'type',
-    CUSTOM_SIDEBAR_ATTRIBUTES = 'data-custom-sidebar-attrs',
-    EMPTY = 'data-empty'
-}
-
-export enum CUSTOM_ELEMENT {
-    HA_PANEL_CONFIG = 'ha-panel-config',
-    HA_CONFIG_BACKUP = 'ha-config-backup',
-    HA_CONFIG_BACKUP_BACKUPS = 'ha-config-backup-backups',
-    HA_CONFIG_SYSTEM_NAVIGATION = 'ha-config-system-navigation',
-    DIALOG_BOX = 'dialog-box',
-    DIALOG_RESTART = 'dialog-restart',
-    HUI_TIMESTAMP_DISPLAY = 'hui-timestamp-display'
-}
-
-export enum EVENT {
-    CLICK = 'click',
-    MOUSEENTER = 'mouseenter',
-    MOUSELEAVE = 'mouseleave',
-    KEYDOWN = 'keydown',
-    RENDER_TEMPLATE = 'render_template',
-    LOCATION_CHANGED = 'location-changed',
-    HASS_MORE_INFO = 'hass-more-info',
-    SHOW_DIALOG = 'show-dialog'
-}
-
-export enum KEY {
-    ARROW_DOWN = 'ArrowDown',
-    ARROW_UP = 'ArrowUp',
-    ENTER = 'Enter',
-    TAB = 'Tab'
-}
-
-export enum NODE_NAME {
-    ITEM = 'HA-MD-LIST-ITEM',
-    A = 'A'
-}
-
-export const CHECK_FOCUSED_SHADOW_ROOT = [
-    'HOME-ASSISTANT',
-    'HOME-ASSISTANT-MAIN',
-    'HA-SIDEBAR'
 ];
 
 export const ENDPOINTS = {
