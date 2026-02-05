@@ -31,9 +31,10 @@ import {
 } from '@types';
 import {
     ATTRIBUTE,
-    BLOCKED_PROPERTY,
+    ATTRIBUTE_VALUE,
     CHECK_FOCUSED_SHADOW_ROOT,
     CLASS,
+    CUSTOM_ELEMENT,
     CUSTOM_SIDEBAR_CSS_VARIABLES,
     DEBUG_URL_PARAMETER,
     DOMAIN_ENTITY_REGEXP,
@@ -212,7 +213,7 @@ class CustomSidebar {
         promisableResultOptions: PromisableOptions
     ): Promise<NodeListOf<SidebarItem>> {
         const items = await getPromisableResult<NodeListOf<SidebarItem>>(
-            () => container.querySelectorAll<SidebarItem>(`:scope > ${ELEMENT.ITEM}`),
+            () => container.querySelectorAll<SidebarItem>(`:scope > ${CUSTOM_ELEMENT.ITEM}`),
             (elements: NodeListOf<SidebarItem>): boolean => {
                 return Array.from(elements).every((element: SidebarItem): boolean => {
                     const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
@@ -304,17 +305,24 @@ class CustomSidebar {
 
     private _buildNewItem(configItem: ConfigNewItem): SidebarItem {
 
-        const item = document.createElement('ha-md-list-item') as SidebarItem;
-        item.setAttribute(ATTRIBUTE.TYPE, 'link');
+        const item = document.createElement(CUSTOM_ELEMENT.ITEM) as SidebarItem;
+        item.setAttribute(ATTRIBUTE.TYPE, ATTRIBUTE_VALUE.LINK);
 
         item.href = configItem.href ?? '#';
         item.target = configItem.target ?? '';
         item.tabIndex = -1;
 
-        item.innerHTML = `
-            <span class="item-text" slot="headline">${ configItem.item }</span>
-            <span class="badge" slot="end"></span>
-        `;
+        const text = document.createElement(ELEMENT.SPAN);
+        text.classList.add(CLASS.ITEM_TEXT);
+        text.setAttribute(ATTRIBUTE.SLOT, ATTRIBUTE_VALUE.HEADLINE);
+        text.innerText = configItem.item;
+
+        const badge = document.createElement(ELEMENT.SPAN);
+        badge.classList.add(CLASS.BADGE);
+        badge.setAttribute(ATTRIBUTE.SLOT, ATTRIBUTE_VALUE.END);
+
+        item.appendChild(text);
+        item.appendChild(badge);
 
         return item;
     }
@@ -382,13 +390,13 @@ class CustomSidebar {
 
         const unblockSidebar = (sidebar: Element, menu: Element) => {
             sidebar.removeEventListener(EVENT.SHOW_DIALOG, sidebarEditListener, true);
-            menu.removeAttribute(BLOCKED_PROPERTY);
+            menu.removeAttribute(ATTRIBUTE.BLOCKED);
         };
 
         const blockSidebar = (sidebar: Element, menu: Element) => {
             sidebar.removeEventListener(EVENT.SHOW_DIALOG, sidebarEditListener, true);
             sidebar.addEventListener(EVENT.SHOW_DIALOG, sidebarEditListener, true);
-            menu.setAttribute(BLOCKED_PROPERTY, '');
+            menu.setAttribute(ATTRIBUTE.BLOCKED, ATTRIBUTE_VALUE.EMPTY);
         };
 
         // Apply sidebar edit blocker
@@ -406,8 +414,8 @@ class CustomSidebar {
                     this._config.sidebar_editable,
                     (rendered: string) => {
                         let isSidebarEditable: boolean | undefined = undefined;
-                        if (rendered === 'true' || rendered === 'false') {
-                            isSidebarEditable = !(rendered === 'false');
+                        if (rendered === ATTRIBUTE_VALUE.TRUE || rendered === ATTRIBUTE_VALUE.FALSE) {
+                            isSidebarEditable = !(rendered === ATTRIBUTE_VALUE.FALSE);
                             if (isSidebarEditable) {
                                 unblockSidebar(sidebar, menu);
                             } else {
@@ -487,18 +495,18 @@ class CustomSidebar {
         this._subscribeTemplate(
             icon,
             (rendered: string): void => {
-                let haIcon = element.querySelector(ELEMENT.HA_ICON);
+                let haIcon = element.querySelector(CUSTOM_ELEMENT.HA_ICON);
                 if (!haIcon) {
-                    haIcon = document.createElement(ELEMENT.HA_ICON);
-                    haIcon.setAttribute(ATTRIBUTE.SLOT, 'start');
-                    const haSvgIcon = element.querySelector(ELEMENT.HA_SVG_ICON);
+                    haIcon = document.createElement(CUSTOM_ELEMENT.HA_ICON);
+                    haIcon.setAttribute(ATTRIBUTE.SLOT, ATTRIBUTE_VALUE.START);
+                    const haSvgIcon = element.querySelector(CUSTOM_ELEMENT.HA_SVG_ICON);
                     if (haSvgIcon) {
                         haSvgIcon.replaceWith(haIcon);
                     } else {
                         element.prepend(haIcon);
                     }
                 }
-                haIcon.setAttribute('icon', rendered);
+                haIcon.setAttribute(ATTRIBUTE.ICON, rendered);
             }
         );
     }
@@ -518,16 +526,16 @@ class CustomSidebar {
         let badge = element.querySelector(SELECTOR.BADGE);
 
         if (!badge) {
-            badge = document.createElement('span');
+            badge = document.createElement(ELEMENT.SPAN);
             badge.classList.add(CLASS.BADGE);
-            badge.setAttribute(ATTRIBUTE.SLOT, 'end');
+            badge.setAttribute(ATTRIBUTE.SLOT, ATTRIBUTE_VALUE.END);
             element.append(badge);
         }
 
         const callback = (rendered: string): void => {
             if (rendered.length) {
                 badge.innerHTML = rendered;
-                element.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, 'true');
+                element.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, ATTRIBUTE_VALUE.TRUE);
             } else {
                 badge.innerHTML = '';
                 element.removeAttribute(ATTRIBUTE.WITH_NOTIFICATION);
@@ -540,12 +548,12 @@ class CustomSidebar {
 
     private async _checkEmptyBottomList(): Promise<void> {
         const container = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element) as HTMLElement;
-        const items = container.querySelectorAll<SidebarItem>(`:scope > ${ELEMENT.ITEM}`);
+        const items = container.querySelectorAll<SidebarItem>(`:scope > ${CUSTOM_ELEMENT.ITEM}`);
         const hasVisibleItems = Array.from(items).some((item: SidebarItem): boolean => item.style.display === '');
         if (hasVisibleItems) {
             container.removeAttribute(ATTRIBUTE.EMPTY);
         } else {
-            container.setAttribute(ATTRIBUTE.EMPTY, '');
+            container.setAttribute(ATTRIBUTE.EMPTY, ATTRIBUTE_VALUE.EMPTY);
         }
     }
 
@@ -558,7 +566,7 @@ class CustomSidebar {
                 (rendered: string): void => {
                     this._hideItem(
                         element,
-                        rendered === 'true'
+                        rendered === ATTRIBUTE_VALUE.TRUE
                     );
                     this._checkEmptyBottomList();
                 }
@@ -707,12 +715,12 @@ class CustomSidebar {
 
     private _focusItemByKeyboard(sidebarItemsContainer: HTMLElement, forward: boolean): void {
 
-        const activeItem = sidebarItemsContainer.querySelector<HTMLElement>(
-            `
-                ${SELECTOR.SCOPE} > ${ELEMENT.ITEM}:not(.${CLASS.ITEM_SELECTED}):focus,
-                ${SELECTOR.SCOPE} > ${ELEMENT.ITEM}:focus
-            `
-        );
+        const selectors = [
+            `${SELECTOR.SCOPE} > ${CUSTOM_ELEMENT.ITEM}:not(.${CLASS.ITEM_SELECTED}):focus`,
+            `${SELECTOR.SCOPE} > ${CUSTOM_ELEMENT.ITEM}:focus`
+        ];
+
+        const activeItem = sidebarItemsContainer.querySelector<HTMLElement>(selectors.join(','));
 
         let activeIndex = 0;
 
@@ -729,7 +737,7 @@ class CustomSidebar {
 
     private _focusItemByTab(sidebarShadowRoot: ShadowRoot, element: SidebarItem, forward: boolean): void {
 
-        const haIconButton = sidebarShadowRoot.querySelector<HTMLElement>(ELEMENT.HA_ICON_BUTTON);
+        const haIconButton = sidebarShadowRoot.querySelector<HTMLElement>(CUSTOM_ELEMENT.HA_ICON_BUTTON);
         const activeIndex = this._items.indexOf(element);
         const lastIndex = this._items.length - 1;
 
@@ -917,7 +925,7 @@ class CustomSidebar {
 
                 };
 
-                mql.addEventListener('change', (event: MediaQueryListEvent): void => {
+                mql.addEventListener(EVENT.CHANGE, (event: MediaQueryListEvent): void => {
                     checkForNarrow(event.matches);
                 });
 
@@ -1024,7 +1032,7 @@ class CustomSidebar {
                 sideBarShadowRoot.addEventListener(EVENT.CLICK, (event: MouseEvent) => {
 
                     const clickedElement = event.target as HTMLElement;
-                    const itemClicked = clickedElement.closest(ELEMENT.ITEM);
+                    const itemClicked = clickedElement.closest(CUSTOM_ELEMENT.ITEM);
 
                     if (itemClicked) {
                         const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText;
@@ -1083,13 +1091,13 @@ class CustomSidebar {
     }
 
     private async _aplyItemRippleStyles(): Promise<void> {
-        const sidebarItemsContainer = (await this._sidebar.selector.$.query(ELEMENT.ITEM).all) as NodeListOf<HTMLElement>;
+        const sidebarItemsContainer = (await this._sidebar.selector.$.query(CUSTOM_ELEMENT.ITEM).all) as NodeListOf<HTMLElement>;
         Array.from(sidebarItemsContainer).forEach((item: HTMLElement): void => {
-            const innerElement = item.getAttribute(ATTRIBUTE.TYPE) === 'link'
+            const innerElement = item.getAttribute(ATTRIBUTE.TYPE) === ATTRIBUTE_VALUE.LINK
                 ? this._getAnchorElement(item)
                 : this._getButtonElement(item);
             const surface = innerElement
-                .querySelector(ELEMENT.HA_RIPPLE)
+                .querySelector(CUSTOM_ELEMENT.HA_RIPPLE)
                 .shadowRoot
                 .querySelector(SELECTOR.SURFACE);
             this._styleManager.addStyle(
@@ -1157,7 +1165,7 @@ class CustomSidebar {
                                 return false;
                             });
                         if (element) {
-                            element.setAttribute(ATTRIBUTE.PROCESSED, 'true');
+                            element.setAttribute(ATTRIBUTE.PROCESSED, ATTRIBUTE_VALUE.TRUE);
                         }
                         if (new_item || element) {
                             acc.push({
@@ -1181,7 +1189,7 @@ class CustomSidebar {
 
                         orderItem.element = newItem;
 
-                        orderItem.element.setAttribute(ATTRIBUTE.PROCESSED, 'true');
+                        orderItem.element.setAttribute(ATTRIBUTE.PROCESSED, ATTRIBUTE_VALUE.TRUE);
 
                         this._items.push(orderItem.element);
 
@@ -1221,7 +1229,7 @@ class CustomSidebar {
                     }
 
                     if (orderItem.divider) {
-                        orderItem.element.setAttribute(ATTRIBUTE.WITH_DIVIDER, 'true');
+                        orderItem.element.setAttribute(ATTRIBUTE.WITH_DIVIDER, ATTRIBUTE_VALUE.TRUE);
                     }
 
                     if (orderItem.name) {
@@ -1425,7 +1433,7 @@ class CustomSidebar {
                     : this._config.sidebar_editable;
                 if (!isBoolean(isEditable)) return;
                 if (isEditable === false) {
-                    editSidebarButton.setAttribute(ATTRIBUTE.DISABLED, '');
+                    editSidebarButton.setAttribute(ATTRIBUTE.DISABLED, ATTRIBUTE_VALUE.EMPTY);
                 } else {
                     editSidebarButton.removeAttribute(ATTRIBUTE.DISABLED);
                 }
@@ -1445,10 +1453,10 @@ class CustomSidebar {
         const sidebarBottomItemsContainer = await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element as HTMLElement;
 
         const topItems = Array.from<SidebarItem>(
-            sidebarTopItemsContainer.querySelectorAll<SidebarItem>(ELEMENT.ITEM)
+            sidebarTopItemsContainer.querySelectorAll<SidebarItem>(CUSTOM_ELEMENT.ITEM)
         );
         const bottomItems = Array.from<SidebarItem>(
-            sidebarBottomItemsContainer.querySelectorAll<SidebarItem>(ELEMENT.ITEM)
+            sidebarBottomItemsContainer.querySelectorAll<SidebarItem>(CUSTOM_ELEMENT.ITEM)
         );
         const items = [...topItems, ...bottomItems];
 
@@ -1474,16 +1482,16 @@ class CustomSidebar {
         // If it is a lovelace dashboard add an observer for hui-view-container
         this._huiViewContainerObserver.disconnect();
 
-        const lovelace = panelResolver.querySelector(ELEMENT.HA_PANEL_LOVELACE);
+        const lovelace = panelResolver.querySelector(CUSTOM_ELEMENT.HA_PANEL_LOVELACE);
 
         if (lovelace) {
             this._partialPanelResolver
                 .selector
-                .query(ELEMENT.HA_PANEL_LOVELACE)
+                .query(CUSTOM_ELEMENT.HA_PANEL_LOVELACE)
                 .$
-                .query(ELEMENT.HUI_ROOT)
+                .query(CUSTOM_ELEMENT.HUI_ROOT)
                 .$
-                .query(ELEMENT.HUI_VIEW_CONTAINER)
+                .query(CUSTOM_ELEMENT.HUI_VIEW_CONTAINER)
                 .element
                 .then((huiViewContainer: HTMLElement) => {
                     this._huiViewContainerObserver.observe(huiViewContainer, {
@@ -1516,7 +1524,7 @@ class CustomSidebar {
     private _watchHuiViewContainer(mutations: MutationRecord[]): void {
         mutations.forEach(({ addedNodes }): void => {
             addedNodes.forEach((node: Element): void => {
-                if (node.localName === ELEMENT.HUI_VIEW) {
+                if (node.localName === CUSTOM_ELEMENT.HUI_VIEW) {
                     this._panelLoaded();
                 }
             });
