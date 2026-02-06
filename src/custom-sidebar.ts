@@ -69,6 +69,7 @@ import {
     isString,
     isUndefined,
     logVersionToConsole,
+    navigate,
     openMoreInfoDialog,
     openRestartDialog,
     parseWidth
@@ -864,25 +865,7 @@ class CustomSidebar {
 
     private _executeDefaultPath(pathname: string) {
         if (pathname.startsWith('/')) {
-            const params: Parameters<typeof window.history.replaceState> = [
-                null,
-                '',
-                pathname
-            ];
-
-            window.history.replaceState(...params);
-
-            window.dispatchEvent(
-                new CustomEvent(
-                    EVENT.LOCATION_CHANGED,
-                    {
-                        detail: {
-                            replace: pathname
-                        }
-                    }
-                )
-            );
-
+            navigate(pathname);
         } else {
             console.warn(`${NAMESPACE}: ignoring default_path property "${pathname}" as it doesn't start with "/".`);
         }
