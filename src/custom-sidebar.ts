@@ -1346,7 +1346,7 @@ class CustomSidebar {
 
         switch(onClickAction.action) {
             case ActionType.NAVIGATE: {
-                const { path, replace } = onClickAction;
+                const { path, replace = false } = onClickAction;
                 let pathname = path;
                 if (JS_TEMPLATE_REG.test(path)) {
                     pathname = renderTemplate(
@@ -1355,7 +1355,6 @@ class CustomSidebar {
                             this._config.partials
                         )
                     );
-                    
                 }
                 navigate(pathname, replace, 'ignoring on_click.path property');
                 break;

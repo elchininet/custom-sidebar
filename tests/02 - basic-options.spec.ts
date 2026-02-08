@@ -7,7 +7,7 @@ import {
     BASE_URL,
     HREFS
 } from './constants';
-import { haConfigRequest } from './ha-services';
+import { haConfigRequest, haSwitchStateRequest } from './ha-services';
 import {
     changeToMobileViewport,
     fulfillJson,
@@ -558,379 +558,552 @@ test.describe('on_click property', () => {
         icon: 'mdi:bullseye-arrow'
     };
 
-    test('should execute a call-service action without changing the URL', async ({ page }) => {
+    test.describe('navigate action', () => {
 
-        await fulfillJson(
-            page,
-            {
-                title: `
-                    if (is_state('input_boolean.my_switch', 'on')) {
-                        return 'Custom Title';
-                    }
-                    return 'Home Assistant';
-                `,
-                order: [
-                    {
-                        ...item,
-                        on_click: {
-                            action: 'call-service',
-                            service: 'input_boolean.toggle',
-                            data: {
-                                entity_id: 'input_boolean.my_switch'
+        test('should execute a navigate action using a string and no replace', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'navigate',
+                                path: '/config/developer-tools/yaml'
                             }
                         }
-                    }
-                ]
-            }
-        );
+                    ]
+                }
+            );
 
-        await navigateHome(page);
+            await navigateHome(page);
 
-        await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+            await getSidebarItem(page, HREFS.TODO).click();
 
-        await getSidebarItem(page, '#').click();
+            await page.waitForURL(/.*\/todo/);
 
-        await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom Title');
+            await expect(page.locator(SELECTORS.TODO_PANEL)).toBeVisible();
 
-        await expect(page).not.toHaveURL(/.*#/);
+            await getSidebarItem(page, '#').click();
 
-        await getSidebarItem(page, '#').click();
+            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
 
-        await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
 
-    });
+            await page.goBack();
 
-    test('should execute a call-service action changing the URL', async ({ page }) => {
+            await page.waitForURL(/.*\/todo/);
 
-        const PATH = '/config/integrations';
+        });
 
-        await fulfillJson(
-            page,
-            {
-                title: `
-                    if (is_state('input_boolean.my_switch', 'on')) {
-                        return 'Custom Title';
-                    }
-                    return 'Home Assistant';
-                `,
-                order: [
-                    {
-                        ...item,
-                        href: PATH,
-                        on_click: {
-                            action: 'call-service',
-                            service: 'input_boolean.toggle',
-                            data: {
-                                entity_id: 'input_boolean.my_switch'
+        test('should execute a navigate action using a string and replace', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'navigate',
+                                path: '/config/developer-tools/yaml',
+                                replace: true
                             }
                         }
-                    }
-                ]
-            }
-        );
+                    ]
+                }
+            );
 
-        await navigateHome(page);
+            await navigateHome(page);
 
-        await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+            await getSidebarItem(page, HREFS.TODO).click();
 
-        await getSidebarItem(page, PATH).click();
+            await page.waitForURL(/.*\/todo/);
 
-        await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom Title');
+            await expect(page.locator(SELECTORS.TODO_PANEL)).toBeVisible();
 
-        await expect(page).toHaveURL(/\/config\/integrations/);
+            await getSidebarItem(page, '#').click();
 
-        await getSidebarItem(page, PATH).click();
+            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
 
-        await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
 
-    });
+            await page.goBack();
 
-    test('should execute a call-service action compiling the data using JavaScript templates', async ({ page }) => {
+            await page.waitForURL(/.*\/lovelace/);
 
-        const PATH = '/config/integrations';
+        });
 
-        await fulfillJson(
-            page,
-            {
-                js_variables: {
-                    domain: 'input_boolean',
-                    entity: 'my_switch'
-                },
-                partials: {
-                    my_switch: `
-                        const mySwitch = domain + '.' + entity;
-                    `
-                },
-                title: `
-                    if (is_state('input_boolean.my_switch', 'on')) {
-                        return 'Custom Title';
-                    }
-                    return 'Home Assistant';
-                `,
-                order: [
-                    {
-                        ...item,
-                        href: PATH,
-                        on_click: {
-                            action: 'call-service',
-                            service: 'input_boolean.toggle',
-                            data: {
-                                entity_id: `[[[
-                                    @partial my_switch
-                                    return mySwitch;
+        test('should execute a navigate action using a JavaScript template', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'navigate',
+                                path: `[[[
+                                    if (is_state('input_boolean.my_switch', 'on')) {
+                                        return '/todo';
+                                    }
+                                    return '/config/developer-tools/yaml';
                                 ]]]`
                             }
                         }
-                    }
-                ]
-            }
-        );
+                    ]
+                }
+            );
 
-        await navigateHome(page);
+            const sidebarItem = getSidebarItem(page, '#');
 
-        await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+            await navigateHome(page);
 
-        await getSidebarItem(page, PATH).click();
+            await sidebarItem.click();
 
-        await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom Title');
+            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
 
-        await getSidebarItem(page, PATH).click();
+            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
 
-        await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+            await haSwitchStateRequest(page, true);
+
+            await sidebarItem.click();
+
+            await page.waitForURL(/.*\/todo/);
+
+            await expect(page.locator(SELECTORS.TODO_PANEL)).toBeVisible();
+
+            await haSwitchStateRequest(page, false);
+
+            await sidebarItem.click();
+
+            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
+
+            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
+
+        });
+
+        test('should not execute a navigate action using a JavaScript template if the return doesn\'t start with "/"', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'navigate',
+                                path: `[[[
+                                    if (is_state('input_boolean.my_switch', 'on')) {
+                                        return 'config/developer-tools/yaml';
+                                    }
+                                    return 'config/developer-tools/event';
+                                ]]]`
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            getSidebarItem(page, '#').click();
+
+            await waitForWarning(page, `${NAMESPACE}: ignoring on_click.path property "config/developer-tools/event" as it doesn't start with "/"`);
+
+            await expect(page).not.toHaveURL(/\/config/);
+
+        });
 
     });
 
-    test('should throw a warning if a call-service action has a malformed service', async ({ page }) => {
+    test.describe('call-service action', () => {
 
-        await fulfillJson(
-            page,
-            {
-                order: [
-                    {
-                        ...item,
-                        on_click: {
-                            action: 'call-service',
-                            service: 'restart'
+        test('should execute a call-service action without changing the URL', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    title: `
+                        if (is_state('input_boolean.my_switch', 'on')) {
+                            return 'Custom Title';
                         }
-                    }
-                ]
-            }
-        );
+                        return 'Home Assistant';
+                    `,
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'call-service',
+                                service: 'input_boolean.toggle',
+                                data: {
+                                    entity_id: 'input_boolean.my_switch'
+                                }
+                            }
+                        }
+                    ]
+                }
+            );
 
-        await navigateHome(page);
+            await navigateHome(page);
 
-        getSidebarItem(page, '#').click();
+            await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
 
-        await waitForWarning(page, 'custom-sidebar ignoring "call-service" action in "Check" item. The service parameter is malfomed.');
+            await getSidebarItem(page, '#').click();
+
+            await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom Title');
+
+            await expect(page).not.toHaveURL(/.*#/);
+
+            await getSidebarItem(page, '#').click();
+
+            await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+
+        });
+
+        test('should execute a call-service action changing the URL', async ({ page }) => {
+
+            const PATH = '/config/integrations';
+
+            await fulfillJson(
+                page,
+                {
+                    title: `
+                        if (is_state('input_boolean.my_switch', 'on')) {
+                            return 'Custom Title';
+                        }
+                        return 'Home Assistant';
+                    `,
+                    order: [
+                        {
+                            ...item,
+                            href: PATH,
+                            on_click: {
+                                action: 'call-service',
+                                service: 'input_boolean.toggle',
+                                data: {
+                                    entity_id: 'input_boolean.my_switch'
+                                }
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+
+            await getSidebarItem(page, PATH).click();
+
+            await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom Title');
+
+            await expect(page).toHaveURL(/\/config\/integrations/);
+
+            await getSidebarItem(page, PATH).click();
+
+            await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+
+        });
+
+        test('should execute a call-service action compiling the data using JavaScript templates', async ({ page }) => {
+
+            const PATH = '/config/integrations';
+
+            await fulfillJson(
+                page,
+                {
+                    js_variables: {
+                        domain: 'input_boolean',
+                        entity: 'my_switch'
+                    },
+                    partials: {
+                        my_switch: `
+                            const mySwitch = domain + '.' + entity;
+                        `
+                    },
+                    title: `
+                        if (is_state('input_boolean.my_switch', 'on')) {
+                            return 'Custom Title';
+                        }
+                        return 'Home Assistant';
+                    `,
+                    order: [
+                        {
+                            ...item,
+                            href: PATH,
+                            on_click: {
+                                action: 'call-service',
+                                service: 'input_boolean.toggle',
+                                data: {
+                                    entity_id: `[[[
+                                        @partial my_switch
+                                        return mySwitch;
+                                    ]]]`
+                                }
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+
+            await getSidebarItem(page, PATH).click();
+
+            await expect(page.locator(SELECTORS.TITLE)).toContainText('Custom Title');
+
+            await getSidebarItem(page, PATH).click();
+
+            await expect(page.locator(SELECTORS.TITLE)).toContainText('Home Assistant');
+
+        });
+
+        test('should throw a warning if a call-service action has a malformed service', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'call-service',
+                                service: 'restart'
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            getSidebarItem(page, '#').click();
+
+            await waitForWarning(page, 'custom-sidebar ignoring "call-service" action in "Check" item. The service parameter is malfomed.');
+
+        });
 
     });
 
-    test('should execute a javascript action without redirecting', async ({ page }) => {
+    test.describe('javascript action', () => {    
 
-        await fulfillJson(
-            page,
-            {
-                order: [
-                    {
-                        ...item,
-                        on_click: {
-                            action: 'javascript',
-                            code: `
-                                console.log('JavaScript code executed');
-                                history.pushState(null, "", '/config/integrations');
-                            `
+        test('should execute a javascript action without redirecting', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    console.log('JavaScript code executed');
+                                    history.pushState(null, "", '/config/integrations');
+                                `
+                            }
                         }
-                    }
-                ]
-            }
-        );
+                    ]
+                }
+            );
 
-        await navigateHome(page);
+            await navigateHome(page);
 
-        getSidebarItem(page, '#').click();
+            getSidebarItem(page, '#').click();
 
-        const logs = await waitForLogMessages(page);
+            const logs = await waitForLogMessages(page);
 
-        expect(logs).toEqual(
-            expect.arrayContaining(['JavaScript code executed'])
-        );
+            expect(logs).toEqual(
+                expect.arrayContaining(['JavaScript code executed'])
+            );
 
-        await expect(page).toHaveURL(/\/config\/integrations/);
+            await expect(page).toHaveURL(/\/config\/integrations/);
+
+        });
+
+        test('should execute a javascript action redirecting', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            href: '/config/integrations',
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    console.log('JavaScript code executed');
+                                    return;
+                                `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            getSidebarItem(page, '/config/integrations').click();
+
+            const logs = await waitForLogMessages(page);
+
+            expect(logs).toEqual(
+                expect.arrayContaining(['JavaScript code executed'])
+            );
+
+            await expect(page).toHaveURL(/\/config\/integrations/);
+
+        });
+
+        test('should execute a javascript action using partials', async ({ page }) => {
+
+            const href = '/config/integrations';
+
+            await fulfillJson(
+                page,
+                {
+                    partials: {
+                        throw_console: 'console.log("JavaScript code from partial executed");'
+                    },
+                    order: [
+                        {
+                            ...item,
+                            href,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    @partial throw_console
+                                    return;
+                                `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            getSidebarItem(page, href).click();
+
+            const logs = await waitForLogMessages(page);
+
+            expect(logs).toEqual(
+                expect.arrayContaining(['JavaScript code from partial executed'])
+            );
+
+        });
+
+        test('should execute a javascript action having the clicked item and the itemText as variables', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            href: '/config/integrations',
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    console.log('Clicked item is ' + itemText + ' and the icon is ' + item.icon);
+                                `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            getSidebarItem(page, '/config/integrations').click();
+
+            const logs = await waitForLogMessages(page);
+
+            expect(logs).toEqual(
+                expect.arrayContaining(['Clicked item is Check and the icon is mdi:bullseye-arrow'])
+            );
+
+        });
 
     });
 
-    test('should execute a javascript action redirecting', async ({ page }) => {
+    test.describe('open-dialog action', () => {    
 
-        await fulfillJson(
-            page,
-            {
-                order: [
-                    {
-                        ...item,
-                        href: '/config/integrations',
-                        on_click: {
-                            action: 'javascript',
-                            code: `
-                                console.log('JavaScript code executed');
-                                return;
-                            `
+        test('should execute an open-dialog action with a more-info dialog', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'open-dialog',
+                                type: 'more-info',
+                                entity_id: 'input_boolean.my_switch'
+                            }
                         }
-                    }
-                ]
-            }
-        );
+                    ]
+                }
+            );
 
-        await navigateHome(page);
+            await navigateHome(page);
 
-        getSidebarItem(page, '/config/integrations').click();
+            await getSidebarItem(page, '#').click();
 
-        const logs = await waitForLogMessages(page);
+            expect(page.locator('ha-more-info-dialog ha-dialog-header .title')).toContainText('My Switch');
 
-        expect(logs).toEqual(
-            expect.arrayContaining(['JavaScript code executed'])
-        );
+        });
 
-        await expect(page).toHaveURL(/\/config\/integrations/);
+        test('should execute an open-dialog action with a restart dialog', async ({ page }) => {
 
-    });
-
-    test('should execute a javascript action using partials', async ({ page }) => {
-
-        const href = '/config/integrations';
-
-        await fulfillJson(
-            page,
-            {
-                partials: {
-                    throw_console: 'console.log("JavaScript code from partial executed");'
-                },
-                order: [
-                    {
-                        ...item,
-                        href,
-                        on_click: {
-                            action: 'javascript',
-                            code: `
-                                @partial throw_console
-                                return;
-                            `
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'open-dialog',
+                                type: 'restart'
+                            }
                         }
-                    }
-                ]
-            }
-        );
+                    ]
+                }
+            );
 
-        await navigateHome(page);
+            const dialog = page.locator(SELECTORS.RESTART_RIALOG);
+            const dialogTitle = page.locator(SELECTORS.RESTART_RIALOG_TITLE);
+            const dialogCloseButton = page.locator(SELECTORS.RESTART_DIALOG_CLOSE_BUTTON);
+            const title = 'Restart Home Assistant';
 
-        getSidebarItem(page, href).click();
+            await navigateHome(page);
 
-        const logs = await waitForLogMessages(page);
+            // It should load the dialog
+            await getSidebarItem(page, '#').click();
 
-        expect(logs).toEqual(
-            expect.arrayContaining(['JavaScript code from partial executed'])
-        );
+            await expect(dialogTitle).toContainText(title);
 
-    });
+            await dialogCloseButton.click();
 
-    test('should execute a javascript action having the clicked item and the itemText as variables', async ({ page }) => {
+            await expect(dialog).not.toBeVisible();
 
-        await fulfillJson(
-            page,
-            {
-                order: [
-                    {
-                        ...item,
-                        href: '/config/integrations',
-                        on_click: {
-                            action: 'javascript',
-                            code: `
-                                console.log('Clicked item is ' + itemText + ' and the icon is ' + item.icon);
-                            `
-                        }
-                    }
-                ]
-            }
-        );
+            // It should reuse the dialog already registered in customComponents
+            await getSidebarItem(page, '#').click();
 
-        await navigateHome(page);
+            await expect(dialogTitle).toContainText(title);
 
-        getSidebarItem(page, '/config/integrations').click();
+            await dialogCloseButton.click();
 
-        const logs = await waitForLogMessages(page);
+            await expect(dialog).not.toBeVisible();
 
-        expect(logs).toEqual(
-            expect.arrayContaining(['Clicked item is Check and the icon is mdi:bullseye-arrow'])
-        );
-
-    });
-
-    test('should execute an open-dialog action with a more-info dialog', async ({ page }) => {
-
-        await fulfillJson(
-            page,
-            {
-                order: [
-                    {
-                        ...item,
-                        on_click: {
-                            action: 'open-dialog',
-                            type: 'more-info',
-                            entity_id: 'input_boolean.my_switch'
-                        }
-                    }
-                ]
-            }
-        );
-
-        await navigateHome(page);
-
-        await getSidebarItem(page, '#').click();
-
-        expect(page.locator('ha-more-info-dialog ha-dialog-header .title')).toContainText('My Switch');
-
-    });
-
-    test('should execute an open-dialog action with a restart dialog', async ({ page }) => {
-
-        await fulfillJson(
-            page,
-            {
-                order: [
-                    {
-                        ...item,
-                        on_click: {
-                            action: 'open-dialog',
-                            type: 'restart'
-                        }
-                    }
-                ]
-            }
-        );
-
-        const dialog = page.locator(SELECTORS.RESTART_RIALOG);
-        const dialogTitle = page.locator(SELECTORS.RESTART_RIALOG_TITLE);
-        const dialogCloseButton = page.locator(SELECTORS.RESTART_DIALOG_CLOSE_BUTTON);
-        const title = 'Restart Home Assistant';
-
-        await navigateHome(page);
-
-        // It should load the dialog
-        await getSidebarItem(page, '#').click();
-
-        await expect(dialogTitle).toContainText(title);
-
-        await dialogCloseButton.click();
-
-        await expect(dialog).not.toBeVisible();
-
-        // It should reuse the dialog already registered in customComponents
-        await getSidebarItem(page, '#').click();
-
-        await expect(dialogTitle).toContainText(title);
-
-        await dialogCloseButton.click();
-
-        await expect(dialog).not.toBeVisible();
+        });
 
     });
 

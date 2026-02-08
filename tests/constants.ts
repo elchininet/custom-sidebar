@@ -49,7 +49,9 @@ export const SELECTORS = {
     HA_LOGBOOK: 'ha-logbook',
     RESTART_RIALOG: 'dialog-restart ha-adaptive-dialog .content',
     RESTART_RIALOG_TITLE: 'dialog-restart ha-dialog-header span[slot="title"]',
-    RESTART_DIALOG_CLOSE_BUTTON: 'dialog-restart ha-adaptive-dialog slot[slot="headerNavigationIcon"] ha-icon-button'
+    RESTART_DIALOG_CLOSE_BUTTON: 'dialog-restart ha-adaptive-dialog slot[slot="headerNavigationIcon"] ha-icon-button',
+    DEVELOPER_TOOLS_PANEL: 'ha-panel-developer-tools',
+    TODO_PANEL: 'ha-panel-todo'
 };
 
 export const ATTRIBUTES = {
