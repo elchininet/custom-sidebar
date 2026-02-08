@@ -37,25 +37,36 @@ The entities used in the templates will be stored, so if the state of an stored 
 
 `JavaScript` templates can make use of [Reactive JavaScript Variables](../advanced-configuration-options/javascript-variables#reactive-javascript-variables-refs). If you use a reactive variable in some templates and you modify it in the `javascript` action of an `on_click` parameter of an item, all the templates in which the variable was used will be reevaluated in the device in which the action was performed.
 
-On top of all the variables and methods provided by [Home Assistant Javascript Templates], the next methods will be available in the templates:
+## Methods available in JavaScript templates
+
+On top of all the variables and methods provided by [Home Assistant Javascript Templates], the next methods are provided by `Custom Sidebar` and they will be available in the templates:
 
 :::info
 
-The next methods depend on the locale that the user has configured in Home Assistant, so the result of these methods is not deterministic. For the examples, a specific locale has been used.
+1. The methods to format dates and time depend on the locale that the user has configured in Home Assistant, so the result of these methods is not deterministic. For the examples, a specific locale has been used.
+2. The methods to open dialogs will be available in every `JavaScript` template, but they should not be used in the templates of regular options. They are intended to be used in [the `javascript` action of an `on_click` property](../configuration/the-on-click-property#javascript-action).
 
 :::
 
 :::warning[Important]
 
-When you open Home Assistant and it is loading, it is possible that the locale data is not ready yet until the system finished to load all the resources. If you try to render a template using these methods at the beginning of this loading process, it is possible that the formatting wouldn't follow your language settings. This will be corrected if the template is reevaluated later, but to avoid any wrong formatting at the beginning, it is recommended to delay the formatting in the first rendering using a Promise or to force a re-rendering of the template using [JavaScript reactive variables](../advanced-configuration-options/javascript-variables#reactive-javascript-variables-refs) or any other technique that mitigates this issue.
+When you open Home Assistant and it is loading, it is possible that the locale data is not ready yet until the system finished to load all the resources. If you try to render a template using the methods to format dates and time at the beginning of this loading process, it is possible that the formatting wouldn't follow your language settings. This will be corrected if the template is reevaluated later, but to avoid any wrong formatting at the beginning, it is recommended to delay the formatting in the first rendering using a Promise or to force a re-rendering of the template using [JavaScript reactive variables](../advanced-configuration-options/javascript-variables#reactive-javascript-variables-refs) or any other technique that mitigates this issue.
 
 :::
 
-#### navigate
+---
+
+### navigate
 
 :::warning[Important]
 
 Dashboards paths must start with `/`, if you use an absolute URL or a path that doesn't start with `/`, it will be ignored and a warning will be thrown in the console.
+
+:::
+
+:::info
+
+When you visit a URL directly, there is a logic to select the proper sidebar item taking into account its `href`. You need to be aware that when using the `navigate` method, there is no way for the plugin to know that an item redirects to a dashboard path, so in those cases the item will not be selected.
 
 :::
 
@@ -64,7 +75,9 @@ This method allows one to navigate to a certain dashboard. Optionally, one can s
 
 <Navigate />
 
-#### activateItem
+---
+
+### activateItem
 
 :::tip
 
@@ -76,55 +89,65 @@ This method allows one to make an item in the sidebar active programatically and
 
 <ActivateItem />
 
-#### formatDate
+---
+
+### formatDate
 
 This method formats a date using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date or a number representing the [timestamp] in milliseconds.
 
 <FormatDateExample />
 
-#### formatDateTime
+---
+
+### formatDateTime
 
 This method formats a date with time using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date or a number representing the [timestamp] in milliseconds.
 
 <FormatDateTimeExample />
 
-#### formatTime
+---
+
+### formatTime
 
 This method formats a time using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date, a number representing the [timestamp] in milliseconds, or a string representation of a time in the format `HH:MM` or `HH:MM:SS`.
 
 <FormatTimeExample />
 
-#### getRelativeTime
+---
+
+### getRelativeTime
 
 This method get the relative time of a date using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date or a number representing the [timestamp] in milliseconds. This method also accepts a secondary optional boolean parameter to define if the result should be capitalized or not (by default it is `false`).
 
 <GetRelativeTimeExample />
 
-:::info
+---
 
-The next methods will be available in every `JavaScript` template, but they should not be used in the templates of regular options. They are intended to be used in [the `javascript` action of an `on_click` property](../configuration/the-on-click-property#javascript-action).
-
-:::
-
-#### openAlertDialog
+### openAlertDialog
 
 This method will open an alert dialog. It accepts only one parameter wich is an object with the next properties: the `title` and the `text` of the alert dialog and two optional properties with a `confirmText` (text of the confirm button) and a `confirm` action that will be executed when the confirm button is clicked.
 
 <OpenAlertDialogExample />
 
-#### openConfirmDialog
+---
+
+### openConfirmDialog
 
 This method will open a confirmation dialog that allow one to accept or decline what it states. It also accepts only one parameter which is an object with the same properties as the `openAlertDialog` method and on top of them it will also accept a `dismissText` property to indicate the text of the dismiss button, a `destructive` property to indicate if the confirmation dialog will execute a destructive action, and a `cancel` action that will be executed when the dismiss button is clicked.
 
 <OpenConfirmDialogExample />
 
-#### openMoreInfoDialog
+---
+
+### openMoreInfoDialog
 
 This method will open a more info dialog of the specified entity. It requires an `entityId` parameter which is the entity that will be open in the more info dialog.
 
 <OpenMoreInfoDialogExample />
 
-#### openRestartDialog
+---
+
+### openRestartDialog
 
 :::warning[Important]
 
@@ -136,7 +159,9 @@ This method will open the dialog to restart `Home Assistant`.
 
 <OpenRestartDialogExample />
 
-#### checkConfig
+---
+
+### checkConfig
 
 :::warning[Important]
 
@@ -148,7 +173,9 @@ This method allows one to validate the `Home Assistant` configuration. It return
 
 <CheckConfigRestApiExample />
 
-#### renderTemplate
+---
+
+### renderTemplate
 
 :::warning[Important]
 
@@ -160,7 +187,9 @@ This method accepts a [Jinja template string](https://www.home-assistant.io/docs
 
 <RenderTemplateRestApiExample />
 
-#### callService
+---
+
+### callService
 
 :::warning[Important]
 
@@ -174,7 +203,7 @@ This method will call a `Home Assistant` service (renamed some time ago to [acti
 
 ---
 
-### Complex Example
+## Complex Example
 
 The next example will create the next things:
 
