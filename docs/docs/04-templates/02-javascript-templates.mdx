@@ -2,6 +2,9 @@
 sidebar_position: 2
 ---
 
+import Navigate from '@site/docs/_partials/04-templates/02-javascript-templates/navigate/_navigate.mdx';
+import ActivateItem from '@site/docs/_partials/04-templates/02-javascript-templates/navigate/_activate_item.mdx';
+
 import FormatDateExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_format_date.mdx';
 import FormatDateTimeExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_format_date_time.mdx';
 import FormatTimeExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_format_time.mdx';
@@ -47,6 +50,31 @@ The next methods depend on the locale that the user has configured in Home Assis
 When you open Home Assistant and it is loading, it is possible that the locale data is not ready yet until the system finished to load all the resources. If you try to render a template using these methods at the beginning of this loading process, it is possible that the formatting wouldn't follow your language settings. This will be corrected if the template is reevaluated later, but to avoid any wrong formatting at the beginning, it is recommended to delay the formatting in the first rendering using a Promise or to force a re-rendering of the template using [JavaScript reactive variables](../advanced-configuration-options/javascript-variables#reactive-javascript-variables-refs) or any other technique that mitigates this issue.
 
 :::
+
+#### navigate
+
+:::warning[Important]
+
+Dashboards paths must start with `/`, if you use an absolute URL or a path that doesn't start with `/`, it will be ignored and a warning will be thrown in the console.
+
+:::
+
+This method allows one to navigate to a certain dashboard. Optionally, one can send a second boolean parameter to decide if the path should replace the current one in the history.
+
+
+<Navigate />
+
+#### activateItem
+
+:::tip
+
+If the `JavaScript` template is used in an `on_click` item property, you can send the `ha-md-list-item` element accesing the `element` property of the `item` variable.
+
+:::
+
+This method allows one to make an item in the sidebar active programatically and it will deactivate the previous active item automatically. You need to send an `ha-md-list-item` element as parameter.
+
+<ActivateItem />
 
 #### formatDate
 
