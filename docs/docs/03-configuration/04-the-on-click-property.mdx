@@ -15,6 +15,18 @@ The `on_click` property allows one to attach click actions to specific sidebar i
 
 The `navigate` action allows one to navigate to a specific dashboard when an item is clicked. Using this action with a regular string doesn't have any advantage on top of just using the `href` item property, but the real power of this action is that it can generate the `path` to the dashboard using a [JavaScript template](../templates/javascript-templates), so there could be some logic involved to decide to which path should redirect the item when clicked.
 
+:::warning
+
+You should not use this action in an an item that contains an `href` property because the default functionality of redirecting to a dashboard taking into acount the `href` and the `navigate` action functionality will clash.
+
+:::
+
+:::info
+
+When you visit a URL directly, there is a logic to select the proper sidebar item taking into account its `href`. You need to be aware that when using a `navigate` action, there is no way for the plugin to know that an item redirects to a dashboard path, so in those cases the item will not be selected.
+
+:::
+
 :::tip
 
 1. The `path` parameter of a `navigate` action accepts a [JavaScript template](../templates/javascript-templates). The `JavaScript` template used there will have access to two variables: `item` and `itemText`. These variables are related to the clicked item, the first is the configuration object of the item (including an `element` property which is the HTML element relative to the sidebar item) and the second is the text of the item.
