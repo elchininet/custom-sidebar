@@ -414,7 +414,7 @@ class CustomSidebar {
                 this._subscribeTemplate(
                     this._config.sidebar_editable,
                     (rendered: string) => {
-                        let isSidebarEditable: boolean | undefined = undefined;
+                        let isSidebarEditable: boolean | undefined;
                         if (rendered === ATTRIBUTE_VALUE.TRUE || rendered === ATTRIBUTE_VALUE.FALSE) {
                             isSidebarEditable = !(rendered === ATTRIBUTE_VALUE.FALSE);
                             if (isSidebarEditable) {
