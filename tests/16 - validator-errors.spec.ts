@@ -936,7 +936,7 @@ test.describe('order item property', () => {
                     }
                 ]
             },
-            error: `${ERROR_PREFIX} in history, the "action" parameter should be one of these values: call-service, javascript, open-dialog`
+            error: `${ERROR_PREFIX} in history, the "action" parameter should be one of these values: navigate, call-service, javascript, open-dialog`
         },
         {
             title: 'should throw an error if the on_click property contains a call-service action with a malformed service parameter',
