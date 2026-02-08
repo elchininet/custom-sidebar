@@ -22,7 +22,7 @@ const dispatchLocationChanged = (pathname: string): void => {
 
 export const navigate = (
     pathname: string,
-    replace = false,
+    replace: boolean,
     warningMessage = 'ignoring navigate method using the path'
 ): void => {
     if (pathname.startsWith('/')) {
