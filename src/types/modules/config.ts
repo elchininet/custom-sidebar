@@ -28,6 +28,7 @@ export enum Match {
 }
 
 export enum ActionType {
+    NAVIGATE = 'navigate',
     CALL_SERVICE = 'call-service',
     JAVASCRIPT = 'javascript',
     OPEN_DIALOG = 'open-dialog'
@@ -42,6 +43,12 @@ export enum DialogType {
 export interface SidebarWidth {
     extended?: string;
     hidden?: string;
+}
+
+export interface NavigateAction {
+    action: `${ActionType.NAVIGATE}`;
+    path: string;
+    replace?: boolean;
 }
 
 export interface ServiceCallAction {
@@ -71,6 +78,7 @@ export type OpenDialogAction =
     | OpenRestartDialogAction;
 
 export type OnClickAction =
+    | NavigateAction
     | ServiceCallAction
     | JavaScriptAction
     | OpenDialogAction;

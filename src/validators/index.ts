@@ -221,6 +221,11 @@ const validateOnClickOption = (configItem: ConfigItem, errorPrefix: string): voi
         if (!Object.values<string>(ActionType).includes(configItem.on_click.action)) {
             throw new SyntaxError(`${errorPrefix} the "action" parameter should be one of these values: ${Object.values(ActionType).join(', ')}`);
         }
+        if (configItem.on_click.action === ActionType.NAVIGATE) {
+            if (!isString(configItem.on_click.path)) {
+                throw new SyntaxError(`${errorPrefix} the "path" parameter should be a string`);
+            }
+        }
         if (configItem.on_click.action === ActionType.CALL_SERVICE) {
             if (!isString(configItem.on_click.service)) {
                 throw new SyntaxError(`${errorPrefix} the "service" parameter should be a string`);

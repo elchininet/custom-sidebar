@@ -56,6 +56,7 @@ import {
     SIDEBAR_OPTIONS_VARIABLES_MAP
 } from '@constants';
 import {
+    buildNavigateMethods,
     getConfig,
     getDialogsMethods,
     getFormatDateMethods,
@@ -864,11 +865,7 @@ class CustomSidebar {
     }
 
     private _executeDefaultPath(pathname: string) {
-        if (pathname.startsWith('/')) {
-            navigate(pathname);
-        } else {
-            console.warn(`${NAMESPACE}: ignoring default_path property "${pathname}" as it doesn't start with "/".`);
-        }
+        navigate(pathname, true, 'ignoring default_path property');
     }
 
     private _processSidebar(): void {
@@ -1348,6 +1345,21 @@ class CustomSidebar {
         };
 
         switch(onClickAction.action) {
+            case ActionType.NAVIGATE: {
+                const { path, replace } = onClickAction;
+                let pathname = path;
+                if (JS_TEMPLATE_REG.test(path)) {
+                    pathname = renderTemplate(
+                        getTemplateWithPartials(
+                            path.replace(JS_TEMPLATE_REG, '$1'),
+                            this._config.partials
+                        )
+                    );
+                    
+                }
+                navigate(pathname, replace, 'ignoring on_click.path property');
+                break;
+            }
             case ActionType.CALL_SERVICE: {
                 const { service, data = {} } = onClickAction;
                 const matches = service.match(DOMAIN_ENTITY_REGEXP);
@@ -1537,6 +1549,7 @@ class CustomSidebar {
                                 this._debugLog('Executing plugin logic...');
                                 this._renderer.variables = {
                                     ...(this._config.js_variables ?? {}),
+                                    ...buildNavigateMethods(this._sidebar),
                                     ...getRestApis(this._ha),
                                     ...getDialogsMethods(this._ha),
                                     ...getFormatDateMethods(this._ha)

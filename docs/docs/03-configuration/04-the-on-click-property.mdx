@@ -2,6 +2,7 @@
 sidebar_position: 4
 ---
 
+import NavigateAction from '@site/docs/_partials/03-configuration/04-the-on-click-property/_navigate-action.mdx';
 import CallServiceAction from '@site/docs/_partials/03-configuration/04-the-on-click-property/_call-service-action.mdx';
 import JavaScriptAction from '@site/docs/_partials/03-configuration/04-the-on-click-property/_javascript-action.mdx';
 import OpenDialogAction from '@site/docs/_partials/03-configuration/04-the-on-click-property/_open-dialog-action.mdx';
@@ -9,6 +10,19 @@ import OpenDialogAction from '@site/docs/_partials/03-configuration/04-the-on-cl
 # The on_click property
 
 The `on_click` property allows one to attach click actions to specific sidebar items. These actions will be triggered every time that the sidebar item containing an `on_click` property is clicked. The `on_click` property doesn't stop redirecting to a dashboard or to an external page if it is provided together with an `href` property. But if the `href` property is `#` (or it is just omitted in new items), then the `on_click` action will be executed without redirecting to any dashboard or external page.
+
+### Navigate action
+
+The `navigate` action allows one to navigate to a specific dashboard when an item is clicked. Using this action with a regular string doesn't have any advantage on top of just using the `href` item property, but the real power of this action is that it can generate the `path` to the dashboard using a [JavaScript template](../templates/javascript-templates), so there could be some logic involved to decide to which path should redirect the item when clicked.
+
+:::tip
+
+1. The `path` parameter of a `navigate` action accepts a [JavaScript template](../templates/javascript-templates). The `JavaScript` template used there will have access to two variables: `item` and `itemText`. These variables are related to the clicked item, the first is the configuration object of the item (including an `element` property which is the HTML element relative to the sidebar item) and the second is the text of the item.
+2. Apart from the `path` parameter, this action also accepts an optional `replace` boolean parameter to decide if the path should replace the current one in the history.
+
+:::
+
+<NavigateAction />
 
 ### Call service action
 
