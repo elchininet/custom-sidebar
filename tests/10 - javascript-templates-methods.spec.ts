@@ -1,12 +1,18 @@
 import { test, expect } from 'playwright-test-coverage';
-import { CONFIG_FILES, SELECTORS } from './constants';
 import { haConfigRequest } from './ha-services';
+import {
+    CONFIG_FILES,
+    HREFS,
+    SELECTORS
+} from './constants';
+import { NAMESPACE } from '../src/constants';
 import {
     fulfillJson,
     navigateHome,
     noCacheRoute,
     waitForLogMessage,
-    waitForLogMessages
+    waitForLogMessages,
+    waitForWarning
 } from './utilities';
 import { getSidebarItem } from './selectors';
 
@@ -327,6 +333,156 @@ test.describe('methods in JavaScript templates', () => {
         await getSidebarItem(page, '#').click();
 
         expect(page.locator('ha-more-info-dialog ha-dialog-header .title')).toContainText('My Switch');
+
+    });
+
+    test.describe('navigate method', () => {
+
+        test('navigate method without replace should navigate to a panel without replacing the url in the history', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    if (true) {
+                                        navigate('/config/developer-tools/yaml')
+                                    }`
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            await getSidebarItem(page, HREFS.TODO).click();
+            
+            await page.waitForURL(/.*\/todo/);
+
+            await expect(page.locator(SELECTORS.TODO_PANEL)).toBeVisible();
+
+            await getSidebarItem(page, '#').click();
+
+            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
+
+            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
+
+            await page.goBack();
+
+            await page.waitForURL(/.*\/todo/);
+
+        });
+
+        test('navigate method with replace as true should navigate to a panel replacing the url in the history', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    if (true) {
+                                        navigate('/config/developer-tools/yaml', true)
+                                    }`
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            await getSidebarItem(page, HREFS.TODO).click();
+            
+            await page.waitForURL(/.*\/todo/);
+
+            await expect(page.locator(SELECTORS.TODO_PANEL)).toBeVisible();
+
+            await getSidebarItem(page, '#').click();
+
+            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
+
+            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
+
+            await page.goBack();
+
+            await page.waitForURL(/.*\/lovelace/);
+
+        });
+
+        test('navigate method should not navigate to a panel and should throw a warning if the path doesn\'t start with "/"', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    if (true) {
+                                        navigate('config/developer-tools/yaml')
+                                    }`
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            getSidebarItem(page, '#').click();
+
+            await waitForWarning(page, `${NAMESPACE}: ignoring navigate method using the path "config/developer-tools/yaml" as it doesn't start with "/"`);
+
+            await expect(page).not.toHaveURL(/\/config/);
+
+        });
+
+    });        
+
+    test('activateItem should set the clicked item active', async ({ page }) => {
+
+        const SELECTED_CLASSNAME = /(^|\s)selected(\s|$)/;
+
+        await fulfillJson(
+            page,
+            {
+                order: [
+                    {
+                        ...item,
+                        on_click: {
+                            action: 'javascript',
+                            code: `
+                                navigate('/config/developer-tools/yaml');
+                                activateItem(item.element);
+                            `
+                        }
+                    }
+                ]
+            }
+        );
+
+        const sidebarItem = getSidebarItem(page, '#');
+
+        await navigateHome(page);
+
+        expect(sidebarItem).not.toHaveClass(SELECTED_CLASSNAME);
+        expect(sidebarItem).toHaveAttribute('tabIndex', '-1');
+
+        await sidebarItem.click();
+
+        expect(sidebarItem).toHaveClass(SELECTED_CLASSNAME);
+        expect(sidebarItem).toHaveAttribute('tabIndex', '0');
 
     });
 

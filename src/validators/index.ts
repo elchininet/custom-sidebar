@@ -225,6 +225,12 @@ const validateOnClickOption = (configItem: ConfigItem, errorPrefix: string): voi
             if (!isString(configItem.on_click.path)) {
                 throw new SyntaxError(`${errorPrefix} the "path" parameter should be a string`);
             }
+            if (
+                !isUndefined(configItem.on_click.replace) &&
+                !isBoolean(configItem.on_click.replace)
+            ) {
+                throw new SyntaxError(`${errorPrefix} the "replace" parameter should be a boolean`);
+            }
         }
         if (configItem.on_click.action === ActionType.CALL_SERVICE) {
             if (!isString(configItem.on_click.service)) {

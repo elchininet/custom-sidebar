@@ -939,6 +939,37 @@ test.describe('order item property', () => {
             error: `${ERROR_PREFIX} in history, the "action" parameter should be one of these values: navigate, call-service, javascript, open-dialog`
         },
         {
+            title: 'should throw an error if the on_click property contains a navigate action with a malformed path paramater',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        on_click: {
+                            action: 'navigate',
+                            path: ['/lovelace']
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the "path" parameter should be a string`
+        },
+        {
+            title: 'should throw an error if the on_click property contains a navigate action with a malformed replace paramater',
+            json: {
+                order: [
+                    {
+                        item: 'history',
+                        on_click: {
+                            action: 'navigate',
+                            path: '/lovelace',
+                            replace: 'yes'
+                        }
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX} in history, the "replace" parameter should be a boolean`
+        },
+        {
             title: 'should throw an error if the on_click property contains a call-service action with a malformed service parameter',
             json: {
                 order: [
