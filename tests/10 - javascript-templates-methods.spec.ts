@@ -361,7 +361,7 @@ test.describe('methods in JavaScript templates', () => {
             await navigateHome(page);
 
             await getSidebarItem(page, HREFS.TODO).click();
-            
+
             await page.waitForURL(/.*\/todo/);
 
             await expect(page.locator(SELECTORS.TODO_PANEL)).toBeVisible();
@@ -401,7 +401,7 @@ test.describe('methods in JavaScript templates', () => {
             await navigateHome(page);
 
             await getSidebarItem(page, HREFS.TODO).click();
-            
+
             await page.waitForURL(/.*\/todo/);
 
             await expect(page.locator(SELECTORS.TODO_PANEL)).toBeVisible();
@@ -448,7 +448,7 @@ test.describe('methods in JavaScript templates', () => {
 
         });
 
-    });        
+    });
 
     test('activateItem should set the clicked item active', async ({ page }) => {
 
