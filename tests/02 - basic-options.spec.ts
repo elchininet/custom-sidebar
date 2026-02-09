@@ -890,7 +890,7 @@ test.describe('on_click property', () => {
 
     });
 
-    test.describe('javascript action', () => {    
+    test.describe('javascript action', () => {
 
         test('should execute a javascript action without redirecting', async ({ page }) => {
 
@@ -1033,7 +1033,7 @@ test.describe('on_click property', () => {
 
     });
 
-    test.describe('open-dialog action', () => {    
+    test.describe('open-dialog action', () => {
 
         test('should execute an open-dialog action with a more-info dialog', async ({ page }) => {
 
