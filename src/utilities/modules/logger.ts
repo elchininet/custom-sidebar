@@ -8,3 +8,49 @@ export const logVersionToConsole = () => {
         'font-weight: normal; background: #E87A24; color: #FFFFFF; padding: 2px 5px'
     );
 };
+
+export class Debugger {
+
+    constructor(debug: boolean) {
+        this._debug = debug;
+    }
+
+    private _debug: boolean;
+
+    public log(
+        topic: string,
+        metadata?: unknown,
+        config?: {
+            stringify?: boolean;
+            table?: boolean;
+        }
+    ): void {
+        const {
+            stringify = true,
+            table = false
+        } = config ?? {};
+        if (this._debug) {
+            const topicMessage = `${NAMESPACE} debug: ${topic}`;
+            if (metadata) {
+                console.groupCollapsed(topicMessage);
+                if (table) {
+                    console.table(metadata);
+                } else {
+                    console.log(
+                        stringify
+                            ? JSON.stringify(metadata, null, 4)
+                            : metadata
+                    );
+                }
+                console.groupEnd();
+            } else {
+                console.log(topicMessage);
+            }
+        }
+    }
+
+    public get debug(): boolean {
+        return this._debug;
+    }
+
+}
