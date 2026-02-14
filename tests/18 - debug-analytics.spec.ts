@@ -1,14 +1,25 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
+import { Sidebar } from '../src/types';
 import { CONFIG_FILES, HREFS, SELECTORS } from './constants';
 import { haConfigRequest } from './ha-services';
 import {
     addJsonExtendedRoute,
     navigateHome,
     noCacheRoute,
+    waitForLogMessage,
     waitForLogMessages
 } from './utilities';
 import { getSidebarItem } from './selectors';
+
+interface HASidebar extends Sidebar {
+    hass: {
+        config: {
+            state: string;
+        };
+    };
+    shouldUpdate: (changedProps: Map<string, unknown>) => boolean;
+}
 
 const PREFIX = 'custom-sidebar debug:';
 
@@ -54,6 +65,39 @@ test.describe('Debug messages', () => {
                 expect.stringContaining(`${PREFIX} Executing plugin logic...`)
             ])
         );
+
+    });
+
+    test('ha-sidebar shouldUpdate should return false when hass.config.state is not "RUNNING"', async ({ page }) => {
+
+        const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
+        const configState = 'DUMMY';
+
+        await pageVisit(page, true);
+
+        await waitForLogMessage(page, `${PREFIX} Patching the sidebar shouldUpdate method...`);
+
+        const shouldUpdateIsTrue = await sidebar.evaluate((sidebar: HASidebar) => {
+            return sidebar.shouldUpdate(new Map([
+                ['hass', {}]
+            ]));
+        });
+
+        expect(shouldUpdateIsTrue).toBe(true);
+
+        const shouldUpdateIsFalsePromise = sidebar.evaluate((sidebar: HASidebar, configState: string) => {
+            const configStateBackup = sidebar.hass.config.state;
+            sidebar.hass.config.state = configState;
+            const result = sidebar.shouldUpdate(new Map([
+                ['hass', {}]
+            ]));
+            sidebar.hass.config.state = configStateBackup;
+            return result;
+        }, configState);
+
+        await waitForLogMessage(page, `${PREFIX} Home Assistant config state is ${configState}. Cancelling the update!`);
+
+        expect(await shouldUpdateIsFalsePromise).toBe(false);
 
     });
 
