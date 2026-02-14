@@ -29,7 +29,7 @@ export const SELECTORS = {
     PROFILE_HIDE_SIDEBAR: '.content > ha-card ha-force-narrow-row ha-settings-row > ha-switch',
     NOTIFICATIONS: 'ha-md-list-item.notifications',
     NOTIFICATIONS_DRAWER: 'notification-drawer',
-    DISMISS_NOTIFICATION_ITEM: 'notification-item ha-button[slot="actions"] button',
+    DISMISS_NOTIFICATION_ITEM: 'notification-item ha-button[slot="actions"]',
     CLOSE_NOTIFICATIONS_DRAWER: 'ha-icon-button-prev',
     ITEM_NOTIFICATION: 'span.badge',
     ITEM_TEXT: '.item-text',

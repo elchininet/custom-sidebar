@@ -13,6 +13,7 @@ export const CONFIG_PATH = `${LOCAL_PATH}${CONFIG_NAME}`;
 export const BASE_NAME = 'base';
 export const DEBUG_URL_PARAMETER = 'cs_debug';
 export const LOGBOOK_DELAY = 500;
+export const WEBSOCKET_RUNNING = 'RUNNING';
 
 export enum TYPE {
     BOOLEAN = 'boolean',
@@ -41,6 +42,7 @@ export enum CUSTOM_ELEMENT {
     HA_ICON_BUTTON = 'ha-icon-button',
     HA_PANEL_LOVELACE = 'ha-panel-lovelace',
     HA_RIPPLE = 'ha-ripple',
+    HA_SIDEBAR = 'ha-sidebar',
     HA_SVG_ICON = 'ha-svg-icon',
     HUI_ROOT = 'hui-root',
     HUI_TIMESTAMP_DISPLAY = 'hui-timestamp-display',
@@ -99,6 +101,7 @@ export enum ATTRIBUTE {
     CUSTOM_SIDEBAR_ATTRIBUTES = 'data-custom-sidebar-attrs',
     DISABLED = 'disabled',
     EMPTY = 'data-empty',
+    FIXED = 'data-fixed',
     HREF = 'href',
     ICON = 'icon',
     PROCESSED = 'data-processed',
