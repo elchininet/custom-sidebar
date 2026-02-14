@@ -7,4 +7,4 @@ export * from './modules/navigate';
 export * from './modules/dialogs';
 export * from './modules/predicates';
 export { getFormatDateMethods } from './modules/format-date';
-export { logVersionToConsole } from './modules/logger';
+export { Debugger, logVersionToConsole } from './modules/logger';

@@ -56,6 +56,7 @@ import {
     SIDEBAR_OPTIONS_VARIABLES_MAP
 } from '@constants';
 import {
+    Debugger,
     buildNavigateMethods,
     getConfig,
     getDialogsMethods,
@@ -82,7 +83,7 @@ class CustomSidebar {
 
     constructor(enableDebug: boolean) {
 
-        this._debug = enableDebug;
+        this._debugger = new Debugger(enableDebug);
 
         const selector = new HAQuerySelector();
 
@@ -96,7 +97,7 @@ class CustomSidebar {
                 this._sidebar = event.detail.HA_SIDEBAR;
                 this._partialPanelResolver = event.detail.PARTIAL_PANEL_RESOLVER;
 
-                this._debugLog(
+                this._debugger.log(
                     'HAQuerySelector init executed',
                     {
                         HOME_ASSISTANT: this._homeAssistant,
@@ -133,7 +134,7 @@ class CustomSidebar {
             throwWarnings: false
         });
 
-        this._debugLog('Starting the plugin...');
+        this._debugger.log('Starting the plugin...');
 
         this._items = [];
         this._logBookMessagesMap = new Map<string, number>();
@@ -144,7 +145,7 @@ class CustomSidebar {
         selector.listen();
     }
 
-    private _debug: boolean;
+    private _debugger: Debugger;
     private _configPromise: Promise<Config>;
     private _config: Config;
     private _homeAssistant: HAElement;
@@ -161,46 +162,14 @@ class CustomSidebar {
     private _mouseEnterBinded: (event: MouseEvent) => void;
     private _mouseLeaveBinded: () => void;
 
-    private _debugLog(
-        topic: string,
-        metadata?: unknown,
-        config?: {
-            stringify?: boolean;
-            table?: boolean;
-        }
-    ): void {
-        const {
-            stringify = true,
-            table = false
-        } = config ?? {};
-        if (this._debug) {
-            const topicMessage = `${NAMESPACE} debug: ${topic}`;
-            if (metadata) {
-                console.groupCollapsed(topicMessage);
-                if (table) {
-                    console.table(metadata);
-                } else {
-                    console.log(
-                        stringify
-                            ? JSON.stringify(metadata, null, 4)
-                            : metadata
-                    );
-                }
-                console.groupEnd();
-            } else {
-                console.log(topicMessage);
-            }
-        }
-    }
-
     private async _getConfig(): Promise<void> {
 
-        this._debugLog('Getting the config...');
+        this._debugger.log('Getting the config...');
 
         this._config = await this._configPromise
             .then((config: Config) => {
 
-                this._debugLog('Raw config', config);
+                this._debugger.log('Raw config', config);
 
                 return getConfig(
                     this._ha.hass.user,
@@ -258,18 +227,18 @@ class CustomSidebar {
         const topItems = await this._getContainerItems(topItemsContainer, promisableResultOptions);
         const bottomItems = await this._getContainerItems(bottomItemsContainer, promisableResultOptions);
 
-        if (this._debug) {
+        if (this._debugger.debug) {
             const topItemsTable = this._mapItemsForDebug(topItems);
             const bottomItemsTable = this._mapItemsForDebug(bottomItems);
 
-            this._debugLog(
+            this._debugger.log(
                 'Top Native sidebar items',
                 topItemsTable,
                 {
                     table: true
                 }
             );
-            this._debugLog(
+            this._debugger.log(
                 'Bottom Native sidebar items',
                 bottomItemsTable,
                 {
@@ -1532,20 +1501,20 @@ class CustomSidebar {
             .then((ha: HomeAsssistantExtended) => {
                 this._ha = ha;
 
-                this._debugLog('Instantiating HomeAssistantJavaScriptTemplates...');
+                this._debugger.log('Instantiating HomeAssistantJavaScriptTemplates...');
 
                 new HomeAssistantJavaScriptTemplates(this._ha)
                     .getRenderer()
                     .then((renderer) => {
 
-                        this._debugLog('HomeAssistantJavaScriptTemplates instantiated');
+                        this._debugger.log('HomeAssistantJavaScriptTemplates instantiated');
 
                         this._renderer = renderer;
                         this._getConfig()
                             .then(() => {
 
-                                this._debugLog('Compiled config', this._config);
-                                this._debugLog('Executing plugin logic...');
+                                this._debugger.log('Compiled config', this._config);
+                                this._debugger.log('Executing plugin logic...');
                                 this._renderer.variables = {
                                     ...(this._config.js_variables ?? {}),
                                     ...buildNavigateMethods(this._sidebar),
