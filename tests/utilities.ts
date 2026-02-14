@@ -65,6 +65,8 @@ export const navigateHome = async (page: Page, includeSidebar = true): Promise<v
         const notificationItem = notificationsDrawer.locator(SELECTORS.DISMISS_NOTIFICATION_ITEM).first();
         await notificationItem.click();
         await expect(closeNotificationDrawer).not.toBeVisible();
+        await page.reload();
+        await waitForMainElements(page, includeSidebar);
         await expect(notificationBadge).not.toBeVisible();
     }
 };

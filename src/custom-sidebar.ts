@@ -53,7 +53,8 @@ import {
     SELECTOR,
     SIDEBAR_BORDER_COLOR_VARIABLES_MAP,
     SIDEBAR_MODE_TO_DOCKED_SIDEBAR,
-    SIDEBAR_OPTIONS_VARIABLES_MAP
+    SIDEBAR_OPTIONS_VARIABLES_MAP,
+    WEBSOCKET_RUNNING
 } from '@constants';
 import {
     Debugger,
@@ -181,7 +182,8 @@ class CustomSidebar {
 
     private async _getContainerItems(
         container: HTMLElement,
-        promisableResultOptions: PromisableOptions
+        promisableResultOptions: PromisableOptions,
+        fixed = false
     ): Promise<NodeListOf<SidebarItem>> {
         const items = await getPromisableResult<NodeListOf<SidebarItem>>(
             () => container.querySelectorAll<SidebarItem>(`:scope > ${CUSTOM_ELEMENT.ITEM}`),
@@ -193,6 +195,14 @@ class CustomSidebar {
             },
             promisableResultOptions
         );
+        items.forEach((item: SidebarItem): void => {
+            item.setAttribute(
+                ATTRIBUTE.FIXED,
+                fixed
+                    ? ATTRIBUTE_VALUE.TRUE
+                    : ATTRIBUTE_VALUE.FALSE
+            );
+        });
         return items;
     }
 
@@ -225,7 +235,7 @@ class CustomSidebar {
         const bottomItemsContainer = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element) as HTMLElement;
 
         const topItems = await this._getContainerItems(topItemsContainer, promisableResultOptions);
-        const bottomItems = await this._getContainerItems(bottomItemsContainer, promisableResultOptions);
+        const bottomItems = await this._getContainerItems(bottomItemsContainer, promisableResultOptions, true);
 
         if (this._debugger.debug) {
             const topItemsTable = this._mapItemsForDebug(topItems);
@@ -1058,6 +1068,25 @@ class CustomSidebar {
         });
     }
 
+    private _patchSidebarMethods(): void {
+
+        const debuggerInstance = this._debugger;
+
+        debuggerInstance.log('Patching the sidebar shouldUpdate method...');
+
+        customElements.whenDefined(CUSTOM_ELEMENT.HA_SIDEBAR)
+            .then((sidebar: CustomElementConstructor): void => {
+                const shouldUpdate = sidebar.prototype.shouldUpdate;
+                sidebar.prototype.shouldUpdate = function (changedProps: Map<string, unknown>): boolean {
+                    if (this.hass.config.state !== WEBSOCKET_RUNNING) {
+                        debuggerInstance.log(`Home Assistant config state is ${this.hass.config.state}. Cancelling the update!`);
+                        return false;
+                    }
+                    return shouldUpdate.call(this, changedProps);
+                };
+            });
+    }
+
     private _rearrange(): void {
         this._getElements()
             .then((elementsStore: ElementsStore) => {
@@ -1139,6 +1168,12 @@ class CustomSidebar {
                         orderItem.element = newItem;
 
                         orderItem.element.setAttribute(ATTRIBUTE.PROCESSED, ATTRIBUTE_VALUE.TRUE);
+                        orderItem.element.setAttribute(
+                            ATTRIBUTE.FIXED,
+                            orderItem.bottom
+                                ? ATTRIBUTE_VALUE.TRUE
+                                : ATTRIBUTE_VALUE.FALSE
+                        );
 
                         this._items.push(orderItem.element);
 
@@ -1156,10 +1191,22 @@ class CustomSidebar {
 
                     }
 
-                    if (orderItem.bottom) {
-                        bottomItemsFragment.appendChild(orderItem.element);
-                    } else {
-                        topItemsFragment.appendChild(orderItem.element);
+                    if (
+                        orderItem.new_item ||
+                        (
+                            orderItem.bottom &&
+                            orderItem.element.getAttribute(ATTRIBUTE.FIXED) === ATTRIBUTE_VALUE.FALSE
+                        ) ||
+                        (
+                            !orderItem.bottom &&
+                            orderItem.element.getAttribute(ATTRIBUTE.FIXED) === ATTRIBUTE_VALUE.TRUE
+                        )
+                    ) {
+                        if (orderItem.bottom) {
+                            bottomItemsFragment.appendChild(orderItem.element);
+                        } else {
+                            topItemsFragment.appendChild(orderItem.element);
+                        }
                     }
 
                     if (isUndefined(orderItem.order)) {
@@ -1254,6 +1301,7 @@ class CustomSidebar {
                 topItemsContainer.appendChild(topItemsFragment);
                 bottomItemsContainer.appendChild(bottomItemsFragment);
 
+                this._patchSidebarMethods();
                 this._aplyItemRippleStyles();
                 this._panelLoaded();
                 this._checkEmptyBottomList();
