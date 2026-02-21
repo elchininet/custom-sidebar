@@ -54,7 +54,7 @@ export const navigateHome = async (page: Page, includeSidebar = true): Promise<v
     await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
     // If there is a notification visible, dismiss it
     const notifications = page.locator(SELECTORS.NOTIFICATIONS);
-    const notificationBadge = notifications.locator('span.badge');
+    const notificationBadge = notifications.locator('span.badge[slot="end"]');
     const isBadgeVisible = await notificationBadge.isVisible();
     // Avoid screenshots failing because a notification badge appearing
     if (isBadgeVisible) {
@@ -64,7 +64,7 @@ export const navigateHome = async (page: Page, includeSidebar = true): Promise<v
         await expect(closeNotificationDrawer).toBeVisible();
         const notificationItem = notificationsDrawer.locator(SELECTORS.DISMISS_NOTIFICATION_ITEM).first();
         await notificationItem.click();
-        await expect(closeNotificationDrawer).not.toBeVisible();
+        await closeNotificationDrawer.click();
         await page.reload();
         await waitForMainElements(page, includeSidebar);
         await expect(notificationBadge).not.toBeVisible();

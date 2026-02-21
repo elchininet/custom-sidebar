@@ -319,15 +319,15 @@ test('if the hide property is a template, item should get hidden when the templa
 
         await fulfillJson(page, json);
 
-        const title = page.locator(SELECTORS.TITLE);
+        const homeAssistantTitle = page.locator(SELECTORS.TITLE);
 
         await navigateHome(page);
 
-        await expect(title).toContainText('False 123');
+        await expect(homeAssistantTitle).toContainText('False 123');
 
         await haSwitchStateRequest(page, true);
 
-        await expect(title).toContainText('True 123');
+        await expect(homeAssistantTitle).toContainText('True 123');
 
         await haSwitchStateRequest(page, false);
 
