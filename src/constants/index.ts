@@ -72,7 +72,7 @@ export enum SELECTOR {
     CONFIGURATION = '.configuration',
     HUI_ROOT = 'ha-panel-lovelace$ hui-root',
     HA_MENU_BUTTON = '.header .toolbar > ha-menu-button',
-    EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-settings-row ha-button',
+    EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-pick-dashboard-row + ha-md-list ha-md-list-item ha-button',
     SIDEBAR_NOTIFICATIONS_CONTAINER = '.notifications-container',
     SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER = '.notifications-container:hover',
     SIDEBAR_NOTIFICATIONS = '.notifications',

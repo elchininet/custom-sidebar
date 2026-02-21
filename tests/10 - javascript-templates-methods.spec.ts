@@ -148,10 +148,10 @@ test.describe('methods in JavaScript templates', () => {
         const confirmText = 'Confirm text';
         const logText = 'Text logged';
 
-        const dialog = page.locator('dialog-box ha-wa-dialog');
+        const dialog = page.locator('dialog-box ha-dialog');
         const dialogTitle = dialog.locator('#dialog-box-title');
         const dialogDescription = dialog.locator('#dialog-box-description');
-        const dialogButton = dialog.locator('ha-button');
+        const dialogButton = dialog.locator('ha-dialog-footer ha-button');
 
         await fulfillJson(
             page,
@@ -209,11 +209,11 @@ test.describe('methods in JavaScript templates', () => {
         const confirmLogText = 'Confirm text logged';
         const dismissLogText = 'Dismiss text logged';
 
-        const dialog = page.locator('dialog-box ha-wa-dialog');
+        const dialog = page.locator('dialog-box ha-dialog');
         const dialogTitle = dialog.locator('#dialog-box-title');
         const dialogDescription = dialog.locator('#dialog-box-description');
-        const dialogFirstButton = dialog.locator('ha-button').first();
-        const dialogLastButton = dialog.locator('ha-button').last();
+        const dialogFirstButton = dialog.locator('ha-dialog-footer ha-button').first();
+        const dialogLastButton = dialog.locator('ha-dialog-footer ha-button').last();
 
         await fulfillJson(
             page,
@@ -332,7 +332,7 @@ test.describe('methods in JavaScript templates', () => {
 
         await getSidebarItem(page, '#').click();
 
-        expect(page.locator('ha-more-info-dialog ha-dialog-header .title')).toContainText('My Switch');
+        expect(page.locator('ha-more-info-dialog .title .main')).toContainText('My Switch');
 
     });
 

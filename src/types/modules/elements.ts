@@ -57,17 +57,10 @@ export interface HaConfigSystemNavigation extends HTMLElement {
     _showRestartDialog: () => void;
 }
 
-interface DeleteBackupEvent {
-    parentElement: {
-        anchorElement: {
-            backup: boolean;
-        };
-    };
-}
-
 export interface HaConfigBackupBackups extends HTMLElement {
     hass: HassExtended;
-    _deleteBackup: (evt: DeleteBackupEvent) => void;
+    _overflowBackup: boolean;
+    _deleteBackup: () => void;
 }
 
 export interface HomeAssistantMain extends HTMLElement {
