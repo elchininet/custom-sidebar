@@ -24,7 +24,6 @@
     "tag:playwright": "docker run --rm --network host --add-host host.docker.internal:host-gateway -v $(pwd):/$(pwd)/ -w $(pwd) -i mcr.microsoft.com/playwright:v$(jq -r '.devDependencies[\"@playwright/test\"]' package.json)-jammy sh -c \"npx playwright test --grep @testing --trace on\"",
     "coverage:report": "nyc report --reporter=lcov --reporter=text-summary",
     "reset:ha": "git add .hass/config/.HA_VERSION && git checkout .hass/config",
-    "preinstall": "npx -y only-allow pnpm",
     "prepare": "pnpm build",
     "prepublishOnly": "pnpm test:all",
     "version": "git add .",
