@@ -1057,7 +1057,7 @@ test.describe('on_click property', () => {
 
             await getSidebarItem(page, '#').click();
 
-            expect(page.locator('ha-more-info-dialog ha-dialog-header .title')).toContainText('My Switch');
+            expect(page.locator('ha-more-info-dialog .title .main')).toContainText('My Switch');
 
         });
 

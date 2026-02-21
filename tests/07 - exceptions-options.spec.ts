@@ -16,8 +16,7 @@ import {
     fulfillJson,
     navigateHome,
     navigateToProfile,
-    noCacheRoute,
-    waitForMainElements
+    noCacheRoute
 } from './utilities';
 
 test.beforeAll(async ({ browser }) => {
@@ -742,9 +741,7 @@ test.describe('without extending from the base', () => {
 
         await changeToMobileViewport(page);
 
-        await page.goto('/');
-        await page.waitForURL(/.*\/lovelace/);
-        await waitForMainElements(page, false);
+        await navigateHome(page, false);
 
     });
 
