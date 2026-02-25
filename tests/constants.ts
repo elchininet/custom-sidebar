@@ -1,5 +1,5 @@
 export const BASE_URL = 'http://host.docker.internal:8123';
-export const JSON_PATH = 'local/sidebar-config.json*';
+export const JSON_PATH = 'local/custom-sidebar-config.json*';
 
 export const HREFS = {
     OVERVIEW: '/lovelace',

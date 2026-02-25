@@ -8,7 +8,7 @@ import{
 
 export * from './global';
 export const LOCAL_PATH = '/local/';
-export const CONFIG_NAME = 'sidebar-config';
+export const CONFIG_NAME = 'custom-sidebar-config';
 export const CONFIG_PATH = `${LOCAL_PATH}${CONFIG_NAME}`;
 export const BASE_NAME = 'base';
 export const DEBUG_URL_PARAMETER = 'cs_debug';
