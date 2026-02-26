@@ -1,5 +1,5 @@
 export const BASE_URL = 'http://host.docker.internal:8123';
-export const JSON_PATH = 'local/sidebar-config.json*';
+export const JSON_PATH = 'local/custom-sidebar-config.json*';
 
 export const HREFS = {
     OVERVIEW: '/lovelace',
@@ -24,9 +24,9 @@ export const SELECTORS = {
     TITLE: '.menu .title',
     SIDEBAR_HA_ICON_BUTTON: '.menu ha-icon-button',
     HA_MENU_BUTTON: '.header ha-menu-button ha-icon-button',
-    SIDEBAR_EDIT_MODAL: 'dialog-edit-sidebar ha-wa-dialog[header-title="Edit sidebar"] ha-dialog-header',
-    PROFILE_EDIT_BUTTON: '.content > ha-card ha-settings-row > ha-button',
-    PROFILE_HIDE_SIDEBAR: '.content > ha-card ha-force-narrow-row ha-settings-row > ha-switch',
+    SIDEBAR_EDIT_MODAL: 'dialog-edit-sidebar ha-dialog[header-title="Edit sidebar"] .content',
+    PROFILE_EDIT_BUTTON: '.content > ha-card ha-pick-dashboard-row + ha-md-list ha-md-list-item > ha-button',
+    PROFILE_HIDE_SIDEBAR: '.content > ha-card ha-force-narrow-row ha-md-list-item > ha-switch',
     NOTIFICATIONS: 'ha-md-list-item.notifications',
     NOTIFICATIONS_DRAWER: 'notification-drawer',
     DISMISS_NOTIFICATION_ITEM: 'notification-item ha-button[slot="actions"]',

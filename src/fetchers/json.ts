@@ -9,7 +9,7 @@ import { validateConfig } from '@validators';
 
 export const fetchConfig = async (): Promise<Config> => {
     const errorNotFound = `${NAMESPACE}: JSON config file not found.`;
-    const errorSuffix = `Make sure you have valid config in /config/www/${CONFIG_NAME}.json file.`;
+    const errorSuffix = `Make sure you have a valid config in /config/www/${CONFIG_NAME}.json file.`;
     return new Promise<Config>((resolve) => {
         fetch(
             `${CONFIG_PATH}.json?hash=${randomId()}`,
@@ -23,7 +23,7 @@ export const fetchConfig = async (): Promise<Config> => {
                         .json()
                         .then((config: Config) => {
                             if (config.id?.startsWith('example_json')) {
-                                console.warn(`${NAMESPACE}: You seem to be using the example configuration.\n${errorSuffix}`);
+                                console.warn(`${NAMESPACE}: You seem to be using the example configuration.`);
                             }
                             validateConfig(config);
                             resolve(config);

@@ -10,8 +10,7 @@ import {
     changeToMobileViewport,
     fulfillJson,
     navigateHome,
-    noCacheRoute,
-    waitForMainElements
+    noCacheRoute
 } from './utilities';
 
 test.beforeAll(async ({ browser }) => {
@@ -57,9 +56,7 @@ test('If sidebar_mode is set to "narrow" the sidebar should be visible in narrow
 
     await changeToMobileViewport(page);
 
-    await page.goto('/');
-    await page.waitForURL(/.*\/lovelace/);
-    await waitForMainElements(page);
+    await navigateHome(page);
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
@@ -77,9 +74,7 @@ test('If sidebar_mode is set to "extended" the sidebar should be visible in exte
 
     await changeToMobileViewport(page);
 
-    await page.goto('/');
-    await page.waitForURL(/.*\/lovelace/);
-    await waitForMainElements(page);
+    await navigateHome(page);
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
@@ -98,8 +93,6 @@ test('If sidebar_mode is set to "hidden" the sidebar should not be visible in de
         sidebar_mode: 'hidden'
     });
 
-    await page.goto('/');
-    await page.waitForURL(/.*\/lovelace/);
-    await waitForMainElements(page, false);
+    await navigateHome(page, false);
 
 });
