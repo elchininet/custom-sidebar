@@ -17,7 +17,7 @@
     "test:ci": "pnpm test:clean && pnpm demo && pnpm start:playwright && pnpm stop:ha",
     "test:tag": "pnpm reset:ha && pnpm test:clean && pnpm demo && pnpm tag:playwright && pnpm stop:ha",
     "test:all": "pnpm lint && pnpm test:ts && pnpm test:ci",
-    "demo": "pnpm build && pnpm start:ha",
+    "demo": "pnpm build && pnpm start:ha && sleep 5",
     "start:ha": "docker run --rm -d -p8123:8123 --shm-size=512m -v ${PWD}/.hass/config:/config homeassistant/home-assistant:${TAG:-$(cat .hass/config/.HA_VERSION)}",
     "stop:ha": "docker stop $(docker ps -a -q  --filter ancestor=homeassistant/home-assistant:${TAG:-$(cat .hass/config/.HA_VERSION)}) || true",
     "start:playwright": "docker run -e CI=true --rm --network host --add-host host.docker.internal:host-gateway -v $(pwd):/$(pwd)/ -w $(pwd) -i mcr.microsoft.com/playwright:v$(jq -r '.devDependencies[\"@playwright/test\"]' package.json)-jammy sh -c \"npx playwright test\"",

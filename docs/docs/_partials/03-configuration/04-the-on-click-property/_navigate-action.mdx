@@ -1,39 +1,15 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/custom-sidebar-config.yaml"
-    order:
-      - new_item: true
-        item: 'Decision item'
-        icon: 'mdi:arrow-decision-outline'
-        on_click:
-          action: 'navigate'
-          path: |
-            [[[
-              if (is_state('input_boolean.dev_mode_active', 'on')) {
-                return '/config/developer-tools';
-              }
-              return '/lovelace';
-            ]]]
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/custom-sidebar-config.json"
-    {
-      "order": [
-        {
-          "new_item": true,
-          "item": "Decision item",
-          "icon": "mdi:arrow-decision-outline",
-          "on_click": {
-            "action": "navigate",
-            "path": "[[[ return is_state('input_boolean.dev_mode_active', 'on') ? '/config/developer-tools' : '/lovelace' ]]]"
+```yaml title="custom-sidebar-config.yaml"
+order:
+  - new_item: true
+    item: 'Decision item'
+    icon: 'mdi:arrow-decision-outline'
+    on_click:
+      action: 'navigate'
+      path: |
+        [[[
+          if (is_state('input_boolean.dev_mode_active', 'on')) {
+            return '/config/developer-tools';
           }
-        }
-      ]
-    }
-    ```
-  </TabItem>
-</Tabs>
+          return '/lovelace';
+        ]]]
+```

@@ -1,30 +1,10 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/custom-sidebar-config.yaml"
-    order:
-      - new_item: true
-        item: 'Restart'
-        icon: 'mdi:restart'
-        on_click:
-          action: 'javascript'
-          code: |
-            openRestartDialog();
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/custom-sidebar-config.json"
-    {
-      "new_item": true,
-      "item": "Restart",
-      "icon": "mdi:restart",
-      "on_click": {
-        "action": "javascript",
-        "code": "openRestartDialog();"
-      }
-    }
-    ```
-  </TabItem>
-</Tabs>
+```yaml title="custom-sidebar-config.yaml"
+order:
+  - new_item: true
+    item: 'Restart'
+    icon: 'mdi:restart'
+    on_click:
+      action: 'javascript'
+      code: |
+        openRestartDialog();
+```
