@@ -20,7 +20,7 @@ export const getSidebarItemText = (page: Page, href: string) => {
 
 export const getSidebarItemBadge = (page: Page, href: string) => {
     const sidebarItem = getSidebarItem(page, href);
-    const sidebarItemBadge = sidebarItem.locator(SELECTORS.ITEM_NOTIFICATION);
+    const sidebarItemBadge = sidebarItem.locator(`${SELECTORS.ITEM_NOTIFICATION}[slot="end"]`);
     return sidebarItemBadge;
 };
 

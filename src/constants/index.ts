@@ -110,7 +110,7 @@ export enum ATTRIBUTE {
     TAB_INDEX = 'tabindex',
     TYPE = 'type',
     WITH_DIVIDER = 'data-divider',
-    WITH_NOTIFICATION = 'data-notification',
+    WITH_NOTIFICATION = 'data-notification'
 }
 
 export enum ATTRIBUTE_VALUE {

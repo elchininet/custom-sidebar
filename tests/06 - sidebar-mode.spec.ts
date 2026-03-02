@@ -6,6 +6,7 @@ import {
     SIDEBAR_NARROW_CLIP
 } from './constants';
 import { haConfigRequest } from './ha-services';
+import { getSidebarItem } from './selectors';
 import {
     changeToMobileViewport,
     fulfillJson,
@@ -20,6 +21,9 @@ test.beforeAll(async ({ browser }) => {
 test.beforeEach(noCacheRoute);
 
 test('a new item with notification should behave propely when the sidebar is collapsed', async ({ page }) => {
+
+    const href = '/config/integrations';
+    const item = getSidebarItem(page, href);
 
     await fulfillJson(page, {
         order: [
@@ -36,6 +40,8 @@ test('a new item with notification should behave propely when the sidebar is col
     await navigateHome(page);
 
     await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
+
+    await expect(item.locator('.badge[slot="start"]')).toBeVisible();
 
     await expect(page).toHaveScreenshot('sidebar-new-item-notification-collapsed.png', {
         clip: {
