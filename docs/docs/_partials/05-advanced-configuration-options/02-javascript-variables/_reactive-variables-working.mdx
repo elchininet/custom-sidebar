@@ -1,67 +1,32 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/custom-sidebar-config.yaml"
-    js_refs:
-      my_string: 'Title'
-      my_number: 100
-      my_boolean: true
-      my_object:
-        prop1: 4
-        prop2: 5
-      my_array:
-        - 'cat'
-        - 'dog'
-        - 'bird'
-    title: |
-      [[[
-        if (refs.my_boolean) {
-          return `${refs.my_string} ${(refs.my_number * refs.my_object.prop1) / refs.my_object.prop2} ${refs.my_array[1]}`;
-        }
-        return 'Home Assistant';
-      ]]]
-    order:
-      - new_item: true
-        item: 'Example'
-        icon: 'mdi:gesture-tap'
-        on_click:
-          action: 'javascript'
-          code: |
-            refs.my_number *= 2;
-            refs.my_object = {
-              ...refs.my_object,
-              prop1: my_object.prop1 + 2
-            };
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/custom-sidebar-config.json"
-    {
-      "js_refs": {
-        "my_string": "Title",
-        "my_number": 100,
-        "my_boolean": true,
-        "my_object": {
-          "prop1": 4,
-          "prop2": 5
-        },
-        "my_array": ["cat", "dog", "bird"]
-      },
-      "title": "[[[ return refs.my_boolean ? `${refs.my_string} ${(refs.my_number * refs.my_object.prop1) / refs.my_object.prop2} ${refs.my_array[1]}` : 'Home Assistant' ]]]",
-      "order": [
-        {
-            "new_item": true,
-            "item": "Example",
-            "icon": "mdi:gesture-tap",
-            "on_click": {
-                "action": "javascript",
-                "code": "refs.my_number *= 2; refs.my_object = { ...refs.my_object, prop1: refs.my_object.prop1 + 2 };"
-            }
-        }
-      ]
+```yaml title="custom-sidebar-config.yaml"
+js_refs:
+  my_string: 'Title'
+  my_number: 100
+  my_boolean: true
+  my_object:
+    prop1: 4
+    prop2: 5
+  my_array:
+    - 'cat'
+    - 'dog'
+    - 'bird'
+title: |
+  [[[
+    if (refs.my_boolean) {
+      return `${refs.my_string} ${(refs.my_number * refs.my_object.prop1) / refs.my_object.prop2} ${refs.my_array[1]}`;
     }
-    ```
-  </TabItem>
-</Tabs>
+    return 'Home Assistant';
+  ]]]
+order:
+  - new_item: true
+    item: 'Example'
+    icon: 'mdi:gesture-tap'
+    on_click:
+      action: 'javascript'
+      code: |
+        refs.my_number *= 2;
+        refs.my_object = {
+          ...refs.my_object,
+          prop1: my_object.prop1 + 2
+        };
+```

@@ -1,26 +1,6 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-<Tabs groupId="config">
-  <TabItem value="yaml" label="YAML" default>
-    ```yaml title="<config directory>/www/custom-sidebar-config.yaml"
-    hide_all: true
-    order:
-      - item: dashboard
-        hide: false
-    ```
-  </TabItem>
-  <TabItem value="json" label="JSON">
-    ```json title="<config directory>/www/custom-sidebar-config.json"
-    {
-      "hide_all": true,
-      "order": [
-        {
-          "item": "dashboard",
-          "hide": false
-        }
-      ]
-    }
-    ```
-  </TabItem>
-</Tabs>
+```yaml title="custom-sidebar-config.yaml"
+hide_all: true
+order:
+  - item: dashboard
+    hide: false
+```
