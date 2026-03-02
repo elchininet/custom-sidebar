@@ -284,6 +284,13 @@ class CustomSidebar {
         }
     }
 
+    private _buildNotification(slot: string): Element {
+        const badge = document.createElement(ELEMENT.SPAN);
+        badge.classList.add(CLASS.BADGE);
+        badge.setAttribute(ATTRIBUTE.SLOT, slot);
+        return badge;
+    }
+
     private _buildNewItem(configItem: ConfigNewItem): SidebarItem {
 
         const item = document.createElement(CUSTOM_ELEMENT.ITEM) as SidebarItem;
@@ -298,12 +305,12 @@ class CustomSidebar {
         text.setAttribute(ATTRIBUTE.SLOT, ATTRIBUTE_VALUE.HEADLINE);
         text.innerText = configItem.item;
 
-        const badge = document.createElement(ELEMENT.SPAN);
-        badge.classList.add(CLASS.BADGE);
-        badge.setAttribute(ATTRIBUTE.SLOT, ATTRIBUTE_VALUE.END);
+        const badgeStart = this._buildNotification(ATTRIBUTE_VALUE.START);
+        const badgeEnd = this._buildNotification(ATTRIBUTE_VALUE.END);
 
+        item.appendChild(badgeStart);
         item.appendChild(text);
-        item.appendChild(badge);
+        item.appendChild(badgeEnd);
 
         return item;
     }
@@ -504,21 +511,28 @@ class CustomSidebar {
 
     private _subscribeNotification(element: HTMLElement, notification: string): void {
 
-        let badge = element.querySelector(SELECTOR.BADGE);
+        const text = element.querySelector(SELECTOR.ITEM_TEXT);
+        let badgeStart = element.querySelector(`${SELECTOR.BADGE}[slot="${ATTRIBUTE_VALUE.START}"]`);
+        let badgeEnd = element.querySelector(`${SELECTOR.BADGE}[slot="${ATTRIBUTE_VALUE.END}"]`);
 
-        if (!badge) {
-            badge = document.createElement(ELEMENT.SPAN);
-            badge.classList.add(CLASS.BADGE);
-            badge.setAttribute(ATTRIBUTE.SLOT, ATTRIBUTE_VALUE.END);
-            element.append(badge);
+        if (!badgeStart) {
+            badgeStart = this._buildNotification(ATTRIBUTE_VALUE.START);
+            element.insertBefore(badgeStart, text);
+        }
+
+        if (!badgeEnd) {
+            badgeEnd = this._buildNotification(ATTRIBUTE_VALUE.END);
+            element.append(badgeEnd);
         }
 
         const callback = (rendered: string): void => {
             if (rendered.length) {
-                badge.innerHTML = rendered;
+                badgeStart.innerHTML = rendered;
+                badgeEnd.innerHTML = rendered;
                 element.setAttribute(ATTRIBUTE.WITH_NOTIFICATION, ATTRIBUTE_VALUE.TRUE);
             } else {
-                badge.innerHTML = '';
+                badgeStart.innerHTML = '';
+                badgeEnd.innerHTML = '';
                 element.removeAttribute(ATTRIBUTE.WITH_NOTIFICATION);
             }
         };

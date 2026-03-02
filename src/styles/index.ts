@@ -18,9 +18,10 @@ const BADGE_STYLES = {
         HA_CSS_VARIABLES.TEXT_ACCENT_COLOR,
         HA_CSS_VARIABLES.TEXT_PRIMARY_COLOR
     ),
-    display: 'block',
+    display: 'inline-flex',
     maxWidth: '80px',
     overflow: 'hidden',
+    textAlign: 'center',
     textOverflow: 'ellipsis',
     textWrap: 'nowrap',
     zIndex: 1
@@ -64,16 +65,17 @@ export const FUNCTIONALITY = {
     [`${ SELECTOR.HOST } ${ CUSTOM_ELEMENT.ITEM } > ${ SELECTOR.BADGE }`]: BADGE_STYLES,
     [`${ SELECTOR.HOST_NOT_EXPANDED } ${ CUSTOM_ELEMENT.ITEM } > ${ SELECTOR.BADGE }`]: {
         ...BADGE_STYLES,
-        display: 'flex',
-        fontSize: '0.65em',
-        justifyContent: 'center',
+        maxWidth: '10px',
+        textOverflow: 'unset'
+    },
+    [`${ SELECTOR.HOST } ${ CUSTOM_ELEMENT.ITEM } > ${ CUSTOM_ELEMENT.HA_ICON } + ${ SELECTOR.BADGE }`]: {
+        position: 'absolute',
+        top: 'var(--ha-space-1)',
         left: '26px',
-        lineHeight: '2',
-        maxWidth: '5px',
-        textOverflow: 'unset',
-        top: '4px',
-        padding: '0 5px',
-        position: 'absolute'
+        borderRadius: 'var(--ha-border-radius-md)',
+        fontSize: '.65em',
+        lineHeight: 'var(--ha-line-height-expanded)',
+        padding: '0 var(--ha-space-1)'
     }
 };
 
