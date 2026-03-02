@@ -6,12 +6,13 @@ import {
 } from './utilities';
 
 const ERROR_PREFIX = 'custom-sidebar:';
+const CONFIG_PATH = 'local/custom-sidebar-config.yaml*';
 
 test.beforeEach(noCacheRoute);
 
 test('if the configuration is not found it should throw an error', async ({ page }) => {
 
-    await page.route('local/custom-sidebar-config.json*', async route => {
+    await page.route(CONFIG_PATH, async route => {
         await route.fulfill({
             status: 404,
             contentType: 'text/plain',
@@ -21,13 +22,13 @@ test('if the configuration is not found it should throw an error', async ({ page
 
     await page.goto('/');
 
-    await waithForError(page, `${ERROR_PREFIX} JSON config file not found.\nMake sure you have a valid config in /config/www/custom-sidebar-config.json file.`);
+    await waithForError(page, `${ERROR_PREFIX} Config file not found.\nMake sure you have a valid config in /config/www/custom-sidebar-config.yaml file.`);
 
 });
 
 test('if there is an error loading the configuration it should be thrown', async ({ page }) => {
 
-    await page.route('local/custom-sidebar-config.json*', async route => {
+    await page.route(CONFIG_PATH, async route => {
         await route.fulfill({
             status: 500,
             contentType: 'text/plain',
@@ -37,26 +38,31 @@ test('if there is an error loading the configuration it should be thrown', async
 
     await page.goto('/');
 
-    await waithForError(page, `${ERROR_PREFIX} JSON config file not found.\nMake sure you have a valid config in /config/www/custom-sidebar-config.json file.`);
+    await waithForError(page, `${ERROR_PREFIX} Config file not found.\nMake sure you have a valid config in /config/www/custom-sidebar-config.yaml file.`);
 
 });
 
 test('if the configuration is malformed it should throw an error', async ({ page }) => {
 
-    await page.route('local/custom-sidebar-config.json*', async route => {
-        await route.fulfill({ body: 'html' });
+    await page.route(CONFIG_PATH, async route => {
+        await route.fulfill({
+            body: `
+            test:
+            test:
+            `
+        });
     });
 
     await page.goto('/');
 
-    await waithForError(page, `${ERROR_PREFIX} Unexpected token 'h', "html" is not valid JSON`);
+    await waithForError(page, `${ERROR_PREFIX} duplicated mapping key`);
 
 });
 
 test('if the id is in the configuration it should throw a warning', async ({ page }) => {
 
-    await page.route('local/custom-sidebar-config.json*', async route => {
-        const json = { title: 'Custom Title', order: [], id: 'example_json'};
+    await page.route(CONFIG_PATH, async route => {
+        const json = { title: 'Custom Title', order: [], id: 'example'};
         await route.fulfill({ json });
     });
 

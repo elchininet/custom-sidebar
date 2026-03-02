@@ -5,13 +5,13 @@ import {
 } from '@playwright/test';
 import { expect } from 'playwright-test-coverage';
 import {
-    JSON_PATH,
+    CONFIG_PATH,
     MOBILE_VIEWPORT_SIZE,
     SELECTORS
 } from './constants';
 
-export const addJsonExtendedRoute = async (page: Page, options: Record<string, unknown>): Promise<void> => {
-    await page.route(JSON_PATH, async route => {
+export const addConfigExtendedRoute = async (page: Page, options: Record<string, unknown>): Promise<void> => {
+    await page.route(CONFIG_PATH, async route => {
         const response = await route.fetch();
         const json = await response.json();
         const jsonExtended = {
@@ -26,7 +26,7 @@ export const addJsonExtendedRoute = async (page: Page, options: Record<string, u
 };
 
 export const fulfillJson = async (page: Page, json: Record<string, unknown>): Promise<void> => {
-    await page.route(JSON_PATH, async route => {
+    await page.route(CONFIG_PATH, async route => {
         await route.fulfill({ json });
     });
 };

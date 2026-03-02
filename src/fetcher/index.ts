@@ -5,11 +5,11 @@ import {
     CONFIG_PATH,
     NAMESPACE
 } from '@constants';
-import { randomId } from '@utilities';
 import { validateConfig } from '@validators';
+import { randomId } from '@utilities';
 
 export const fetchConfig = async (): Promise<Config> => {
-    const errorNotFound = `${NAMESPACE}: YAML config file not found.`;
+    const errorNotFound = `${NAMESPACE}: Config file not found.`;
     const errorSuffix = `Make sure you have a valid config in /config/www/${CONFIG_NAME}.yaml file.`;
     return new Promise<Config>((resolve) => {
         fetch(
@@ -26,7 +26,7 @@ export const fetchConfig = async (): Promise<Config> => {
                             return jsYaml.load(yaml);
                         })
                         .then((config: Config) => {
-                            if (config.id?.startsWith('example_yaml')) {
+                            if (config.id?.startsWith('example')) {
                                 console.warn(`${NAMESPACE}: You seem to be using the example configuration.`);
                             }
                             validateConfig(config);

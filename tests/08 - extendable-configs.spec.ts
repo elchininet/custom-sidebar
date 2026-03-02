@@ -2,7 +2,7 @@ import { test, expect } from 'playwright-test-coverage';
 import { CONFIG_FILES, SIDEBAR_CLIP } from './constants';
 import { haConfigRequest } from './ha-services';
 import {
-    addJsonExtendedRoute,
+    addConfigExtendedRoute,
     navigateHome,
     noCacheRoute
 } from './utilities';
@@ -23,7 +23,7 @@ const runTest = ({ title, json, snapshot }: TestParams): void => {
 
     test(title, async ({ page }) => {
 
-        await addJsonExtendedRoute(page, json);
+        await addConfigExtendedRoute(page, json);
 
         await navigateHome(page);
 

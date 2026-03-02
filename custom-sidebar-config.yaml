@@ -84,4 +84,4 @@ exceptions:
         order: 11
       - item: media
         order: 12
-id: example_yaml (remove this from your config or replace with any other string)
+id: example (remove this from your config or replace with any other string)

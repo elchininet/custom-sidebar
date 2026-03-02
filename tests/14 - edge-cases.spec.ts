@@ -1,7 +1,7 @@
 import { test, expect } from 'playwright-test-coverage';
 import {
     CONFIG_FILES,
-    JSON_PATH,
+    CONFIG_PATH,
     SIDEBAR_CLIP
 } from './constants';
 import { haConfigRequest } from './ha-services';
@@ -83,7 +83,7 @@ test('non new-items that don\'t match a sidebar item should trigger a warning', 
 });
 
 test('if loadig the config takes too much time, the _panelLoaded should wait for the config without generating an error', async ({ page }) => {
-    await page.route(JSON_PATH, async route => {
+    await page.route(CONFIG_PATH, async route => {
         await new Promise((resolve) => setTimeout(resolve, 2000));
         await route.continue();
     });

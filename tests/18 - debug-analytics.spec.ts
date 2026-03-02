@@ -4,7 +4,7 @@ import { Sidebar } from '../src/types';
 import { CONFIG_FILES, HREFS, SELECTORS } from './constants';
 import { haConfigRequest } from './ha-services';
 import {
-    addJsonExtendedRoute,
+    addConfigExtendedRoute,
     navigateHome,
     noCacheRoute,
     waitForLogMessage,
@@ -157,7 +157,7 @@ test.describe('Analytics', () => {
 
     test('all analytics messages should be logged properly when analytics is true', async ({ page }) => {
 
-        await addJsonExtendedRoute(page, {
+        await addConfigExtendedRoute(page, {
             analytics: true
         });
 
@@ -182,7 +182,7 @@ test.describe('Analytics', () => {
 
     test('only panel_visited analytics messages should be logged if analytics.panel_visited is true', async ({ page }) => {
 
-        await addJsonExtendedRoute(page, {
+        await addConfigExtendedRoute(page, {
             analytics: {
                 panel_visited: true
             }
@@ -206,7 +206,7 @@ test.describe('Analytics', () => {
 
     test('only sidebar_item_clicked analytics messages should be logged if analytics.sidebar_item_clicked is true', async ({ page }) => {
 
-        await addJsonExtendedRoute(page, {
+        await addConfigExtendedRoute(page, {
             analytics: {
                 sidebar_item_clicked: true
             }
