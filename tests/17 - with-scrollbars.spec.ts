@@ -2,7 +2,7 @@ import { test, expect } from 'playwright-test-coverage';
 import { CONFIG_FILES, SIDEBAR_CLIP_WITH_DIVIDERS } from './constants';
 import { haConfigRequest } from './ha-services';
 import {
-    addJsonExtendedRoute,
+    addConfigExtendedRoute,
     navigateHome,
     noCacheRoute
 } from './utilities';
@@ -29,7 +29,7 @@ test.use({
 
 test('should set scrollbar_thumb_color', async ({ page }) => {
 
-    await addJsonExtendedRoute(page, {
+    await addConfigExtendedRoute(page, {
         scrollbar_thumb_color: 'red'
     });
     await page.setViewportSize({

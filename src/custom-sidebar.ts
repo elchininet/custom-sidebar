@@ -56,6 +56,7 @@ import {
     SIDEBAR_OPTIONS_VARIABLES_MAP,
     WEBSOCKET_RUNNING
 } from '@constants';
+import { fetchConfig } from '@fetcher';
 import {
     Debugger,
     buildNavigateMethods,
@@ -78,7 +79,6 @@ import {
     parseWidth
 } from '@utilities';
 import * as STYLES from '@styles';
-import { fetchConfig } from '@fetchers/json';
 
 class CustomSidebar {
 

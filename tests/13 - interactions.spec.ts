@@ -9,7 +9,7 @@ import {
 } from './constants';
 import { haConfigRequest } from './ha-services';
 import {
-    addJsonExtendedRoute,
+    addConfigExtendedRoute,
     changeToMobileViewport,
     fulfillJson,
     navigateHome,
@@ -91,7 +91,7 @@ test('clicking on items inside the same lovelace dashboard should select the pro
     const view1Panel = page.getByText('View 1 panel');
     const view2Panel = page.getByText('View 2 panel');
 
-    await addJsonExtendedRoute(page, {
+    await addConfigExtendedRoute(page, {
         order: [
             {
                 item: 'overview',
@@ -228,7 +228,7 @@ test('visit a URL that matches with multiple items should select the proper item
     const automations = getSidebarItem(page, HREFS.AUTOMATIONS);
     const automationNew = getSidebarItem(page, automationNewHref);
 
-    await addJsonExtendedRoute(page, {
+    await addConfigExtendedRoute(page, {
         exceptions: [
             {
                 user: 'Test',
@@ -335,7 +335,7 @@ test('visiting a URL of a lovelace view should select the proper item', async ({
     const view1Item = getSidebarItem(page, view1);
     const view2Item = getSidebarItem(page, view2);
 
-    await addJsonExtendedRoute(page, {
+    await addConfigExtendedRoute(page, {
         order: [
             {
                 item: 'overview',
@@ -399,7 +399,7 @@ test('if sidebar_editable is set to true it should be possible to edit the sideb
 
     await visitHome(page);
 
-    await addJsonExtendedRoute(page, {
+    await addConfigExtendedRoute(page, {
         sidebar_editable: true
     });
 
@@ -415,7 +415,7 @@ test('if sidebar_editable is set to true it should be possible to edit the sideb
 
 test('if sidebar_editable is set to false it should not be possible to edit the sidebar', async ({ page }) => {
 
-    await addJsonExtendedRoute(page, {
+    await addConfigExtendedRoute(page, {
         sidebar_editable: false
     });
 
@@ -436,7 +436,7 @@ test('if sidebar_editable is set to false it should not be possible to edit the 
 
 test('if sidebar_mode is set to "hidden" it should not be possible to make the sidebar visible', async ({ page }) => {
 
-    await addJsonExtendedRoute(page, {
+    await addConfigExtendedRoute(page, {
         sidebar_mode: 'hidden'
     });
 
@@ -455,7 +455,7 @@ test('if sidebar_mode is set to "hidden" it should not be possible to make the s
 
 test('if sidebar_mode is set to "narrow" it should not be possible to hide the sidebar', async ({ page }) => {
 
-    await addJsonExtendedRoute(page, {
+    await addConfigExtendedRoute(page, {
         sidebar_mode: 'narrow'
     });
 
@@ -474,7 +474,7 @@ test('if sidebar_mode is set to "narrow" it should not be possible to hide the s
 
 test('if sidebar_mode is set to "extended" it should not be possible to hide the sidebar', async ({ page }) => {
 
-    await addJsonExtendedRoute(page, {
+    await addConfigExtendedRoute(page, {
         sidebar_mode: 'extended'
     });
 
@@ -493,7 +493,7 @@ test('if sidebar_mode is set to "extended" it should not be possible to hide the
 
 test('if sidebar_mode is set to "extended" it should keep the extended mode when changed to mobile', async ({ page }) => {
 
-    await addJsonExtendedRoute(page, {
+    await addConfigExtendedRoute(page, {
         sidebar_mode: 'extended'
     });
 

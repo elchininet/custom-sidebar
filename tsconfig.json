@@ -16,7 +16,7 @@
         "@constants": ["constants"],
         "@utilities": ["utilities"],
         "@validators": ["validators"],
-        "@fetchers/*": ["fetchers/*"],
+        "@fetcher": ["fetcher"],
         "@styles": ["styles"]
       }
     },

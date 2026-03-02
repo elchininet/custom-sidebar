@@ -2,11 +2,7 @@ import typescript from '@rollup/plugin-typescript';
 import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import alias from '@rollup/plugin-alias';
-import replace from '@rollup/plugin-replace';
 import istanbul from 'rollup-plugin-istanbul';
-
-const CONFIG_REPLACER = '%CONFIG%';
 
 const bundlePlugins = [
     nodeResolve(),
@@ -29,50 +25,15 @@ export default [
         }
     },
     {
-        plugins: [
-            replace({
-                [CONFIG_REPLACER]: 'JSON',
-                preventAssignment: true,
-                delimiters: ['', '']
-            }),
-            ...bundlePlugins
-        ],
+        plugins: bundlePlugins,
         input: 'src/custom-sidebar.ts',
         output: {
-            file: 'dist/custom-sidebar-json.js',
+            file: 'dist/custom-sidebar-plugin.js',
             format: 'iife'
         }
     },
     {
         plugins: [
-            alias({
-                entries: [
-                    {
-                        find: '@fetchers/json',
-                        replacement: '@fetchers/yaml'
-                    }
-                ]
-            }),
-            replace({
-                [CONFIG_REPLACER]: 'YAML',
-                preventAssignment: true,
-                delimiters: ['', '']
-            }),
-            ...bundlePlugins
-        ],
-        input: 'src/custom-sidebar.ts',
-        output: {
-            file: 'dist/custom-sidebar-yaml.js',
-            format: 'iife'
-        }
-    },
-    {
-        plugins: [
-            replace({
-                [CONFIG_REPLACER]: 'JSON',
-                preventAssignment: true,
-                delimiters: ['', '']
-            }),
             nodeResolve(),
             json(),
             typescript({
@@ -91,7 +52,7 @@ export default [
         ],
         input: 'src/custom-sidebar.ts',
         output: {
-            file: '.hass/config/www/custom-sidebar.js',
+            file: '.hass/config/www/custom-sidebar-plugin.js',
             format: 'iife'
         }
     }

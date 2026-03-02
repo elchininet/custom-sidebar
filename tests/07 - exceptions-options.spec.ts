@@ -10,7 +10,7 @@ import {
 import { haConfigRequest } from './ha-services';
 import { getSidebarItem, getSidebarItemLinkFromLocator } from './selectors';
 import {
-    addJsonExtendedRoute,
+    addConfigExtendedRoute,
     getSidebarWidth,
     changeToMobileViewport,
     fulfillJson,
@@ -48,7 +48,7 @@ const runTest = ({ title, json, snapshot }: TestParams): void => {
 
     test(title, async ({ page }) => {
 
-        await addJsonExtendedRoute(page, json);
+        await addConfigExtendedRoute(page, json);
 
         await navigateHome(page);
 
@@ -267,7 +267,7 @@ test.describe('extending from the base', () => {
 
             const href = 'https://google.com';
 
-            await addJsonExtendedRoute(page, {
+            await addConfigExtendedRoute(page, {
                 exceptions: [
                     {
                         user: 'Test',
@@ -304,7 +304,7 @@ test.describe('extending from the base', () => {
 
         test('should override the sidebar_mode option from the base', async ({ page }) => {
 
-            await addJsonExtendedRoute(page, {
+            await addConfigExtendedRoute(page, {
                 sidebar_mode: 'hidden',
                 exceptions: [
                     {
@@ -327,7 +327,7 @@ test.describe('extending from the base', () => {
 
         test('should override the sidebar_editable option from the base', async ({ page }) => {
 
-            await addJsonExtendedRoute(page, {
+            await addConfigExtendedRoute(page, {
                 sidebar_editable: true,
                 exceptions: [
                     {
@@ -543,7 +543,7 @@ test.describe('extending from the base', () => {
 
         test('should take the sidebar_mode option from the base', async ({ page }) => {
 
-            await addJsonExtendedRoute(page, {
+            await addConfigExtendedRoute(page, {
                 sidebar_mode: 'narrow',
                 exceptions: [
                     {
@@ -566,7 +566,7 @@ test.describe('extending from the base', () => {
 
         test('should take the sidebar_editable option from the base', async ({ page }) => {
 
-            await addJsonExtendedRoute(page, {
+            await addConfigExtendedRoute(page, {
                 sidebar_editable: false,
                 exceptions: [
                     {
@@ -706,7 +706,7 @@ test.describe('without extending from the base', () => {
 
     test('should take the sidebar_mode option from the exception', async ({ page }) => {
 
-        await addJsonExtendedRoute(page, {
+        await addConfigExtendedRoute(page, {
             sidebar_mode: 'hidden',
             exceptions: [
                 {
@@ -729,7 +729,7 @@ test.describe('without extending from the base', () => {
 
     test('should not have sidebar_mode option', async ({ page }) => {
 
-        await addJsonExtendedRoute(page, {
+        await addConfigExtendedRoute(page, {
             sidebar_mode: 'narrow',
             exceptions: [
                 {
@@ -747,7 +747,7 @@ test.describe('without extending from the base', () => {
 
     test('should take sidebar_editable from the exception', async ({ page }) => {
 
-        await addJsonExtendedRoute(page, {
+        await addConfigExtendedRoute(page, {
             sidebar_editable: true,
             exceptions: [
                 {
@@ -770,7 +770,7 @@ test.describe('without extending from the base', () => {
 
     test('should not have a sidebar_editable option', async ({ page }) => {
 
-        await addJsonExtendedRoute(page, {
+        await addConfigExtendedRoute(page, {
             sidebar_editable: false,
             exceptions: [
                 {
@@ -1731,7 +1731,7 @@ test.describe('exceptions that do not match', () => {
 
     test('sidebar_mode option should be taken from the base', async ({ page }) => {
 
-        await addJsonExtendedRoute(page, {
+        await addConfigExtendedRoute(page, {
             sidebar_mode: 'narrow',
             exceptions: [
                 {
@@ -1754,7 +1754,7 @@ test.describe('exceptions that do not match', () => {
 
     test('sidebar_editable option should be taken from the base', async ({ page }) => {
 
-        await addJsonExtendedRoute(page, {
+        await addConfigExtendedRoute(page, {
             sidebar_editable: true,
             exceptions: [
                 {
