@@ -30,7 +30,7 @@ If you have not disabled the [My Home Assistant] integration, just click on [thi
 
 1. On the plugin page, click on the `Download` yellow button in the bottom-right corner
 2. Click on `Download` in the more-info dialog
-3. When the plugin is already downloaded, add the url of the plugin as an [extra_module_url] in your `configuration.yaml`:
+3. When the plugin is already downloaded, add the url of the plugin bundle as an [extra_module_url] in your `configuration.yaml`:
 
 <InstallThroughHacsExample />
 
@@ -39,8 +39,9 @@ If you have not disabled the [My Home Assistant] integration, just click on [thi
 :::warning[Important]
 
 1. Do not get creative with the path of the plugin, use the provided one. If you have `HACS` installed [the hacsfiles custom path](https://www.hacs.xyz/docs/use/repositories/type/dashboard/#custom-features-for-files-stored-under-hacsfiles) will be there even if you cannot see it in your filesystem. If the previous statetement is not clear enough: Do not use a path using your `config` or `www` directories because it will not work.
-2. Using Dashboard/lovelace resources in the GUI is not the same as extra_module_url
-3. Do not forget to restart Home Assistant.
+2. Make sure that you add `custom-sidebar-plugin.js` file and not `custom-sidebar.js`
+3. Using Dashboard/lovelace resources in the GUI is not the same as extra_module_url
+4. Do not forget to restart Home Assistant.
 
 :::
 
@@ -57,8 +58,9 @@ If you have not disabled the [My Home Assistant] integration, just click on [thi
 :::warning[Important]
 
 1. The path `/local` makes reference to your public folder `<config directory>/www`. Use the `/local` path, do not use a path using your `config` or `www` directories because it will not work.
-2. Using Dashboard/lovelace resources in the GUI is not the same as extra_module_url
-3. Do not forget to restart Home Assistant.
+2. Make sure that you copy `custom-sidebar-plugin.js` file and not `custom-sidebar.js`
+3. Using Dashboard/lovelace resources in the GUI is not the same as extra_module_url
+4. Do not forget to restart Home Assistant.
 
 :::
 
