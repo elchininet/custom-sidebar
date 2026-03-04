@@ -30,6 +30,7 @@ import {
     SubscriberTemplate
 } from '@types';
 import {
+    ANALITICS_KEYS,
     ATTRIBUTE,
     ATTRIBUTE_VALUE,
     CHECK_FOCUSED_SHADOW_ROOT,
@@ -772,7 +773,21 @@ class CustomSidebar {
         return null;
     }
 
-    private _isAnalyticsOptionEnabled(option: keyof AnalyticsConfig): boolean {
+    private async _isAnalyticsOptionEnabled(option: keyof AnalyticsConfig): Promise<boolean> {
+
+        // If the config is not loaded yet, wait for it
+        if (!this._config) {
+            await getPromisableResult(
+                () => this._config,
+                (config: Config) => !!config,
+                {
+                    retries: MAX_ATTEMPTS,
+                    delay: RETRY_DELAY,
+                    shouldReject: false
+                }
+            );
+        }
+
         return this._config.analytics &&
         (
             this._config.analytics === true ||
@@ -999,23 +1014,6 @@ class CustomSidebar {
                 }
             }, true);
 
-            // If analytics is enabled log sidebar clicks
-            if (this._isAnalyticsOptionEnabled('sidebar_item_clicked')) {
-
-                sideBarShadowRoot.addEventListener(EVENT.CLICK, (event: MouseEvent) => {
-
-                    const clickedElement = event.target as HTMLElement;
-                    const itemClicked = clickedElement.closest(CUSTOM_ELEMENT.ITEM);
-
-                    if (itemClicked) {
-                        const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText;
-                        this._logBookLog(`sidebar_item_clicked: ${itemText}`);
-                    }
-
-                });
-
-            }
-
             this._styleManager.addStyle(
                 STYLES.SIDEBAR_WIDTH_DESKTOP,
                 homeAssistantMain.shadowRoot
@@ -1058,6 +1056,24 @@ class CustomSidebar {
                 ],
                 sideBarShadowRoot
             );
+
+            // If analytics is enabled log sidebar clicks
+            this._isAnalyticsOptionEnabled(ANALITICS_KEYS.SIDEBAR_ITEM_CLICKED)
+                .then((enabled) => {
+                    if (enabled) {
+                        sideBarShadowRoot.addEventListener(EVENT.CLICK, (event: MouseEvent) => {
+
+                            const clickedElement = event.target as HTMLElement;
+                            const itemClicked = clickedElement.closest(CUSTOM_ELEMENT.ITEM);
+
+                            if (itemClicked) {
+                                const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText;
+                                this._logBookLog(`${ANALITICS_KEYS.SIDEBAR_ITEM_CLICKED}: ${itemText}`);
+                            }
+
+                        });
+                    }
+                });
 
         });
 
@@ -1526,22 +1542,9 @@ class CustomSidebar {
                 });
         }
 
-        // If the config is not loaded yet, wait for it
-        if (!this._config) {
-            await getPromisableResult(
-                () => this._config,
-                (config: Config) => !!config,
-                {
-                    retries: MAX_ATTEMPTS,
-                    delay: RETRY_DELAY,
-                    shouldReject: false
-                }
-            );
-        }
-
         // If analytics is enabled log landings
-        if (this._isAnalyticsOptionEnabled('panel_visited')) {
-            this._logBookLog(`panel_visited: ${panelPath}`);
+        if (await this._isAnalyticsOptionEnabled(ANALITICS_KEYS.PANEL_VISITED)) {
+            this._logBookLog(`${ANALITICS_KEYS.PANEL_VISITED}: ${panelPath}`);
         }
 
     }
