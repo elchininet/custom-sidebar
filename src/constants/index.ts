@@ -1,4 +1,5 @@
-import{
+import {
+    AnalyticsConfig,
     DockedSidebar,
     ItemColorConfigKeys,
     SidebarColorConfigKeys,
@@ -278,17 +279,22 @@ export const SIDEBAR_BORDER_COLOR_VARIABLES_MAP: [SidebarColorConfigKeys, string
     ['sidebar_border_color', CUSTOM_SIDEBAR_CSS_VARIABLES.BORDER_COLOR]
 ];
 
-export const ENDPOINTS = {
+export const ENDPOINTS = Object.freeze({
     CHECK_CONFIG: 'config/core/check_config',
     TEMPLATE: 'template',
     SERVICES: 'services'
-};
+});
 
-export const SIDEBAR_MODE_TO_DOCKED_SIDEBAR = {
+export const SIDEBAR_MODE_TO_DOCKED_SIDEBAR = Object.freeze({
     [SidebarMode.HIDDEN]: DockedSidebar.ALWAYS_HIDDEN,
     [SidebarMode.NARROW]: DockedSidebar.AUTO,
     [SidebarMode.EXTENDED]: DockedSidebar.DOCKED
-};
+});
+
+export const ANALITICS_KEYS: Record<Uppercase<keyof AnalyticsConfig>, keyof AnalyticsConfig> = Object.freeze({
+    PANEL_VISITED: 'panel_visited',
+    SIDEBAR_ITEM_CLICKED: 'sidebar_item_clicked'
+});
 
 export const ALLOWED_UNITS = ['%', 'em', 'ex', 'px', 'rem', 'vh', 'vmax', 'vmin', 'vw'];
 
