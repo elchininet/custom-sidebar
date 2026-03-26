@@ -88,6 +88,10 @@
       {
         "item": "history",
         "hide": true
+      },
+      {
+        "item": "calendar",
+        "hide": true
       }
     ]
   }
