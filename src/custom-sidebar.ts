@@ -1016,6 +1016,22 @@ class CustomSidebar {
                 }
             }, true);
 
+            // Menu button styles
+            const sidebarMenuButtonShadowRootPromise = this._sidebar
+                .selector
+                .$
+                .query(SELECTOR.MENU_BUTTON)
+                .$
+                .element as Promise<ShadowRoot>;
+            sidebarMenuButtonShadowRootPromise.then((sidebarMenuButtonShadowRoot: ShadowRoot) => {
+                this._styleManager.addStyle(
+                    [
+                        STYLES.SIDEBAR_BUTTON_BACKGROUND_HOVER
+                    ],
+                    sidebarMenuButtonShadowRoot
+                );
+            });
+
             this._styleManager.addStyle(
                 STYLES.SIDEBAR_WIDTH_DESKTOP,
                 homeAssistantMain.shadowRoot!
@@ -1035,6 +1051,7 @@ class CustomSidebar {
                     STYLES.TITLE_COLOR,
                     STYLES.SUBTITLE_COLOR,
                     STYLES.SIDEBAR_BUTTON_COLOR,
+                    STYLES.SIDEBAR_BUTTON_COLOR_HOVER,
                     STYLES.SIDEBAR_BACKGROUND,
                     STYLES.MENU_BACKGROUND_DIVIDER_TOP_COLOR,
                     STYLES.SCROLL_THUMB_COLOR,

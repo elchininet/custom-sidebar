@@ -64,7 +64,7 @@ export const navigateHome = async (page: Page, includeSidebar = true): Promise<v
         await expect(closeNotificationDrawer).toBeVisible();
         const notificationItem = notificationsDrawer.locator(SELECTORS.DISMISS_NOTIFICATION_ITEM).first();
         await notificationItem.click();
-        await closeNotificationDrawer.click();
+        await expect(closeNotificationDrawer).not.toBeVisible();
         await page.reload();
         await waitForMainElements(page, includeSidebar);
         await expect(notificationBadge).not.toBeVisible();
@@ -78,7 +78,18 @@ export const navigateToProfile = async (page: Page): Promise<void> => {
     await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
 };
 
+export const waitForSidebarAnimations = async (page: Page): Promise<void> => {
+    const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
+    await sidebar.evaluate(
+        (element: Element) => {
+            const finishedAnimations = element.getAnimations({subtree: true}).map((animation: Animation) => animation.finished);
+            return Promise.all(finishedAnimations);
+        }
+    );
+};
+
 export const getSidebarWidth = async (page: Page): Promise<number> => {
+    await waitForSidebarAnimations(page);
     const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
     const sidebarWidth = await sidebar.evaluate((element: HTMLElement) => element.offsetWidth);
     return sidebarWidth + 1;

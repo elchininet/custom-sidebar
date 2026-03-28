@@ -55,7 +55,7 @@ test('if the configuration is malformed it should throw an error', async ({ page
 
     await page.goto('/');
 
-    await waithForError(page, `${ERROR_PREFIX} duplicated mapping key`);
+    await waithForError(page, `${ERROR_PREFIX} YAMLException: duplicated mapping key`);
 
 });
 

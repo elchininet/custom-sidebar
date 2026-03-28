@@ -9,7 +9,7 @@ import {
     waitForWarning
 } from './utilities';
 
-const ERROR_PREFIX = `${NAMESPACE}: Invalid configuration`;
+const ERROR_PREFIX = `${NAMESPACE}: SyntaxError: Invalid configuration`;
 const WIDTH_ERROR_FORMAT_SUFFIX = `You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')})`;
 
 interface TestSuit {
@@ -75,6 +75,34 @@ test.describe('main options', () => {
                 subtitle_color: 981234
             },
             error: `${ERROR_PREFIX}, "subtitle_color" property should be a string`
+        },
+        {
+            title: 'should throw an error if it has a malformed sidebar_button_color option',
+            json: {
+                sidebar_button_color: 100000
+            },
+            error: `${ERROR_PREFIX}, "sidebar_button_color" property should be a string`
+        },
+        {
+            title: 'should throw an error if it has a malformed sidebar_button_color_hover option',
+            json: {
+                sidebar_button_color_hover: 0x56
+            },
+            error: `${ERROR_PREFIX}, "sidebar_button_color_hover" property should be a string`
+        },
+        {
+            title: 'should throw an error if it has a malformed sidebar_button_background_hover option',
+            json: {
+                sidebar_button_background_hover: 0x999
+            },
+            error: `${ERROR_PREFIX}, "sidebar_button_background_hover" property should be a string`
+        },
+        {
+            title: 'should throw an error if it has a malformed sidebar_button_background_hover_opacity option',
+            json: {
+                sidebar_button_background_hover_opacity: [100, 200]
+            },
+            error: `${ERROR_PREFIX}, "sidebar_button_background_hover_opacity" property should be a number or a string`
         },
         {
             title: 'should throw an error if it has a malformed sidebar_border_color option',
@@ -1067,6 +1095,50 @@ test.describe('exceptions', () => {
                 ]
             },
             error: `${ERROR_PREFIX}, exceptions "title" property should be a string`
+        },
+        {
+            title: 'should throw an error if it has a malformed sidebar_button_color option',
+            json: {
+                exceptions: [
+                    {
+                        sidebar_button_color: 100000
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, exceptions "sidebar_button_color" property should be a string`
+        },
+        {
+            title: 'should throw an error if it has a malformed sidebar_button_color_hover option',
+            json: {
+                exceptions: [
+                    {
+                        sidebar_button_color_hover: 0x56
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, exceptions "sidebar_button_color_hover" property should be a string`
+        },
+        {
+            title: 'should throw an error if it has a malformed sidebar_button_background_hover option',
+            json: {
+                exceptions: [
+                    {
+                        sidebar_button_background_hover: 0x999
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, exceptions "sidebar_button_background_hover" property should be a string`
+        },
+        {
+            title: 'should throw an error if it has a malformed sidebar_button_background_hover_opacity option',
+            json: {
+                exceptions: [
+                    {
+                        sidebar_button_background_hover_opacity: [100, 200]
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, exceptions "sidebar_button_background_hover_opacity" property should be a number or a string`
         },
         {
             title: 'should throw an error if it has an invalid "sidebar_mode" option',
