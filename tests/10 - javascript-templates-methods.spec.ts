@@ -450,6 +450,109 @@ test.describe('methods in JavaScript templates', () => {
 
     });
 
+    test.describe('showToast method', () => {
+
+        test('showToast with a string message', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    showToast({
+                                        message: 'Test message'
+                                    })    
+                                `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            getSidebarItem(page, '#').click();
+
+            const toast = page.locator(SELECTORS.TOAST_MESSAGE);
+            await expect(toast).toContainText('Test message');
+
+        });
+
+        test('showToast with a translation key', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    showToast({
+                                        message: {
+                                            translationKey: 'ui.common.copied_clipboard'
+                                        }
+                                    })    
+                                `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            getSidebarItem(page, '#').click();
+
+            const toast = page.locator(SELECTORS.TOAST_MESSAGE);
+            await expect(toast).toContainText('Copied to clipboard');
+
+        });
+
+        test('showToast with action', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    showToast({
+                                        message: 'Test toast',
+                                        action: {
+                                            action: () => console.log('Toast clicked'),
+                                            text: 'Toast action'
+                                        }
+                                    })    
+                                `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            getSidebarItem(page, '#').click();
+
+            const toastButton = page.locator(SELECTORS.TOAST_BUTTON);
+            await expect(toastButton).toContainText('Toast action');
+            toastButton.click();
+
+            await waitForLogMessage(page, 'Toast clicked');
+
+        });
+
+    });
+
     test('activateItem should set the clicked item active', async ({ page }) => {
 
         const SELECTED_CLASSNAME = /(^|\s)selected(\s|$)/;

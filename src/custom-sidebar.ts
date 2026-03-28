@@ -66,6 +66,7 @@ import {
     getFormatDateMethods,
     getRestApis,
     getTemplateWithPartials,
+    getToastMethods,
     isArray,
     isBoolean,
     isNumber,
@@ -1603,7 +1604,8 @@ class CustomSidebar {
                                 ...buildNavigateMethods(this._sidebar),
                                 ...getRestApis(this._ha),
                                 ...getDialogsMethods(this._ha),
-                                ...getFormatDateMethods(this._ha)
+                                ...getFormatDateMethods(this._ha),
+                                ...getToastMethods(this._ha)
                             };
                             this._renderer.refs = this._config.js_refs ?? {};
                             this._processDefaultPath();
