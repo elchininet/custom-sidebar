@@ -111,6 +111,9 @@ export interface SidebarColorConfig extends ItemColorConfig {
     title_color?: string;
     subtitle_color?: string;
     sidebar_button_color?: string;
+    sidebar_button_color_hover?: string;
+    sidebar_button_background_hover?: string;
+    sidebar_button_background_hover_opacity?: number | string;
     sidebar_background?: string;
     menu_background?: string;
     scrollbar_thumb_color?: string;
