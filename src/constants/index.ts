@@ -35,12 +35,14 @@ export enum ELEMENT {
 export enum CUSTOM_ELEMENT {
     DIALOG_BOX = 'dialog-box',
     DIALOG_RESTART = 'dialog-restart',
+    HA_BUTTON = 'ha-button',
     HA_PANEL_CONFIG = 'ha-panel-config',
     HA_CONFIG_BACKUP = 'ha-config-backup',
     HA_CONFIG_BACKUP_BACKUPS = 'ha-config-backup-backups',
     HA_CONFIG_SYSTEM_NAVIGATION = 'ha-config-system-navigation',
     HA_ICON = 'ha-icon',
     HA_ICON_BUTTON = 'ha-icon-button',
+    HA_ICON_BUTTON_HOVER = 'ha-icon-button:hover',
     HA_PANEL_LOVELACE = 'ha-panel-lovelace',
     HA_RIPPLE = 'ha-ripple',
     HA_SIDEBAR = 'ha-sidebar',
@@ -59,6 +61,7 @@ export enum SELECTOR {
     HOST_NOT_EXPANDED = ':host(:not([expanded]))',
     HOST_EXPANDED_NOT_MODAL = ':host([expanded]:not([modal]))',
     HOST_EXPANDED_NOT_NAROW = ':host([expanded]:not([narrow]))',
+    HOST_HOVER_NOT_DISABLED = ':host(:hover:not([disabled]))',
     SIDEBAR_LOADER = 'ha-fade-in',
     SIDEBAR_TOP_ITEMS_CONTAINER = '.panels-list > .wrapper > ha-md-list',
     SIDEBAR_BOTTOM_ITEMS_CONTAINER = '.panels-list > ha-md-list',
@@ -78,10 +81,15 @@ export enum SELECTOR {
     SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER = '.notifications-container:hover',
     SIDEBAR_NOTIFICATIONS = '.notifications',
     MENU = '.menu',
+    MENU_BUTTON = '.menu ha-icon-button',
     MC_DRAWER = '.mdc-drawer',
     MC_DRAWER_MODAL = '.mdc-drawer.mdc-drawer--modal',
     MC_DRAWER_OPEN_FIX = '.mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing)+.mdc-drawer-app-content',
     DATA_INFO = '[data-info]'
+}
+
+export enum MEDIA_QUERY {
+    MEDIA_HOVER = '@media (hover:hover)'
 }
 
 export enum PSEUDO_SELECTOR {
@@ -173,7 +181,8 @@ export enum HA_CSS_VARIABLES {
     PRIMARY_TEXT_COLOR = '--primary-text-color',
     DIVIDER_COLOR = '--divider-color',
     DIVIDER_OPACITY = '--dark-divider-opacity',
-    SCROLLBAR_THUMB_COLOR = '--scrollbar-thumb-color'
+    SCROLLBAR_THUMB_COLOR = '--scrollbar-thumb-color',
+    CURRENT_COLOR = 'currentColor'
 }
 
 export enum CUSTOM_SIDEBAR_CSS_VARIABLES {
@@ -183,6 +192,9 @@ export enum CUSTOM_SIDEBAR_CSS_VARIABLES {
     TITLE_COLOR = '--custom-sidebar-title-color',
     SUBTITLE_COLOR = '--custom-sidebar-subtitle-color',
     BUTTON_COLOR = '--custom-sidebar-button-color',
+    BUTTON_COLOR_HOVER = '--custom-sidebar-button-color-hover',
+    BUTTON_BACKGROUND_HOVER = '--custom-sidebar-button-background-hover',
+    BUTTON_BACKGROUND_HOVER_OPACITY = '--custom-sidebar-button-background-hover-opacity',
     DIVIDER_COLOR = '--custom-sidebar-divider-color',
     SCROLLBAR_THUMB_COLOR = '--custom-sidebar-scrollbar-thumb-color',
     ITEM_BACKGROUND = '--custom-sidebar-item-background',
@@ -266,12 +278,15 @@ export const ITEM_OPTIONS_VARIABLES_MAP: [ItemColorConfigKeys, string][] = [
 ];
 
 export const SIDEBAR_OPTIONS_VARIABLES_MAP: [SidebarColorConfigKeys, string][] = [
-    ['title_color',                      CUSTOM_SIDEBAR_CSS_VARIABLES.TITLE_COLOR],
-    ['subtitle_color',                   CUSTOM_SIDEBAR_CSS_VARIABLES.SUBTITLE_COLOR],
-    ['sidebar_button_color',             CUSTOM_SIDEBAR_CSS_VARIABLES.BUTTON_COLOR],
-    ['sidebar_background',               CUSTOM_SIDEBAR_CSS_VARIABLES.BACKGROUND],
-    ['menu_background',                  CUSTOM_SIDEBAR_CSS_VARIABLES.MENU_BACKGROUND],
-    ['scrollbar_thumb_color',            CUSTOM_SIDEBAR_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR],
+    ['title_color',                             CUSTOM_SIDEBAR_CSS_VARIABLES.TITLE_COLOR],
+    ['subtitle_color',                          CUSTOM_SIDEBAR_CSS_VARIABLES.SUBTITLE_COLOR],
+    ['sidebar_button_color',                    CUSTOM_SIDEBAR_CSS_VARIABLES.BUTTON_COLOR],
+    ['sidebar_button_color_hover',              CUSTOM_SIDEBAR_CSS_VARIABLES.BUTTON_COLOR_HOVER],
+    ['sidebar_button_background_hover',         CUSTOM_SIDEBAR_CSS_VARIABLES.BUTTON_BACKGROUND_HOVER],
+    ['sidebar_button_background_hover_opacity', CUSTOM_SIDEBAR_CSS_VARIABLES.BUTTON_BACKGROUND_HOVER_OPACITY],
+    ['sidebar_background',                      CUSTOM_SIDEBAR_CSS_VARIABLES.BACKGROUND],
+    ['menu_background',                         CUSTOM_SIDEBAR_CSS_VARIABLES.MENU_BACKGROUND],
+    ['scrollbar_thumb_color',                   CUSTOM_SIDEBAR_CSS_VARIABLES.SCROLLBAR_THUMB_COLOR],
     ...ITEM_OPTIONS_VARIABLES_MAP
 ];
 

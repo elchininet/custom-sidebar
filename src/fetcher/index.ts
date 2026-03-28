@@ -33,7 +33,7 @@ export const fetchConfig = async (): Promise<Config> => {
                             resolve(config);
                         })
                         .catch((error: Error) => {
-                            throw Error(`${NAMESPACE}: ${error?.message || error}`);
+                            throw Error(`${NAMESPACE}: ${error}`);
                         });
                 } else {
                     throw Error(`${errorNotFound}\n${errorSuffix}`);
