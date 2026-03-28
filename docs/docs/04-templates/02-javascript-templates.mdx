@@ -10,6 +10,8 @@ import FormatDateTimeExample from '@site/docs/_partials/04-templates/02-javascri
 import FormatTimeExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_format_time.mdx';
 import GetRelativeTimeExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_get_relative_time.mdx';
 
+import ToastExamples from '@site/docs/_partials/04-templates/02-javascript-templates/toast/_toast.mdx';
+
 import OpenAlertDialogExample from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-alert-dialog.mdx';
 import OpenConfirmDialogExample from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-confirm-dialog.mdx';
 import OpenMoreInfoDialogExample from '@site/docs/_partials/04-templates/02-javascript-templates/dialogs/_open-more-info-dialog.mdx';
@@ -120,6 +122,14 @@ This method formats a time using the Home Assistant locale. It accepts a date, a
 This method get the relative time of a date using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date or a number representing the [timestamp] in milliseconds. This method also accepts a secondary optional boolean parameter to define if the result should be capitalized or not (by default it is `false`).
 
 <GetRelativeTimeExample />
+
+---
+
+### showToast
+
+This method will open a toast notification
+
+<ToastExamples />
 
 ---
 

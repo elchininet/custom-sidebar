@@ -118,3 +118,25 @@ export interface ElementsStore {
     topItems: NodeListOf<SidebarItem>;
     bottomItems: NodeListOf<SidebarItem>;
 }
+
+export interface Translation {
+    translationKey: string;
+    args?: Record<string, string>;
+}
+
+export interface ToastActionParams {
+    action: () => void;
+    text:
+        | string
+        | Translation;
+}
+
+export interface ShowToastParams {
+    id?: string;
+    message:
+        | string
+        | Translation;
+    action?: ToastActionParams;
+    duration?: number;
+    dismissable?: boolean;
+}

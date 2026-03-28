@@ -51,7 +51,9 @@ export const SELECTORS = {
     RESTART_RIALOG_TITLE: 'dialog-restart ha-dialog-header span[slot="title"]',
     RESTART_DIALOG_CLOSE_BUTTON: 'dialog-restart ha-adaptive-dialog slot[slot="headerNavigationIcon"] ha-icon-button',
     DEVELOPER_TOOLS_PANEL: 'ha-panel-developer-tools',
-    TODO_PANEL: 'ha-panel-todo'
+    TODO_PANEL: 'ha-panel-todo',
+    TOAST_MESSAGE: 'ha-toast wa-popup .message',
+    TOAST_BUTTON: 'ha-toast ha-button'
 };
 
 export const ATTRIBUTES = {
