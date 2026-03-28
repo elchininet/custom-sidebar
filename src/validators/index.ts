@@ -39,6 +39,8 @@ const BASE_CONFIG_OPTIONS = [
     'title_color',
     'subtitle_color',
     'sidebar_button_color',
+    'sidebar_button_color_hover',
+    'sidebar_button_background_hover',
     'sidebar_border_color',
     'menu_background',
     'divider_color',
@@ -432,7 +434,8 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
     validateStringOrNumberOptions(
         exception,
         [
-            ...ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS
+            ...ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS,
+            'sidebar_button_background_hover_opacity'
         ],
         `${ERROR_PREFIX}, exceptions`
     );
@@ -620,7 +623,8 @@ export const validateConfig = (config: Config): void => {
     validateStringOrNumberOptions(
         config,
         [
-            ...ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS
+            ...ITEM_TEMPLATE_NUMBER_CONFIG_OPTIONS,
+            'sidebar_button_background_hover_opacity'
         ],
         `${ERROR_PREFIX},`
     );

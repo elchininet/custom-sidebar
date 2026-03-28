@@ -2,6 +2,7 @@ import { test, expect } from 'playwright-test-coverage';
 import {
     CONFIG_FILES,
     HREFS,
+    SELECTORS,
     SIDEBAR_CLIP_WITH_DIVIDERS
 } from './constants';
 import { haConfigRequest } from './ha-services';
@@ -89,6 +90,43 @@ test.beforeEach(noCacheRoute);
         await fulfillJson(page, json);
         await navigateHome(page);
         await getSidebarItem(page, HREFS.HISTORY).hover();
+        await expect(page).toHaveScreenshot(screenshot, {
+            clip: SIDEBAR_CLIP_WITH_DIVIDERS
+        });
+
+    });
+
+});
+
+[
+    {
+        title: 'should set sidebar_button_color_hover',
+        json: {
+            sidebar_button_color_hover: 'red'
+        },
+        screenshot: 'sidebar-sidebar-button-color-hover.png'
+    },
+    {
+        title: 'should set sidebar_button_background_hover',
+        json: {
+            sidebar_button_background_hover: 'red'
+        },
+        screenshot: 'sidebar-sidebar-button-background-hover.png'
+    },
+    {
+        title: 'should set sidebar_button_background_hover_opacity',
+        json: {
+            sidebar_button_background_hover_opacity: 1
+        },
+        screenshot: 'sidebar-sidebar-button-background-hover-opacity.png'
+    }
+].forEach(({ title, json, screenshot }): void => {
+
+    test(title, async ({ page }) => {
+
+        await fulfillJson(page, json);
+        await navigateHome(page);
+        await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).hover();
         await expect(page).toHaveScreenshot(screenshot, {
             clip: SIDEBAR_CLIP_WITH_DIVIDERS
         });

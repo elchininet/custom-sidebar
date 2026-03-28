@@ -5,6 +5,7 @@ export { randomId, parseWidth } from './modules/misc';
 export { getRestApis } from './modules/restApi';
 export * from './modules/navigate';
 export * from './modules/dialogs';
+export * from './modules/toast';
 export * from './modules/predicates';
 export { getFormatDateMethods } from './modules/format-date';
 export { Debugger, logVersionToConsole } from './modules/logger';

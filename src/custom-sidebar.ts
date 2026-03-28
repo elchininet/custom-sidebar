@@ -66,6 +66,7 @@ import {
     getFormatDateMethods,
     getRestApis,
     getTemplateWithPartials,
+    getToastMethods,
     isArray,
     isBoolean,
     isNumber,
@@ -1014,6 +1015,22 @@ class CustomSidebar {
                 }
             }, true);
 
+            // Menu button styles
+            this._sidebar
+                .selector
+                .$
+                .query(SELECTOR.MENU_BUTTON)
+                .$
+                .element
+                .then((sidebarMenuButtonShadowRoot: ShadowRoot) => {
+                    this._styleManager.addStyle(
+                        [
+                            STYLES.SIDEBAR_BUTTON_BACKGROUND_HOVER
+                        ],
+                        sidebarMenuButtonShadowRoot
+                    );
+                });
+
             this._styleManager.addStyle(
                 STYLES.SIDEBAR_WIDTH_DESKTOP,
                 homeAssistantMain.shadowRoot
@@ -1033,6 +1050,7 @@ class CustomSidebar {
                     STYLES.TITLE_COLOR,
                     STYLES.SUBTITLE_COLOR,
                     STYLES.SIDEBAR_BUTTON_COLOR,
+                    STYLES.SIDEBAR_BUTTON_COLOR_HOVER,
                     STYLES.SIDEBAR_BACKGROUND,
                     STYLES.MENU_BACKGROUND_DIVIDER_TOP_COLOR,
                     STYLES.SCROLL_THUMB_COLOR,
@@ -1585,7 +1603,8 @@ class CustomSidebar {
                                     ...buildNavigateMethods(this._sidebar),
                                     ...getRestApis(this._ha),
                                     ...getDialogsMethods(this._ha),
-                                    ...getFormatDateMethods(this._ha)
+                                    ...getFormatDateMethods(this._ha),
+                                    ...getToastMethods(this._ha)
                                 };
                                 this._renderer.refs = this._config.js_refs ?? {};
                                 this._processDefaultPath();
