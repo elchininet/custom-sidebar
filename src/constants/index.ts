@@ -141,7 +141,8 @@ export enum EVENT {
     RENDER_TEMPLATE = 'render_template',
     LOCATION_CHANGED = 'location-changed',
     HASS_MORE_INFO = 'hass-more-info',
-    SHOW_DIALOG = 'show-dialog'
+    SHOW_DIALOG = 'show-dialog',
+    SHOW_TOAST = 'hass-notification'
 }
 
 export enum KEY {

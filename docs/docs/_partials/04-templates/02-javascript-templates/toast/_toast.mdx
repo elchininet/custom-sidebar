@@ -1,0 +1,30 @@
+```javascript
+// Show a notification toast with a string message
+showToast({
+  message: 'Toast example'
+});
+
+// Show a notification toast with a translation key
+showToast({
+  message: {
+    translationKey: 'ui.dialogs.restart.reboot.action_toast'
+  }
+});
+
+// Show a notification toast with an action
+showToast({
+  message: 'Toast example',
+  action: {
+    action: () => {
+      console.log('action clicked!!');
+    },
+    text: 'Action example'
+  }
+});
+
+// Show a notification toast with a longer duration
+showToast({
+  message: 'Toast example',
+  duration: 10000 // 10 seconds
+});
+```
