@@ -25,7 +25,8 @@ export const fetchConfig = async (): Promise<Config> => {
                         .then((yaml) => {
                             return jsYaml.load(yaml);
                         })
-                        .then((config: Config) => {
+                        .then((configResult: unknown) => {
+                            const config = configResult as Config;
                             if (config.id?.startsWith('example')) {
                                 console.warn(`${NAMESPACE}: You seem to be using the example configuration.`);
                             }
