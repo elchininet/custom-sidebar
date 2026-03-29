@@ -18,8 +18,8 @@ importers:
         specifier: 5.0.0
         version: 5.0.0
       home-assistant-styles-manager:
-        specifier: ^3.1.0
-        version: 3.1.0
+        specifier: ^4.0.0
+        version: 4.0.0
       js-yaml:
         specifier: ^4.1.1
         version: 4.1.1
@@ -943,8 +943,8 @@ packages:
   home-assistant-query-selector@5.0.0:
     resolution: {integrity: sha512-QY1tR1FNIDbHocw5GNuPfZzIXg/7x8lLt58fNGMNvZgCHCjasFsQ6vk93/Fq+8kBO+J/jc8YrziFVknTfvjwCw==}
 
-  home-assistant-styles-manager@3.1.0:
-    resolution: {integrity: sha512-ui8JNAZUovDPBYODGNZgj7hjCKy2PlUYkW4MQJ0yTttbshfa4cAaNA536e4QQ3twEogpVp1TSD7Y4GZ5uBVwhQ==}
+  home-assistant-styles-manager@4.0.0:
+    resolution: {integrity: sha512-wtHZRH1BoXyNczsJ7b397+ql4kQkhvWibMAmVC0bOXEoPJMSXz3TauY/sTGGmdcdZZdCWpoNG+sza7/T/42K+g==}
 
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
@@ -2331,7 +2331,7 @@ snapshots:
     dependencies:
       shadow-dom-selector: 5.0.1
 
-  home-assistant-styles-manager@3.1.0: {}
+  home-assistant-styles-manager@4.0.0: {}
 
   html-escaper@2.0.2: {}
 
