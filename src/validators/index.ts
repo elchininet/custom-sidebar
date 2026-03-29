@@ -2,7 +2,7 @@ import {
     ActionType,
     Config,
     ConfigException,
-    ConfigItem,
+    ConfigOrder,
     MatchersCondition,
     OnClickAction,
     Primitive,
@@ -210,7 +210,7 @@ const validateAttributes = (
     }
 };
 
-const validateOnClickOption = (configItem: ConfigItem, errorPrefix: string): void => {
+const validateOnClickOption = (configItem: ConfigOrder, errorPrefix: string): void => {
     if (!isUndefined(configItem.on_click)) {
         if (!isObject<OnClickAction>(configItem.on_click)) {
             throw new SyntaxError(`${errorPrefix} "on_click" property should be an object`);
@@ -291,7 +291,7 @@ const validateExtendableConfig = (
             if (extendFrom === BASE_NAME) {
                 throw new SyntaxError(`${ERROR_PREFIX}, error in extendable config "${extendBreadcrumb[0]}": "entend_from" can only be "base" in exceptions`);
             }
-            if (!(extendFrom in config.extendable_configs)) {
+            if (!(config.extendable_configs && extendFrom in config.extendable_configs)) {
                 throw new SyntaxError(`${ERROR_PREFIX}, error in "${extendBreadcrumb[extendBreadcrumb.length - 1]}": "${extendFrom}" doesn't exist in "extendable_configs"`);
             }
             validateExtendableConfig(
@@ -375,7 +375,10 @@ const validateVariable = (
     }
 };
 
-const validateVariables = (variableGroup: string, variables: Record<string, Primitive | PrimitiveObject | PrimitiveArray>): void => {
+const validateVariables = (
+    variableGroup: string,
+    variables: Record<string, Primitive | PrimitiveObject | PrimitiveArray> | undefined
+): void => {
     if (!isUndefined(variables)) {
         if (!isObject(variables)) {
             throw new SyntaxError(`${ERROR_PREFIX}, "${variableGroup}" property should be an object`);
@@ -524,7 +527,7 @@ const validateExceptions = (exceptions: ConfigException[] | undefined, config: C
     });
 };
 
-const validateConfigItem = (configItem: ConfigItem): void => {
+const validateConfigItem = (configItem: ConfigOrder): void => {
 
     validateBaseConfigOnlyOptions(
         configItem,
@@ -655,7 +658,7 @@ export const validateConfig = (config: Config): void => {
         if (!isObject(config.partials)) {
             throw new SyntaxError(`${ERROR_PREFIX}, "partials" property should be an object`);
         }
-        Object.entries(config.partials).forEach((entry) => {
+        Object.entries(config.partials).forEach((entry: [string, string]): void => {
             const [partial, value] = entry;
             if (!isString(value)) {
                 throw new SyntaxError(`${ERROR_PREFIX}, "partials" should be an object with strings. The partial ${partial} is not a string`);

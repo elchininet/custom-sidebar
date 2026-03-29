@@ -2,22 +2,23 @@
     "compilerOptions": {
       "outDir": "./dist/",
       "module": "esnext",
-      "target": "ES5",
-      "moduleResolution": "node",
+      "target": "ES6",
+      "lib": ["dom", "es2019"],
+      "moduleResolution": "bundler",
       "esModuleInterop": true,
       "resolveJsonModule": true,
       "declaration": false,
       "noImplicitAny": true,
       "removeComments": true,
-      "baseUrl": "./src",
+      "skipLibCheck": true,
       "rootDir": "src",
       "paths": {
-        "@types": ["types"],
-        "@constants": ["constants"],
-        "@utilities": ["utilities"],
-        "@validators": ["validators"],
-        "@fetcher": ["fetcher"],
-        "@styles": ["styles"]
+        "@types": ["./src/types"],
+        "@constants": ["./src/constants"],
+        "@utilities": ["./src/utilities"],
+        "@validators": ["./src/validators"],
+        "@fetcher": ["./src/fetcher"],
+        "@styles": ["./src/styles"]
       }
     },
     "include": ["src/**/*.ts", "package.json"],

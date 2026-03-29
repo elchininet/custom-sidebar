@@ -147,20 +147,20 @@ class CustomSidebar {
         selector.listen();
     }
 
-    private _debugger: Debugger;
-    private _configPromise: Promise<Config>;
-    private _config: Config;
-    private _homeAssistant: HAElement;
-    private _main: HAElement;
-    private _haDrawer: HAElement;
-    private _ha: HomeAsssistantExtended;
-    private _partialPanelResolver: HAElement;
-    private _sidebar: HAElement;
-    private _renderer: HomeAssistantJavaScriptTemplatesRenderer;
-    private _styleManager: HomeAssistantStylesManager;
-    private _items: SidebarItem[];
-    private _logBookMessagesMap: Map<string, number>;
-    private _huiViewContainerObserver: MutationObserver;
+    private _debugger!: Debugger;
+    private _configPromise!: Promise<Config>;
+    private _config!: Config;
+    private _homeAssistant!: HAElement;
+    private _main!: HAElement;
+    private _haDrawer!: HAElement;
+    private _ha!: HomeAsssistantExtended;
+    private _partialPanelResolver!: HAElement;
+    private _sidebar!: HAElement;
+    private _renderer!: HomeAssistantJavaScriptTemplatesRenderer;
+    private _styleManager!: HomeAssistantStylesManager;
+    private _items!: SidebarItem[];
+    private _logBookMessagesMap!: Map<string, number>;
+    private _huiViewContainerObserver!: MutationObserver;
     private _mouseEnterBinded: (event: MouseEvent) => void;
     private _mouseLeaveBinded: () => void;
 
@@ -190,7 +190,7 @@ class CustomSidebar {
             () => container.querySelectorAll<SidebarItem>(`:scope > ${CUSTOM_ELEMENT.ITEM}`),
             (elements: NodeListOf<SidebarItem>): boolean => {
                 return Array.from(elements).every((element: SidebarItem): boolean => {
-                    const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
+                    const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.innerText.trim();
                     return text.length > 0;
                 });
             },
@@ -211,7 +211,7 @@ class CustomSidebar {
         return Array.from(items).map((element: SidebarItem) => {
             const href = element.href;
             const intemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
-            const text = intemText.textContent.trim();
+            const text = intemText!.textContent.trim();
             return {
                 text,
                 href
@@ -225,7 +225,7 @@ class CustomSidebar {
             delay: RETRY_DELAY,
             shouldReject: false
         };
-        const sidebarShadowRoot = await this._sidebar.selector.$.element;
+        const sidebarShadowRoot = (await this._sidebar.selector.$.element)!;
         // If sidebar is loading, wait for the looading to finish
         await getPromisableResult(
             () => sidebarShadowRoot.querySelector(SELECTOR.SIDEBAR_LOADER),
@@ -267,14 +267,14 @@ class CustomSidebar {
 
     private _getAnchorElement(element: HTMLElement): HTMLAnchorElement {
         return element
-            .shadowRoot
-            .querySelector<HTMLAnchorElement>(ELEMENT.ANCHOR);
+            .shadowRoot!
+            .querySelector<HTMLAnchorElement>(ELEMENT.ANCHOR)!;
     }
 
     private _getButtonElement(element: HTMLElement): HTMLAnchorElement {
         return element
-            .shadowRoot
-            .querySelector<HTMLAnchorElement>(ELEMENT.BUTTON);
+            .shadowRoot!
+            .querySelector<HTMLAnchorElement>(ELEMENT.BUTTON)!;
     }
 
     private _hideItem(item: HTMLElement, hide: boolean): void {
@@ -345,34 +345,34 @@ class CustomSidebar {
     }
 
     private _subscribeTitle(): void {
-        this._sidebar
+        const titlePromise = this._sidebar
             .selector
             .$
             .query(SELECTOR.TITLE)
-            .element
-            .then((titleElement: HTMLElement) => {
-                if (this._config.title) {
-                    this._subscribeTemplate(
-                        this._config.title,
-                        (rendered: string) => {
-                            titleElement.innerHTML = rendered;
-                        }
-                    );
-                }
-                if (this._config.subtitle) {
-                    this._subscribeTemplate(
-                        this._config.subtitle,
-                        (rendered: string) => {
-                            titleElement.dataset.subtitle = rendered;
-                        }
-                    );
-                }
-            });
+            .element as Promise<HTMLElement>;
+        titlePromise.then((titleElement: HTMLElement) => {
+            if (this._config.title) {
+                this._subscribeTemplate(
+                    this._config.title,
+                    (rendered: string) => {
+                        titleElement.innerHTML = rendered;
+                    }
+                );
+            }
+            if (this._config.subtitle) {
+                this._subscribeTemplate(
+                    this._config.subtitle,
+                    (rendered: string) => {
+                        titleElement.dataset.subtitle = rendered;
+                    }
+                );
+            }
+        });
     }
 
     private _subscribeSideBarEdition(): void {
 
-        const sidebarEditListener = (event: CustomEvent): void => {
+        const sidebarEditListener = (event: Event): void => {
             event.preventDefault();
             event.stopImmediatePropagation();
         };
@@ -390,8 +390,8 @@ class CustomSidebar {
 
         // Apply sidebar edit blocker
         Promise.all([
-            this._sidebar.element,
-            this._sidebar.selector.$.query(SELECTOR.MENU).element
+            this._sidebar.element as Promise<Element>,
+            this._sidebar.selector.$.query(SELECTOR.MENU).element as Promise<Element>
         ]).then(([sidebar, menu]) => {
             if (isBoolean(this._config.sidebar_editable)) {
                 if (!this._config.sidebar_editable) {
@@ -426,11 +426,10 @@ class CustomSidebar {
         configOrderItem: ConfigOrderWithItem,
         attributes: string | Record<string, string | number | boolean>
     ) {
-
         const insertAttributes = (attrs: [string, string | number | boolean][]): void => {
-            const customSidebarAttributes = configOrderItem.element.getAttribute(ATTRIBUTE.CUSTOM_SIDEBAR_ATTRIBUTES)?.split('|') ?? [];
+            const customSidebarAttributes = configOrderItem.element!.getAttribute(ATTRIBUTE.CUSTOM_SIDEBAR_ATTRIBUTES)?.split('|') ?? [];
             customSidebarAttributes.forEach((attr: string): void => {
-                configOrderItem.element.removeAttribute(attr);
+                configOrderItem.element!.removeAttribute(attr);
             });
             customSidebarAttributes.splice(0);
             attrs.forEach((entry) => {
@@ -440,13 +439,13 @@ class CustomSidebar {
                     isNumber(value) ||
                     isBoolean(value)
                 ) {
-                    configOrderItem.element.setAttribute(name, `${value}`);
+                    configOrderItem.element!.setAttribute(name, `${value}`);
                     customSidebarAttributes.push(name);
                 } else {
                     console.warn(`${NAMESPACE}: the property "${name}" in the attributes property of the item "${configOrderItem.item}" should be a string, a number or a boolean. This property will be omitted`);
                 }
             });
-            configOrderItem.element.setAttribute(ATTRIBUTE.CUSTOM_SIDEBAR_ATTRIBUTES, customSidebarAttributes.join('|'));
+            configOrderItem.element!.setAttribute(ATTRIBUTE.CUSTOM_SIDEBAR_ATTRIBUTES, customSidebarAttributes.join('|'));
         };
 
         if (isString(attributes)) {
@@ -471,7 +470,7 @@ class CustomSidebar {
     }
 
     private _subscribeName(element: HTMLElement, name: string): void {
-        const itemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
+        const itemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!;
         this._subscribeTemplate(
             name,
             (rendered: string): void => {
@@ -501,7 +500,7 @@ class CustomSidebar {
     }
 
     private _subscribeInfo(element: HTMLElement, info: string): void {
-        const textElement = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
+        const textElement = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!;
         this._subscribeTemplate(
             info,
             (rendered: string): void => {
@@ -572,7 +571,7 @@ class CustomSidebar {
 
     private _setElementVariables = (
         element: HTMLElement,
-        dictionary: [string, string][]
+        dictionary: [string, string | undefined][]
     ) => {
         dictionary.forEach(([cssVariable, value]) => {
             if (value) {
@@ -647,7 +646,7 @@ class CustomSidebar {
 
     private _createJinjaTemplateSubscription(
         template: string,
-        callback?: (rendered: string) => void
+        callback: (rendered: string) => void
     ): ReturnType<HassConnection['conn']['subscribeMessage']> {
         return new Promise((resolve) => {
             window.hassConnection.then((hassConnection: HassConnection): void => {
@@ -733,7 +732,7 @@ class CustomSidebar {
 
     private _focusItemByTab(sidebarShadowRoot: ShadowRoot, element: SidebarItem, forward: boolean): void {
 
-        const haIconButton = sidebarShadowRoot.querySelector<HTMLElement>(CUSTOM_ELEMENT.HA_ICON_BUTTON);
+        const haIconButton = sidebarShadowRoot.querySelector<HTMLElement>(CUSTOM_ELEMENT.HA_ICON_BUTTON)!;
         const activeIndex = this._items.indexOf(element);
         const lastIndex = this._items.length - 1;
 
@@ -788,11 +787,14 @@ class CustomSidebar {
             );
         }
 
-        return this._config.analytics &&
-        (
-            this._config.analytics === true ||
-            this._config.analytics[option]
+        return Boolean(
+            this._config.analytics &&
+            (
+                this._config.analytics === true ||
+                this._config.analytics[option]
+            )
         );
+
     }
 
     private _getUserEntity(): string | undefined {
@@ -880,8 +882,8 @@ class CustomSidebar {
 
         // Process Home Assistant Main and Partial Panel Resolver
         Promise.all([
-            this._main.element,
-            this._partialPanelResolver.element
+            this._main.element as Promise<HomeAssistantMain>,
+            this._partialPanelResolver.element as Promise<PartialPanelResolver>
         ]).then(([homeAssistantMain, partialPanelResolver]: [HomeAssistantMain, PartialPanelResolver]) => {
 
             const sidebarMode = this._config.sidebar_mode;
@@ -893,7 +895,7 @@ class CustomSidebar {
 
                 const checkForNarrow = async (isNarrow: boolean): Promise<void> => {
 
-                    const huiRoot = await this._partialPanelResolver.selector.query(SELECTOR.HUI_ROOT).$.element;
+                    const huiRoot = (await this._partialPanelResolver.selector.query(SELECTOR.HUI_ROOT).$.element)!;
 
                     this._styleManager.removeStyle(huiRoot);
 
@@ -924,12 +926,12 @@ class CustomSidebar {
 
         // Process sidebar
         Promise.all([
-            this._main.element,
-            this._haDrawer.selector.$.query(SELECTOR.MC_DRAWER).element,
-            this._sidebar.element,
-            this._sidebar.selector.$.element,
-            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element,
-            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element
+            this._main.element as Promise<HTMLElement>,
+            this._haDrawer.selector.$.query(SELECTOR.MC_DRAWER).element as Promise<HTMLElement>,
+            this._sidebar.element as Promise<HTMLElement>,
+            this._sidebar.selector.$.element as Promise<ShadowRoot>,
+            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element as Promise<HTMLElement>,
+            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element as Promise<HTMLElement>
         ]).then((elements: [HTMLElement, HTMLElement, HTMLElement, ShadowRoot, HTMLElement, HTMLElement]) => {
 
             const [
@@ -1016,7 +1018,7 @@ class CustomSidebar {
 
             this._styleManager.addStyle(
                 STYLES.SIDEBAR_WIDTH_DESKTOP,
-                homeAssistantMain.shadowRoot
+                homeAssistantMain.shadowRoot!
             );
 
             this._styleManager.addStyle(
@@ -1061,13 +1063,13 @@ class CustomSidebar {
             this._isAnalyticsOptionEnabled(ANALITICS_KEYS.SIDEBAR_ITEM_CLICKED)
                 .then((enabled) => {
                     if (enabled) {
-                        sideBarShadowRoot.addEventListener(EVENT.CLICK, (event: MouseEvent) => {
+                        sideBarShadowRoot.addEventListener(EVENT.CLICK, (event: Event) => {
 
                             const clickedElement = event.target as HTMLElement;
                             const itemClicked = clickedElement.closest(CUSTOM_ELEMENT.ITEM);
 
                             if (itemClicked) {
-                                const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText;
+                                const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.innerText;
                                 this._logBookLog(`${ANALITICS_KEYS.SIDEBAR_ITEM_CLICKED}: ${itemText}`);
                             }
 
@@ -1086,9 +1088,9 @@ class CustomSidebar {
                 ? this._getAnchorElement(item)
                 : this._getButtonElement(item);
             const surface = innerElement
-                .querySelector(CUSTOM_ELEMENT.HA_RIPPLE)
-                .shadowRoot
-                .querySelector(SELECTOR.SURFACE);
+                .querySelector(CUSTOM_ELEMENT.HA_RIPPLE)!
+                .shadowRoot!
+                .querySelector(SELECTOR.SURFACE)!;
             this._styleManager.addStyle(
                 [
                     STYLES.ITEM_BACKGROUND_HOVER_AND_HOVER_OPACITY
@@ -1146,7 +1148,7 @@ class CustomSidebar {
                     });
                 }
 
-                const configItems: ConfigOrderWithItem[] = order.reduce(
+                const configItems: ConfigOrderWithItem[] = order!.reduce(
                     (acc: ConfigOrderWithItem[], orderItem: ConfigOrder): ConfigOrderWithItem[] => {
                         const { item, match, exact, new_item } = orderItem;
                         const itemLowerCase = item.toLocaleLowerCase();
@@ -1155,7 +1157,7 @@ class CustomSidebar {
                             : this._items.find((element: SidebarItem): boolean => {
                                 const text = match === Match.HREF
                                     ? element.href
-                                    : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT).innerText.trim();
+                                    : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.innerText.trim();
 
                                 const matchText = (
                                     (!!exact && item === text) ||
@@ -1225,25 +1227,25 @@ class CustomSidebar {
                         orderItem.new_item ||
                         (
                             orderItem.bottom &&
-                            orderItem.element.getAttribute(ATTRIBUTE.FIXED) === ATTRIBUTE_VALUE.FALSE
+                            orderItem.element!.getAttribute(ATTRIBUTE.FIXED)! === ATTRIBUTE_VALUE.FALSE
                         ) ||
                         (
                             !orderItem.bottom &&
-                            orderItem.element.getAttribute(ATTRIBUTE.FIXED) === ATTRIBUTE_VALUE.TRUE
+                            orderItem.element!.getAttribute(ATTRIBUTE.FIXED)! === ATTRIBUTE_VALUE.TRUE
                         )
                     ) {
                         if (orderItem.bottom) {
-                            bottomItemsFragment.appendChild(orderItem.element);
+                            bottomItemsFragment.appendChild(orderItem.element!);
                         } else {
-                            topItemsFragment.appendChild(orderItem.element);
+                            topItemsFragment.appendChild(orderItem.element!);
                         }
                     }
 
                     if (isUndefined(orderItem.order)) {
-                        orderItem.element.style.order = `${lastOrder}`;
+                        orderItem.element!.style.order = `${lastOrder}`;
                         lastOrder ++;
                     } else {
-                        orderItem.element.style.order = `${orderItem.order}`;
+                        orderItem.element!.style.order = `${orderItem.order}`;
                         lastOrder = orderItem.order + 1;
                     }
 
@@ -1255,60 +1257,60 @@ class CustomSidebar {
                     }
 
                     if (orderItem.divider) {
-                        orderItem.element.setAttribute(ATTRIBUTE.WITH_DIVIDER, ATTRIBUTE_VALUE.TRUE);
+                        orderItem.element!.setAttribute(ATTRIBUTE.WITH_DIVIDER, ATTRIBUTE_VALUE.TRUE);
                     }
 
                     if (orderItem.name) {
                         this._subscribeName(
-                            orderItem.element,
+                            orderItem.element!,
                             orderItem.name
                         );
                     }
 
                     if (orderItem.icon) {
                         this._subscribeIcon(
-                            orderItem.element,
+                            orderItem.element!,
                             orderItem.icon
                         );
                     }
 
                     if (orderItem.info) {
                         this._subscribeInfo(
-                            orderItem.element,
+                            orderItem.element!,
                             orderItem.info
                         );
                     }
 
                     if (orderItem.notification) {
                         this._subscribeNotification(
-                            orderItem.element,
+                            orderItem.element!,
                             orderItem.notification
                         );
                     }
 
                     if (!isUndefined(orderItem.hide)) {
                         this._subscribeHide(
-                            orderItem.element,
+                            orderItem.element!,
                             orderItem.hide
                         );
                     }
 
                     this._subscribeTemplateVariableChanges(
                         orderItem,
-                        orderItem.element,
+                        orderItem.element!,
                         ITEM_OPTIONS_VARIABLES_MAP
                     );
 
                     if (orderItem.new_item) {
 
                         // New items rollover
-                        orderItem.element.addEventListener(EVENT.MOUSEENTER, this._mouseEnterBinded);
-                        orderItem.element.addEventListener(EVENT.MOUSELEAVE, this._mouseLeaveBinded);
+                        orderItem.element!.addEventListener(EVENT.MOUSEENTER, this._mouseEnterBinded);
+                        orderItem.element!.addEventListener(EVENT.MOUSELEAVE, this._mouseLeaveBinded);
 
                     }
 
                     if (orderItem.on_click) {
-                        orderItem.element.addEventListener(EVENT.CLICK, this._mouseClick.bind(this, orderItem), true);
+                        orderItem.element!.addEventListener(EVENT.CLICK, this._mouseClick.bind(this, orderItem), true);
                     }
 
                 });
@@ -1340,7 +1342,7 @@ class CustomSidebar {
     }
 
     private _mouseEnter(event: MouseEvent): void {
-        this._sidebar.element
+        (this._sidebar.element as Promise<Sidebar>)
             .then((sidebar: Sidebar): void => {
                 if (sidebar.alwaysExpand) {
                     return;
@@ -1354,22 +1356,22 @@ class CustomSidebar {
     }
 
     private async _mouseLeave(): Promise<void> {
-        this._sidebar.element
-            .then((sidebar: Sidebar): void => {
-                if (sidebar._mouseLeaveTimeout) {
-                    clearTimeout(sidebar._mouseLeaveTimeout);
-                }
-                sidebar._mouseLeaveTimeout = window.setTimeout(() => {
-                    sidebar._hideTooltip();
-                }, 500);
-            });
+        (this._sidebar.element as Promise<Sidebar>).then((sidebar: Sidebar): void => {
+            if (sidebar._mouseLeaveTimeout) {
+                clearTimeout(sidebar._mouseLeaveTimeout);
+            }
+            sidebar._mouseLeaveTimeout = window.setTimeout(() => {
+                sidebar._hideTooltip();
+            }, 500);
+        });
     }
 
     private async _mouseClick(item: ConfigOrderWithItem, event: MouseEvent): Promise<void> {
 
-        const { on_click: onClickAction, element } = item;
+        const { on_click, element } = item;
+        const onClickAction = on_click!;
         const sidebarItem = element as SidebarItem;
-        const textElement = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
+        const textElement = sidebarItem.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!;
         const itemText = textElement.textContent.trim();
 
         if (sidebarItem.href === '#') {
@@ -1511,7 +1513,7 @@ class CustomSidebar {
             ) {
                 return item;
             }
-            return active;
+            return active!;
         }, null);
 
         items.forEach((item: HTMLElement) => {
@@ -1526,20 +1528,20 @@ class CustomSidebar {
         const lovelace = panelResolver.querySelector(CUSTOM_ELEMENT.HA_PANEL_LOVELACE);
 
         if (lovelace) {
-            this._partialPanelResolver
+            const huiViewContainerPromise = this._partialPanelResolver
                 .selector
                 .query(CUSTOM_ELEMENT.HA_PANEL_LOVELACE)
                 .$
                 .query(CUSTOM_ELEMENT.HUI_ROOT)
                 .$
                 .query(CUSTOM_ELEMENT.HUI_VIEW_CONTAINER)
-                .element
-                .then((huiViewContainer: HTMLElement) => {
-                    this._huiViewContainerObserver.observe(huiViewContainer, {
-                        subtree: true,
-                        childList: true
-                    });
+                .element as Promise<HTMLElement>;
+            huiViewContainerPromise.then((huiViewContainer: HTMLElement) => {
+                this._huiViewContainerObserver.observe(huiViewContainer, {
+                    subtree: true,
+                    childList: true
                 });
+            });
         }
 
         // If analytics is enabled log landings
@@ -1551,8 +1553,8 @@ class CustomSidebar {
 
     private _watchHuiViewContainer(mutations: MutationRecord[]): void {
         mutations.forEach(({ addedNodes }): void => {
-            addedNodes.forEach((node: Element): void => {
-                if (node.localName === CUSTOM_ELEMENT.HUI_VIEW) {
+            addedNodes.forEach((node: Node): void => {
+                if (node instanceof Element && node.localName === CUSTOM_ELEMENT.HUI_VIEW) {
                     this._panelLoaded();
                 }
             });
@@ -1561,41 +1563,40 @@ class CustomSidebar {
 
     private _process(): void {
 
-        this._homeAssistant
-            .element
-            .then((ha: HomeAsssistantExtended) => {
-                this._ha = ha;
+        const homeAssistantPromise = this._homeAssistant.element as Promise<HomeAsssistantExtended>;
+        homeAssistantPromise.then((ha: HomeAsssistantExtended) => {
+            this._ha = ha;
 
-                this._debugger.log('Instantiating HomeAssistantJavaScriptTemplates...');
+            this._debugger.log('Instantiating HomeAssistantJavaScriptTemplates...');
 
-                new HomeAssistantJavaScriptTemplates(this._ha)
-                    .getRenderer()
-                    .then((renderer) => {
+            new HomeAssistantJavaScriptTemplates(this._ha)
+                .getRenderer()
+                .then((renderer) => {
 
-                        this._debugger.log('HomeAssistantJavaScriptTemplates instantiated');
+                    this._debugger.log('HomeAssistantJavaScriptTemplates instantiated');
 
-                        this._renderer = renderer;
-                        this._getConfig()
-                            .then(() => {
+                    this._renderer = renderer;
+                    this._getConfig()
+                        .then(() => {
 
-                                this._debugger.log('Compiled config', this._config);
-                                this._debugger.log('Executing plugin logic...');
-                                this._renderer.variables = {
-                                    ...(this._config.js_variables ?? {}),
-                                    ...buildNavigateMethods(this._sidebar),
-                                    ...getRestApis(this._ha),
-                                    ...getDialogsMethods(this._ha),
-                                    ...getFormatDateMethods(this._ha)
-                                };
-                                this._renderer.refs = this._config.js_refs ?? {};
-                                this._processDefaultPath();
-                                this._processSidebar();
-                                this._subscribeTitle();
-                                this._subscribeSideBarEdition();
-                                this._rearrange();
-                            });
-                    });
-            });
+                            this._debugger.log('Compiled config', this._config);
+                            this._debugger.log('Executing plugin logic...');
+                            this._renderer.variables = {
+                                ...(this._config.js_variables ?? {}),
+                                ...buildNavigateMethods(this._sidebar),
+                                ...getRestApis(this._ha),
+                                ...getDialogsMethods(this._ha),
+                                ...getFormatDateMethods(this._ha)
+                            };
+                            this._renderer.refs = this._config.js_refs ?? {};
+                            this._processDefaultPath();
+                            this._processSidebar();
+                            this._subscribeTitle();
+                            this._subscribeSideBarEdition();
+                            this._rearrange();
+                        });
+                });
+        });
     }
 
 }

@@ -54,12 +54,12 @@ class ConfigFlatter {
         this._buildFlattenConfig();
     }
 
-    private _config: Config;
-    private _extendable: Map<string, Config>;
-    private _user: Hass['user'];
-    private _userAgent: string;
-    private _exceptions: ConfigException[];
-    private _flattenConfig: Config;
+    private _config!: Config;
+    private _extendable!: Map<string, Config>;
+    private _user!: Hass['user'];
+    private _userAgent!: string;
+    private _exceptions!: ConfigException[];
+    private _flattenConfig!: Config;
 
     private _getExceptions(): ConfigException[] {
 
@@ -152,7 +152,7 @@ class ConfigFlatter {
             }
             return this._mergeConfigs(
                 this._pickExtendableOptions(
-                    this._extendable.get(id)
+                    this._extendable.get(id)!
                 ),
                 flattenConfig
             );

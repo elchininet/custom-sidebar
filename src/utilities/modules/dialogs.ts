@@ -49,8 +49,8 @@ const getDialogBox = async (ha: HomeAsssistantExtended): Promise<CustomElementCo
 
         haConfigBackupBackups.addEventListener(
             EVENT.SHOW_DIALOG,
-            (event: CustomEvent<HomeAssistantDialogEventDetail>): void => {
-                const dialogBox = event.detail.dialogImport();
+            (event: Event): void => {
+                const dialogBox = (event as CustomEvent<HomeAssistantDialogEventDetail>).detail.dialogImport();
                 resolve(dialogBox);
             },
             { once: true }
@@ -80,8 +80,8 @@ const getDialogRestart = async (): Promise<CustomElementConstructor> => {
 
         haConfigSystemNavigation.addEventListener(
             EVENT.SHOW_DIALOG,
-            (event: CustomEvent<HomeAssistantDialogEventDetail>): void => {
-                const dialogRestart = event.detail.dialogImport();
+            (event: Event): void => {
+                const dialogRestart = (event as CustomEvent<HomeAssistantDialogEventDetail>).detail.dialogImport();
                 resolve(dialogRestart);
             },
             { once: true }
