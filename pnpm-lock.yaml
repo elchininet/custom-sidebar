@@ -12,14 +12,14 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       home-assistant-javascript-templates:
-        specifier: ^6.0.1
-        version: 6.0.1
+        specifier: 7.0.0
+        version: 7.0.0(get-promisable-result@1.0.2)
       home-assistant-query-selector:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.0.1
+        version: 6.0.1(shadow-dom-selector@5.0.1)
       home-assistant-styles-manager:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.1.0
+        version: 4.1.0
       js-yaml:
         specifier: ^4.1.1
         version: 4.1.1
@@ -950,14 +950,18 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
-  home-assistant-javascript-templates@6.0.1:
-    resolution: {integrity: sha512-kbPS76MJx22Y8gwq+HwWUBlaxWDwiawoDl0LrgGvA0QM2+C+69a1YV7ccyMrqHtx+YTJ28mmhpBeq3h4GpanRw==}
+  home-assistant-javascript-templates@7.0.0:
+    resolution: {integrity: sha512-p/KQtBjxLlYc5i4OpWB9m1mJRf45AKkUfUKWbAoABuptcRnmqvhrkDGF1N7WVTpXDNeFU6pyBYZbFiwnG1dOfw==}
+    peerDependencies:
+      get-promisable-result: ^1.0.2
 
-  home-assistant-query-selector@5.0.0:
-    resolution: {integrity: sha512-QY1tR1FNIDbHocw5GNuPfZzIXg/7x8lLt58fNGMNvZgCHCjasFsQ6vk93/Fq+8kBO+J/jc8YrziFVknTfvjwCw==}
+  home-assistant-query-selector@6.0.1:
+    resolution: {integrity: sha512-/0hkaT4Y4CouDsc4wJ90Eyguh4tvrOcTMQ8Q+EVQPRWZM0OZ1vx7cbOLUXfQhzy1AxI7Z9o6qRLefUh3qnoFSw==}
+    peerDependencies:
+      shadow-dom-selector: ^5.0.1
 
-  home-assistant-styles-manager@4.0.0:
-    resolution: {integrity: sha512-wtHZRH1BoXyNczsJ7b397+ql4kQkhvWibMAmVC0bOXEoPJMSXz3TauY/sTGGmdcdZZdCWpoNG+sza7/T/42K+g==}
+  home-assistant-styles-manager@4.1.0:
+    resolution: {integrity: sha512-9aH363cY0eatS+y6uZ8w6oIl8WskMMaHie6lpFYsgOlgjHDTcMlxqQk2X2bLaNniBVKsdanM4FfqjQewAjrY4A==}
 
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
@@ -2340,15 +2344,15 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  home-assistant-javascript-templates@6.0.1:
+  home-assistant-javascript-templates@7.0.0(get-promisable-result@1.0.2):
     dependencies:
       get-promisable-result: 1.0.2
 
-  home-assistant-query-selector@5.0.0:
+  home-assistant-query-selector@6.0.1(shadow-dom-selector@5.0.1):
     dependencies:
       shadow-dom-selector: 5.0.1
 
-  home-assistant-styles-manager@4.0.0: {}
+  home-assistant-styles-manager@4.1.0: {}
 
   html-escaper@2.0.2: {}
 
