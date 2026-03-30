@@ -72,6 +72,41 @@ test('clicking on items with the same root path should select the proper item', 
 
 });
 
+test('clicking on items with the same root path should select the visible one', async ({ page }) => {
+
+    await fulfillJson(page, {
+        order: [
+            {
+                item: 'config',
+                match: 'href',
+                hide: true
+            },
+            {
+                new_item: true,
+                item: 'Settings',
+                icon: 'mdi:cog',
+                href: '/config',
+                bottom: true
+            }
+        ]
+    });
+
+    const configsItems = getSidebarItem(page, HREFS.CONFIG);
+    const firstConfig = configsItems.first();
+    const lastConfig = configsItems.last();
+
+    await navigateHome(page);
+    await waitForMainElements(page);
+    await page.waitForTimeout(600);
+
+    await lastConfig.last().click();
+    await page.waitForTimeout(600);
+
+    await expect(firstConfig).not.toHaveClass(SELECTED_CLASSNAME);
+    await expect(lastConfig).toHaveClass(SELECTED_CLASSNAME);
+
+});
+
 test('clicking on items inside the same lovelace dashboard should select the proper item', async ({ page }) => {
 
     const home = '/lovelace/home';

@@ -280,7 +280,7 @@ class CustomSidebar {
 
     private _hideItem(item: HTMLElement, hide: boolean): void {
         if (hide) {
-            item.style.display = 'none';
+            item.style.display = ATTRIBUTE_VALUE.NONE;
         } else {
             item.style.removeProperty('display');
         }
@@ -675,7 +675,6 @@ class CustomSidebar {
     private _focusItem(activeIndex: number, forward: boolean): void {
 
         const length = this._items.length;
-        const noneDisplay = 'none';
         let focusIndex = 0;
 
         if (forward) {
@@ -685,7 +684,7 @@ class CustomSidebar {
                 const index = i > length - 1
                     ? i - length
                     : i;
-                if (this._items[index].style.display !== noneDisplay) {
+                if (this._items[index].style.display !== ATTRIBUTE_VALUE.NONE) {
                     focusIndex = index;
                     break;
                 }
@@ -697,7 +696,7 @@ class CustomSidebar {
                 const index = i < 0
                     ? length + i
                     : i;
-                if (this._items[index].style.display !== noneDisplay) {
+                if (this._items[index].style.display !== ATTRIBUTE_VALUE.NONE) {
                     focusIndex = index;
                     break;
                 }
@@ -1510,18 +1509,12 @@ class CustomSidebar {
         // Select the right element in the sidebar
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
         const panelPath = `${location.pathname}${location.search}`;
-        const sidebarTopItemsContainer = await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element as HTMLElement;
-        const sidebarBottomItemsContainer = await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element as HTMLElement;
+        const sidebarShadowRoot = await this._sidebar.selector.$.element as ShadowRoot;
 
-        const topItems = Array.from<SidebarItem>(
-            sidebarTopItemsContainer.querySelectorAll<SidebarItem>(CUSTOM_ELEMENT.ITEM)
-        );
-        const bottomItems = Array.from<SidebarItem>(
-            sidebarBottomItemsContainer.querySelectorAll<SidebarItem>(CUSTOM_ELEMENT.ITEM)
-        );
-        const items = [...topItems, ...bottomItems];
+        const items = Array.from<SidebarItem>(sidebarShadowRoot.querySelectorAll<SidebarItem>(CUSTOM_ELEMENT.ITEM));
+        const visibleItems = items.filter((item: SidebarItem) => item.style.display !== ATTRIBUTE_VALUE.NONE);
 
-        const activeItem = items.reduce((active: null | SidebarItem, item: SidebarItem): SidebarItem => {
+        const activeItem = visibleItems.reduce((active: null | SidebarItem, item: SidebarItem): SidebarItem => {
             if (
                 panelPath.startsWith(item.href) &&
                 (

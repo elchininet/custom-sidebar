@@ -128,6 +128,7 @@ export enum ATTRIBUTE_VALUE {
     FALSE = 'false',
     HEADLINE = 'headline',
     LINK = 'link',
+    NONE = 'none',
     START = 'start',
     TRUE = 'true'
 }
