@@ -52,7 +52,7 @@ export const SELECTORS = {
     RESTART_DIALOG_CLOSE_BUTTON: 'dialog-restart ha-adaptive-dialog slot[slot="headerNavigationIcon"] ha-icon-button',
     DEVELOPER_TOOLS_PANEL: 'ha-panel-developer-tools',
     TODO_PANEL: 'ha-panel-todo',
-    TOAST_MESSAGE: 'ha-toast wa-popup .message',
+    TOAST_MESSAGE: 'ha-toast .message',
     TOAST_BUTTON: 'ha-toast ha-button'
 };
 
