@@ -5,10 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  brace-expansion@>=4.0.0 <5.0.5: 5.0.5
-  picomatch@<2.3.2: 2.3.2
-  picomatch@>=4.0.0 <4.0.4: 4.0.4
-  serialize-javascript@<7.0.5: 7.0.5
+  brace-expansion@>=4.0.0 <5.0.5: '>=5.0.5'
+  node-forge@<1.4.0: '>=1.4.0'
+  path-to-regexp@<0.1.13: '>=0.1.13'
+  picomatch@<2.3.2: '>=2.3.2'
+  picomatch@>=4.0.0 <4.0.4: '>=4.0.4'
+  serialize-javascript@<7.0.5: '>=7.0.5'
 
 importers:
 
@@ -854,7 +856,7 @@ packages:
     resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
-      picomatch: 4.0.4
+      picomatch: '>=4.0.4'
     peerDependenciesMeta:
       picomatch:
         optional: true
@@ -1206,10 +1208,6 @@ packages:
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
-
-  picomatch@2.3.2:
-    resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
-    engines: {node: '>=8.6'}
 
   picomatch@4.0.4:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
@@ -1844,7 +1842,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
-      picomatch: 2.3.2
+      picomatch: 4.0.4
     optionalDependencies:
       rollup: 4.60.0
 
@@ -2604,8 +2602,6 @@ snapshots:
       minipass: 7.1.3
 
   picocolors@1.1.1: {}
-
-  picomatch@2.3.2: {}
 
   picomatch@4.0.4: {}
 
