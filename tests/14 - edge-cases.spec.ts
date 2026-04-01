@@ -25,17 +25,17 @@ test('if there is a match the item should be marked and ignored by subsequent ma
     await fulfillJson(page, {
         order: [
             {
-                item: 'er', // it should match also with "Energy" but it matches first with "overview"
+                item: 'er', // it also matches with "Energy" but it matches first with "Overview"
                 name: 'Overview matched'
             },
             {
-                item: 'g', // it should match also with "/energy" but it matches first with "/logbook"
-                name: 'Activity matched',
-                match: 'href'
+                item: 'e', // it should match with "Overview" but as it was already matched it is ignored and it picks "Energy"
+                name: 'Energy matched'
             },
             {
-                item: 'e', // it also matches with "Overview" and "Energy" but as they were already matched, they are ignored
-                name: 'Energy matched'
+                item: 'g', // it should match with "/energy" but as it was already matched it is ignored and it picks "Activity" (/logbook)
+                name: 'Activity matched',
+                match: 'href'
             }
         ]
     });
