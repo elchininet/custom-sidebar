@@ -62,7 +62,7 @@ jobs:
           pnpm build
       - name: Skip Coveralls
         if: ${{ needs.changes.outputs.code != 'true' && !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) }}
-        uses: LouisBrunner/checks-action@v3.0.0
+        uses: LouisBrunner/checks-action@v3.1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: coverage/coveralls
