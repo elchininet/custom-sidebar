@@ -50,7 +50,7 @@
     "typescript-eslint": "^8.57.2"
   },
   "dependencies": {
-    "get-promisable-result": "^1.0.2",
+    "get-promisable-result": "^2.0.0",
     "home-assistant-javascript-templates": "7.0.0",
     "home-assistant-query-selector": "6.0.1",
     "home-assistant-styles-manager": "^4.1.0",
