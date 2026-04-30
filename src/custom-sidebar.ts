@@ -891,7 +891,11 @@ class CustomSidebar {
 
             if (sidebarMode) {
 
-                homeAssistantMain.hass.dockedSidebar = SIDEBAR_MODE_TO_DOCKED_SIDEBAR[sidebarMode];
+                const sidebarModeValue = SIDEBAR_MODE_TO_DOCKED_SIDEBAR[sidebarMode];
+
+                window.localStorage.setItem('dockedSidebar', `"${sidebarModeValue}"`);
+
+                homeAssistantMain.hass.dockedSidebar = sidebarModeValue;
 
                 const checkForNarrow = async (isNarrow: boolean): Promise<void> => {
 
