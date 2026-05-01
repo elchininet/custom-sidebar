@@ -33,7 +33,8 @@ module.exports = [
             'array-bracket-spacing': ['error', 'never'],
             '@typescript-eslint/no-duplicate-enum-values': 'off',
             'comma-spacing': ['error'],
-            '@typescript-eslint/no-var-requires': 'off'
+            '@typescript-eslint/no-var-requires': 'off',
+            '@typescript-eslint/no-this-alias': 'off'
         }
     },
     {

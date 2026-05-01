@@ -70,9 +70,6 @@ export interface HomeAssistantMain extends HTMLElement {
 
 export interface Sidebar extends HTMLElement {
     alwaysExpand: boolean;
-    _mouseLeaveTimeout?: number;
-    _showTooltip: (anchor: HTMLElement) => void;
-    _hideTooltip: () => void;
 }
 
 export type DialogImport = () => Promise<CustomElementConstructor>;

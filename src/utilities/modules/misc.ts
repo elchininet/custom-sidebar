@@ -1,3 +1,4 @@
+import { MOBILE_REGEXP } from '@constants';
 import { isArray, isNumber } from './predicates';
 
 export const getLowercaseArray = (value: string | string[]): string[] => {
@@ -21,3 +22,5 @@ export const parseWidth = (width: undefined | number | string): undefined | stri
         ? `${width}px`
         : width;
 };
+
+export const isMobileClient = MOBILE_REGEXP.test(navigator.userAgent);

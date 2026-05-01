@@ -52,6 +52,7 @@ export enum CUSTOM_ELEMENT {
     HUI_VIEW = 'hui-view',
     HUI_VIEW_CONTAINER = 'hui-view-container',
     ITEM = 'ha-md-list-item',
+    TOOLTIP = 'ha-tooltip',
     USER_BADGE = 'ha-user-badge',
 }
 
@@ -111,10 +112,16 @@ export enum ATTRIBUTE {
     DISABLED = 'disabled',
     EMPTY = 'data-empty',
     FIXED = 'data-fixed',
+    FOR = 'for',
+    HIDE_DELAY = 'hide-delay',
     HREF = 'href',
     ICON = 'icon',
+    ID = 'id',
+    NEW_ITEM = 'new-item',
+    PLACEMENT = 'placement',
     PROCESSED = 'data-processed',
     ROLE = 'role',
+    SHOW_DELAY = 'show-delay',
     SLOT = 'slot',
     TAB_INDEX = 'tabindex',
     TYPE = 'type',
@@ -129,8 +136,11 @@ export enum ATTRIBUTE_VALUE {
     HEADLINE = 'headline',
     LINK = 'link',
     NONE = 'none',
+    RIGHT = 'right',
+    SIDEBAR_PANEL = 'sidebar-panel',
     START = 'start',
-    TRUE = 'true'
+    TRUE = 'true',
+    ZERO = '0'
 }
 
 export enum EVENT {
@@ -321,3 +331,4 @@ export const JS_TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;
 export const JINJA_TEMPLATE_REG = /\{\{[\s\S]*\}\}|\{%[\s\S]*%\}/;
 export const PARTIAL_REGEXP = /@partial\s+([\w-]+)/g;
 export const DOMAIN_ENTITY_REGEXP = /^\s*([a-z_]+)\.([\w-]+)\s*$/;
+export const MOBILE_REGEXP = /(?:iphone|android|ipad)/i;
