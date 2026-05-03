@@ -694,25 +694,35 @@ test('new items should have tooltips', async ({ page }) => {
     await visitHome(page);
 
     const google = getSidebarItem(page, HREFS.GOOGLE);
-    const tooltip = page.locator(SELECTORS.TOOLTIP);
     const haIconButton = page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON);
     const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
 
+    const googleId = await google.getAttribute('id');
+    const tooltip = page.locator(`${SELECTORS.TOOLTIP}[for="${googleId}"]`);
+    const popup = tooltip.locator(SELECTORS.POPUP);
+
     await google.hover();
 
-    await expect(tooltip).not.toBeVisible();
+    await expect(tooltip).not.toBeInViewport();
 
     await haIconButton.click();
 
     await expect(sidebar).not.toHaveAttribute('expanded');
 
+    await expect(tooltip).toBeInViewport();
+    await expect(popup).toBeHidden();
+
     await google.hover();
 
-    await expect(tooltip).toBeVisible();
-
+    await expect(tooltip).toHaveAttribute('open');
     await expect(tooltip).toContainText('Google');
+    await expect(popup).toBeVisible();
 
     await haIconButton.click();
+
+    await expect(sidebar).toHaveAttribute('expanded');
+
+    await expect(tooltip).not.toBeInViewport();
 
 });
 

@@ -69,6 +69,7 @@ import {
     getToastMethods,
     isArray,
     isBoolean,
+    isMobileClient,
     isNumber,
     isObject,
     isRegExp,
@@ -141,8 +142,6 @@ class CustomSidebar {
 
         this._items = [];
         this._logBookMessagesMap = new Map<string, number>();
-        this._mouseEnterBinded = this._mouseEnter.bind(this);
-        this._mouseLeaveBinded = this._mouseLeave.bind(this);
         this._configPromise = fetchConfig();
 
         selector.listen();
@@ -162,8 +161,6 @@ class CustomSidebar {
     private _items!: SidebarItem[];
     private _logBookMessagesMap!: Map<string, number>;
     private _huiViewContainerObserver!: MutationObserver;
-    private _mouseEnterBinded: (event: MouseEvent) => void;
-    private _mouseLeaveBinded: () => void;
 
     private async _getConfig(): Promise<void> {
 
@@ -293,10 +290,17 @@ class CustomSidebar {
         return badge;
     }
 
+    private _getId(configItem: ConfigNewItem): string {
+        const id = (configItem.href ?? configItem.item).replace(/\W/g, '-');
+        return `${ATTRIBUTE_VALUE.SIDEBAR_PANEL}-${id}`;
+    }
+
     private _buildNewItem(configItem: ConfigNewItem): SidebarItem {
 
         const item = document.createElement(CUSTOM_ELEMENT.ITEM) as SidebarItem;
         item.setAttribute(ATTRIBUTE.TYPE, ATTRIBUTE_VALUE.LINK);
+        item.setAttribute(ATTRIBUTE.ID, this._getId(configItem));
+        item.setAttribute(ATTRIBUTE.NEW_ITEM, ATTRIBUTE_VALUE.TRUE);
 
         item.href = configItem.href ?? '#';
         item.target = configItem.target ?? '';
@@ -315,6 +319,20 @@ class CustomSidebar {
         item.appendChild(badgeEnd);
 
         return item;
+    }
+
+    private _buildTooltip(id: string, text: string): HTMLElement {
+
+        const tooltip = document.createElement(CUSTOM_ELEMENT.TOOLTIP);
+
+        tooltip.setAttribute(ATTRIBUTE.FOR, id);
+        tooltip.setAttribute(ATTRIBUTE.SHOW_DELAY, ATTRIBUTE_VALUE.ZERO);
+        tooltip.setAttribute(ATTRIBUTE.HIDE_DELAY, ATTRIBUTE_VALUE.ZERO);
+        tooltip.setAttribute(ATTRIBUTE.PLACEMENT, ATTRIBUTE_VALUE.RIGHT);
+        tooltip.textContent = text;
+
+        return tooltip;
+
     }
 
     private async _getTemplateString(template: unknown): Promise<string> {
@@ -470,12 +488,17 @@ class CustomSidebar {
         }
     }
 
-    private _subscribeName(element: HTMLElement, name: string): void {
+    private _subscribeName(element: SidebarItem, name: string): void {
         const itemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!;
         this._subscribeTemplate(
             name,
             (rendered: string): void => {
                 itemText.innerHTML = rendered;
+                // If there is a tolltip update its text too
+                const tooltip = this._getTooltip(element);
+                if (tooltip) {
+                    tooltip.textContent = rendered;
+                }
             }
         );
     }
@@ -1121,9 +1144,32 @@ class CustomSidebar {
         });
     }
 
+    private _getTooltip(item: SidebarItem): HTMLElement | null {
+        return item.parentElement!.querySelector(`${CUSTOM_ELEMENT.TOOLTIP}[${ATTRIBUTE.FOR}="${item.id}"]`);
+    }
+
+    private async _refreshTooltips(): Promise<void> {
+
+        const sidebar = (await this._sidebar.element) as Sidebar;
+        const removeTooltips = sidebar.alwaysExpand || isMobileClient;
+        const newItems = sidebar.shadowRoot!.querySelectorAll<SidebarItem>(`${CUSTOM_ELEMENT.ITEM}[${ATTRIBUTE.NEW_ITEM}]`);
+
+        newItems.forEach((item: SidebarItem): void => {
+            let tooltip = this._getTooltip(item);
+            if (removeTooltips) {
+                tooltip?.parentElement!.removeChild(tooltip);
+            } else if(!tooltip) {
+                const text = item.querySelector(SELECTOR.ITEM_TEXT)!.textContent;
+                tooltip = this._buildTooltip(item.id, text);
+                item.after(tooltip);
+            }
+        });
+    }
+
     private _patchSidebarMethods(): void {
 
         const debuggerInstance = this._debugger;
+        const _this = this;
 
         debuggerInstance.log('Patching the sidebar shouldUpdate method...');
 
@@ -1134,6 +1180,13 @@ class CustomSidebar {
                     if (this.hass.config.state !== WEBSOCKET_RUNNING) {
                         debuggerInstance.log(`Home Assistant config state is ${this.hass.config.state}. Cancelling the update!`);
                         return false;
+                    }
+                    if (
+                        changedProps.has('expanded') ||
+                        changedProps.has('narrow') ||
+                        changedProps.has('alwaysExpand')
+                    ) {
+                        _this._refreshTooltips();
                     }
                     return shouldUpdate.call(this, changedProps);
                 };
@@ -1322,14 +1375,6 @@ class CustomSidebar {
                         ITEM_OPTIONS_VARIABLES_MAP
                     );
 
-                    if (orderItem.new_item) {
-
-                        // New items rollover
-                        orderItem.element!.addEventListener(EVENT.MOUSEENTER, this._mouseEnterBinded);
-                        orderItem.element!.addEventListener(EVENT.MOUSELEAVE, this._mouseLeaveBinded);
-
-                    }
-
                     if (orderItem.on_click) {
                         orderItem.element!.addEventListener(EVENT.CLICK, this._mouseClick.bind(this, orderItem), true);
                     }
@@ -1358,33 +1403,9 @@ class CustomSidebar {
                 this._aplyItemRippleStyles();
                 this._panelLoaded();
                 this._checkEmptyBottomList();
+                this._refreshTooltips();
 
             });
-    }
-
-    private _mouseEnter(event: MouseEvent): void {
-        (this._sidebar.element as Promise<Sidebar>)
-            .then((sidebar: Sidebar): void => {
-                if (sidebar.alwaysExpand) {
-                    return;
-                }
-                if (sidebar._mouseLeaveTimeout) {
-                    clearTimeout(sidebar._mouseLeaveTimeout);
-                    sidebar._mouseLeaveTimeout = undefined;
-                }
-                sidebar._showTooltip(event.currentTarget as HTMLElement);
-            });
-    }
-
-    private async _mouseLeave(): Promise<void> {
-        (this._sidebar.element as Promise<Sidebar>).then((sidebar: Sidebar): void => {
-            if (sidebar._mouseLeaveTimeout) {
-                clearTimeout(sidebar._mouseLeaveTimeout);
-            }
-            sidebar._mouseLeaveTimeout = window.setTimeout(() => {
-                sidebar._hideTooltip();
-            }, 500);
-        });
     }
 
     private async _mouseClick(item: ConfigOrderWithItem, event: MouseEvent): Promise<void> {

@@ -90,6 +90,65 @@ test('name and title using templates should update if one of their entities chan
 
 });
 
+test('tooltip text should change if the name is using a template and it gets updated', async ({ page }) => {
+
+    const href = '/test/panel';
+
+    await fulfillJson(
+        page,
+        {
+            order: [
+                {
+                    new_item: true,
+                    item: 'test',
+                    name: '[[[ "Test " + states("input_boolean.my_switch") ]]]',
+                    icon: 'mdi:bullseye-arrow',
+                    href
+                }
+            ]
+        }
+    );
+
+    await navigateHome(page);
+
+    const item = getSidebarItem(page, href);
+    const haIconButton = page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON);
+    const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
+
+    const itemId = await item.getAttribute('id');
+    const tooltip = page.locator(`${SELECTORS.TOOLTIP}[for="${itemId}"]`);
+
+    await item.hover();
+
+    await expect(tooltip).not.toBeInViewport();
+
+    await haIconButton.click();
+
+    await expect(sidebar).not.toHaveAttribute('expanded');
+
+    await expect(tooltip).toBeInViewport();
+
+    await item.hover();
+
+    await expect(tooltip).toHaveAttribute('open');
+    await expect(tooltip).toContainText('Test off');
+
+    await haSwitchStateRequest(page, true);
+
+    await expect(tooltip).toContainText('Test on');
+
+    await haSwitchStateRequest(page, false);
+
+    await expect(tooltip).toContainText('Test off');
+
+    await haIconButton.click();
+
+    await expect(sidebar).toHaveAttribute('expanded');
+
+    await expect(tooltip).not.toBeInViewport();
+
+});
+
 test('notifications using a template should update if one of its entities change', async ({ page }) => {
 
     await pageVisit(page);
