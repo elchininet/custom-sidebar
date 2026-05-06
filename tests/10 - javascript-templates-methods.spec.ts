@@ -98,7 +98,7 @@ test.describe('methods in JavaScript templates', () => {
 
     test('callService should execute the proper service', async ({ page }) => {
 
-        const controlSwitch = page.locator('ha-entity-toggle ha-control-switch');
+        const input = page.locator('ha-entity-toggle ha-switch input');
 
         await fulfillJson(
             page,
@@ -125,19 +125,19 @@ test.describe('methods in JavaScript templates', () => {
 
         await navigateHome(page);
 
-        expect(controlSwitch).toHaveJSProperty('checked', false);
+        expect(input).not.toBeChecked();
 
         await getSidebarItem(page, '#').click();
 
         await page.waitForTimeout(500);
 
-        expect(controlSwitch).toHaveJSProperty('checked', true);
+        expect(input).toBeChecked();
 
         await getSidebarItem(page, '#').click();
 
         await page.waitForTimeout(500);
 
-        expect(controlSwitch).toHaveJSProperty('checked', false);
+        expect(input).not.toBeChecked();
 
     });
 
