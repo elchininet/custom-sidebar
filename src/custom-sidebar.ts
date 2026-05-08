@@ -188,7 +188,7 @@ class CustomSidebar {
             () => container.querySelectorAll<SidebarItem>(`:scope > ${CUSTOM_ELEMENT.ITEM}`),
             (elements: NodeListOf<SidebarItem>): boolean => {
                 return Array.from(elements).every((element: SidebarItem): boolean => {
-                    const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.innerText.trim();
+                    const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.textContent.trim();
                     return text.length > 0;
                 });
             },
@@ -224,12 +224,14 @@ class CustomSidebar {
             shouldReject: false
         };
         const sidebarShadowRoot = (await this._sidebar.selector.$.element)!;
+
         // If sidebar is loading, wait for the looading to finish
         await getPromisableResult(
             () => sidebarShadowRoot.querySelector(SELECTOR.SIDEBAR_LOADER),
             (sidebarLoader: Element | null) => sidebarLoader === null,
             promisableResultOptions
         );
+
         const topItemsContainer = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element) as HTMLElement;
         const bottomItemsContainer = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element) as HTMLElement;
 
@@ -1050,6 +1052,7 @@ class CustomSidebar {
                 .query(SELECTOR.MENU_BUTTON)
                 .$
                 .element as Promise<ShadowRoot>;
+
             sidebarMenuButtonShadowRootPromise.then((sidebarMenuButtonShadowRoot: ShadowRoot) => {
                 this._styleManager.addStyle(
                     [
@@ -1113,7 +1116,7 @@ class CustomSidebar {
                             const itemClicked = clickedElement.closest(CUSTOM_ELEMENT.ITEM);
 
                             if (itemClicked) {
-                                const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.innerText;
+                                const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.textContent;
                                 this._logBookLog(`${ANALITICS_KEYS.SIDEBAR_ITEM_CLICKED}: ${itemText}`);
                             }
 
@@ -1231,7 +1234,7 @@ class CustomSidebar {
                             : this._items.find((element: SidebarItem): boolean => {
                                 const text = match === Match.HREF
                                     ? element.href
-                                    : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.innerText.trim();
+                                    : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.textContent.trim();
 
                                 const matchText = (
                                     (!!exact && item === text) ||
@@ -1600,6 +1603,7 @@ class CustomSidebar {
     private _process(): void {
 
         const homeAssistantPromise = this._homeAssistant.element as Promise<HomeAsssistantExtended>;
+
         homeAssistantPromise.then((ha: HomeAsssistantExtended) => {
             this._ha = ha;
 
@@ -1614,7 +1618,6 @@ class CustomSidebar {
                     this._renderer = renderer;
                     this._getConfig()
                         .then(() => {
-
                             this._debugger.log('Compiled config', this._config);
                             this._debugger.log('Executing plugin logic...');
                             this._renderer.variables = {
