@@ -1,21 +1,21 @@
 import { NAMESPACE } from '@constants';
 import { version } from '../../../package.json';
 
-export const logVersionToConsole = () => {
-    console.info(
-        `%c≡ ${NAMESPACE.toUpperCase()} %cv${version}`,
-        'font-weight: bold; background: #EEEEEE; color: #666666; padding: 2px 5px;',
-        'font-weight: normal; background: #E87A24; color: #FFFFFF; padding: 2px 5px'
-    );
-};
+export class Logger {
 
-export class Debugger {
-
-    constructor(debug: boolean) {
-        this._debug = debug;
+    constructor(enabled: boolean) {
+        this._enabled = enabled;
     }
 
-    private _debug: boolean;
+    private _enabled: boolean;
+
+    static logVersionToConsole() {
+        console.info(
+            `%c≡ ${NAMESPACE.toUpperCase()} %cv${version}`,
+            'font-weight: bold; background: #EEEEEE; color: #666666; padding: 2px 5px;',
+            'font-weight: normal; background: #E87A24; color: #FFFFFF; padding: 2px 5px'
+        );
+    }
 
     public log(
         topic: string,
@@ -29,7 +29,7 @@ export class Debugger {
             stringify = true,
             table = false
         } = config ?? {};
-        if (this._debug) {
+        if (this._enabled) {
             const topicMessage = `${NAMESPACE} debug: ${topic}`;
             if (metadata) {
                 console.groupCollapsed(topicMessage);
@@ -49,8 +49,8 @@ export class Debugger {
         }
     }
 
-    public get debug(): boolean {
-        return this._debug;
+    public get enabled(): boolean {
+        return this._enabled;
     }
 
 }

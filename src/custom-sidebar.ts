@@ -59,7 +59,6 @@ import {
 } from '@constants';
 import { fetchConfig } from '@fetcher';
 import {
-    Debugger,
     buildNavigateMethods,
     getConfig,
     getDialogsMethods,
@@ -75,7 +74,7 @@ import {
     isRegExp,
     isString,
     isUndefined,
-    logVersionToConsole,
+    Logger,
     navigate,
     openMoreInfoDialog,
     openRestartDialog,
@@ -87,7 +86,7 @@ class CustomSidebar {
 
     constructor(enableDebug: boolean) {
 
-        this._debugger = new Debugger(enableDebug);
+        this._logger = new Logger(enableDebug);
 
         const selector = new HAQuerySelector();
 
@@ -101,7 +100,7 @@ class CustomSidebar {
                 this._sidebar = event.detail.HA_SIDEBAR;
                 this._partialPanelResolver = event.detail.PARTIAL_PANEL_RESOLVER;
 
-                this._debugger.log(
+                this._logger.log(
                     'HAQuerySelector init executed',
                     {
                         HOME_ASSISTANT: this._homeAssistant,
@@ -138,7 +137,7 @@ class CustomSidebar {
             throwWarnings: false
         });
 
-        this._debugger.log('Starting the plugin...');
+        this._logger.log('Starting the plugin...');
 
         this._items = [];
         this._logBookMessagesMap = new Map<string, number>();
@@ -147,7 +146,7 @@ class CustomSidebar {
         selector.listen();
     }
 
-    private _debugger!: Debugger;
+    private _logger!: Logger;
     private _configPromise!: Promise<Config>;
     private _config!: Config;
     private _homeAssistant!: HAElement;
@@ -164,12 +163,12 @@ class CustomSidebar {
 
     private async _getConfig(): Promise<void> {
 
-        this._debugger.log('Getting the config...');
+        this._logger.log('Getting the config...');
 
         this._config = await this._configPromise
             .then((config: Config) => {
 
-                this._debugger.log('Raw config', config);
+                this._logger.log('Raw config', config);
 
                 return getConfig(
                     this._ha.hass.user,
@@ -238,18 +237,18 @@ class CustomSidebar {
         const topItems = await this._getContainerItems(topItemsContainer, promisableResultOptions);
         const bottomItems = await this._getContainerItems(bottomItemsContainer, promisableResultOptions, true);
 
-        if (this._debugger.debug) {
+        if (this._logger.enabled) {
             const topItemsTable = this._mapItemsForDebug(topItems);
             const bottomItemsTable = this._mapItemsForDebug(bottomItems);
 
-            this._debugger.log(
+            this._logger.log(
                 'Top Native sidebar items',
                 topItemsTable,
                 {
                     table: true
                 }
             );
-            this._debugger.log(
+            this._logger.log(
                 'Bottom Native sidebar items',
                 bottomItemsTable,
                 {
@@ -1171,7 +1170,7 @@ class CustomSidebar {
 
     private _patchSidebarMethods(): void {
 
-        const debuggerInstance = this._debugger;
+        const debuggerInstance = this._logger;
         const _this = this;
 
         debuggerInstance.log('Patching the sidebar shouldUpdate method...');
@@ -1607,19 +1606,19 @@ class CustomSidebar {
         homeAssistantPromise.then((ha: HomeAsssistantExtended) => {
             this._ha = ha;
 
-            this._debugger.log('Instantiating HomeAssistantJavaScriptTemplates...');
+            this._logger.log('Instantiating HomeAssistantJavaScriptTemplates...');
 
             new HomeAssistantJavaScriptTemplates(this._ha)
                 .getRenderer()
                 .then((renderer) => {
 
-                    this._debugger.log('HomeAssistantJavaScriptTemplates instantiated');
+                    this._logger.log('HomeAssistantJavaScriptTemplates instantiated');
 
                     this._renderer = renderer;
                     this._getConfig()
                         .then(() => {
-                            this._debugger.log('Compiled config', this._config);
-                            this._debugger.log('Executing plugin logic...');
+                            this._logger.log('Compiled config', this._config);
+                            this._logger.log('Executing plugin logic...');
                             this._renderer.variables = {
                                 ...(this._config.js_variables ?? {}),
                                 ...buildNavigateMethods(this._sidebar),
@@ -1642,7 +1641,7 @@ class CustomSidebar {
 }
 
 if (!window.CustomSidebar) {
-    logVersionToConsole();
+    Logger.logVersionToConsole();
     const params = new URLSearchParams(window.location.search);
     const enableDebug = params.has(DEBUG_URL_PARAMETER);
     window.CustomSidebar = new CustomSidebar(enableDebug);
