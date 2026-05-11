@@ -90,7 +90,9 @@ class CustomSidebar {
 
         this._logger = loggerInstance;
 
-        const selector = new HAQuerySelector();
+        const selector = new HAQuerySelector({
+            shouldReject: this._logger.enabled
+        });
 
         selector.addEventListener(
             HAQuerySelectorEvent.ON_LISTEN,
@@ -168,7 +170,7 @@ class CustomSidebar {
 
     private async _waitForReadiness() {
         const promisableOptions = {
-            shouldReject: false
+            shouldReject: this._logger.enabled
         };
         const homeAssistant = await waitForElement(
             CUSTOM_ELEMENT.HOME_ASISTANT,
@@ -191,7 +193,7 @@ class CustomSidebar {
         await waitForElement(
             sidebarShadowRoot,
             SELECTOR.SIDEBAR_LOADER,
-            { shouldReject: false }
+            { shouldReject: this._logger.enabled }
         ).toBeRemoved();
     }
 
@@ -219,7 +221,7 @@ class CustomSidebar {
             {
                 retries: MAX_ATTEMPTS,
                 delay: RETRY_DELAY,
-                shouldReject: false
+                shouldReject: this._logger.enabled
             }
         );
         items.forEach((item: SidebarItem): void => {
@@ -1549,7 +1551,7 @@ class CustomSidebar {
             // but this is hard to reproduce during the tests because 100% of the time the route is defined and with a path
             /* istanbul ignore next */
             (panelResolveRoute: PartialPanelResolver['route']) => !!panelResolveRoute?.path,
-            { shouldReject: false }
+            { shouldReject: this._logger.enabled }
         );
         const pathName = panelResolverRoute.path;
         // Disable the edit sidebar button in the profile panel
