@@ -6,17 +6,15 @@ import {
     EVENT,
     NAMESPACE
 } from '@constants';
+import { fireEvent } from './events';
 
 const dispatchLocationChanged = (pathname: string): void => {
-    window.dispatchEvent(
-        new CustomEvent(
-            EVENT.LOCATION_CHANGED,
-            {
-                detail: {
-                    replace: pathname
-                }
-            }
-        )
+    fireEvent(
+        window,
+        EVENT.LOCATION_CHANGED,
+        {
+            replace: pathname
+        }
     );
 };
 
