@@ -35,11 +35,16 @@ export const changeToMobileViewport = async (page: Page): Promise<void> => {
     await page.setViewportSize(MOBILE_VIEWPORT_SIZE);
 };
 
-export const waitForMainElements = async (page: Page, includeSidebar = true): Promise<void> => {
+export const waitForBasicElements = async (page: Page): Promise<void> => {
     await expect(page.locator(SELECTORS.LAUNCH_SCREEN)).not.toBeInViewport({ timeout: 30000 });
     await expect(page.locator(SELECTORS.HOME_ASSISTANT)).toBeVisible();
     await expect(page.locator(SELECTORS.HOME_ASSISTANT_MAIN)).toBeVisible();
     await expect(page.locator(SELECTORS.HA_DRAWER)).toBeVisible();
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeAttached();
+};
+
+export const waitForMainElements = async (page: Page, includeSidebar = true): Promise<void> => {
+    await waitForBasicElements(page);
     if (includeSidebar) {
         await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
     } else {
