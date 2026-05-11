@@ -60,6 +60,7 @@ import {
 import { fetchConfig } from '@fetcher';
 import {
     buildNavigateMethods,
+    fireEvent,
     getConfig,
     getDialogsMethods,
     getFormatDateMethods,
@@ -915,28 +916,50 @@ class CustomSidebar {
 
             if (sidebarMode) {
 
+                const localStorageItem = 'dockedSidebar';
+
+                const currentSidebarMode = JSON.parse(window.localStorage.getItem(localStorageItem) ?? '""');
                 const sidebarModeValue = SIDEBAR_MODE_TO_DOCKED_SIDEBAR[sidebarMode];
 
-                window.localStorage.setItem('dockedSidebar', `"${sidebarModeValue}"`);
-
-                homeAssistantMain.hass.dockedSidebar = sidebarModeValue;
+                if (currentSidebarMode !== sidebarModeValue) {
+                    fireEvent(
+                        this._ha,
+                        EVENT.DOCK_SIDEBAR,
+                        {
+                            dock: sidebarModeValue
+                        }
+                    );
+                }
 
                 const checkForNarrow = async (isNarrow: boolean): Promise<void> => {
 
-                    const huiRoot = (await this._partialPanelResolver.selector.query(SELECTOR.HUI_ROOT).$.element)!;
-
-                    this._styleManager.removeStyle(huiRoot);
-
                     if (sidebarMode !== SidebarMode.HIDDEN) {
-
                         homeAssistantMain.narrow = false;
                         partialPanelResolver.narrow = isNarrow;
+                    }
 
-                        if (isNarrow) {
+                    const huiRoot = await getPromisableResult<ShadowRoot | undefined | null>(
+                        () => {
+                            const lovelace = partialPanelResolver.querySelector(CUSTOM_ELEMENT.HA_PANEL_LOVELACE)?.shadowRoot;
+                            return lovelace?.querySelector(CUSTOM_ELEMENT.HUI_ROOT)?.shadowRoot;
+                        },
+                        (huiRoot: ShadowRoot | undefined | null) => !!huiRoot,
+                        {
+                            shouldReject: false
+                        }
+                    );
+
+                    if (huiRoot) {
+
+                        this._styleManager.removeStyle(huiRoot);
+
+                        if (sidebarMode !== SidebarMode.HIDDEN && isNarrow) {
+
                             this._styleManager.addStyle(
                                 STYLES.HIDDEN_MENU_BUTTON_IN_NARROW_MODE,
                                 huiRoot
                             );
+
                         }
 
                     }

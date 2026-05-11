@@ -75,7 +75,6 @@ export enum SELECTOR {
     ITEM_TEXT = '.item-text',
     BADGE = '.badge',
     CONFIGURATION = '.configuration',
-    HUI_ROOT = 'ha-panel-lovelace$ hui-root',
     HA_MENU_BUTTON = '.header .toolbar > ha-menu-button',
     EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-pick-dashboard-row + ha-md-list ha-md-list-item ha-button',
     SIDEBAR_NOTIFICATIONS_CONTAINER = '.notifications-container',
@@ -146,6 +145,7 @@ export enum ATTRIBUTE_VALUE {
 export enum EVENT {
     CHANGE = 'change',
     CLICK = 'click',
+    DOCK_SIDEBAR = 'hass-dock-sidebar',
     MOUSEENTER = 'mouseenter',
     MOUSELEAVE = 'mouseleave',
     KEYDOWN = 'keydown',
