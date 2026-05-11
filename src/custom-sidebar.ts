@@ -1,4 +1,4 @@
-import { getPromisableResult, PromisableOptions } from 'get-promisable-result';
+import { getPromisableResult } from 'get-promisable-result';
 import {
     HAElement,
     HAQuerySelector,
@@ -79,15 +79,16 @@ import {
     navigate,
     openMoreInfoDialog,
     openRestartDialog,
-    parseWidth
+    parseWidth,
+    waitForElement
 } from '@utilities';
 import * as STYLES from '@styles';
 
 class CustomSidebar {
 
-    constructor(enableDebug: boolean) {
+    constructor(config: Config, loggerInstance: Logger) {
 
-        this._logger = new Logger(enableDebug);
+        this._logger = loggerInstance;
 
         const selector = new HAQuerySelector();
 
@@ -115,7 +116,7 @@ class CustomSidebar {
                     }
                 );
 
-                this._process();
+                this._process(config);
 
             },
             {
@@ -138,17 +139,20 @@ class CustomSidebar {
             throwWarnings: false
         });
 
-        this._logger.log('Starting the plugin...');
-
         this._items = [];
         this._logBookMessagesMap = new Map<string, number>();
-        this._configPromise = fetchConfig();
 
-        selector.listen();
+        // Wait for Home Assistant to be ready
+        this._logger.log('Wait for Home Assistant to be ready...');
+
+        this._waitForReadiness()
+            .then(() => {
+                this._logger.log('Starting the plugin...');
+                selector.listen();
+            });
     }
 
     private _logger!: Logger;
-    private _configPromise!: Promise<Config>;
     private _config!: Config;
     private _homeAssistant!: HAElement;
     private _main!: HAElement;
@@ -162,26 +166,46 @@ class CustomSidebar {
     private _logBookMessagesMap!: Map<string, number>;
     private _huiViewContainerObserver!: MutationObserver;
 
-    private async _getConfig(): Promise<void> {
+    private async _waitForReadiness() {
+        const promisableOptions = {
+            shouldReject: false
+        };
+        const homeAssistant = await waitForElement(
+            CUSTOM_ELEMENT.HOME_ASISTANT,
+            promisableOptions
+        ).toBeAdded();
+        const homeAssistantMain = await waitForElement(
+            homeAssistant!.shadowRoot!,
+            CUSTOM_ELEMENT.HOME_ASSISTANT_MAIN,
+            promisableOptions
+        ).toBeAdded();
+        await waitForElement(
+            homeAssistantMain!.shadowRoot!,
+            CUSTOM_ELEMENT.HA_SIDEBAR,
+            promisableOptions
+        ).toBeAdded();
+    }
 
-        this._logger.log('Getting the config...');
+    private async _waitForSidebarReady() {
+        const sidebarShadowRoot = (await this._sidebar.selector.$.element)!;
+        await waitForElement(
+            sidebarShadowRoot,
+            SELECTOR.SIDEBAR_LOADER,
+            { shouldReject: false }
+        ).toBeRemoved();
+    }
 
-        this._config = await this._configPromise
-            .then((config: Config) => {
-
-                this._logger.log('Raw config', config);
-
-                return getConfig(
-                    this._ha.hass.user,
-                    navigator.userAgent.toLowerCase(),
-                    config
-                );
-            });
+    private _compileConfig(config: Config) {
+        this._config = getConfig(
+            this._ha.hass.user,
+            navigator.userAgent.toLowerCase(),
+            config
+        );
+        this._logger.log('Compiled config', this._config);
     }
 
     private async _getContainerItems(
         container: HTMLElement,
-        promisableResultOptions: PromisableOptions,
         fixed = false
     ): Promise<NodeListOf<SidebarItem>> {
         const items = await getPromisableResult<NodeListOf<SidebarItem>>(
@@ -192,7 +216,11 @@ class CustomSidebar {
                     return text.length > 0;
                 });
             },
-            promisableResultOptions
+            {
+                retries: MAX_ATTEMPTS,
+                delay: RETRY_DELAY,
+                shouldReject: false
+            }
         );
         items.forEach((item: SidebarItem): void => {
             item.setAttribute(
@@ -218,25 +246,14 @@ class CustomSidebar {
     }
 
     private async _getElements(): Promise<ElementsStore> {
-        const promisableResultOptions: PromisableOptions = {
-            retries: MAX_ATTEMPTS,
-            delay: RETRY_DELAY,
-            shouldReject: false
-        };
-        const sidebarShadowRoot = (await this._sidebar.selector.$.element)!;
-
         // If sidebar is loading, wait for the looading to finish
-        await getPromisableResult(
-            () => sidebarShadowRoot.querySelector(SELECTOR.SIDEBAR_LOADER),
-            (sidebarLoader: Element | null) => sidebarLoader === null,
-            promisableResultOptions
-        );
+        await this._waitForSidebarReady();
 
         const topItemsContainer = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element) as HTMLElement;
         const bottomItemsContainer = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element) as HTMLElement;
 
-        const topItems = await this._getContainerItems(topItemsContainer, promisableResultOptions);
-        const bottomItems = await this._getContainerItems(bottomItemsContainer, promisableResultOptions, true);
+        const topItems = await this._getContainerItems(topItemsContainer);
+        const bottomItems = await this._getContainerItems(bottomItemsContainer, true);
 
         if (this._logger.enabled) {
             const topItemsTable = this._mapItemsForDebug(topItems);
@@ -797,21 +814,7 @@ class CustomSidebar {
         return null;
     }
 
-    private async _isAnalyticsOptionEnabled(option: keyof AnalyticsConfig): Promise<boolean> {
-
-        // If the config is not loaded yet, wait for it
-        if (!this._config) {
-            await getPromisableResult(
-                () => this._config,
-                (config: Config) => !!config,
-                {
-                    retries: MAX_ATTEMPTS,
-                    delay: RETRY_DELAY,
-                    shouldReject: false
-                }
-            );
-        }
-
+    private _isAnalyticsOptionEnabled(option: keyof AnalyticsConfig): boolean {
         return Boolean(
             this._config.analytics &&
             (
@@ -819,7 +822,6 @@ class CustomSidebar {
                 this._config.analytics[option]
             )
         );
-
     }
 
     private _getUserEntity(): string | undefined {
@@ -903,9 +905,7 @@ class CustomSidebar {
         navigate(pathname, true, 'ignoring default_path property');
     }
 
-    private _processSidebar(): void {
-
-        // Process Home Assistant Main and Partial Panel Resolver
+    private async _processSidebarMode(): Promise<void> {
         Promise.all([
             this._main.element as Promise<HomeAssistantMain>,
             this._partialPanelResolver.element as Promise<PartialPanelResolver>
@@ -974,24 +974,22 @@ class CustomSidebar {
             }
 
         });
+    }
 
-        // Process sidebar
+    private async _processSidebar(): Promise<void> {
+        // Add styles
         Promise.all([
             this._main.element as Promise<HTMLElement>,
             this._haDrawer.selector.$.query(SELECTOR.MC_DRAWER).element as Promise<HTMLElement>,
             this._sidebar.element as Promise<HTMLElement>,
-            this._sidebar.selector.$.element as Promise<ShadowRoot>,
-            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element as Promise<HTMLElement>,
-            this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element as Promise<HTMLElement>
-        ]).then((elements: [HTMLElement, HTMLElement, HTMLElement, ShadowRoot, HTMLElement, HTMLElement]) => {
+            this._sidebar.selector.$.element as Promise<ShadowRoot>
+        ]).then((elements: [HTMLElement, HTMLElement, HTMLElement, ShadowRoot]) => {
 
             const [
                 homeAssistantMain,
                 mcDrawer,
                 sidebar,
-                sideBarShadowRoot,
-                sidebarTopItemsContainer,
-                sidebarBottomItemsContainer
+                sideBarShadowRoot
             ] = elements;
 
             // Set width variables
@@ -1025,47 +1023,6 @@ class CustomSidebar {
                 mcDrawer,
                 SIDEBAR_BORDER_COLOR_VARIABLES_MAP
             );
-
-            sidebarTopItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
-                if (
-                    event.key === KEY.ARROW_DOWN ||
-                    event.key === KEY.ARROW_UP
-                ) {
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-                    this._focusItemByKeyboard(sidebarTopItemsContainer, event.key === KEY.ARROW_DOWN);
-                }
-            }, true);
-
-            sidebarBottomItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
-                if (
-                    event.key === KEY.ARROW_DOWN ||
-                    event.key === KEY.ARROW_UP
-                ) {
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-                    this._focusItemByKeyboard(sidebarBottomItemsContainer, event.key === KEY.ARROW_DOWN);
-                }
-            }, true);
-
-            window.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
-                if (event.key === KEY.TAB) {
-                    const activeElement = this._getActiveElement();
-                    if (activeElement) {
-                        const item = activeElement as SidebarItem;
-                        if (item.nodeName === NODE_NAME.ITEM) {
-                            if (
-                                !item.classList.contains(CLASS.USER) ||
-                                event.shiftKey
-                            ) {
-                                event.preventDefault();
-                                event.stopImmediatePropagation();
-                                this._focusItemByTab(sideBarShadowRoot, item, !event.shiftKey);
-                            }
-                        }
-                    }
-                }
-            }, true);
 
             // Menu button styles
             const sidebarMenuButtonShadowRootPromise = this._sidebar
@@ -1127,26 +1084,78 @@ class CustomSidebar {
                 ],
                 sideBarShadowRoot
             );
-
-            // If analytics is enabled log sidebar clicks
-            this._isAnalyticsOptionEnabled(ANALITICS_KEYS.SIDEBAR_ITEM_CLICKED)
-                .then((enabled) => {
-                    if (enabled) {
-                        sideBarShadowRoot.addEventListener(EVENT.CLICK, (event: Event) => {
-
-                            const clickedElement = event.target as HTMLElement;
-                            const itemClicked = clickedElement.closest(CUSTOM_ELEMENT.ITEM);
-
-                            if (itemClicked) {
-                                const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.textContent;
-                                this._logBookLog(`${ANALITICS_KEYS.SIDEBAR_ITEM_CLICKED}: ${itemText}`);
-                            }
-
-                        });
-                    }
-                });
-
         });
+
+        // If sidebar is loading, wait for the looading to finish
+        await this._waitForSidebarReady()
+            .then(() => {
+                // Add events
+                Promise.all([
+                    this._sidebar.selector.$.query(SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER).element as Promise<HTMLElement>,
+                    this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element as Promise<HTMLElement>,
+                    this._sidebar.selector.$.element as Promise<ShadowRoot>
+                ])
+                    .then((elements: [HTMLElement, HTMLElement, ShadowRoot]) => {
+                        const [
+                            sidebarTopItemsContainer,
+                            sidebarBottomItemsContainer,
+                            sideBarShadowRoot
+                        ] = elements;
+
+                        window.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                            if (event.key === KEY.TAB) {
+                                const activeElement = this._getActiveElement();
+                                if (activeElement) {
+                                    const item = activeElement as SidebarItem;
+                                    if (item.nodeName === NODE_NAME.ITEM) {
+                                        if (
+                                            !item.classList.contains(CLASS.USER) ||
+                                            event.shiftKey
+                                        ) {
+                                            event.preventDefault();
+                                            event.stopImmediatePropagation();
+                                            this._focusItemByTab(sideBarShadowRoot, item, !event.shiftKey);
+                                        }
+                                    }
+                                }
+                            }
+                        }, true);
+
+                        // If analytics is enabled log sidebar clicks
+                        if (this._isAnalyticsOptionEnabled(ANALITICS_KEYS.SIDEBAR_ITEM_CLICKED)) {
+                            sideBarShadowRoot.addEventListener(EVENT.CLICK, (event: Event) => {
+                                const clickedElement = event.target as HTMLElement;
+                                const itemClicked = clickedElement.closest(CUSTOM_ELEMENT.ITEM);
+                                if (itemClicked) {
+                                    const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.textContent;
+                                    this._logBookLog(`${ANALITICS_KEYS.SIDEBAR_ITEM_CLICKED}: ${itemText}`);
+                                }
+                            });
+                        }
+
+                        sidebarTopItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                            if (
+                                event.key === KEY.ARROW_DOWN ||
+                                event.key === KEY.ARROW_UP
+                            ) {
+                                event.preventDefault();
+                                event.stopImmediatePropagation();
+                                this._focusItemByKeyboard(sidebarTopItemsContainer, event.key === KEY.ARROW_DOWN);
+                            }
+                        }, true);
+
+                        sidebarBottomItemsContainer.addEventListener(EVENT.KEYDOWN, (event: KeyboardEvent) => {
+                            if (
+                                event.key === KEY.ARROW_DOWN ||
+                                event.key === KEY.ARROW_UP
+                            ) {
+                                event.preventDefault();
+                                event.stopImmediatePropagation();
+                                this._focusItemByKeyboard(sidebarBottomItemsContainer, event.key === KEY.ARROW_DOWN);
+                            }
+                        }, true);
+                    });
+            });
 
     }
 
@@ -1429,6 +1438,7 @@ class CustomSidebar {
                 this._panelLoaded();
                 this._checkEmptyBottomList();
                 this._refreshTooltips();
+                this._processSidebarMode();
 
             });
     }
@@ -1533,7 +1543,15 @@ class CustomSidebar {
 
     private async _checkProfileEditableButton(isSidebarEditable: boolean | undefined = undefined): Promise<void> {
         const panelResolver = await this._partialPanelResolver.element as PartialPanelResolver;
-        const pathName = panelResolver.route.path;
+        const panelResolverRoute = await getPromisableResult(
+            () => panelResolver.route,
+            // This could happen in certain edge cases in slow devices
+            // but this is hard to reproduce during the tests because 100% of the time the route is defined and with a path
+            /* istanbul ignore next */
+            (panelResolveRoute: PartialPanelResolver['route']) => !!panelResolveRoute?.path,
+            { shouldReject: false }
+        );
+        const pathName = panelResolverRoute.path;
         // Disable the edit sidebar button in the profile panel
         if (PROFILE_GENERAL_PATH_REGEXP.test(pathName)) {
             const editSidebarButton = await this._partialPanelResolver.selector.query(SELECTOR.EDIT_SIDEBAR_BUTTON).element;
@@ -1606,7 +1624,7 @@ class CustomSidebar {
         }
 
         // If analytics is enabled log landings
-        if (await this._isAnalyticsOptionEnabled(ANALITICS_KEYS.PANEL_VISITED)) {
+        if (this._isAnalyticsOptionEnabled(ANALITICS_KEYS.PANEL_VISITED)) {
             this._logBookLog(`${ANALITICS_KEYS.PANEL_VISITED}: ${panelPath}`);
         }
 
@@ -1622,41 +1640,39 @@ class CustomSidebar {
         });
     }
 
-    private _process(): void {
+    private _process(config: Config): void {
 
         const homeAssistantPromise = this._homeAssistant.element as Promise<HomeAsssistantExtended>;
 
         homeAssistantPromise.then((ha: HomeAsssistantExtended) => {
+
             this._ha = ha;
+
+            this._logger.log('Hass ready', this._ha.hass);
 
             this._logger.log('Instantiating HomeAssistantJavaScriptTemplates...');
 
             new HomeAssistantJavaScriptTemplates(this._ha)
                 .getRenderer()
                 .then((renderer) => {
-
                     this._logger.log('HomeAssistantJavaScriptTemplates instantiated');
-
                     this._renderer = renderer;
-                    this._getConfig()
-                        .then(() => {
-                            this._logger.log('Compiled config', this._config);
-                            this._logger.log('Executing plugin logic...');
-                            this._renderer.variables = {
-                                ...(this._config.js_variables ?? {}),
-                                ...buildNavigateMethods(this._sidebar),
-                                ...getRestApis(this._ha),
-                                ...getDialogsMethods(this._ha),
-                                ...getFormatDateMethods(this._ha),
-                                ...getToastMethods(this._ha)
-                            };
-                            this._renderer.refs = this._config.js_refs ?? {};
-                            this._processDefaultPath();
-                            this._processSidebar();
-                            this._subscribeTitle();
-                            this._subscribeSideBarEdition();
-                            this._rearrange();
-                        });
+                    this._compileConfig(config);
+                    this._logger.log('Executing plugin logic...');
+                    this._renderer.variables = {
+                        ...(this._config.js_variables ?? {}),
+                        ...buildNavigateMethods(this._sidebar),
+                        ...getRestApis(this._ha),
+                        ...getDialogsMethods(this._ha),
+                        ...getFormatDateMethods(this._ha),
+                        ...getToastMethods(this._ha)
+                    };
+                    this._renderer.refs = this._config.js_refs ?? {};
+                    this._processDefaultPath();
+                    this._subscribeTitle();
+                    this._processSidebar();
+                    this._subscribeSideBarEdition();
+                    this._rearrange();
                 });
         });
     }
@@ -1664,8 +1680,21 @@ class CustomSidebar {
 }
 
 if (!window.CustomSidebar) {
-    Logger.logVersionToConsole();
     const params = new URLSearchParams(window.location.search);
-    const enableDebug = params.has(DEBUG_URL_PARAMETER);
-    window.CustomSidebar = new CustomSidebar(enableDebug);
+    const hasDebugParameter = params.has(DEBUG_URL_PARAMETER);
+    const loggerInstance = new Logger(hasDebugParameter);
+
+    // Log the Custom Sidebar version
+    Logger.logVersionToConsole();
+
+    loggerInstance.log('Getting the config...');
+
+    fetchConfig()
+        .then((config: Config): void => {
+            loggerInstance.log('Raw config', config);
+            window.CustomSidebar = new CustomSidebar(
+                config,
+                loggerInstance
+            );
+        });
 }

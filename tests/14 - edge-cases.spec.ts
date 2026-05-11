@@ -1,16 +1,10 @@
 import { test, expect } from 'playwright-test-coverage';
-import {
-    CONFIG_FILES,
-    CONFIG_PATH,
-    SIDEBAR_CLIP
-} from './constants';
+import { CONFIG_FILES, SIDEBAR_CLIP } from './constants';
 import { haConfigRequest } from './ha-services';
 import {
     fulfillJson,
     navigateHome,
     noCacheRoute,
-    waitForMainElements,
-    waitForErrors,
     waitForWarnings
 } from './utilities';
 
@@ -80,15 +74,4 @@ test('non new-items that don\'t match a sidebar item should trigger a warning', 
     expect(warnings).toContain(`${MESSAGE} "logboek"`);
     expect(warnings).not.toContain(`${MESSAGE} "bazinga"`);
 
-});
-
-test('if loadig the config takes too much time, the _panelLoaded should wait for the config without generating an error', async ({ page }) => {
-    await page.route(CONFIG_PATH, async route => {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        await route.continue();
-    });
-    page.goto('/');
-    const errors = await waitForErrors(page, 5000);
-    await waitForMainElements(page);
-    expect(errors.length).toBe(0);
 });

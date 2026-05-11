@@ -1,11 +1,12 @@
 import { test, expect } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import {
+    ATTRIBUTES,
+    BASE_URL,
     CONFIG_FILES,
     SELECTORS,
     HREFS,
-    SIDEBAR_CLIP,
-    ATTRIBUTES
+    SIDEBAR_CLIP
 } from './constants';
 import { haConfigRequest } from './ha-services';
 import {
@@ -15,6 +16,7 @@ import {
     navigateHome,
     navigateToProfile,
     noCacheRoute,
+    waitForBasicElements,
     waitForMainElements
 } from './utilities';
 import { getSidebarItem } from './selectors';
@@ -471,18 +473,25 @@ test('if sidebar_editable is set to false it should not be possible to edit the 
 
 test('if sidebar_mode is set to "hidden" it should not be possible to make the sidebar visible', async ({ page }) => {
 
-    await addConfigExtendedRoute(page, {
+    await fulfillJson(page, {
         sidebar_mode: 'hidden'
     });
 
     await page.goto('/profile');
 
+    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await waitForBasicElements(page);
+
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
     await page.locator(SELECTORS.PROFILE_HIDE_SIDEBAR).click();
     await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
     await page.reload();
 
+    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
     await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
 
@@ -496,12 +505,18 @@ test('if sidebar_mode is set to "narrow" it should not be possible to hide the s
 
     await page.goto('/profile');
 
+    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await waitForBasicElements(page);
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
     await page.locator(SELECTORS.PROFILE_HIDE_SIDEBAR).click();
     await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
 
     await page.reload();
 
+    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
     await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
 
@@ -515,12 +530,18 @@ test('if sidebar_mode is set to "extended" it should not be possible to hide the
 
     await page.goto('/profile');
 
+    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await waitForBasicElements(page);
+    await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
     await page.locator(SELECTORS.PROFILE_HIDE_SIDEBAR).click();
     await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
 
     await page.reload();
 
+    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
     await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
 
@@ -533,7 +554,7 @@ test('if sidebar_mode is set to "extended" it should keep the extended mode when
     });
 
     await navigateHome(page);
-
+    await waitForBasicElements(page);
     await changeToMobileViewport(page);
 
     await page.waitForTimeout(5);

@@ -33,6 +33,8 @@ export enum ELEMENT {
 }
 
 export enum CUSTOM_ELEMENT {
+    HOME_ASISTANT = 'home-assistant',
+    HOME_ASSISTANT_MAIN = 'home-assistant-main',
     DIALOG_BOX = 'dialog-box',
     DIALOG_RESTART = 'dialog-restart',
     HA_BUTTON = 'ha-button',
@@ -57,6 +59,7 @@ export enum CUSTOM_ELEMENT {
 }
 
 export enum SELECTOR {
+    HA_LAUNCH_SCREEN = '#ha-launch-screen',
     HOST = ':host',
     HOST_EXPANDED = ':host([expanded])',
     HOST_NOT_EXPANDED = ':host(:not([expanded]))',
