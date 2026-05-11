@@ -9,4 +9,4 @@ export * from './modules/toast';
 export * from './modules/predicates';
 export * from './modules/events';
 export { getFormatDateMethods } from './modules/format-date';
-export { Debugger, logVersionToConsole } from './modules/logger';
+export { Logger } from './modules/logger';
