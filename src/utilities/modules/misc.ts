@@ -71,7 +71,7 @@ export function waitForElement<E extends Element = Element>(
         toBeAdded() {
             return getPromisableResult(
                 selectElement,
-                (element: E | null) => !!(element?.shadowRoot),
+                (element: E | null) => element !== null && element.shadowRoot !== null,
                 finalPromisableOptions
             );
         },
