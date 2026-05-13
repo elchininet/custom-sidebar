@@ -515,7 +515,7 @@ class CustomSidebar {
             name,
             (rendered: string): void => {
                 itemText.innerHTML = rendered;
-                // If there is a tolltip update its text too
+                // If there is a tooltip, update its text too
                 const tooltip = this._getTooltip(element);
                 if (tooltip) {
                     tooltip.textContent = rendered;
