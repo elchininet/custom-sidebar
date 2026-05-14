@@ -114,7 +114,7 @@ export const waithForError = async (page: Page, errorMessage: string): Promise<v
 
 export const waitForErrors = async (page: Page, timeoutDelay = 1000): Promise<string[]> => {
     return new Promise((resolve) => {
-        let timeout: NodeJS.Timeout | undefined = undefined;
+        let timeout: number | undefined = undefined;
         const errors: string[] = [];
         const resolvePromise = (): void => {
             clearTimeout(timeout);
@@ -149,7 +149,7 @@ export const waitForWarning = async (page: Page, warningMessage: string): Promis
 
 export const waitForWarnings = async (page: Page): Promise<string[]> => {
     return new Promise((resolve) => {
-        let timeout: NodeJS.Timeout | undefined = undefined;
+        let timeout: number | undefined = undefined;
         const warnings: string[] = [];
         const resolvePromise = (): void => {
             clearTimeout(timeout);
@@ -186,7 +186,7 @@ export const waitForLogMessage = async (page: Page, logMessage: string): Promise
 
 export const waitForLogMessages = async (page: Page): Promise<string[]> => {
     return new Promise((resolve) => {
-        let timeout: NodeJS.Timeout | undefined = undefined;
+        let timeout: number | undefined = undefined;
         const logs: string[] = [];
         const resolvePromise = (): void => {
             clearTimeout(timeout);

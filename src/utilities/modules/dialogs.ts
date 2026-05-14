@@ -8,6 +8,7 @@ import {
     Router
 } from '@types';
 import { CUSTOM_ELEMENT, EVENT } from '@constants';
+import { fireEvent } from './events';
 
 const getHaPanelConfig = async (): Promise<Router> => {
     const haPanelConfig = document.createElement(CUSTOM_ELEMENT.HA_PANEL_CONFIG) as Router;
@@ -99,20 +100,14 @@ const showDialog = (
     dialogImport: DialogImport,
     dialogParams: DialogBoxParameters
 ) => {
-    ha.dispatchEvent(
-        new CustomEvent(
-            EVENT.SHOW_DIALOG,
-            {
-                bubbles: true,
-                cancelable: false,
-                composed: true,
-                detail: {
-                    dialogTag,
-                    dialogImport,
-                    dialogParams
-                }
-            }
-        )
+    fireEvent(
+        ha,
+        EVENT.SHOW_DIALOG,
+        {
+            dialogTag,
+            dialogImport,
+            dialogParams
+        }
     );
 };
 
@@ -166,13 +161,10 @@ export const openConfirmDialog = async (
 };
 
 export const openMoreInfoDialog = (ha: HomeAsssistantExtended, entityId: string): void => {
-    ha.dispatchEvent(
-        new CustomEvent(
-            EVENT.HASS_MORE_INFO,
-            {
-                detail: { entityId }
-            }
-        )
+    fireEvent(
+        ha,
+        EVENT.HASS_MORE_INFO,
+        { entityId }
     );
 };
 

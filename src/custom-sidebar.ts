@@ -59,6 +59,7 @@ import {
 } from '@constants';
 import { fetchConfig } from '@fetcher';
 import {
+    buildFireEventMethods,
     buildNavigateMethods,
     fireEvent,
     getConfig,
@@ -1664,6 +1665,7 @@ class CustomSidebar {
                     this._renderer.variables = {
                         ...(this._config.js_variables ?? {}),
                         ...buildNavigateMethods(this._sidebar),
+                        ...buildFireEventMethods(this._ha),
                         ...getRestApis(this._ha),
                         ...getDialogsMethods(this._ha),
                         ...getFormatDateMethods(this._ha),
