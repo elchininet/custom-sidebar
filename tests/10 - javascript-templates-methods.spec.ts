@@ -450,6 +450,240 @@ test.describe('methods in JavaScript templates', () => {
 
     });
 
+    test.describe('fireEvent method', () => {
+
+        test('fireEvent method should trigger a custom event in the node sent with the sent detail parameter', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    fireEvent(
+                                        document,
+                                        'll-custom',
+                                        {
+                                          someProp: 'test'
+                                        }
+                                    );
+                                    `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            const eventPromise = page.evaluate(() => {
+                return new Promise<void>((resolve, reject) => {
+                    document.addEventListener('ll-custom', (event: Event) => {
+                        const customEvent = event as CustomEvent;
+                        if (customEvent.detail?.someProp === 'test') {
+                            resolve();
+                        } else {
+                            reject();
+                        }
+                    });
+                });
+            });
+
+            getSidebarItem(page, '#').click();
+
+            await eventPromise;
+
+        });
+
+        test('fireEvent method should trigger a custom event in the node sent with a null detail parameter if detail is not sent', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    fireEvent(
+                                        document,
+                                        'll-custom'
+                                    );
+                                    `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            const eventPromise = page.evaluate(() => {
+                return new Promise<void>((resolve, reject) => {
+                    document.addEventListener('ll-custom', (event: Event) => {
+                        const customEvent = event as CustomEvent;
+                        if (customEvent.detail === null) {
+                            resolve();
+                        } else {
+                            reject();
+                        }
+                    });
+                });
+            });
+
+            getSidebarItem(page, '#').click();
+
+            await eventPromise;
+
+        });
+
+        test('fireEvent method should trigger a custom event in the home-assistant element if node parameter is not sent', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    fireEvent(
+                                        'll-custom',
+                                        {
+                                          someProp: 'test'
+                                        }
+                                    );
+                                    `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            const eventPromise = page.evaluate(() => {
+                return new Promise<void>((resolve, reject) => {
+                    const homeAssistant = document.querySelector('home-assistant')!;
+                    homeAssistant.addEventListener('ll-custom', (event: Event) => {
+                        const customEvent = event as CustomEvent;
+                        if (customEvent.detail?.someProp === 'test') {
+                            resolve();
+                        } else {
+                            reject();
+                        }
+                    });
+                });
+            });
+
+            getSidebarItem(page, '#').click();
+
+            await eventPromise;
+
+        });
+
+        test('fireEvent method should trigger a custom event in the home-assistant element with a null detail object if node and detail parameters are not sent', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    fireEvent('ll-custom');
+                                    `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            const eventPromise = page.evaluate(() => {
+                return new Promise<void>((resolve, reject) => {
+                    const homeAssistant = document.querySelector('home-assistant')!;
+                    homeAssistant.addEventListener('ll-custom', (event: Event) => {
+                        const customEvent = event as CustomEvent;
+                        if (customEvent.detail === null) {
+                            resolve();
+                        } else {
+                            reject();
+                        }
+                    });
+                });
+            });
+
+            getSidebarItem(page, '#').click();
+
+            await eventPromise;
+
+        });
+
+        test('fireEvent method should throw an error as a warning if the type parameter is not a string (test 1)', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    fireEvent(document, ['ll-custom']);
+                                    `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            getSidebarItem(page, '#').click();
+
+            await waitForWarning(page, 'fireEvent method needs a string as event "type"');
+
+        });
+
+        test('fireEvent method should throw an error as a warning if the type parameter is not a string (test 2)', async ({ page }) => {
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    fireEvent(['ll-custom']);
+                                    `
+                            }
+                        }
+                    ]
+                }
+            );
+
+            await navigateHome(page);
+
+            getSidebarItem(page, '#').click();
+
+            await waitForWarning(page, 'fireEvent method needs a string as event "type"');
+
+        });
+
+    });
+
     test.describe('showToast method', () => {
 
         test('showToast with a string message', async ({ page }) => {

@@ -3,6 +3,7 @@ sidebar_position: 2
 ---
 
 import Navigate from '@site/docs/_partials/04-templates/02-javascript-templates/navigate/_navigate.mdx';
+import FireEvent from '@site/docs/_partials/04-templates/02-javascript-templates/fire-event/_fire-event.mdx';
 import ActivateItem from '@site/docs/_partials/04-templates/02-javascript-templates/navigate/_activate_item.mdx';
 
 import FormatDateExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_format_date.mdx';
@@ -74,8 +75,15 @@ When you visit a URL directly, there is a logic to select the proper sidebar ite
 
 This method allows one to navigate to a certain dashboard. Optionally, one can send a second boolean parameter to decide if the path should replace the current one in the history.
 
-
 <Navigate />
+
+---
+
+### fireEvent
+
+This method allows one to trigger custom events from specific DOM elements. If no element is provided, it will be triggered from the `home-assistant` element.
+
+<FireEvent />
 
 ---
 
