@@ -1,0 +1,13 @@
+```javascript
+// Assuming that the current language of Home Assistant is English
+
+// Returns "Remove"
+localize('ui.common.remove');
+// Returns "Friday"
+localize('ui.weekdays.friday');
+
+// Returns a Promise that resolves to "Remove"
+localizeAsync('ui.common.remove').then((result) => { /* ... */ });
+// Returns a Promise that resolves to "Friday"
+localizeAsync('ui.weekdays.friday').then((result) => { /* ... */ });
+```

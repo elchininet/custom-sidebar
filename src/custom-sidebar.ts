@@ -68,6 +68,7 @@ import {
     getRestApis,
     getTemplateWithPartials,
     getToastMethods,
+    getTranslationMethods,
     isArray,
     isBoolean,
     isMobileClient,
@@ -393,6 +394,7 @@ class CustomSidebar {
             .element as Promise<HTMLElement>;
         titlePromise.then((titleElement: HTMLElement) => {
             if (this._config.title) {
+                titleElement.innerHTML = '';
                 this._subscribeTemplate(
                     this._config.title,
                     (rendered: string) => {
@@ -512,6 +514,7 @@ class CustomSidebar {
 
     private _subscribeName(element: SidebarItem, name: string): void {
         const itemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!;
+        itemText.innerHTML = '';
         this._subscribeTemplate(
             name,
             (rendered: string): void => {
@@ -1669,7 +1672,8 @@ class CustomSidebar {
                         ...getRestApis(this._ha),
                         ...getDialogsMethods(this._ha),
                         ...getFormatDateMethods(this._ha),
-                        ...getToastMethods(this._ha)
+                        ...getToastMethods(this._ha),
+                        ...getTranslationMethods(this._ha)
                     };
                     this._renderer.refs = this._config.js_refs ?? {};
                     this._processDefaultPath();

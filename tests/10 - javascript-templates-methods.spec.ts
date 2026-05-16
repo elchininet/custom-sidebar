@@ -823,6 +823,100 @@ test.describe('methods in JavaScript templates', () => {
 
     });
 
+    test.describe('methods to localize', () => {
+
+        [
+            // localize
+            {
+                title: 'localize using the translation resource "ui.common.remove" should return "Remove"',
+                code: 'localize("ui.common.remove")',
+                expected: 'Remove'
+            },
+            {
+                title: 'localize using the translation resource "ui.weekdays.friday" should return "Friday"',
+                code: 'localize("ui.weekdays.friday")',
+                expected: 'Friday'
+            }
+        ].forEach(({ title, code, expected }): void => {
+
+            test(title, async ({ page }) => {
+
+                await fulfillJson(
+                    page,
+                    {
+                        order: [
+                            {
+                                ...item,
+                                on_click: {
+                                    action: 'javascript',
+                                    code: `
+                                        console.log(
+                                            "===> " + ${code}
+                                        );
+                                    `
+                                }
+                            }
+                        ]
+                    }
+                );
+
+                await navigateHome(page);
+
+                getSidebarItem(page, '#').click();
+
+                await waitForLogMessage(page, `===> ${expected}`);
+
+            });
+
+        });
+
+        [
+            // localizeAsync
+            {
+                title: 'localizeAsync using the translation resource "ui.common.remove" should resolve to "Remove"',
+                code: 'localizeAsync("ui.common.remove")',
+                expected: 'Remove'
+            },
+            {
+                title: 'localizeAsync using the translation resource "ui.weekdays.friday" should resolve to "Friday"',
+                code: 'localizeAsync("ui.weekdays.friday")',
+                expected: 'Friday'
+            },
+        ].forEach(({ title, code, expected }): void => {
+
+            test(title, async ({ page }) => {
+
+                await fulfillJson(
+                    page,
+                    {
+                        order: [
+                            {
+                                ...item,
+                                on_click: {
+                                    action: 'javascript',
+                                    code: `
+                                        ${code}.then((result) => {
+                                            console.log("===> " + result);
+                                        });
+                                    `
+                                }
+                            }
+                        ]
+                    }
+                );
+
+                await navigateHome(page);
+
+                getSidebarItem(page, '#').click();
+
+                await waitForLogMessage(page, `===> ${expected}`);
+
+            });
+
+        });
+
+    });
+
     test.describe('methods to format date and time', () => {
 
         [
@@ -969,6 +1063,72 @@ test.describe('methods in JavaScript templates', () => {
                                         console.log(
                                             "===> " + ${code}
                                         );
+                                    `
+                                }
+                            }
+                        ]
+                    }
+                );
+
+                await navigateHome(page);
+
+                getSidebarItem(page, '#').click();
+
+                await waitForLogMessage(page, `===> ${expected}`);
+
+            });
+
+        });
+
+        [
+            // formatDateAsync
+            {
+                title: 'formatDateAsync should resolve to a formatted date from a string',
+                code: 'formatDateAsync("2025-12-01")',
+                expected: 'December 1, 2025'
+            },
+            // formatDateTimeAsync
+            {
+                title: 'formatDateTimeAsync should resolve to a formatted date with time form a string',
+                code: 'formatDateTimeAsync("2025-12-01T15:35")',
+                expected: 'December 1, 2025 at 3:35 PM'
+            },
+            // formatTimeAsync
+            {
+                title: 'formatTimeAsync should resolve to a formatted time form a time string',
+                code: 'formatTimeAsync("01:05")',
+                expected: '1:05 AM'
+            },
+            // getRelativeTimeAsync in the past
+            {
+                title: 'getRelativeTimeAsync should resolve to a relative time in years from a string',
+                code: 'getRelativeTimeAsync("2024-12-01")',
+                expected: 'last year'
+            },
+            // getRelativeTimeAsync in the future
+            {
+                title: 'getRelativeTimeAsync should resolve to a relative time in years from a date',
+                code: 'getRelativeTimeAsync(new Date("2026-12-01"))',
+                expected: 'next year'
+            }
+        ].forEach(({ title, code, expected }): void => {
+
+            test(title, async ({ page }) => {
+
+                await page.clock.setFixedTime(new Date('2025-12-01T00:00'));
+
+                await fulfillJson(
+                    page,
+                    {
+                        order: [
+                            {
+                                ...item,
+                                on_click: {
+                                    action: 'javascript',
+                                    code: `
+                                        ${code}.then((result) => {
+                                            console.log("===> " + result);
+                                        });
                                     `
                                 }
                             }

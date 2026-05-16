@@ -10,4 +10,5 @@ export { getTemplateWithPartials } from './modules/partials';
 export { getCSSVariables } from './modules/css';
 export { getRestApis } from './modules/restApi';
 export { getFormatDateMethods } from './modules/format-date';
+export { getTranslationMethods } from './modules/translations';
 export { Logger } from './modules/logger';

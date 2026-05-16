@@ -8,4 +8,14 @@ getRelativeTime('2025-12-14T00:00:00');
 getRelativeTime(1765666800000);
 // Using a date
 getRelativeTime(new Date(2025, 11, 14, 0, 0, 0));
+
+// The result of all this examples will be Promises that will resolve to "December 14, 2025"
+// Assuming that the current date is December 1st, 2025 at 12:00 AM
+
+// Using an ISO 8601 date string
+getRelativeTimeAsync('2025-12-14T00:00:00').then((result) => { /* ... */ });
+// Using a timestamp number
+getRelativeTimeAsync(1765666800000).then((result) => { /* ... */ });
+// Using a date
+getRelativeTimeAsync(new Date(2025, 11, 14, 0, 0, 0)).then((result) => { /* ... */ });
 ```

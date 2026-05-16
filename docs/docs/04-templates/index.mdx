@@ -1,0 +1,14 @@
+---
+sidebar_position: 4
+---
+
+import DocCardList from '@theme/DocCardList';
+
+# Templates
+
+Some configuration options and item properties admit templates. `Custom Sidebar` admits two templating systems, [JavaScript templates](./01-javascript-templates/index.mdx) or [Jinja templates](./02-jinja-templates.mdx). `JavaScript` templates are processed faster because the rendering is done in client side, `Jinja` templates need to perform a [WebSocket call] to receive the template result, but in general you should not notice many differences between the two in terms of performance. The main differences between the two templating systems (apart from the syntax) are that `JavaScript` can access client side data like DOM APIs, can return [Promises], can work with [Reactive JavaScript Variables](../05-advanced-configuration-options/01-javascript-variables.mdx#reactive-javascript-variables-refs) and can execute several `JavaScript` methods like opening dialogs or call services. `Jinja` templates do not have all these features.
+
+<DocCardList />
+
+[WebSocket call]: https://developers.home-assistant.io/docs/api/websocket
+[Promises]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise

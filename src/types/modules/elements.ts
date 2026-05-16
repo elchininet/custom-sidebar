@@ -20,6 +20,7 @@ export interface HassExtended extends Hass {
         data?: Record<string, unknown>
     ) => Promise<T>;
     panels: HomeAssistantPanel[];
+    localize: (resource: string) => string;
 }
 
 export interface SidebarItem extends HTMLElement {
