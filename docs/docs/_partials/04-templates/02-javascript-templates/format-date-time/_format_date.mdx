@@ -9,4 +9,15 @@ formatDate('2025-12-14T00:00:00');
 formatDate(1765715953817);
 // Using a date
 formatDate(new Date(2025, 11, 14));
+
+// The result of all this examples will be Promises that will resolve to "December 14, 2025"
+
+// Using a date string
+formatDateAsync('2025-12-14').then((result) => { /* ... */ });
+// Using an ISO 8601 date string
+formatDateAsync('2025-12-14T00:00:00').then((result) => { /* ... */ });
+// Using a timestamp number
+formatDateAsync(1765715953817).then((result) => { /* ... */ });
+// Using a date
+formatDateAsync(new Date(2025, 11, 14)).then((result) => { /* ... */ });
 ```

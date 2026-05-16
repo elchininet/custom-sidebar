@@ -9,4 +9,15 @@ formatTime('2025-12-14T00:00:00');
 formatTime(1765666800000);
 // Using a date
 formatTime(new Date(2025, 11, 14, 0, 0, 0));
+
+// The result of all this examples will be Promises that will resolve to "12:00 AM"
+
+// Using a time string
+formatTimeAsync('00:00').then((result) => { /* ... */ }); // It could also include seconds 00:00:00
+// Using an ISO 8601 date string
+formatTimeAsync('2025-12-14T00:00:00').then((result) => { /* ... */ });
+// Using a timestamp number
+formatTimeAsync(1765666800000).then((result) => { /* ... */ });
+// Using a date
+formatTimeAsync(new Date(2025, 11, 14, 0, 0, 0)).then((result) => { /* ... */ });
 ```

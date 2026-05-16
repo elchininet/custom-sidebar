@@ -1,0 +1,29 @@
+---
+sidebar_position: 3
+---
+
+import LocalizeExample from '@site/docs/_partials/04-templates/02-javascript-templates/localize/_localize.mdx';
+
+# Localize methods
+
+These methods are related to localization/translations using the user locale settings of the user profile.
+
+:::warning[Important]
+
+When you open Home Assistant and it is loading, it is possible that the user locale settings are not ready yet until the system finished to load all the resources. If you try to render a template using the sync methods to localize at the beginning of this loading process, it is possible that the formatting wouldn't follow your language settings or that it returns an empty string. This will be corrected if the template is reevaluated later, but to avoid any wrong formatting at the beginning, it is recommended to use the async methods instead, which will return a result when the locale settings are ready. If your template doesn't get rendered since the beginning, then the sync methods could be used.
+
+:::
+
+:::info
+
+The methods to localize depend on the locale that the user has configured in Home Assistant, so the result of these methods is not deterministic. For the examples, a specific locale has been used.
+
+:::
+
+---
+
+### localize and localizeAsync
+
+These methods localize a `Home Assistant` translation resource taking into account the current locale settings set in the user's profile.
+
+<LocalizeExample />

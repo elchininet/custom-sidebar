@@ -156,7 +156,8 @@ export enum EVENT {
     LOCATION_CHANGED = 'location-changed',
     HASS_MORE_INFO = 'hass-more-info',
     SHOW_DIALOG = 'show-dialog',
-    SHOW_TOAST = 'hass-notification'
+    SHOW_TOAST = 'hass-notification',
+    SUBSCRIBE_USER_DATA = 'frontend/subscribe_user_data'
 }
 
 export enum KEY {
