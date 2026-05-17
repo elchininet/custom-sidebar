@@ -1,0 +1,56 @@
+---
+sidebar_position: 2
+---
+
+import FormatDateExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_format_date.mdx';
+import FormatDateTimeExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_format_date_time.mdx';
+import FormatTimeExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_format_time.mdx';
+import GetRelativeTimeExample from '@site/docs/_partials/04-templates/02-javascript-templates/format-date-time/_get_relative_time.mdx';
+
+# Date and Time methods
+
+These methods are intended to format date and time using the `Home Assistant` native logic.
+
+:::warning[Important]
+
+When you open Home Assistant and it is loading, it is possible that the locale data is not ready yet until the system finished to load all the resources. If you try to render a template using the methods to format dates and time at the beginning of this loading process, it is possible that the formatting wouldn't follow your language settings. This will be corrected if the template is reevaluated later, but to avoid any wrong formatting at the beginning, it is recommended to delay the formatting in the first rendering using a Promise or to force a re-rendering of the template using [JavaScript reactive variables](../../../advanced-configuration-options/javascript-variables#reactive-javascript-variables-refs) or any other technique that mitigates this issue.
+
+:::
+
+:::info
+
+The methods to format dates and time depend on the locale that the user has configured in Home Assistant, so the result of these methods is not deterministic. For the examples, a specific locale has been used.
+
+:::
+
+---
+
+### formatDate
+
+This method formats a date using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date or a number representing the [timestamp] in milliseconds.
+
+<FormatDateExample />
+
+---
+
+### formatDateTime
+
+This method formats a date with time using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date or a number representing the [timestamp] in milliseconds.
+
+<FormatDateTimeExample />
+
+---
+
+### formatTime
+
+This method formats a time using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date, a number representing the [timestamp] in milliseconds, or a string representation of a time in the format `HH:MM` or `HH:MM:SS`.
+
+<FormatTimeExample />
+
+---
+
+### getRelativeTime
+
+This method get the relative time of a date using the Home Assistant locale. It accepts a date, a string [ISO 8601] representation of a date or a number representing the [timestamp] in milliseconds. This method also accepts a secondary optional boolean parameter to define if the result should be capitalized or not (by default it is `false`).
+
+<GetRelativeTimeExample />
