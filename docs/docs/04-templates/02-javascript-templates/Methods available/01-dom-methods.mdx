@@ -1,0 +1,53 @@
+---
+sidebar_position: 1
+---
+
+import Navigate from '@site/docs/_partials/04-templates/02-javascript-templates/navigate/_navigate.mdx';
+import FireEvent from '@site/docs/_partials/04-templates/02-javascript-templates/fire-event/_fire-event.mdx';
+import ActivateItem from '@site/docs/_partials/04-templates/02-javascript-templates/navigate/_activate_item.mdx';
+
+# DOM methods
+
+These methods make usage of the [HTML DOM API](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API).
+
+---
+
+### navigate
+
+This method allows one to navigate to a certain dashboard. Optionally, one can send a second boolean parameter to decide if the path should replace the current one in the history.
+
+:::warning[Important]
+
+Dashboards paths must start with `/`, if you use an absolute URL or a path that doesn't start with `/`, it will be ignored and a warning will be thrown in the console.
+
+:::
+
+:::info
+
+When you visit a URL directly, there is a logic to select the proper sidebar item taking into account its `href`. You need to be aware that when using the `navigate` method, there is no way for the plugin to know that an item redirects to a dashboard path, so in those cases the item will not be selected.
+
+:::
+
+<Navigate />
+
+---
+
+### activateItem
+
+This method allows one to make an item in the sidebar active programatically and it will deactivate the previous active item automatically. You need to send an `ha-md-list-item` element as parameter.
+
+:::tip
+
+Usually, this method is used inside the `code` parameter of an `on_click` `javascript` action, you can send the `ha-md-list-item` element accesing the `element` property of the `item` variable.
+
+:::
+
+<ActivateItem />
+
+---
+
+### fireEvent
+
+This method allows one to trigger custom events from specific DOM elements. If no element is provided, it will be triggered from the `home-assistant` element.
+
+<FireEvent />

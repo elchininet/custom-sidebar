@@ -1,0 +1,53 @@
+---
+sidebar_position: 4
+---
+
+import CheckConfigRestApiExample from '@site/docs/_partials/04-templates/02-javascript-templates/rest-apis/_check-config.mdx';
+import RenderTemplateRestApiExample from '@site/docs/_partials/04-templates/02-javascript-templates/rest-apis/_render-template.mdx';
+import CallServiceRestApiExample from '@site/docs/_partials/04-templates/02-javascript-templates/rest-apis/_call-service.mdx';
+
+# REST API methods
+
+These methods make usage of the [Home Assistant REST API](https://developers.home-assistant.io/docs/api/rest/).
+
+---
+
+### checkConfig
+
+:::warning[Important]
+
+This method can be executed only by admin users.
+
+:::
+
+This method allows one to validate the `Home Assistant` configuration. It returns a promise which resolves in an object with a `result` property. The `result` property can have two values, `valid` or `invalid`. This object will also have two optional properties, `errors` and `warnings` that will be filled with the corresponding errors or warnings coming from the `Home Assistant` configuration check.
+
+<CheckConfigRestApiExample />
+
+---
+
+### renderTemplate
+
+:::warning[Important]
+
+This method can be executed only by admin users.
+
+:::
+
+This method accepts a [Jinja template string](https://www.home-assistant.io/docs/configuration/templating) as a parameter and it will return a promise which resolves in the result of the template.
+
+<RenderTemplateRestApiExample />
+
+---
+
+### callService
+
+:::warning[Important]
+
+Some services can be executed only by admin users, for example, restarting Home Assistant.
+
+:::
+
+This method will call a `Home Assistant` service (renamed some time ago to [actions](https://www.home-assistant.io/dashboards/actions/)). It allows one to call a service from a `JavaScript` template. This method needs three parameters, the first one is the domain, the second the type of service and the third an object with the data needed by the service.
+
+<CallServiceRestApiExample />

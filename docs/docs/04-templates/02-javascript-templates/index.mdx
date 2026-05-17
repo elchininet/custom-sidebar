@@ -1,0 +1,56 @@
+---
+sidebar_position: 2
+---
+
+import JavaScriptTemplateExample from '@site/docs/_partials/04-templates/02-javascript-templates/_javascript-templates.mdx';
+
+# JavaScript Templates
+
+This templating system IS NOT [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). It is basically a `JavaScript` code block in which you can use certain client-side objects, variables and methods. To set a property as a `JavaScript` template block, include the code between three square brackets `[[[ JavaScript code ]]]`. If you don‘t use the square brackets, the property will be interpreted as a regular string.
+
+If the `JavaScript` code is used in an option, it will be taken as something that you want to return, but if you have a more complex logic, you can create your own variables and return the desired result at the end.
+
+The entities used in the templates will be stored, so if the state of an stored entity changes, all the templates that use this entity will be reevaluated and rerendered.
+
+`JavaScript` templates can make use of [Reactive JavaScript Variables](../advanced-configuration-options/javascript-variables#reactive-javascript-variables-refs). If you use a reactive variable in some templates and you modify it in the `javascript` action of an `on_click` parameter of an item, all the templates in which the variable was used will be reevaluated in the device in which the action was performed.
+
+# Methods available in JavaScript templates
+
+:::tip
+
+`Custom Sidebar` uses [Home Assistant Javascript Templates] for the `JavaScript` templating system. To know all the objects, variables and methods available in the `JavaScript` templates, consult the [proper section](https://github.com/elchininet/home-assistant-javascript-templates?tab=readme-ov-file#objects-and-methods-available-in-the-templates) in the repository.
+
+:::
+
+On top of all the variables and methods provided by `Home Assistant Javascript Templates`, the next methods are provided by `Custom Sidebar` and they will be available in the templates:
+
+| Method section               | Description                                                      |
+| ---------------------------- | ---------------------------------------------------------------- | 
+| [DOM methods]                | Methods that make usage of the [HTML DOM API]                    |
+| [Date and Time methods]      | Methods intended to format date and time                         |
+| [Dialogs and toasts methods] | Methods to open `Home Assistant` dialogs and toast notifications |
+| [REST API methods]           | Methods that make usage of the [Home Assistant REST API]         |
+
+[DOM methods]: ./Methods%20available/01-dom-methods.mdx
+[Date and Time methods]: ./Methods%20available/02-date-and-time-methods.mdx
+[Dialogs and toasts methods]: ./Methods%20available/03-dialogs-and-toasts-methods.mdx
+[REST API methods]: ./Methods%20available/04-rest-api-methods.mdx
+
+[HTML DOM API]: https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API
+[Home Assistant REST API]: https://developers.home-assistant.io/docs/api/rest/
+
+## Complex Example
+
+The next example will create the next things:
+
+1. Sets the title of the sidebar as "My Home" followed by the current time.
+2. Sets the background of the sidebar `red` when the panel config is selected and `green` otherwise.
+3. Adds the number of `HACS` updates as a notification in the `HACS` item in the sidebar. In case that there are no updates, an empty string is returned and in these cases the notification will not be displayed.
+4. Creates a new item that redirects to the `Home Assistant` info page with a dynamic text with the word "Info" followed by the installed Supervisor version  between parentheses and the Operating System version in the info text.
+5. Creates a new item that when clicked opens the `Home Assistant` restart dialog, but if the user is not an admin, then it will open an alert with the title "Error", the text "Non-admin users cannot restart Home Assistant" and the text "Close" in the confirm button.
+
+<JavaScriptTemplateExample />
+
+[Home Assistant Javascript Templates]: https://github.com/elchininet/home-assistant-javascript-templates
+[ISO 8601]: https://en.wikipedia.org/wiki/ISO_8601
+[timestamp]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#the_epoch_timestamps_and_invalid_date
