@@ -141,8 +141,8 @@ export interface ConfigItem extends ItemColorConfig {
 
 export interface ConfigNewItem extends Omit<ConfigItem, 'new_item'> {
     new_item: boolean;
-    item: string;
     icon: string;
+    section_header?: boolean;
 }
 
 export type ConfigOrder = ConfigItem | ConfigNewItem;
@@ -211,3 +211,4 @@ export interface Config extends BaseConfig {
 export type ItemColorConfigKeys = keyof ItemColorConfig;
 export type SidebarColorConfigKeys = keyof SidebarColorConfig;
 export type SidebarStringConfigKeys = keyof Pick<BaseConfig, 'default_path'>;
+export type ConfigNewItemKeys = keyof ConfigNewItem;

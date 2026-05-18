@@ -627,6 +627,51 @@ test('navigating with the keyboard up and down arrows should focus the proper it
 
 });
 
+test('navigating with the keyboard up and down arrows should not focus a section header', async ({ page }) => {
+
+    const overview = getSidebarItem(page, HREFS.OVERVIEW);
+    const sectionHeader = page.locator(`${SELECTORS.HA_SIDEBAR} ${SELECTORS.SIDEBAR_ITEM}[type="text"]`);
+    const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
+
+    await fulfillJson(page, {
+        order: [
+            {
+                item: 'overview',
+                order: 1
+            },
+            {
+                new_item: true,
+                section_header: true,
+                item: 'Integrations header',
+                order: 2
+            },
+            {
+                new_item: true,
+                item: 'Integrations',
+                icon: 'mdi:puzzle',
+                href: '/config/integrations',
+                order: 3
+            }
+        ]
+    });
+
+    await navigateHome(page);
+    await waitForMainElements(page);
+
+    await overview.focus();
+
+    await page.keyboard.press('ArrowDown');
+
+    await expect(sectionHeader).not.toBeFocused();
+    await expect(integrations).toBeFocused();
+
+    await page.keyboard.press('ArrowUp');
+
+    await expect(sectionHeader).not.toBeFocused();
+    await expect(overview).toBeFocused();
+
+});
+
 test('navigating with the keyboard using tab should focus the proper items in order', async ({ page }) => {
 
     await visitHome(page);
@@ -690,6 +735,52 @@ test('navigating with the keyboard using tab should focus the proper items in or
     await page.keyboard.press('Tab');
 
     await expect(devTools).toBeFocused();
+
+});
+
+test('navigating with the keyboard using tab should not focus a section header', async ({ page }) => {
+
+    const overview = getSidebarItem(page, HREFS.OVERVIEW);
+    const sectionHeader = page.locator(`${SELECTORS.HA_SIDEBAR} ${SELECTORS.SIDEBAR_ITEM}[type="text"]`);
+    const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
+
+    await fulfillJson(page, {
+        order: [
+            {
+                item: 'overview',
+                order: 1
+            },
+            {
+                new_item: true,
+                section_header: true,
+                item: 'Integrations header',
+                order: 2
+            },
+            {
+                new_item: true,
+                item: 'Integrations',
+                icon: 'mdi:puzzle',
+                href: '/config/integrations',
+                order: 3
+            }
+        ]
+    });
+
+    await navigateHome(page);
+    await waitForMainElements(page);
+
+    await overview.focus();
+
+    await page.keyboard.press('Tab');
+
+    await expect(sectionHeader).not.toBeFocused();
+    await expect(integrations).toBeFocused();
+
+    await page.keyboard.down('Shift');
+    await page.keyboard.press('Tab');
+
+    await expect(sectionHeader).not.toBeFocused();
+    await expect(overview).toBeFocused();
 
 });
 

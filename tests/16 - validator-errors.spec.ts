@@ -1058,6 +1058,48 @@ test.describe('order item property', () => {
                 ]
             },
             error: `${ERROR_PREFIX} in activity, "partials" option can only be placed in the main config`
+        },
+        {
+            title: 'should throw an error if the section_header property is not a boolean',
+            json: {
+                order: [
+                    {
+                        new_item: true,
+                        item: 'test',
+                        section_header: 'true'
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, "section_header" property should be a boolean`
+        },
+        {
+            title: 'should throw an error if the section_header property is set in an item without the new_item property',
+            json: {
+                order: [
+                    {
+                        item: 'test',
+                        section_header: true
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, a section header item should be used only in an item with the "new_item" property set in true`
+        },
+        {
+            title: 'should throw an error if the section_header property contains a non-allowed property',
+            json: {
+                order: [
+                    {
+                        new_item: true,
+                        item: 'test',
+                        section_header: true,
+                        name: 'Test',
+                        order: 2,
+                        href: '/panel',
+                        text_color: 'red'
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, property "href" is not allowed in a section header item`
         }
     ]);
 
@@ -1498,6 +1540,63 @@ test.describe('exceptions', () => {
                 ]
             },
             error: `${ERROR_PREFIX}, error in exception: "analytics" "panel_visited" property should be a boolean`
+        },
+        {
+            title: 'should throw an error if the section_header property is not a boolean',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: [
+                            {
+                                new_item: true,
+                                item: 'test',
+                                section_header: 'true'
+                            }
+                        ]
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, "section_header" property should be a boolean`
+        },
+        {
+            title: 'should throw an error if the section_header property is set in an item without the new_item property',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: [
+                            {
+                                item: 'test',
+                                section_header: true
+                            }
+                        ]
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, a section header item should be used only in an item with the "new_item" property set in true`
+        },
+        {
+            title: 'should throw an error if the section_header property contains a non-allowed property',
+            json: {
+                exceptions: [
+                    {
+                        user: 'Test',
+                        order: [
+                            {
+                                new_item: true,
+                                item: 'test',
+                                section_header: true,
+                                name: 'Test',
+                                order: 2,
+                                target: '_blank',
+                                text_color: 'red'
+                            }
+                        ]
+                    }
+                ]
+            },
+            error: `${ERROR_PREFIX}, property "target" is not allowed in a section header item`
         }
     ]);
 

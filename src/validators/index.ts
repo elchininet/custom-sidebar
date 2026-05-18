@@ -2,6 +2,8 @@ import {
     ActionType,
     Config,
     ConfigException,
+    ConfigNewItem,
+    ConfigNewItemKeys,
     ConfigOrder,
     MatchersCondition,
     OnClickAction,
@@ -530,16 +532,57 @@ const validateExceptions = (exceptions: ConfigException[] | undefined, config: C
     });
 };
 
+const validateSectionHeader = (configItem: ConfigNewItem): void => {
+
+    if (!isBoolean(configItem.section_header)) {
+        throw new SyntaxError(`${ERROR_PREFIX}, "section_header" property should be a boolean`);
+    }
+
+    if (!isBoolean(configItem.new_item)) {
+        throw new SyntaxError(`${ERROR_PREFIX}, a section header item should be used only in an item with the "new_item" property set in true`);
+    }
+
+    const allowedProperties: ConfigNewItemKeys[] = [
+        'new_item',
+        'section_header',
+        'item',
+        'name',
+        'info',
+        'order',
+        'bottom',
+        'attributes',
+        'hide',
+        'item_background',
+        'text_color',
+        'info_color',
+        'divider',
+        'divider_color'
+    ];
+
+    const keys = Object.keys(configItem) as ConfigNewItemKeys[];
+
+    keys.forEach((key: ConfigNewItemKeys): void => {
+        if (!allowedProperties.includes(key)) {
+            throw new SyntaxError(`${ERROR_PREFIX}, property "${key}" is not allowed in a section header item`);
+        }
+    });
+
+};
+
 const validateConfigItem = (configItem: ConfigOrder): void => {
+
+    if (!configItem.item) {
+        throw new SyntaxError(`${ERROR_PREFIX}, every item in an "order" array should have an "item" property`);
+    }
+
+    if ('section_header' in configItem) {
+        validateSectionHeader(configItem);
+    }
 
     validateBaseConfigOnlyOptions(
         configItem,
         `${ERROR_PREFIX} in ${configItem.item},`
     );
-
-    if (!configItem.item) {
-        throw new SyntaxError(`${ERROR_PREFIX}, every item in an "order" array should have an "item" property`);
-    }
 
     validateStringOptions(
         configItem,
@@ -581,7 +624,7 @@ const validateConfigItem = (configItem: ConfigOrder): void => {
         `${ERROR_PREFIX} in ${configItem.item},`
     );
 
-    if (configItem.new_item) {
+    if (configItem.new_item && !configItem.section_header) {
         validateStringOptions(
             configItem,
             ['href', 'icon'],

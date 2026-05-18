@@ -321,25 +321,36 @@ class CustomSidebar {
     private _buildNewItem(configItem: ConfigNewItem): SidebarItem {
 
         const item = document.createElement(CUSTOM_ELEMENT.ITEM) as SidebarItem;
-        item.setAttribute(ATTRIBUTE.TYPE, ATTRIBUTE_VALUE.LINK);
-        item.setAttribute(ATTRIBUTE.ID, this._getId(configItem));
-        item.setAttribute(ATTRIBUTE.NEW_ITEM, ATTRIBUTE_VALUE.TRUE);
-
-        item.href = configItem.href ?? '#';
-        item.target = configItem.target ?? '';
-        item.tabIndex = -1;
 
         const text = document.createElement(ELEMENT.SPAN);
         text.classList.add(CLASS.ITEM_TEXT);
         text.setAttribute(ATTRIBUTE.SLOT, ATTRIBUTE_VALUE.HEADLINE);
         text.innerText = configItem.item;
 
-        const badgeStart = this._buildNotification(ATTRIBUTE_VALUE.START);
-        const badgeEnd = this._buildNotification(ATTRIBUTE_VALUE.END);
+        if (configItem.section_header) {
 
-        item.appendChild(badgeStart);
-        item.appendChild(text);
-        item.appendChild(badgeEnd);
+            item.setAttribute(ATTRIBUTE.TYPE, ATTRIBUTE_VALUE.TEXT);
+            item.appendChild(text);
+
+        } else {
+
+            item.setAttribute(ATTRIBUTE.TYPE, ATTRIBUTE_VALUE.LINK);
+            item.setAttribute(ATTRIBUTE.ID, this._getId(configItem));
+            item.setAttribute(ATTRIBUTE.NEW_ITEM, ATTRIBUTE_VALUE.TRUE);
+
+            item.href = configItem.href ?? '#';
+            item.target = configItem.target ?? '';
+
+            const badgeStart = this._buildNotification(ATTRIBUTE_VALUE.START);
+            const badgeEnd = this._buildNotification(ATTRIBUTE_VALUE.END);
+
+            item.appendChild(badgeStart);
+            item.appendChild(text);
+            item.appendChild(badgeEnd);
+
+        }
+
+        item.tabIndex = -1;
 
         return item;
     }
@@ -732,7 +743,10 @@ class CustomSidebar {
                 const index = i > length - 1
                     ? i - length
                     : i;
-                if (this._items[index].style.display !== ATTRIBUTE_VALUE.NONE) {
+                if (
+                    this._items[index].getAttribute(ATTRIBUTE.TYPE) !== ATTRIBUTE_VALUE.TEXT &&
+                    this._items[index].style.display !== ATTRIBUTE_VALUE.NONE
+                ) {
                     focusIndex = index;
                     break;
                 }
@@ -744,7 +758,10 @@ class CustomSidebar {
                 const index = i < 0
                     ? length + i
                     : i;
-                if (this._items[index].style.display !== ATTRIBUTE_VALUE.NONE) {
+                if (
+                    this._items[index].getAttribute(ATTRIBUTE.TYPE) !== ATTRIBUTE_VALUE.TEXT &&
+                    this._items[index].style.display !== ATTRIBUTE_VALUE.NONE
+                ) {
                     focusIndex = index;
                     break;
                 }
@@ -1166,7 +1183,7 @@ class CustomSidebar {
     }
 
     private async _aplyItemRippleStyles(): Promise<void> {
-        const sidebarItemsContainer = (await this._sidebar.selector.$.query(CUSTOM_ELEMENT.ITEM).all) as NodeListOf<HTMLElement>;
+        const sidebarItemsContainer = (await this._sidebar.selector.$.query(`${CUSTOM_ELEMENT.ITEM}:not([${ATTRIBUTE.TYPE}="${ATTRIBUTE_VALUE.TEXT}"])`).all) as NodeListOf<HTMLElement>;
         Array.from(sidebarItemsContainer).forEach((item: HTMLElement): void => {
             const innerElement = item.getAttribute(ATTRIBUTE.TYPE) === ATTRIBUTE_VALUE.LINK
                 ? this._getAnchorElement(item)
