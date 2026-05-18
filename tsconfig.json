@@ -11,7 +11,8 @@
       "noImplicitAny": true,
       "removeComments": true,
       "skipLibCheck": true,
-      "rootDir": "src",
+      "rootDir": "./",
+      "types": ["node"],
       "paths": {
         "@types": ["./src/types"],
         "@constants": ["./src/constants"],
@@ -21,6 +22,6 @@
         "@styles": ["./src/styles"]
       }
     },
-    "include": ["src/**/*.ts", "package.json"],
+    "include": ["src/**/*.ts", "playwright.config.ts", "package.json"],
     "exclude": ["node_modules"]
   }

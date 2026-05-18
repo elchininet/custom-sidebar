@@ -141,6 +141,7 @@ export enum ATTRIBUTE_VALUE {
     RIGHT = 'right',
     SIDEBAR_PANEL = 'sidebar-panel',
     START = 'start',
+    TEXT = 'text',
     TRUE = 'true',
     ZERO = '0'
 }

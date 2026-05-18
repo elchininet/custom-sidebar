@@ -65,6 +65,19 @@ test.beforeEach(noCacheRoute);
         screenshot: 'sidebar-new-item-notification.png'
     },
     {
+        title: 'If the option section_header is set it should create a section header',
+        json: {
+            order: [
+                {
+                    new_item: true,
+                    section_header: true,
+                    item: 'Section title Test'
+                }
+            ]
+        },
+        screenshot: 'sidebar-section-header.png'
+    },
+    {
         title: 'should set the sidebar_background as a color',
         json: { sidebar_background: 'red' },
         screenshot: 'sidebar-background-color.png'
