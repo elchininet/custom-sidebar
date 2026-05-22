@@ -881,7 +881,7 @@ test.describe('methods in JavaScript templates', () => {
                 title: 'localizeAsync using the translation resource "ui.weekdays.friday" should resolve to "Friday"',
                 code: 'localizeAsync("ui.weekdays.friday")',
                 expected: 'Friday'
-            },
+            }
         ].forEach(({ title, code, expected }): void => {
 
             test(title, async ({ page }) => {
