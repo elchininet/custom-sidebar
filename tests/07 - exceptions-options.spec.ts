@@ -365,7 +365,7 @@ test.describe('extending from the base', () => {
             );
 
             await navigateHome(page);
-            const sidebarWidth = await getSidebarWidth(page);
+            const sidebarWidth = await getSidebarWidth(page, false);
             expect(sidebarWidth).toBe(overrideWidth);
 
         });
@@ -603,7 +603,7 @@ test.describe('extending from the base', () => {
             );
 
             await navigateHome(page);
-            const sidebarWidth = await getSidebarWidth(page);
+            const sidebarWidth = await getSidebarWidth(page, false);
             expect(sidebarWidth).toBe(width);
 
         });

@@ -214,7 +214,7 @@ class CustomSidebar {
         fixed = false
     ): Promise<NodeListOf<SidebarItem>> {
         const items = await getPromisableResult<NodeListOf<SidebarItem>>(
-            () => container.querySelectorAll<SidebarItem>(`:scope > ${CUSTOM_ELEMENT.ITEM}`),
+            () => container.querySelectorAll<SidebarItem>(`:scope > ${SELECTOR.ITEM}`),
             (elements: NodeListOf<SidebarItem>): boolean => {
                 return Array.from(elements).every((element: SidebarItem): boolean => {
                     const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.textContent.trim();
@@ -287,18 +287,6 @@ class CustomSidebar {
         };
     }
 
-    private _getAnchorElement(element: HTMLElement): HTMLAnchorElement {
-        return element
-            .shadowRoot!
-            .querySelector<HTMLAnchorElement>(ELEMENT.ANCHOR)!;
-    }
-
-    private _getButtonElement(element: HTMLElement): HTMLAnchorElement {
-        return element
-            .shadowRoot!
-            .querySelector<HTMLAnchorElement>(ELEMENT.BUTTON)!;
-    }
-
     private _hideItem(item: HTMLElement, hide: boolean): void {
         if (hide) {
             item.style.display = ATTRIBUTE_VALUE.NONE;
@@ -321,7 +309,11 @@ class CustomSidebar {
 
     private _buildNewItem(configItem: ConfigNewItem): SidebarItem {
 
-        const item = document.createElement(CUSTOM_ELEMENT.ITEM) as SidebarItem;
+        const item = document.createElement(
+            configItem.section_header
+                ? CUSTOM_ELEMENT.ITEM_BASE
+                : CUSTOM_ELEMENT.ITEM
+        ) as SidebarItem;
 
         const text = document.createElement(ELEMENT.SPAN);
         text.classList.add(CLASS.ITEM_TEXT);
@@ -330,12 +322,10 @@ class CustomSidebar {
 
         if (configItem.section_header) {
 
-            item.setAttribute(ATTRIBUTE.TYPE, ATTRIBUTE_VALUE.TEXT);
             item.appendChild(text);
 
         } else {
 
-            item.setAttribute(ATTRIBUTE.TYPE, ATTRIBUTE_VALUE.LINK);
             item.setAttribute(ATTRIBUTE.ID, this._getId(configItem));
             item.setAttribute(ATTRIBUTE.NEW_ITEM, ATTRIBUTE_VALUE.TRUE);
 
@@ -604,7 +594,7 @@ class CustomSidebar {
 
     private async _checkEmptyBottomList(): Promise<void> {
         const container = (await this._sidebar.selector.$.query(SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER).element) as HTMLElement;
-        const items = container.querySelectorAll<SidebarItem>(`:scope > ${CUSTOM_ELEMENT.ITEM}`);
+        const items = container.querySelectorAll<SidebarItem>(`:scope > ${SELECTOR.ITEM}`);
         const hasVisibleItems = Array.from(items).some((item: SidebarItem): boolean => item.style.display === '');
         if (hasVisibleItems) {
             container.removeAttribute(ATTRIBUTE.EMPTY);
@@ -746,7 +736,7 @@ class CustomSidebar {
                     ? i - length
                     : i;
                 if (
-                    this._items[index].getAttribute(ATTRIBUTE.TYPE) !== ATTRIBUTE_VALUE.TEXT &&
+                    this._items[index].nodeName !== NODE_NAME.ITEM_BASE &&
                     this._items[index].style.display !== ATTRIBUTE_VALUE.NONE
                 ) {
                     focusIndex = index;
@@ -761,7 +751,7 @@ class CustomSidebar {
                     ? length + i
                     : i;
                 if (
-                    this._items[index].getAttribute(ATTRIBUTE.TYPE) !== ATTRIBUTE_VALUE.TEXT &&
+                    this._items[index].nodeName !== NODE_NAME.ITEM_BASE &&
                     this._items[index].style.display !== ATTRIBUTE_VALUE.NONE
                 ) {
                     focusIndex = index;
@@ -1005,14 +995,14 @@ class CustomSidebar {
         // Add styles
         Promise.all([
             this._main.element as Promise<HTMLElement>,
-            this._haDrawer.selector.$.query(SELECTOR.MC_DRAWER).element as Promise<HTMLElement>,
+            this._haDrawer.element as Promise<HTMLElement>,
             this._sidebar.element as Promise<HTMLElement>,
             this._sidebar.selector.$.element as Promise<ShadowRoot>
         ]).then((elements: [HTMLElement, HTMLElement, HTMLElement, ShadowRoot]) => {
 
             const [
                 homeAssistantMain,
-                mcDrawer,
+                haDrawer,
                 sidebar,
                 sideBarShadowRoot
             ] = elements;
@@ -1039,14 +1029,14 @@ class CustomSidebar {
 
             this._subscribeTemplateVariableChanges(
                 this._config,
-                sidebar,
-                SIDEBAR_OPTIONS_VARIABLES_MAP
+                haDrawer,
+                SIDEBAR_BORDER_COLOR_VARIABLES_MAP
             );
 
             this._subscribeTemplateVariableChanges(
                 this._config,
-                mcDrawer,
-                SIDEBAR_BORDER_COLOR_VARIABLES_MAP
+                sidebar,
+                SIDEBAR_OPTIONS_VARIABLES_MAP
             );
 
             // Menu button styles
@@ -1067,20 +1057,20 @@ class CustomSidebar {
             });
 
             this._styleManager.addStyle(
-                STYLES.SIDEBAR_WIDTH_DESKTOP,
+                [
+                    STYLES.SIDEBAR_BORDER_COLOR
+                ],
+                haDrawer.shadowRoot!
+            );
+
+            this._styleManager.addStyle(
+                STYLES.SIDEBAR_WIDTH,
                 homeAssistantMain.shadowRoot!
             );
 
             this._styleManager.addStyle(
                 [
-                    STYLES.SIDEBAR_BORDER_COLOR,
-                    STYLES.SIDEBAR_WIDTH_MOBILE
-                ],
-                mcDrawer
-            );
-
-            this._styleManager.addStyle(
-                [
+                    STYLES.BASE_STYLES,
                     STYLES.FUNCTIONALITY,
                     STYLES.TITLE_COLOR,
                     STYLES.SUBTITLE_COLOR,
@@ -1185,11 +1175,9 @@ class CustomSidebar {
     }
 
     private async _aplyItemRippleStyles(): Promise<void> {
-        const sidebarItemsContainer = (await this._sidebar.selector.$.query(`${CUSTOM_ELEMENT.ITEM}:not([${ATTRIBUTE.TYPE}="${ATTRIBUTE_VALUE.TEXT}"])`).all) as NodeListOf<HTMLElement>;
+        const sidebarItemsContainer = (await this._sidebar.selector.$.query(CUSTOM_ELEMENT.ITEM).all) as NodeListOf<HTMLElement>;
         Array.from(sidebarItemsContainer).forEach((item: HTMLElement): void => {
-            const innerElement = item.getAttribute(ATTRIBUTE.TYPE) === ATTRIBUTE_VALUE.LINK
-                ? this._getAnchorElement(item)
-                : this._getButtonElement(item);
+            const innerElement = item.shadowRoot!.querySelector<HTMLAnchorElement | HTMLButtonElement>(`${ELEMENT.ANCHOR}, ${ELEMENT.BUTTON}`)!;
             const surface = innerElement
                 .querySelector(CUSTOM_ELEMENT.HA_RIPPLE)!
                 .shadowRoot!
@@ -1294,7 +1282,7 @@ class CustomSidebar {
 
                                 const matchText = (
                                     (!!exact && item === text) ||
-                                    (!exact && !!text.toLowerCase().includes(itemLowerCase))
+                                    (!exact && !!text && !!text.toLowerCase().includes(itemLowerCase))
                                 );
 
                                 if (matchText) {

@@ -28,27 +28,33 @@ const BADGE_STYLES = {
     zIndex: 1
 };
 
+export const BASE_STYLES = {
+    [`${ SELECTOR.HOST } ${ CUSTOM_ELEMENT.ITEM_BASE }`]: {
+        fontWeight: 'var(--ha-font-weight-medium)'
+    }
+};
+
 export const FUNCTIONALITY = {
     [`${ SELECTOR.HOST_EXPANDED_NOT_NAROW } ${ SELECTOR.MENU }`]: {
         width: '100%'
     },
-    [`${ SELECTOR.HOST_EXPANDED } ${ CUSTOM_ELEMENT.ITEM }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.ITEM }`]: {
         width: 'calc(100% - var(--ha-space-2)) !important'
     },
     [`${ SELECTOR.HOST_EXPANDED } ${ CUSTOM_ELEMENT.ITEM } > ${ CUSTOM_ELEMENT.USER_BADGE }`]: {
         zIndex: 1
     },
-    [`${ SELECTOR.HOST_EXPANDED } ${ CUSTOM_ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
         position: 'relative',
         zIndex: 1
     },
-    [`${ SELECTOR.HOST_EXPANDED } ${ CUSTOM_ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }`]: {
         display: 'flex',
         flexDirection: 'column',
         gap: '5px',
         lineHeight: '1'
     },
-    [`${ SELECTOR.HOST_EXPANDED } ${ CUSTOM_ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } ${ SELECTOR.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
         content: 'attr(data-info)',
         display: 'block',
         fontSize: '11px',
@@ -170,8 +176,8 @@ export const MENU_BACKGROUND_DIVIDER_TOP_COLOR = {
 };
 
 export const SIDEBAR_BORDER_COLOR = {
-    [`${ SELECTOR.HOST } > ${SELECTOR.MC_DRAWER}`]: {
-        borderColor: getCSSVariables(
+    [`${ SELECTOR.HOST } ${SELECTOR.SIDEBAR_SHELL}`]: {
+        borderInlineEndColor: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.BORDER_COLOR,
             HA_CSS_VARIABLES.DIVIDER_COLOR,
             'rgba(0,0,0,.12)'
@@ -240,12 +246,14 @@ export const ITEM_BACKGROUND_HOVER_AND_HOVER_OPACITY = {
 };
 
 export const ITEM_DIVIDER_ITEM_DIVIDER_COLOR = {
-    [`${ SELECTOR.HOST } ${ CUSTOM_ELEMENT.ITEM }[${ ATTRIBUTE.WITH_DIVIDER }]`]: {
-        marginBottom: '10px',
-        paddingBottom: '15px',
+    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_DIVIDER }]`]: {
+        marginBottom: 'var(--ha-space-2)',
         position: 'relative'
     },
-    [`${ SELECTOR.HOST } ${ CUSTOM_ELEMENT.ITEM }[${ ATTRIBUTE.WITH_DIVIDER }]${ PSEUDO_SELECTOR.AFTER }`]: {
+    [`${ SELECTOR.HOST } ${ CUSTOM_ELEMENT.ITEM }[${ ATTRIBUTE.WITH_DIVIDER }]`]: {
+        paddingBottom: '10px'
+    },
+    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM }[${ ATTRIBUTE.WITH_DIVIDER }]${ PSEUDO_SELECTOR.AFTER }`]: {
         content: '""',
         backgroundColor: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR,
@@ -253,9 +261,9 @@ export const ITEM_DIVIDER_ITEM_DIVIDER_COLOR = {
         ),
         bottom: 0,
         height: '1px',
-        left: '-4px',
+        left: 'calc(-1 * var(--ha-space-2))',
         position: 'absolute',
-        right: '-4px'
+        right: 'calc(-1 * var(--ha-space-2))'
     },
     [`${ SELECTOR.HOST } ${ CUSTOM_ELEMENT.ITEM }${SELECTOR.ITEM_SELECTED}[${ ATTRIBUTE.WITH_DIVIDER }]`]: {
         borderBottomLeftRadius: 0,
@@ -295,7 +303,7 @@ export const ICON_COLOR_HOVER = {
 };
 
 export const TEXT_COLOR = {
-    [`${ SELECTOR.HOST } ${ CUSTOM_ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
+    [`${ SELECTOR.HOST } ${ SELECTOR.ITEM } > ${ SELECTOR.ITEM_TEXT }`]: {
         color: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR,
             HA_CSS_VARIABLES.SIDEBAR_TEXT_COLOR
@@ -337,7 +345,7 @@ export const SELECTION_BACKGROUND_SELECTION_OPACITY = {
 };
 
 export const INFO_COLOR = {
-    [`${ SELECTOR.HOST_EXPANDED } :is(${ SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER }, ${ SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER }) > ${ CUSTOM_ELEMENT.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
+    [`${ SELECTOR.HOST_EXPANDED } :is(${ SELECTOR.SIDEBAR_TOP_ITEMS_CONTAINER }, ${ SELECTOR.SIDEBAR_BOTTOM_ITEMS_CONTAINER }) > ${ SELECTOR.ITEM } > ${ SELECTOR.ITEM_TEXT }${ SELECTOR.DATA_INFO }${ PSEUDO_SELECTOR.AFTER }`]: {
         color: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR,
             HA_CSS_VARIABLES.SIDEBAR_TEXT_COLOR
@@ -400,28 +408,21 @@ export const HIDDEN_MENU_BUTTON_IN_NARROW_MODE = {
     [`${ SELECTOR.HA_MENU_BUTTON }`]: false
 };
 
-export const SIDEBAR_WIDTH_DESKTOP = {
-    [`${ SELECTOR.HOST_EXPANDED_NOT_MODAL }`]: {
-        MdcDrawerWidth: getCSSVariables(
+export const SIDEBAR_WIDTH = {
+    [SELECTOR.HOST_EXPANDED_NOT_MODAL]: {
+        HaSidebarWidth: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH,
             CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_EXTENDED,
             'calc(256px + var(--safe-area-inset-left, 0px))'
         )
-    }
-};
-
-export const SIDEBAR_WIDTH_MOBILE = {
-    [`${ SELECTOR.HOST } > ${SELECTOR.MC_DRAWER_MODAL}`]: {
-        width: getCSSVariables(
+    },
+    [SELECTOR.HOST_EXPANDED_MODAL]: {
+        HaSidebarWidth: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH,
             CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_HIDDEN,
-            HA_CSS_VARIABLES.MDC_DRAWER_WIDTH,
-            '256px'
+            'calc(256px + var(--safe-area-inset-left, 0px))'
         )
     },
-    [`${ SELECTOR.HOST } > ${SELECTOR.MC_DRAWER_OPEN_FIX}`]: {
-        marginLeft: '0px'
-    }
 };
 
 export const SIDEBAR_BOTTOM_LIST_EMPTY = {

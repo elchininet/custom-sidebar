@@ -630,7 +630,7 @@ test('navigating with the keyboard up and down arrows should focus the proper it
 test('navigating with the keyboard up and down arrows should not focus a section header', async ({ page }) => {
 
     const overview = getSidebarItem(page, HREFS.OVERVIEW);
-    const sectionHeader = page.locator(`${SELECTORS.HA_SIDEBAR} ${SELECTORS.SIDEBAR_ITEM}[type="text"]`);
+    const sectionHeader = page.locator(`${SELECTORS.HA_SIDEBAR} ${SELECTORS.SIDEBAR_SECTION}`);
     const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
 
     await fulfillJson(page, {
@@ -741,7 +741,7 @@ test('navigating with the keyboard using tab should focus the proper items in or
 test('navigating with the keyboard using tab should not focus a section header', async ({ page }) => {
 
     const overview = getSidebarItem(page, HREFS.OVERVIEW);
-    const sectionHeader = page.locator(`${SELECTORS.HA_SIDEBAR} ${SELECTORS.SIDEBAR_ITEM}[type="text"]`);
+    const sectionHeader = page.locator(`${SELECTORS.HA_SIDEBAR} ${SELECTORS.SIDEBAR_SECTION}`);
     const integrations = getSidebarItem(page, HREFS.INTEGRATIONS);
 
     await fulfillJson(page, {

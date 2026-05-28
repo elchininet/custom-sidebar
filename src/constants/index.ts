@@ -53,7 +53,8 @@ export enum CUSTOM_ELEMENT {
     HUI_TIMESTAMP_DISPLAY = 'hui-timestamp-display',
     HUI_VIEW = 'hui-view',
     HUI_VIEW_CONTAINER = 'hui-view-container',
-    ITEM = 'ha-md-list-item',
+    ITEM = 'ha-list-item-button',
+    ITEM_BASE = 'ha-list-item-base',
     TOOLTIP = 'ha-tooltip',
     USER_BADGE = 'ha-user-badge',
 }
@@ -63,31 +64,31 @@ export enum SELECTOR {
     HOST = ':host',
     HOST_EXPANDED = ':host([expanded])',
     HOST_NOT_EXPANDED = ':host(:not([expanded]))',
+    HOST_EXPANDED_MODAL = ':host([expanded][modal])',
     HOST_EXPANDED_NOT_MODAL = ':host([expanded]:not([modal]))',
     HOST_EXPANDED_NOT_NAROW = ':host([expanded]:not([narrow]))',
     HOST_HOVER_NOT_DISABLED = ':host(:hover:not([disabled]))',
     SIDEBAR_LOADER = 'ha-fade-in',
-    SIDEBAR_TOP_ITEMS_CONTAINER = '.panels-list > .wrapper > ha-md-list',
-    SIDEBAR_BOTTOM_ITEMS_CONTAINER = '.panels-list > ha-md-list',
+    SIDEBAR_TOP_ITEMS_CONTAINER = '.panels-list > .wrapper > ha-list-nav',
+    SIDEBAR_BOTTOM_ITEMS_CONTAINER = '.panels-list > ha-list-nav',
+    SIDEBAR_SHELL = '.sidebar-shell',
     SCOPE = ':scope',
     TITLE = '.title',
+    ITEM = ':is(ha-list-item-base, ha-list-item-button)',
     ITEM_SELECTED = '.selected',
-    ITEM_HOVER = 'ha-md-list-item:hover',
+    ITEM_HOVER = 'ha-list-item-button:hover',
     SURFACE = '.surface',
     SURFACE_HOVERED = '.surface.hovered',
     ITEM_TEXT = '.item-text',
     BADGE = '.badge',
     CONFIGURATION = '.configuration',
     HA_MENU_BUTTON = '.header .toolbar > ha-menu-button',
-    EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-pick-dashboard-row + ha-md-list ha-md-list-item ha-button',
+    EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-pick-dashboard-row + ha-row-item > ha-button',
     SIDEBAR_NOTIFICATIONS_CONTAINER = '.notifications-container',
     SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER = '.notifications-container:hover',
     SIDEBAR_NOTIFICATIONS = '.notifications',
     MENU = '.menu',
     MENU_BUTTON = '.menu ha-icon-button',
-    MC_DRAWER = '.mdc-drawer',
-    MC_DRAWER_MODAL = '.mdc-drawer.mdc-drawer--modal',
-    MC_DRAWER_OPEN_FIX = '.mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing)+.mdc-drawer-app-content',
     DATA_INFO = '[data-info]'
 }
 
@@ -126,7 +127,6 @@ export enum ATTRIBUTE {
     SHOW_DELAY = 'show-delay',
     SLOT = 'slot',
     TAB_INDEX = 'tabindex',
-    TYPE = 'type',
     WITH_DIVIDER = 'data-divider',
     WITH_NOTIFICATION = 'data-notification'
 }
@@ -136,12 +136,10 @@ export enum ATTRIBUTE_VALUE {
     END = 'end',
     FALSE = 'false',
     HEADLINE = 'headline',
-    LINK = 'link',
     NONE = 'none',
     RIGHT = 'right',
     SIDEBAR_PANEL = 'sidebar-panel',
     START = 'start',
-    TEXT = 'text',
     TRUE = 'true',
     ZERO = '0'
 }
@@ -169,7 +167,8 @@ export enum KEY {
 }
 
 export enum NODE_NAME {
-    ITEM = 'HA-MD-LIST-ITEM',
+    ITEM = 'HA-LIST-ITEM-BUTTON',
+    ITEM_BASE = 'HA-LIST-ITEM-BASE',
     A = 'A'
 }
 
@@ -188,10 +187,10 @@ export enum HA_CSS_VARIABLES {
     SIDEBAR_SELECTED_ICON_COLOR = '--sidebar-selected-icon-color',
     SIDEBAR_TEXT_COLOR = '--sidebar-text-color',
     SIDEBAR_SELECTED_TEXT_COLOR = '--sidebar-selected-text-color',
+    HA_SIDEBAR_WIDTH = '--ha-sidebar-width',
     MD_RIPPLE_HOVER_COLOR = '--md-ripple-hover-color',
     MD_RIPPLE_HOVER_OPACITY = '--md-ripple-hover-opacity',
     MD_SYS_COLOR_ON_SURFACE = '--md-sys-color-on-surface',
-    MDC_DRAWER_WIDTH = '--mdc-drawer-width',
     ACCENT_COLOR = '--accent-color',
     TEXT_ACCENT_COLOR = '--text-accent-color',
     TEXT_PRIMARY_COLOR = '--text-primary-color',
