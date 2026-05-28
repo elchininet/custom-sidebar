@@ -284,7 +284,7 @@ test.beforeEach(noCacheRoute);
                 .menu .title {
                     color: red !important;
                 }
-                ha-md-list-item .item-text {
+                ha-list-item-button .item-text {
                     color: blue !important;
                 }
             `
@@ -326,7 +326,7 @@ test.beforeEach(noCacheRoute);
             }
         );
         await navigateHome(page);
-        const sidebarWidth = await getSidebarWidth(page);
+        const sidebarWidth = await getSidebarWidth(page, false);
         expect(sidebarWidth).toBe(width);
         await expect(page).toHaveScreenshot('sidebar-width-extended.png', {
             clip: {
@@ -339,7 +339,7 @@ test.beforeEach(noCacheRoute);
         await waitForMainElements(page, false);
         await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
         await page.locator(SELECTORS.HA_MENU_BUTTON).click();
-        const mobileSidebarWidth = await getSidebarWidth(page);
+        const mobileSidebarWidth = await getSidebarWidth(page, true);
         expect(mobileSidebarWidth).toBe(width);
         await expect(page).toHaveScreenshot('sidebar-width-hidden.png', {
             clip: {
@@ -360,7 +360,7 @@ test.beforeEach(noCacheRoute);
             }
         );
         await navigateHome(page);
-        const sidebarWidth = await getSidebarWidth(page);
+        const sidebarWidth = await getSidebarWidth(page, false);
         expect(sidebarWidth).toBe(width);
         await expect(page).toHaveScreenshot('sidebar-width-extended.png', {
             clip: {
@@ -373,7 +373,7 @@ test.beforeEach(noCacheRoute);
         await waitForMainElements(page, false);
         await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
         await page.locator(SELECTORS.HA_MENU_BUTTON).click();
-        const mobileSidebarWidth = await getSidebarWidth(page);
+        const mobileSidebarWidth = await getSidebarWidth(page, true);
         expect(mobileSidebarWidth).not.toBe(width);
     });
 
@@ -387,14 +387,14 @@ test.beforeEach(noCacheRoute);
             }
         );
         await navigateHome(page);
-        const sidebarWidth = await getSidebarWidth(page);
+        const sidebarWidth = await getSidebarWidth(page, false);
         expect(sidebarWidth).not.toBe(width);
         await changeToMobileViewport(page);
         await page.reload();
         await waitForMainElements(page, false);
         await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
         await page.locator(SELECTORS.HA_MENU_BUTTON).click();
-        const mobileSidebarWidth = await getSidebarWidth(page);
+        const mobileSidebarWidth = await getSidebarWidth(page, true);
         expect(mobileSidebarWidth).toBe(width);
         await expect(page).toHaveScreenshot('sidebar-width-hidden.png', {
             clip: {

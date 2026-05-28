@@ -2,13 +2,13 @@ import { Page, Locator } from '@playwright/test';
 import { SELECTORS, HREFS } from './constants';
 
 export const getSidebarLinkSelector = (href: string): string => {
-    return `${SELECTORS.HA_SIDEBAR} a[role="listitem"][href="${href}"]`;
+    return `${SELECTORS.HA_SIDEBAR} a[href="${href}"]`;
 };
 
 export const getSidebarItem = (page: Page, href: string) => {
     const items = page.locator(`${SELECTORS.HA_SIDEBAR} ${SELECTORS.SIDEBAR_ITEM}`);
     return items.filter({
-        has: page.locator(`a[role="listitem"][href="${href}"]`)
+        has: page.locator(`a[href="${href}"]`)
     });
 };
 
@@ -24,7 +24,7 @@ export const getSidebarItemBadge = (page: Page, href: string) => {
     return sidebarItemBadge;
 };
 
-export const getSidebarItemLinkFromLocator = (item: Locator) => item.locator('a[role="listitem"]');
+export const getSidebarItemLinkFromLocator = (item: Locator) => item.locator('a');
 
 export const links = Object.fromEntries(
     Object.entries(HREFS).map(([key, href]) => {

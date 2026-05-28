@@ -93,11 +93,13 @@ export const waitForSidebarAnimations = async (page: Page): Promise<void> => {
     );
 };
 
-export const getSidebarWidth = async (page: Page): Promise<number> => {
+export const getSidebarWidth = async (page: Page, isMobile: boolean): Promise<number> => {
     await waitForSidebarAnimations(page);
     const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
     const sidebarWidth = await sidebar.evaluate((element: HTMLElement) => element.offsetWidth);
-    return sidebarWidth + 1;
+    return isMobile
+        ? sidebarWidth
+        : sidebarWidth + 1;
 };
 
 export const waithForError = async (page: Page, errorMessage: string): Promise<void> => {
