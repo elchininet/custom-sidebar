@@ -65,6 +65,7 @@ import {
     getConfig,
     getDialogsMethods,
     getFormatDateMethods,
+    getHassConnectionPromise,
     getRestApis,
     getTemplateWithPartials,
     getToastMethods,
@@ -709,25 +710,26 @@ class CustomSidebar {
         callback: (rendered: string) => void
     ): ReturnType<HassConnection['conn']['subscribeMessage']> {
         return new Promise((resolve) => {
-            window.hassConnection.then((hassConnection: HassConnection): void => {
-                const cancelSubscriptionPromise = hassConnection.conn.subscribeMessage<SubscriberTemplate>(
-                    (message: SubscriberTemplate): void => {
-                        callback(`${message.result}`);
-                    },
-                    {
-                        type: EVENT.RENDER_TEMPLATE,
-                        template,
-                        variables: {
-                            user_name: this._ha.hass.user.name,
-                            user_is_admin: this._ha.hass.user.is_admin,
-                            user_is_owner: this._ha.hass.user.is_owner,
-                            user_agent: window.navigator.userAgent,
-                            ...(this._config.jinja_variables)
+            getHassConnectionPromise()
+                .then((hassConnection: HassConnection) => {
+                    const cancelSubscriptionPromise = hassConnection.conn.subscribeMessage<SubscriberTemplate>(
+                        (message: SubscriberTemplate): void => {
+                            callback(`${message.result}`);
+                        },
+                        {
+                            type: EVENT.RENDER_TEMPLATE,
+                            template,
+                            variables: {
+                                user_name: this._ha.hass.user.name,
+                                user_is_admin: this._ha.hass.user.is_admin,
+                                user_is_owner: this._ha.hass.user.is_owner,
+                                user_agent: window.navigator.userAgent,
+                                ...(this._config.jinja_variables)
+                            }
                         }
-                    }
-                );
-                resolve(cancelSubscriptionPromise);
-            });
+                    );
+                    resolve(cancelSubscriptionPromise);
+                });
         });
     }
 
@@ -1639,10 +1641,14 @@ class CustomSidebar {
                 .query(CUSTOM_ELEMENT.HUI_VIEW_CONTAINER)
                 .element as Promise<HTMLElement>;
             huiViewContainerPromise.then((huiViewContainer: HTMLElement) => {
-                this._huiViewContainerObserver.observe(huiViewContainer, {
-                    subtree: true,
-                    childList: true
-                });
+                // Edge case that occurs in some edge-cases scenarios, hard to simulate during tests
+                /* istanbul ignore next */
+                if (huiViewContainer) {
+                    this._huiViewContainerObserver.observe(huiViewContainer, {
+                        subtree: true,
+                        childList: true
+                    });
+                }
             });
         }
 
