@@ -1,12 +1,13 @@
 import { HassConnection } from 'home-assistant-javascript-templates';
+import { getHassConnectionPromise } from './misc';
 import { HomeAsssistantExtended } from '@types';
 import { EVENT } from '@constants';
 
 class LocaleManager {
     constructor() {
         this._locale = new Promise<Record<string, unknown>>((resolve) => {
-            window.hassConnection
-                .then(async (hassConnection: HassConnection): Promise<void> => {
+            getHassConnectionPromise()
+                .then(async (hassConnection: HassConnection) => {
                     const cancelSubscriptionPromise = hassConnection.conn.subscribeMessage<{ value: Record<string, unknown> }>(
                         (message: { value: Record<string, unknown> }): void => {
                             resolve(message.value);

@@ -1,3 +1,4 @@
+import { HassConnection } from 'home-assistant-javascript-templates';
 import { getPromisableResult, PromisableOptions } from 'get-promisable-result';
 import {
     MAX_ATTEMPTS,
@@ -84,4 +85,12 @@ export function waitForElement<E extends Element = Element>(
         }
     };
 };
+
 export const isMobileClient = MOBILE_REGEXP.test(navigator.userAgent);
+
+export const getHassConnectionPromise = async (): Promise<HassConnection> => {
+    return await getPromisableResult(
+        () => window.hassConnection,
+        (hassConnectionPromise: Promise<HassConnection>) => !!hassConnectionPromise
+    );
+};
