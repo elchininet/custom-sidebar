@@ -8,11 +8,11 @@ tags:
 hide_table_of_contents: true
 ---
 
-Sometimes it is useful to make a user land on a specific dashboard when Home Assistant is loaded. To achieve this, you can go to your profile and in the `Browser settings` there is a specific section to set the default dashboard in that device. But as the description states, this change will be only applied in that device and it is not permanent. This change will be lost if one logs out and logs in again or if one logs in in another device with the same user.
+Sometimes it is useful to make a user land on a specific dashboard when Home Assistant is loaded. To achieve this, you can go to your profile and in the `User preferences` there is a specific section to set the default dashboard for that user. But as the description states, this change will be applied for that user, meaning that if you change it in your mobile it will be reflected also in your desktop device. If you want to have different dashboards in different devices, you need to set up different users for ach one.
 
 {/* truncate */}
 
-On top of this, this feature only allows to set certain dashboards, as the default one, the ones created manually or other specific dashboards as the Map Dashboard. If one wants to land in any other Home Assistant url when the system loads, that is not natively possible.
+On top of this, this feature only allows to set certain dashboards, as the default one, the ones created manually or other specific dashboards as the Map Dashboard. If one wants to land in any other Home Assistant url when the system loads (for example, Developer Tools, or the Devices & services panel), that is not natively possible.
 
 import Example from '@site/blog/2025/_partials/2025-03-02-set-the-default-dashboard-when-home-assistant-loads/_example.mdx';
 
@@ -20,7 +20,7 @@ import Example from '@site/blog/2025/_partials/2025-03-02-set-the-default-dashbo
 
 With this option you can make Home Assistant loads a specific URL path every time that it loads, and using [exceptions](../configuration/exceptions), it is even possible to make these changes for specific users or devices, or create [custom matcher conditions](./exceptions-matchers-conditions). And these changes will be permanent as long as you keep them in the configuration.
 
-For example, the next code example shows how to create a default URL path for every user and another one for admins.
+For example, the next code example shows how to create a default URL path for every user and another one for the user `Tommy` in an `Android` device.
 
 <Example />
 
