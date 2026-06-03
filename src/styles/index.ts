@@ -422,7 +422,7 @@ export const SIDEBAR_WIDTH = {
             CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_HIDDEN,
             'calc(256px + var(--safe-area-inset-left, 0px))'
         )
-    },
+    }
 };
 
 export const SIDEBAR_BOTTOM_LIST_EMPTY = {
