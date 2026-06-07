@@ -54,6 +54,6 @@
     "home-assistant-javascript-templates": "7.1.0",
     "home-assistant-query-selector": "6.2.0",
     "home-assistant-styles-manager": "4.1.2",
-    "js-yaml": "^4.1.1"
+    "js-yaml": "^4.2.0"
   }
 }
