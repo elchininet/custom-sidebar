@@ -1,4 +1,4 @@
-import jsYaml from 'js-yaml';
+import { load } from 'js-yaml';
 import { Config } from '@types';
 import {
     CONFIG_NAME,
@@ -23,7 +23,7 @@ export const fetchConfig = async (): Promise<Config> => {
                     response
                         .text()
                         .then((yaml) => {
-                            return jsYaml.load(yaml);
+                            return load(yaml);
                         })
                         .then((configResult: unknown) => {
                             const config = configResult as Config;
