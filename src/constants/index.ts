@@ -64,7 +64,7 @@ export enum SELECTOR {
     HOST = ':host',
     HOST_EXPANDED = ':host([expanded])',
     HOST_NOT_EXPANDED = ':host(:not([expanded]))',
-    HOST_EXPANDED_MODAL = ':host([expanded][modal])',
+    HOST_MODAL = ':is(:host([expanded][modal]), :host(:not([expanded])[modal]))',
     HOST_EXPANDED_NOT_MODAL = ':host([expanded]:not([modal]))',
     HOST_EXPANDED_NOT_NAROW = ':host([expanded]:not([narrow]))',
     HOST_HOVER_NOT_DISABLED = ':host(:hover:not([disabled]))',

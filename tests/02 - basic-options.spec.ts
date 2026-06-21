@@ -405,6 +405,82 @@ test.beforeEach(noCacheRoute);
         });
     });
 
+    test(`should set sidebar width.hidden and sidebar.extended and keep them when the sidebar is not extended ${titleSuffix}`, async ({ page }) => {
+
+        const desktopViewportSizes = { width: 1280, height: 720 };
+        const sidebar = page.locator(SELECTORS.HA_SIDEBAR);
+
+        await fulfillJson(
+            page,
+            {
+                width: {
+                    extended: widthValue,
+                    hidden: widthValue
+                }
+            }
+        );
+        await navigateHome(page);
+
+        // Set desktop viewport sizes
+        await page.setViewportSize(desktopViewportSizes);
+        await page.reload();
+        await waitForMainElements(page);
+        let sidebarWidth = await getSidebarWidth(page, false);
+        expect(sidebarWidth).toBe(width);
+
+        // Close the sidebar
+        await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
+        await sidebar.evaluate((sidebarElement: HTMLElement) => {
+            return new Promise<void>((resolve) => {
+                const check = () => {
+                    if (sidebarElement.hasAttribute('expanded') === false) {
+                        resolve();
+                    } else {
+                        setTimeout(check, 500);
+                    }
+                };
+                check();
+            });
+        });
+        sidebarWidth = await getSidebarWidth(page, false);
+        expect(sidebarWidth).not.toBe(width);
+
+        // Change to mobile
+        await changeToMobileViewport(page);
+        await page.reload();
+        await waitForMainElements(page, false);
+        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await page.locator(SELECTORS.HA_MENU_BUTTON).click();
+        sidebarWidth = await getSidebarWidth(page, true);
+        expect(sidebarWidth).toBe(width);
+
+        // Set desktop viewport sizes again
+        await page.setViewportSize(desktopViewportSizes);
+        await page.reload();
+        await waitForMainElements(page);
+        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
+        await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('expanded');
+        sidebarWidth = await getSidebarWidth(page, true);
+        expect(sidebarWidth).not.toBe(width);
+
+        // Open the sidebar again
+        await page.locator(SELECTORS.SIDEBAR_HA_ICON_BUTTON).click();
+        await sidebar.evaluate((sidebarElement: HTMLElement) => {
+            return new Promise<void>((resolve) => {
+                const check = () => {
+                    if (sidebarElement.hasAttribute('expanded') === true) {
+                        resolve();
+                    } else {
+                        setTimeout(check, 500);
+                    }
+                };
+                check();
+            });
+        });
+        sidebarWidth = await getSidebarWidth(page, false);
+        expect(sidebarWidth).toBe(width);
+    });
+
 });
 
 test('should apply attributes as an object to an item', async ({ page }) => {
