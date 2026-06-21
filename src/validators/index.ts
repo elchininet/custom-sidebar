@@ -60,8 +60,8 @@ const ONLY_BASE_CONFIG_OPTIONS = [
 ] as const;
 
 const validateWidthOptions = (config: Config, prefix: string): void => {
-    const errorFormatSuffix = `You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')})`;
-    const widthRegExp = new RegExp(`^\\d+(?:${ALLOWED_UNITS.join('|')})$`);
+    const errorFormatSuffix = `You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')}) or a CSS calc function`;
+    const widthRegExp = new RegExp(`^(?:\\d+(?:${ALLOWED_UNITS.join('|')})|calc\\s*\\(.+\\))$`);
     const width = config.width;
     if (
         !isUndefined(width) &&
