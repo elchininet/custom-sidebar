@@ -10,7 +10,7 @@ import {
 } from './utilities';
 
 const ERROR_PREFIX = `${NAMESPACE}: SyntaxError: Invalid configuration`;
-const WIDTH_ERROR_FORMAT_SUFFIX = `You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')})`;
+const WIDTH_ERROR_FORMAT_SUFFIX = `You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')}) or a CSS calc function`;
 
 interface TestSuit {
     title: string;
