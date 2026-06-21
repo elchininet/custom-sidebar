@@ -416,7 +416,7 @@ export const SIDEBAR_WIDTH = {
             'calc(256px + var(--safe-area-inset-left, 0px))'
         )
     },
-    [SELECTOR.HOST_EXPANDED_MODAL]: {
+    [SELECTOR.HOST_MODAL]: {
         HaSidebarWidth: getCSSVariables(
             CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH,
             CUSTOM_SIDEBAR_CSS_VARIABLES.WIDTH_HIDDEN,
