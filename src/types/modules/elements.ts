@@ -20,7 +20,9 @@ export interface HassExtended extends Hass {
         data?: Record<string, unknown>
     ) => Promise<T>;
     panels: HomeAssistantPanel[];
+    config: Record<string, unknown>;
     localize: (resource: string) => string;
+    locale: Record<string, unknown>;
 }
 
 export interface SidebarItem extends HTMLElement {
@@ -101,10 +103,15 @@ export enum HuiTimestampDisplayDateFormat {
 
 export interface HuiTimestampDisplay extends HTMLElement {
     ts: Date;
-    hass: HassExtended;
     format: HuiTimestampDisplayDateFormat;
     capitalize: boolean;
     _updateRelative: () => void;
+    _config: Record<string, unknown>;
+    __transform__config: Record<string, unknown>;
+    _localize: (resource: string) => string;
+    __transform__localize: (resource: string) => string;
+    _locale: Record<string, unknown>;
+    __transform__locale: Record<string, unknown>;
     render: () => {
         values: string[];
     };
