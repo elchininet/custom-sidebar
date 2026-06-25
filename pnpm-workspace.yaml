@@ -1,5 +1,6 @@
 minimumReleaseAgeExclude:
   - '@babel/core@7.29.1'
+  - home-assistant-query-selector@7.0.0-beta
 overrides:
   '@babel/core@<=7.29.0': ^7.29.1
   uuid@<11.1.1: ^11.1.1

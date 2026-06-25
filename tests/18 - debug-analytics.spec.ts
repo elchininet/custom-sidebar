@@ -118,6 +118,8 @@ test.describe('Analytics', () => {
         INTEGRATIONS = 'panel_visited: /config/integrations'
     }
 
+    const userName = 'Test';
+
     const clickOnElements = async (page: Page) => {
         await navigateHome(page);
 
@@ -148,7 +150,7 @@ test.describe('Analytics', () => {
         await clickOnElements(page);
 
         const logbookEntries = page.locator(SELECTORS.ENTRY_CONTAINER).filter({
-            has: page.locator('button', { hasText: 'custom-sidebar' })
+            has: page.locator('button', { hasText: userName })
         });
 
         await expect(logbookEntries).toHaveCount(0);
@@ -164,7 +166,7 @@ test.describe('Analytics', () => {
         await clickOnElements(page);
 
         const logbookEntries = page.locator(SELECTORS.ENTRY_CONTAINER).filter({
-            has: page.locator('button', { hasText: 'custom-sidebar' })
+            has: page.locator('button', { hasText: userName })
         });
 
         await expect(logbookEntries).toContainText([
@@ -191,7 +193,7 @@ test.describe('Analytics', () => {
         await clickOnElements(page);
 
         const logbookEntries = page.locator(SELECTORS.ENTRY_CONTAINER).filter({
-            has: page.locator('button', { hasText: 'custom-sidebar' })
+            has: page.locator('button', { hasText: userName })
         });
 
         await expect(logbookEntries).toContainText([
@@ -215,7 +217,7 @@ test.describe('Analytics', () => {
         await clickOnElements(page);
 
         const logbookEntries = page.locator(SELECTORS.ENTRY_CONTAINER).filter({
-            has: page.locator('button', { hasText: 'custom-sidebar' })
+            has: page.locator('button', { hasText: userName })
         });
 
         await expect(logbookEntries).toContainText([

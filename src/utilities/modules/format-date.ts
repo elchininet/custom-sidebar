@@ -16,7 +16,12 @@ export const getFormatDateMethods = (ha: HomeAsssistantExtended) => {
 
     const geHuiTimestampDisplayInstance = (date: string | Date): HuiTimestampDisplay => {
         const huiTimestampDisplay = document.createElement(CUSTOM_ELEMENT.HUI_TIMESTAMP_DISPLAY) as HuiTimestampDisplay;
-        huiTimestampDisplay.hass = ha.hass;
+        huiTimestampDisplay._config = ha.hass.config;
+        huiTimestampDisplay.__transform__config = ha.hass.config;
+        huiTimestampDisplay._localize = ha.hass.localize;
+        huiTimestampDisplay.__transform__localize = ha.hass.localize;
+        huiTimestampDisplay._locale = ha.hass.locale;
+        huiTimestampDisplay.__transform__locale = ha.hass.locale;
         huiTimestampDisplay.ts = date instanceof Date
             ? date
             : new Date(date);
