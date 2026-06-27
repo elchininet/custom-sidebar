@@ -19,8 +19,8 @@ importers:
         specifier: 7.1.0
         version: 7.1.0(get-promisable-result@2.0.0)
       home-assistant-query-selector:
-        specifier: 7.0.0-beta
-        version: 7.0.0-beta(shadow-dom-selector@6.2.2(get-promisable-result@2.0.0))
+        specifier: 7.0.0-beta.1
+        version: 7.0.0-beta.1(shadow-dom-selector@6.2.2(get-promisable-result@2.0.0))
       home-assistant-styles-manager:
         specifier: 4.1.2
         version: 4.1.2
@@ -858,10 +858,10 @@ packages:
     peerDependencies:
       get-promisable-result: ^2.0.0
 
-  home-assistant-query-selector@7.0.0-beta:
-    resolution: {integrity: sha512-xNiXzuhIqalv6/iVJAQuW+ppHhy3VYaGyTw5K/ynu5hqZY8ZIbhpzn8CIsawQDFThgY5kupGgXjjonOs9GGmMg==}
+  home-assistant-query-selector@7.0.0-beta.1:
+    resolution: {integrity: sha512-0oeeDNVnOT0xAdRuAx9SZmKIP0p/iXgx95qjw76mGfd2ly9RMAGvgj3I7TUhbC3O6EpXdVuUdEzfwwP9zWeHNQ==}
     peerDependencies:
-      shadow-dom-selector: ^6.2.2
+      shadow-dom-selector: ^6.2.3
 
   home-assistant-styles-manager@4.1.2:
     resolution: {integrity: sha512-bjsLznCTgU9Gl5uAs8MLnNRHiPneoODyayFPTteU+l0x8rgnMwLq2hOUhIXY2Sf2EmpaXucYGOl6UiWTqSeWdw==}
@@ -2095,7 +2095,7 @@ snapshots:
     dependencies:
       get-promisable-result: 2.0.0
 
-  home-assistant-query-selector@7.0.0-beta(shadow-dom-selector@6.2.2(get-promisable-result@2.0.0)):
+  home-assistant-query-selector@7.0.0-beta.1(shadow-dom-selector@6.2.2(get-promisable-result@2.0.0)):
     dependencies:
       shadow-dom-selector: 6.2.2(get-promisable-result@2.0.0)
 
