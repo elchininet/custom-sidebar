@@ -39,7 +39,7 @@ export const SELECTORS = {
     HA_DRAWER: 'ha-drawer',
     HA_SIDEBAR: 'ha-sidebar',
     HUI_VIEW: 'hui-view',
-    SIDEBAR_TOP_ITEMS_CONTAINER: '.panels-list > .wrapper > ha-list-nav > > slot[name="main-navigation"]',
+    SIDEBAR_TOP_ITEMS_CONTAINER: '.panels-list > .wrapper > ha-list-nav > slot[name="main-navigation"]',
     SIDEBAR_BOTTOM_ITEMS_CONTAINER: '.panels-list > ha-list-nav > slot[name="fixed-navigation"]',
     SIDEBAR_ITEM: 'ha-list-item-button',
     SIDEBAR_SECTION: 'ha-list-item-base',
