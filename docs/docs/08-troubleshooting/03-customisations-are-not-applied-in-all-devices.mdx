@@ -1,0 +1,11 @@
+---
+sidebar_position: 3
+---
+
+# Customisations are not applied in all devices
+
+If the sidebar customisations work perfectly when you are connected through your local network but they don't work when you are connected remotely, or if you see that they work in some of your devices and not in others, you are suffering from caching issues. Caching is not something that is performed only in your device. Caching is performed at any level: in your local network, proxies, DNS providers (as Cloudflare), internet providers, Nabucasa, etc. You need to identify from which place the cache is performed and clean it there.
+
+First thing to make sure is that the cache is not coming from your device. If you are in a browser, open the developer console, go to the `Network` tab and check the checkbox labeled as `Disable cache`, refresh the browser multiple times with the developer console open and then check if the caching issues are solved. If the issue is only in the Companion App, consult [Issues with the Companion App](./issues-with-the-companion-app).
+
+If the caching issues don't go away, most of the time you can solve them uninstalling `custom-sidebar` entirely (you don't need to remove the configuration), remove the path to `custom-sidebar-plugin.js` in the `frontend > extra_module_url` entry in your configuration and restart `Home Assistant`. After restarting and checking that there is no any trace of `custom-sidebar`, then install the plugin again following [the installation instructions](../02-installation.mdx).
