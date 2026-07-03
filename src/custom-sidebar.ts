@@ -209,6 +209,14 @@ class CustomSidebar {
         this._logger.log('Compiled config', this._config);
     }
 
+    private _getItemTextElement(element: SidebarItem): HTMLElement {
+        return element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!;
+    }
+
+    private _getItemText(element: SidebarItem) {
+        return this._getItemTextElement(element).textContent.trim();
+    }
+
     private async _getContainerItems(
         container: HTMLElement,
         fixed = false
@@ -217,7 +225,7 @@ class CustomSidebar {
             () => container.querySelectorAll<SidebarItem>(`:scope > ${SELECTOR.ITEM}`),
             (elements: NodeListOf<SidebarItem>): boolean => {
                 return Array.from(elements).every((element: SidebarItem): boolean => {
-                    const text = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.textContent.trim();
+                    const text = this._getItemText(element);
                     return text.length > 0;
                 });
             },
@@ -241,8 +249,7 @@ class CustomSidebar {
     private _mapItemsForDebug(items: NodeListOf<SidebarItem>): ({text: string, href: string})[] {
         return Array.from(items).map((element: SidebarItem) => {
             const href = element.href;
-            const intemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT);
-            const text = intemText!.textContent.trim();
+            const text = this._getItemText(element);
             return {
                 text,
                 href
@@ -515,12 +522,12 @@ class CustomSidebar {
     }
 
     private _subscribeName(element: SidebarItem, name: string): void {
-        const itemText = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!;
-        itemText.innerHTML = '';
+        const itemTextElement = this._getItemTextElement(element);
+        itemTextElement.innerHTML = '';
         this._subscribeTemplate(
             name,
             (rendered: string): void => {
-                itemText.innerHTML = rendered;
+                itemTextElement.innerHTML = rendered;
                 // If there is a tooltip, update its text too
                 const tooltip = this._getTooltip(element);
                 if (tooltip) {
@@ -550,25 +557,25 @@ class CustomSidebar {
         );
     }
 
-    private _subscribeInfo(element: HTMLElement, info: string): void {
-        const textElement = element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!;
+    private _subscribeInfo(element: SidebarItem, info: string): void {
+        const itemTextElement = this._getItemTextElement(element);
         this._subscribeTemplate(
             info,
             (rendered: string): void => {
-                textElement.dataset.info = rendered;
+                itemTextElement.dataset.info = rendered;
             }
         );
     }
 
-    private _subscribeNotification(element: HTMLElement, notification: string): void {
+    private _subscribeNotification(element: SidebarItem, notification: string): void {
 
-        const text = element.querySelector(SELECTOR.ITEM_TEXT);
+        const itemTextElement = this._getItemTextElement(element);
         let badgeStart = element.querySelector(`${SELECTOR.BADGE}[slot="${ATTRIBUTE_VALUE.START}"]`);
         let badgeEnd = element.querySelector(`${SELECTOR.BADGE}[slot="${ATTRIBUTE_VALUE.END}"]`);
 
         if (!badgeStart) {
             badgeStart = this._buildNotification(ATTRIBUTE_VALUE.START);
-            element.insertBefore(badgeStart, text);
+            element.insertBefore(badgeStart, itemTextElement);
         }
 
         if (!badgeEnd) {
@@ -1140,9 +1147,9 @@ class CustomSidebar {
                         if (this._isAnalyticsOptionEnabled(ANALITICS_KEYS.SIDEBAR_ITEM_CLICKED)) {
                             sideBarShadowRoot.addEventListener(EVENT.CLICK, (event: Event) => {
                                 const clickedElement = event.target as HTMLElement;
-                                const itemClicked = clickedElement.closest(CUSTOM_ELEMENT.ITEM);
+                                const itemClicked = clickedElement.closest(CUSTOM_ELEMENT.ITEM) as SidebarItem;
                                 if (itemClicked) {
-                                    const itemText = itemClicked.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.textContent;
+                                    const itemText = this._getItemText(itemClicked);
                                     this._logBookLog(`${ANALITICS_KEYS.SIDEBAR_ITEM_CLICKED}: ${itemText}`);
                                 }
                             });
@@ -1206,7 +1213,7 @@ class CustomSidebar {
             if (removeTooltips) {
                 tooltip?.parentElement!.removeChild(tooltip);
             } else if(!tooltip) {
-                const text = item.querySelector(SELECTOR.ITEM_TEXT)!.textContent;
+                const text = this._getItemText(item);
                 tooltip = this._buildTooltip(item.id, text);
                 item.after(tooltip);
             }
@@ -1278,7 +1285,7 @@ class CustomSidebar {
                             : this._items.find((element: SidebarItem): boolean => {
                                 const text = match === Match.HREF
                                     ? element.href
-                                    : element.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!.textContent.trim();
+                                    : this._getItemText(element);
 
                                 const matchText = (
                                     (!!exact && item === text) ||
@@ -1289,6 +1296,7 @@ class CustomSidebar {
                                     if (matched.has(element)) {
                                         return false;
                                     } else {
+                                        this._logger.log(`item "${item}" matched the element with text "${this._getItemText(element)}" and href "${element.href}"`);
                                         matched.add(element);
                                         return true;
                                     }
@@ -1461,8 +1469,7 @@ class CustomSidebar {
         const { on_click, element } = item;
         const onClickAction = on_click!;
         const sidebarItem = element as SidebarItem;
-        const textElement = sidebarItem.querySelector<HTMLElement>(SELECTOR.ITEM_TEXT)!;
-        const itemText = textElement.textContent.trim();
+        const itemText = this._getItemText(sidebarItem);
 
         if (sidebarItem.href === '#') {
             event.preventDefault();

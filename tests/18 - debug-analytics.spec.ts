@@ -62,7 +62,9 @@ test.describe('Debug messages', () => {
         expect(logs).toEqual(
             expect.arrayContaining([
                 expect.stringContaining(`${PREFIX} Starting the plugin...`),
-                expect.stringContaining(`${PREFIX} Executing plugin logic...`)
+                expect.stringContaining(`${PREFIX} Executing plugin logic...`),
+                expect.stringContaining(`${PREFIX} item "overview" matched the element with text "Overview" and href "/lovelace"`),
+                expect.stringContaining(`${PREFIX} item "lists" matched the element with text "To-do lists" and href "/todo"`)
             ])
         );
 
