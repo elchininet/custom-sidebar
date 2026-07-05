@@ -7,6 +7,8 @@ updates:
       day: "sunday"
       time: "09:00"
       timezone: "Europe/Amsterdam"
+    cooldown:
+      default-days: 1
     commit-message:
       prefix: "[Dependencies]"
     groups:
