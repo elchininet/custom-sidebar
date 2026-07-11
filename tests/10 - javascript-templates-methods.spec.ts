@@ -1,4 +1,4 @@
-import { test, expect } from 'playwright-test-coverage';
+import { expect, test } from 'playwright-test-coverage';
 import { haConfigRequest } from './ha-services';
 import {
     CONFIG_FILES,

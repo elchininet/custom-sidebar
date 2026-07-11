@@ -53,6 +53,7 @@ import {
 import { fetchConfig } from '@fetcher';
 import { Subscribers } from '@subscribers';
 import {
+    Logger,
     buildFireEventMethods,
     buildNavigateMethods,
     buildNewItem,
@@ -73,7 +74,6 @@ import {
     isBoolean,
     isObject,
     isUndefined,
-    Logger,
     navigate,
     openMoreInfoDialog,
     openRestartDialog,

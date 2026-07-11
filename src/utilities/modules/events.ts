@@ -1,5 +1,5 @@
 import { HomeAsssistantExtended } from '@types';
-import { isString, isObject } from './predicates';
+import { isObject, isString } from './predicates';
 
 export const fireEvent = (
     node: Element | Document | Window,

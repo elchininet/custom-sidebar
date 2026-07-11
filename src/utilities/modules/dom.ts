@@ -1,4 +1,4 @@
-import { getPromisableResult, PromisableOptions } from 'get-promisable-result';
+import { PromisableOptions, getPromisableResult } from 'get-promisable-result';
 import { HAElement } from 'home-assistant-query-selector';
 import {
     ConfigNewItem,
@@ -13,10 +13,10 @@ import {
     CLASS,
     CUSTOM_ELEMENT,
     ELEMENT,
-    SELECTOR,
     MAX_ATTEMPTS,
     NODE_NAME,
-    RETRY_DELAY
+    RETRY_DELAY,
+    SELECTOR
 } from '@constants';
 import { isString } from './predicates';
 import { Logger } from './logger';

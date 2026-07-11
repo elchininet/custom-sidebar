@@ -1,11 +1,11 @@
-import { test, expect } from 'playwright-test-coverage';
+import { expect, test } from 'playwright-test-coverage';
 import {
-    CONFIG_FILES,
-    SIDEBAR_CLIP,
-    SIDEBAR_CLIP_WITH_DIVIDERS,
-    SELECTORS,
     BASE_URL,
-    HREFS
+    CONFIG_FILES,
+    HREFS,
+    SELECTORS,
+    SIDEBAR_CLIP,
+    SIDEBAR_CLIP_WITH_DIVIDERS
 } from './constants';
 import { haConfigRequest, haSwitchStateRequest } from './ha-services';
 import {
@@ -14,10 +14,10 @@ import {
     getSidebarWidth,
     navigateHome,
     noCacheRoute,
-    waithForError,
     waitForLogMessages,
+    waitForMainElements,
     waitForWarning,
-    waitForMainElements
+    waithForError
 } from './utilities';
 import { NAMESPACE } from '../src/constants';
 import { getSidebarItem } from './selectors';

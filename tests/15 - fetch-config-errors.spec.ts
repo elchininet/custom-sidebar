@@ -1,8 +1,8 @@
 import { test } from 'playwright-test-coverage';
 import {
     noCacheRoute,
-    waithForError,
-    waitForWarning
+    waitForWarning,
+    waithForError
 } from './utilities';
 
 const ERROR_PREFIX = 'custom-sidebar:';

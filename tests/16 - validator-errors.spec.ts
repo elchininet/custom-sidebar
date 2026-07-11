@@ -1,12 +1,12 @@
 import { test } from 'playwright-test-coverage';
 import { SidebarMode } from '../src/types';
-import { NAMESPACE, ALLOWED_UNITS } from '../src/constants';
+import { ALLOWED_UNITS, NAMESPACE } from '../src/constants';
 import { BASE_NAME } from './constants';
 import {
     fulfillJson,
     noCacheRoute,
-    waithForError,
-    waitForWarning
+    waitForWarning,
+    waithForError
 } from './utilities';
 
 const ERROR_PREFIX = `${NAMESPACE}: SyntaxError: Invalid configuration`;

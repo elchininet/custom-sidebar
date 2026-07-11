@@ -1,11 +1,11 @@
-import { test, expect } from 'playwright-test-coverage';
+import { expect, test } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import {
     ATTRIBUTES,
     BASE_URL,
     CONFIG_FILES,
-    SELECTORS,
     HREFS,
+    SELECTORS,
     SIDEBAR_CLIP
 } from './constants';
 import { haConfigRequest } from './ha-services';

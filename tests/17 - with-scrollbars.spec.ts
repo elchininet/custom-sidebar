@@ -1,4 +1,4 @@
-import { test, expect } from 'playwright-test-coverage';
+import { expect, test } from 'playwright-test-coverage';
 import { CONFIG_FILES, SIDEBAR_CLIP_WITH_DIVIDERS } from './constants';
 import { haConfigRequest } from './ha-services';
 import {

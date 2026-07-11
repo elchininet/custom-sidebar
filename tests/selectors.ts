@@ -1,5 +1,5 @@
-import { Page, Locator } from '@playwright/test';
-import { SELECTORS, HREFS } from './constants';
+import { Locator, Page } from '@playwright/test';
+import { HREFS, SELECTORS } from './constants';
 
 export const getSidebarLinkSelector = (href: string): string => {
     return `${SELECTORS.HA_SIDEBAR} a[href="${href}"]`;
