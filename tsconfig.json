@@ -19,6 +19,7 @@
         "@utilities": ["./src/utilities"],
         "@validators": ["./src/validators"],
         "@fetcher": ["./src/fetcher"],
+        "@subscribers": ["./src/subscribers"],
         "@styles": ["./src/styles"]
       }
     },

@@ -1,3 +1,4 @@
+export * from './modules/dom';
 export * from './modules/navigate';
 export * from './modules/dialogs';
 export * from './modules/toast';
