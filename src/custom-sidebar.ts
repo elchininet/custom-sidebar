@@ -617,7 +617,7 @@ class CustomSidebar {
                     ...Array.from(topItems),
                     ...Array.from(bottomItems)
                 ];
-                const matched: Set<HTMLElement> = new Set();
+                const matched: Map<HTMLElement, string> = new Map();
                 const totalItems = this._items.length;
 
                 if (hide_all) {
@@ -644,10 +644,12 @@ class CustomSidebar {
 
                                 if (matchText) {
                                     if (matched.has(element)) {
+                                        const matchedItem = matched.get(element);
+                                        this._logger.log(`item "${item}" matches with the element with text "${getItemText(element)}" and href "${element.href}" but as this element was already matched by "${matchedItem}", this matching will be ignored`);
                                         return false;
                                     } else {
                                         this._logger.log(`item "${item}" matched the element with text "${getItemText(element)}" and href "${element.href}"`);
-                                        matched.add(element);
+                                        matched.set(element, item);
                                         return true;
                                     }
                                 }
