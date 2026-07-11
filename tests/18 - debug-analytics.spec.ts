@@ -1,4 +1,4 @@
-import { test, expect } from 'playwright-test-coverage';
+import { expect, test } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import { Sidebar } from '../src/types';
 import { CONFIG_FILES, HREFS, SELECTORS } from './constants';

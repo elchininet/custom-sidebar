@@ -1,4 +1,4 @@
-import { themes, type PrismTheme } from 'prism-react-renderer';
+import { type PrismTheme, themes } from 'prism-react-renderer';
 
 const baseTheme = themes.github;
 

@@ -1,7 +1,7 @@
 import { HAElement } from 'home-assistant-query-selector';
 import {
-    HomeAssistantJavaScriptTemplatesRenderer,
-    HassConnection
+    HassConnection,
+    HomeAssistantJavaScriptTemplatesRenderer
 } from 'home-assistant-javascript-templates';
 import {
     Config,
@@ -22,8 +22,8 @@ import {
 } from '@constants';
 import {
     buildNotification,
-    getItemTextElement,
     getHassConnectionPromise,
+    getItemTextElement,
     getTemplateWithPartials,
     getTooltip,
     hideItem,

@@ -1,19 +1,19 @@
-import { test, expect } from 'playwright-test-coverage';
+import { expect, test } from 'playwright-test-coverage';
 import {
+    ATTRIBUTES,
+    BASE_NAME,
     CONFIG_FILES,
     SELECTORS,
     SIDEBAR_CLIP,
-    SIDEBAR_NARROW_CLIP,
-    ATTRIBUTES,
-    BASE_NAME
+    SIDEBAR_NARROW_CLIP
 } from './constants';
 import { haConfigRequest } from './ha-services';
 import { getSidebarItem, getSidebarItemLinkFromLocator } from './selectors';
 import {
     addConfigExtendedRoute,
-    getSidebarWidth,
     changeToMobileViewport,
     fulfillJson,
+    getSidebarWidth,
     navigateHome,
     navigateToProfile,
     noCacheRoute

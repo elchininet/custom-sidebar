@@ -1,4 +1,4 @@
-import { test, expect } from 'playwright-test-coverage';
+import { expect, test } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import {
     CONFIG_FILES,
@@ -14,8 +14,8 @@ import {
 } from './utilities';
 import {
     getSidebarItem,
-    getSidebarLinkSelector,
     getSidebarItemLinkFromLocator,
+    getSidebarLinkSelector,
     links
 } from './selectors';
 

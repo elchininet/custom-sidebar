@@ -34,7 +34,16 @@ module.exports = [
             '@typescript-eslint/no-duplicate-enum-values': 'off',
             'comma-spacing': ['error'],
             '@typescript-eslint/no-var-requires': 'off',
-            '@typescript-eslint/no-this-alias': 'off'
+            '@typescript-eslint/no-this-alias': 'off',
+            'sort-imports': [
+                'error',
+                {
+                    ignoreCase: false,
+                    ignoreDeclarationSort: true,
+                    ignoreMemberSort: false,
+                    allowSeparatedGroups: false
+                }
+            ]
         }
     },
     {

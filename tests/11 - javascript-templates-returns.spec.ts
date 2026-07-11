@@ -1,14 +1,14 @@
-import { test, expect } from 'playwright-test-coverage';
+import { expect, test } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import { SELECTORS } from './constants';
-import { haSwitchStateRequest, haSelectStateRequest } from './ha-services';
+import { haSelectStateRequest, haSwitchStateRequest } from './ha-services';
 import {
     fulfillJson,
     navigateHome,
     noCacheRoute,
     waitForWarning
 } from './utilities';
-import { getSidebarItemText, getSidebarItemBadge } from './selectors';
+import { getSidebarItemBadge, getSidebarItemText } from './selectors';
 
 const getCheckItemText = (page: Page) => getSidebarItemText(page, '/check');
 const getCheckItemBadge = (page: Page) => getSidebarItemBadge(page, '/check');

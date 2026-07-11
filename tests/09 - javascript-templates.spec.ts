@@ -1,17 +1,17 @@
-import { test, expect } from 'playwright-test-coverage';
+import { expect, test } from 'playwright-test-coverage';
 import { Page } from '@playwright/test';
 import {
     ATTRIBUTES,
     BASE_URL,
     CONFIG_FILES,
-    SELECTORS,
     HREFS,
+    SELECTORS,
     SIDEBAR_CLIP
 } from './constants';
 import {
     haConfigRequest,
-    haSwitchStateRequest,
-    haSelectStateRequest
+    haSelectStateRequest,
+    haSwitchStateRequest
 } from './ha-services';
 import {
     fulfillJson,
@@ -22,8 +22,8 @@ import {
 } from './utilities';
 import {
     getSidebarItem,
-    getSidebarItemText,
-    getSidebarItemBadge
+    getSidebarItemBadge,
+    getSidebarItemText
 } from './selectors';
 
 test.beforeAll(async ({ browser }) => {
