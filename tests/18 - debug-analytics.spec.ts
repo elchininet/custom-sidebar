@@ -5,6 +5,7 @@ import { CONFIG_FILES, HREFS, SELECTORS } from './constants';
 import { haConfigRequest } from './ha-services';
 import {
     addConfigExtendedRoute,
+    fulfillJson,
     navigateHome,
     noCacheRoute,
     waitForLogMessage,
@@ -62,9 +63,43 @@ test.describe('Debug messages', () => {
         expect(logs).toEqual(
             expect.arrayContaining([
                 expect.stringContaining(`${PREFIX} Starting the plugin...`),
-                expect.stringContaining(`${PREFIX} Executing plugin logic...`),
-                expect.stringContaining(`${PREFIX} item "overview" matched the element with text "Overview" and href "/lovelace"`),
-                expect.stringContaining(`${PREFIX} item "lists" matched the element with text "To-do lists" and href "/todo"`)
+                expect.stringContaining(`${PREFIX} Executing plugin logic...`)
+            ])
+        );
+
+    });
+
+    test('debug messages related to sidebar items matches should be logged', async ({ page }) => {
+
+        await fulfillJson(page, {
+            order: [
+                {
+                    item: 'er', // it also matches with "Energy" but it matches first with "Overview"
+                    name: 'Overview matched'
+                },
+                {
+                    item: 'e', // it should match with "Overview" but as it was already matched it is ignored and it picks "Energy"
+                    name: 'Energy matched'
+                },
+                {
+                    item: 'g', // it should match with "/energy" but as it was already matched it is ignored and it picks "Activity" (/logbook)
+                    name: 'Activity matched',
+                    match: 'href'
+                }
+            ]
+        });
+
+        await pageVisit(page, true);
+
+        const logs = await waitForLogMessages(page);
+
+        expect(logs).toEqual(
+            expect.arrayContaining([
+                expect.stringContaining(`${PREFIX} item "er" matched the element with text "Overview" and href "/lovelace"`),
+                expect.stringContaining(`${PREFIX} item "e" matches with the element with text "Overview" and href "/lovelace" but as this element was already matched by "er", this matching will be ignored`),
+                expect.stringContaining(`${PREFIX} item "e" matched the element with text "Energy" and href "/energy"`),
+                expect.stringContaining(`${PREFIX} item "g" matches with the element with text "Energy" and href "/energy" but as this element was already matched by "e", this matching will be ignored`),
+                expect.stringContaining(`${PREFIX} item "g" matched the element with text "Activity" and href "/logbook"`)
             ])
         );
 
