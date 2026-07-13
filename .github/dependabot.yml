@@ -11,6 +11,8 @@ updates:
       default-days: 1
     commit-message:
       prefix: "[Dependencies]"
+    ignore:
+      - dependency-name: "typescript"
     groups:
       dependencies-prod:
         dependency-type: "production"
