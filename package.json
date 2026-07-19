@@ -56,5 +56,5 @@
     "home-assistant-styles-manager": "4.1.2",
     "js-yaml": "^5.2.1"
   },
-  "packageManager": "pnpm@11.11.0"
+  "packageManager": "pnpm@11.15.0"
 }
