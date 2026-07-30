@@ -55,6 +55,7 @@ export enum CUSTOM_ELEMENT {
     HUI_VIEW_CONTAINER = 'hui-view-container',
     ITEM = 'ha-list-item-button',
     ITEM_BASE = 'ha-list-item-base',
+    PARTIAL_PANEL_RESOLVER = 'partial-panel-resolver',
     TOOLTIP = 'ha-tooltip',
     USER_BADGE = 'ha-user-badge',
 }

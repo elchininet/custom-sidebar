@@ -909,7 +909,7 @@ class CustomSidebar {
                         );
                         break;
                     case DialogType.RESTART:
-                        openRestartDialog(this._ha);
+                        openRestartDialog(this._ha, this._partialPanelResolver);
                         break;
                 }
             }
@@ -1048,7 +1048,7 @@ class CustomSidebar {
                         ...buildNavigateMethods(this._sidebar),
                         ...buildFireEventMethods(this._ha),
                         ...getRestApis(this._ha),
-                        ...getDialogsMethods(this._ha),
+                        ...getDialogsMethods(this._ha, this._partialPanelResolver),
                         ...getFormatDateMethods(this._ha),
                         ...getToastMethods(this._ha),
                         ...getTranslationMethods(this._ha)
