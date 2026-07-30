@@ -350,7 +350,7 @@ test.describe('methods in JavaScript templates', () => {
                                 action: 'javascript',
                                 code: `
                                     if (true) {
-                                        navigate('/config/developer-tools/yaml')
+                                        navigate('/config/tools/yaml')
                                     }`
                             }
                         }
@@ -368,9 +368,9 @@ test.describe('methods in JavaScript templates', () => {
 
             await getSidebarItem(page, '#').click();
 
-            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
+            await expect(page).toHaveURL(/.*\/config\/tools\/yaml/);
 
-            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
+            await expect(page.locator(SELECTORS.TOOLS_PANEL)).toBeVisible();
 
             await page.goBack();
 
@@ -390,7 +390,7 @@ test.describe('methods in JavaScript templates', () => {
                                 action: 'javascript',
                                 code: `
                                     if (true) {
-                                        navigate('/config/developer-tools/yaml', true)
+                                        navigate('/config/tools/yaml', true)
                                     }`
                             }
                         }
@@ -408,9 +408,9 @@ test.describe('methods in JavaScript templates', () => {
 
             await getSidebarItem(page, '#').click();
 
-            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
+            await expect(page).toHaveURL(/.*\/config\/tools\/yaml/);
 
-            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
+            await expect(page.locator(SELECTORS.TOOLS_PANEL)).toBeVisible();
 
             await page.goBack();
 
@@ -430,7 +430,7 @@ test.describe('methods in JavaScript templates', () => {
                                 action: 'javascript',
                                 code: `
                                     if (true) {
-                                        navigate('config/developer-tools/yaml')
+                                        navigate('config/tools/yaml')
                                     }`
                             }
                         }
@@ -442,7 +442,7 @@ test.describe('methods in JavaScript templates', () => {
 
             getSidebarItem(page, '#').click();
 
-            await waitForWarning(page, `${NAMESPACE}: ignoring navigate method using the path "config/developer-tools/yaml" as it doesn't start with "/"`);
+            await waitForWarning(page, `${NAMESPACE}: ignoring navigate method using the path "config/tools/yaml" as it doesn't start with "/"`);
 
             await expect(page).not.toHaveURL(/\/config/);
 
@@ -800,7 +800,7 @@ test.describe('methods in JavaScript templates', () => {
                         on_click: {
                             action: 'javascript',
                             code: `
-                                navigate('/config/developer-tools/yaml');
+                                navigate('/config/tools/yaml');
                                 activateItem(item.element);
                             `
                         }

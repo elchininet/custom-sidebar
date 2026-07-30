@@ -626,7 +626,7 @@ test.describe('without extending from the base', () => {
                             {
                                 new_item: true,
                                 item: 'developer tools',
-                                href: '/config/developer-tools',
+                                href: '/config/tools',
                                 name: 'Dev tools',
                                 icon: 'mdi:tools',
                                 bottom: true

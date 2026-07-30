@@ -9,7 +9,7 @@ export const HREFS = {
     HISTORY: '/history',
     MEDIA_BROWSER: '/media-browser',
     TODO: '/todo',
-    DEV_TOOLS: '/config/developer-tools',
+    DEV_TOOLS: '/config/tools',
     CONFIG: '/config',
     GOOGLE: 'https://mrdoob.com/projects/chromeexperiments/google-gravity/',
     INTEGRATIONS: '/config/integrations',
@@ -52,7 +52,7 @@ export const SELECTORS = {
     RESTART_RIALOG: 'dialog-restart ha-adaptive-dialog > .content',
     RESTART_RIALOG_TITLE: 'dialog-restart ha-dialog-header span[slot="title"]',
     RESTART_DIALOG_CLOSE_BUTTON: 'dialog-restart ha-adaptive-dialog slot[slot="headerNavigationIcon"] ha-icon-button',
-    DEVELOPER_TOOLS_PANEL: 'ha-panel-developer-tools',
+    TOOLS_PANEL: 'ha-panel-tools',
     TODO_PANEL: 'ha-panel-todo',
     TOAST_MESSAGE: 'ha-toast .message',
     TOAST_BUTTON: 'ha-toast ha-button'

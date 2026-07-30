@@ -53,7 +53,7 @@ order:
     item: developer tools
     name: Dev tools
     icon: mdi:tools
-    href: "/config/developer-tools"
+    href: "/config/tools"
     bottom: true
     order: 10
   - item: history

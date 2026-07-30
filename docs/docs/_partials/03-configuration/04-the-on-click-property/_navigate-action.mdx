@@ -8,7 +8,7 @@ order:
       path: |
         [[[
           if (is_state('input_boolean.dev_mode_active', 'on')) {
-            return '/config/developer-tools';
+            return '/config/tools';
           }
           return '/lovelace';
         ]]]

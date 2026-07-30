@@ -1,3 +1,4 @@
+import { HAElement } from 'home-assistant-query-selector';
 import {
     DialogBoxParameters,
     DialogImport,
@@ -10,7 +11,12 @@ import {
 import { CUSTOM_ELEMENT, EVENT } from '@constants';
 import { fireEvent } from './events';
 
-const getHaPanelConfig = async (): Promise<Router> => {
+const getHaPanelConfig = async (partialPanelResolver: HAElement): Promise<Router> => {
+    if (!customElements.get(CUSTOM_ELEMENT.HA_PANEL_CONFIG)) {
+        const partialPanelResolverElement = await partialPanelResolver.element as Router;
+        await partialPanelResolverElement.routerOptions.routes.config.load();
+        await customElements.whenDefined(CUSTOM_ELEMENT.HA_PANEL_CONFIG);
+    }
     const haPanelConfig = document.createElement(CUSTOM_ELEMENT.HA_PANEL_CONFIG) as Router;
     return haPanelConfig;
 };
@@ -33,7 +39,10 @@ const getHaConfigSystemNavigation = async (haPanelConfig: Router): Promise<HaCon
     return haConfigSystemNavigation;
 };
 
-const getDialogBox = async (ha: HomeAsssistantExtended): Promise<CustomElementConstructor> => {
+const getDialogBox = async (
+    ha: HomeAsssistantExtended,
+    partialPanelResolver: HAElement
+): Promise<CustomElementConstructor> => {
 
     const dialogBox = customElements.get(CUSTOM_ELEMENT.DIALOG_BOX);
 
@@ -41,7 +50,7 @@ const getDialogBox = async (ha: HomeAsssistantExtended): Promise<CustomElementCo
         return dialogBox;
     }
 
-    const haPanelConfig = await getHaPanelConfig();
+    const haPanelConfig = await getHaPanelConfig(partialPanelResolver);
     const haConfigBackupBackups = await getHaConfigBackupBackups(haPanelConfig);
 
     haConfigBackupBackups.hass = ha.hass;
@@ -66,7 +75,7 @@ const getDialogBox = async (ha: HomeAsssistantExtended): Promise<CustomElementCo
 
 };
 
-const getDialogRestart = async (): Promise<CustomElementConstructor> => {
+const getDialogRestart = async (partialPanelResolver: HAElement): Promise<CustomElementConstructor> => {
 
     const dialogRestart = customElements.get(CUSTOM_ELEMENT.DIALOG_RESTART);
 
@@ -74,7 +83,7 @@ const getDialogRestart = async (): Promise<CustomElementConstructor> => {
         return dialogRestart;
     }
 
-    const haPanelConfig = await getHaPanelConfig();
+    const haPanelConfig = await getHaPanelConfig(partialPanelResolver);
     const haConfigSystemNavigation = await getHaConfigSystemNavigation(haPanelConfig);
 
     return new Promise((resolve) => {
@@ -123,8 +132,11 @@ const showRestartDialog = (
     );
 };
 
-export const openRestartDialog = async (ha: HomeAsssistantExtended): Promise<void> => {
-    const dialogRestart = await getDialogRestart();
+export const openRestartDialog = async (
+    ha: HomeAsssistantExtended,
+    partialPanelResolver: HAElement
+): Promise<void> => {
+    const dialogRestart = await getDialogRestart(partialPanelResolver);
     showRestartDialog(
         ha,
         () => Promise.resolve(dialogRestart)
@@ -133,9 +145,10 @@ export const openRestartDialog = async (ha: HomeAsssistantExtended): Promise<voi
 
 export const openAlertDialog = async (
     ha: HomeAsssistantExtended,
+    partialPanelResolver: HAElement,
     dialogParams: DialogBoxParameters
 ): Promise<void> => {
-    const dialogBox = await getDialogBox(ha);
+    const dialogBox = await getDialogBox(ha, partialPanelResolver);
     showDialog(
         ha,
         CUSTOM_ELEMENT.DIALOG_BOX,
@@ -146,9 +159,10 @@ export const openAlertDialog = async (
 
 export const openConfirmDialog = async (
     ha: HomeAsssistantExtended,
+    partialPanelResolver: HAElement,
     dialogParams: DialogBoxParameters
 ): Promise<void> => {
-    const dialogBox = await getDialogBox(ha);
+    const dialogBox = await getDialogBox(ha, partialPanelResolver);
     showDialog(
         ha,
         CUSTOM_ELEMENT.DIALOG_BOX,
@@ -160,7 +174,10 @@ export const openConfirmDialog = async (
     );
 };
 
-export const openMoreInfoDialog = (ha: HomeAsssistantExtended, entityId: string): void => {
+export const openMoreInfoDialog = (
+    ha: HomeAsssistantExtended,
+    entityId: string
+): void => {
     fireEvent(
         ha,
         EVENT.HASS_MORE_INFO,
@@ -168,7 +185,7 @@ export const openMoreInfoDialog = (ha: HomeAsssistantExtended, entityId: string)
     );
 };
 
-export const getDialogsMethods = (ha: HomeAsssistantExtended) => {
+export const getDialogsMethods = (ha: HomeAsssistantExtended, partialPanelResolver: HAElement) => {
     return {
         openAlertDialog: (dialogParams: DialogBoxParameters): void => {
             const {
@@ -179,6 +196,7 @@ export const getDialogsMethods = (ha: HomeAsssistantExtended) => {
             } = dialogParams;
             openAlertDialog(
                 ha,
+                partialPanelResolver,
                 {
                     title,
                     text,
@@ -199,6 +217,7 @@ export const getDialogsMethods = (ha: HomeAsssistantExtended) => {
             } = dialogParams;
             openConfirmDialog(
                 ha,
+                partialPanelResolver,
                 {
                     title,
                     text,
@@ -211,7 +230,7 @@ export const getDialogsMethods = (ha: HomeAsssistantExtended) => {
             );
         },
         openRestartDialog: () => {
-            openRestartDialog(ha);
+            openRestartDialog(ha, partialPanelResolver);
         },
         openMoreInfoDialog: (entityId: string) => {
             openMoreInfoDialog(ha, entityId);

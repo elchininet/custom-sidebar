@@ -653,7 +653,7 @@ test.describe('on_click property', () => {
                             ...item,
                             on_click: {
                                 action: 'navigate',
-                                path: '/config/developer-tools/yaml'
+                                path: '/config/tools/yaml'
                             }
                         }
                     ]
@@ -670,9 +670,9 @@ test.describe('on_click property', () => {
 
             await getSidebarItem(page, '#').click();
 
-            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
+            await expect(page).toHaveURL(/.*\/config\/tools\/yaml/);
 
-            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
+            await expect(page.locator(SELECTORS.TOOLS_PANEL)).toBeVisible();
 
             await page.goBack();
 
@@ -690,7 +690,7 @@ test.describe('on_click property', () => {
                             ...item,
                             on_click: {
                                 action: 'navigate',
-                                path: '/config/developer-tools/yaml',
+                                path: '/config/tools/yaml',
                                 replace: true
                             }
                         }
@@ -708,9 +708,9 @@ test.describe('on_click property', () => {
 
             await getSidebarItem(page, '#').click();
 
-            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
+            await expect(page).toHaveURL(/.*\/config\/tools\/yaml/);
 
-            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
+            await expect(page.locator(SELECTORS.TOOLS_PANEL)).toBeVisible();
 
             await page.goBack();
 
@@ -732,7 +732,7 @@ test.describe('on_click property', () => {
                                     if (is_state('input_boolean.my_switch', 'on')) {
                                         return '/todo';
                                     }
-                                    return '/config/developer-tools/yaml';
+                                    return '/config/tools/yaml';
                                 ]]]`
                             }
                         }
@@ -746,9 +746,9 @@ test.describe('on_click property', () => {
 
             await sidebarItem.click();
 
-            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
+            await expect(page).toHaveURL(/.*\/config\/tools\/yaml/);
 
-            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
+            await expect(page.locator(SELECTORS.TOOLS_PANEL)).toBeVisible();
 
             await haSwitchStateRequest(page, true);
 
@@ -762,9 +762,9 @@ test.describe('on_click property', () => {
 
             await sidebarItem.click();
 
-            await expect(page).toHaveURL(/.*\/config\/developer-tools\/yaml/);
+            await expect(page).toHaveURL(/.*\/config\/tools\/yaml/);
 
-            await expect(page.locator(SELECTORS.DEVELOPER_TOOLS_PANEL)).toBeVisible();
+            await expect(page.locator(SELECTORS.TOOLS_PANEL)).toBeVisible();
 
         });
 
@@ -780,9 +780,9 @@ test.describe('on_click property', () => {
                                 action: 'navigate',
                                 path: `[[[
                                     if (is_state('input_boolean.my_switch', 'on')) {
-                                        return 'config/developer-tools/yaml';
+                                        return 'config/tools/yaml';
                                     }
-                                    return 'config/developer-tools/event';
+                                    return 'config/tools/event';
                                 ]]]`
                             }
                         }
@@ -794,7 +794,7 @@ test.describe('on_click property', () => {
 
             getSidebarItem(page, '#').click();
 
-            await waitForWarning(page, `${NAMESPACE}: ignoring on_click.path property "config/developer-tools/event" as it doesn't start with "/"`);
+            await waitForWarning(page, `${NAMESPACE}: ignoring on_click.path property "config/tools/event" as it doesn't start with "/"`);
 
             await expect(page).not.toHaveURL(/\/config/);
 
