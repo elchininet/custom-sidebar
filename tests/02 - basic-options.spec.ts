@@ -441,6 +441,7 @@ test.beforeEach(noCacheRoute);
         await page.setViewportSize(desktopViewportSizes);
         await page.reload();
         await waitForMainElements(page);
+        await expect(page.locator(SELECTORS.HUI_VIEW)).toBeVisible();
         let sidebarWidth = await getSidebarWidth(page, false);
         expect(sidebarWidth).toBe(width);
 
