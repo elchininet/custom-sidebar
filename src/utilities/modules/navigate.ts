@@ -8,14 +8,48 @@ import {
 } from '@constants';
 import { fireEvent } from './events';
 
-const dispatchLocationChanged = (pathname: string): void => {
-    fireEvent(
-        window,
-        EVENT.LOCATION_CHANGED,
-        {
-            replace: pathname
+const dispatchLocationChanged = (
+    replace: boolean,
+    params: Parameters<typeof window.history.replaceState>
+): void => {
+
+    const fire = () => {
+        fireEvent(
+            window,
+            EVENT.LOCATION_CHANGED,
+            {
+                replace,
+                source: NAMESPACE
+            }
+        );
+    };
+
+    fire();
+
+    // If there is another LOCATION_CHANGED event not originated from custom-sidebar
+    // Within a 100 milliseconds time offset
+    // Cancel it replacing the location with the previous pathname
+    const offset = 100;
+    const time = Date.now();
+    const callback = (event: Event) => {
+        const timeDiff = Date.now() - time;
+        if (
+            timeDiff < offset &&
+            // If it is not a custom-sidebar event
+            (event as CustomEvent).detail?.source !== NAMESPACE
+        ) {
+            window.history.replaceState(...params);
+            fire();
         }
-    );
+    };
+
+    // Listen for events during the offset
+    window.addEventListener(EVENT.LOCATION_CHANGED, callback);
+
+    // Cancel the listener after the offset
+    setTimeout(() => {
+        window.removeEventListener(EVENT.LOCATION_CHANGED, callback);
+    }, offset);
 };
 
 export const navigate = (
@@ -34,18 +68,16 @@ export const navigate = (
         } else {
             window.history.pushState(...params);
         }
-        dispatchLocationChanged(pathname);
+        dispatchLocationChanged(replace, params);
     } else {
         console.warn(`${NAMESPACE}: ${warningMessage} "${pathname}" as it doesn't start with "/".`);
     }
 };
 
 export const buildNavigateMethods = (sidebar: HAElement) => {
-
     return {
         navigate,
         activateItem: async (item: SidebarItem) => {
-
             // Small delay to avoid activating the item before the panel load logic runs
             await new Promise((resolve) => setTimeout(resolve, 5));
             const activeItem = await sidebar.selector.$.query(`${CUSTOM_ELEMENT.ITEM}.${CLASS.ITEM_SELECTED}`).element as HTMLElement;
@@ -55,7 +87,6 @@ export const buildNavigateMethods = (sidebar: HAElement) => {
 
             item.classList.add(CLASS.ITEM_SELECTED);
             item.tabIndex = 0;
-
         }
     };
 };
