@@ -1,6 +1,7 @@
 import { expect, test } from 'playwright-test-coverage';
 import { haConfigRequest } from './ha-services';
 import {
+    BASE_URL,
     CONFIG_FILES,
     HREFS,
     SELECTORS
@@ -445,6 +446,65 @@ test.describe('methods in JavaScript templates', () => {
             await waitForWarning(page, `${NAMESPACE}: ignoring navigate method using the path "config/tools/yaml" as it doesn't start with "/"`);
 
             await expect(page).not.toHaveURL(/\/config/);
+
+        });
+
+        test('should not execute a location-changed event not originated from custom-sidebar executed withing a 100 milliseconds offset of a navigate method', async ({ page }) => {
+
+            const timeoutOptions = { timeout: 30000 };
+            const toolsPath = '/config/tools/yaml';
+            const toolsUrl = `${BASE_URL}${toolsPath}`;
+
+            await fulfillJson(
+                page,
+                {
+                    order: [
+                        {
+                            ...item,
+                            on_click: {
+                                action: 'javascript',
+                                code: `
+                                    navigate('${toolsPath}')`
+                            }
+                        }
+                    ]
+                }
+            );
+
+            const goToHomeEvent = async (withDetail: boolean) => {
+                return page.evaluate((withDetail: boolean) => {
+                    window.history.replaceState(null, '', '/lovelace');
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            'location-changed',
+                            {
+                                bubbles: true,
+                                cancelable: false,
+                                composed: true,
+                                detail: withDetail
+                                    ? {
+                                        replace: true
+                                    }
+                                    : undefined
+                            }
+                        )
+                    );
+                }, withDetail);
+            };
+
+            await navigateHome(page);
+
+            await getSidebarItem(page, '#').click();
+
+            await goToHomeEvent(true);
+
+            await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible(timeoutOptions);
+            await expect(page).toHaveURL(toolsUrl, timeoutOptions);
+
+            await goToHomeEvent(false);
+
+            await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible(timeoutOptions);
+            await expect(page).toHaveURL(toolsUrl, timeoutOptions);
 
         });
 
