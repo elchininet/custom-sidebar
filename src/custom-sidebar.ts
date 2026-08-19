@@ -1035,14 +1035,8 @@ class CustomSidebar {
                 .getRenderer()
                 .then((renderer) => {
                     this._logger.log('HomeAssistantJavaScriptTemplates instantiated');
-                    this._renderer = renderer;
                     this._compileConfig(config);
-                    this._subscribers = new Subscribers(
-                        this._ha,
-                        this._config,
-                        this._renderer
-                    );
-                    this._logger.log('Executing plugin logic...');
+                    this._renderer = renderer;
                     this._renderer.variables = {
                         ...(this._config.js_variables ?? {}),
                         ...buildNavigateMethods(this._sidebar),
@@ -1054,17 +1048,23 @@ class CustomSidebar {
                         ...getTranslationMethods(this._ha)
                     };
                     this._renderer.refs = this._config.js_refs ?? {};
-                    this._processDefaultPath();
+                    this._subscribers = new Subscribers(
+                        this._ha,
+                        this._config,
+                        this._renderer
+                    );
+                    this._logger.log('Executing plugin logic...');
                     this._subscribers.subscribeTitle(
                         this._sidebar
                     );
-                    this._processSidebar();
                     this._subscribers.subscribeSideBarEdition(
                         this._sidebar,
                         (isSidebarEditable: boolean | undefined) => {
                             this._checkProfileEditableButton(isSidebarEditable);
                         }
                     );
+                    this._processDefaultPath();
+                    this._processSidebar();
                     this._rearrange();
                 });
         });

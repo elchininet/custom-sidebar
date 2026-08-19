@@ -83,6 +83,12 @@ export class Subscribers {
         template: string,
         callback: (result: string) => void
     ): void {
+        if (!this._renderer.subscribed) {
+            const parsed = this._renderer.parseTemplate(template);
+            if (parsed.entities.length) {
+                this._renderer.init();
+            }
+        }
         this._renderer.trackTemplate(
             template,
             (result: unknown): void => {
