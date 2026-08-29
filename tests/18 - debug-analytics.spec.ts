@@ -155,6 +155,7 @@ test.describe('Analytics', () => {
         INTEGRATIONS = 'panel_visited: /config/integrations'
     }
 
+    const userNameLocatorSelector = '.subject';
     const userName = 'Test';
 
     const clickOnElements = async (page: Page) => {
@@ -203,7 +204,7 @@ test.describe('Analytics', () => {
         await clickOnElements(page);
 
         const logbookEntries = page.locator(SELECTORS.ENTRY_CONTAINER).filter({
-            has: page.locator('button', { hasText: userName })
+            has: page.locator(userNameLocatorSelector, { hasText: userName })
         });
 
         await expect(logbookEntries).toContainText([
@@ -230,7 +231,7 @@ test.describe('Analytics', () => {
         await clickOnElements(page);
 
         const logbookEntries = page.locator(SELECTORS.ENTRY_CONTAINER).filter({
-            has: page.locator('button', { hasText: userName })
+            has: page.locator(userNameLocatorSelector, { hasText: userName })
         });
 
         await expect(logbookEntries).toContainText([
@@ -254,7 +255,7 @@ test.describe('Analytics', () => {
         await clickOnElements(page);
 
         const logbookEntries = page.locator(SELECTORS.ENTRY_CONTAINER).filter({
-            has: page.locator('button', { hasText: userName })
+            has: page.locator(userNameLocatorSelector, { hasText: userName })
         });
 
         await expect(logbookEntries).toContainText([
