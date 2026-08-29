@@ -14,6 +14,7 @@ import {
     ATTRIBUTE,
     ATTRIBUTE_VALUE,
     CUSTOM_ELEMENT,
+    DOMAIN_ENTITY_REGEXP,
     EVENT,
     JINJA_TEMPLATE_REG,
     JS_TEMPLATE_REG,
@@ -79,16 +80,23 @@ export class Subscribers {
         return rendered;
     }
 
+    private _checkForJsTemplateSubscriptionStart(template: string): void {
+        if (!this._renderer.subscribed) {
+            const { entities } = this._renderer.parseTemplate(template);
+            if (entities.length > 0) {
+                const containsHaEntities = entities.some((entity: string) => DOMAIN_ENTITY_REGEXP.test(entity));
+                if (containsHaEntities) {
+                    this._renderer.init();
+                }
+            }
+        }
+    }
+
     public createJsTemplateSubscription(
         template: string,
         callback: (result: string) => void
     ): void {
-        if (!this._renderer.subscribed) {
-            const parsed = this._renderer.parseTemplate(template);
-            if (parsed.entities.length) {
-                this._renderer.init();
-            }
-        }
+        this._checkForJsTemplateSubscriptionStart(template);
         this._renderer.trackTemplate(
             template,
             (result: unknown): void => {
@@ -133,7 +141,6 @@ export class Subscribers {
             `${template}`,
             this._config.partials
         );
-
         if (JS_TEMPLATE_REG.test(templateWithPartials)) {
             this.createJsTemplateSubscription(
                 templateWithPartials.replace(JS_TEMPLATE_REG, '$1'),
