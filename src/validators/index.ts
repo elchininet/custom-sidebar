@@ -59,6 +59,10 @@ const ONLY_BASE_CONFIG_OPTIONS = [
     'extendable_configs'
 ] as const;
 
+const ARRAY_OF_STRINGS_OPTIONS = [
+    'default_path_allowlist'
+] as const;
+
 const validateWidthOptions = (config: Config, prefix: string): void => {
     const errorFormatSuffix = `You need to provide a number followed by one of the allowed units (${ALLOWED_UNITS.join(', ')}) or a CSS calc function`;
     const widthRegExp = new RegExp(`^(?:\\d+(?:${ALLOWED_UNITS.join('|')})|calc\\s*\\(.+\\))$`);
@@ -123,6 +127,22 @@ const validateStringOptions = <T, K extends keyof T>(obj: T, props: K[], prefix:
         ) {
             throw new SyntaxError(`${prefix} "${String(prop)}" property should be a string`);
         }
+    });
+};
+
+const validateArrayOfStringsOptions = <T, K extends keyof T>(obj: T, props: K[], prefix: string): void => {
+    props.forEach((prop: K): void => {
+        if (
+            !isUndefined(obj[prop]) &&
+            !isArray(obj[prop])
+        ) {
+            throw new SyntaxError(`${prefix} "${String(prop)}" property should be an array`);
+        }
+        obj[prop]?.forEach((value: unknown, index: number) => {
+            if (!isString(value)) {
+                throw new SyntaxError(`${prefix} each item of the array "${String(prop)}" should be a string. Index ${index} is not a string.`);
+            }
+        });
     });
 };
 
@@ -434,6 +454,14 @@ const validateExceptionItem = (exception: ConfigException, config: Config): void
         `${ERROR_PREFIX}, exceptions`
     );
 
+    validateArrayOfStringsOptions(
+        exception,
+        [
+            ...ARRAY_OF_STRINGS_OPTIONS
+        ],
+        `${ERROR_PREFIX}, exceptions`
+    );
+
     validateWidthOptions(exception, `${ERROR_PREFIX}, exceptions`);
 
     validateStringOrNumberOptions(
@@ -645,6 +673,14 @@ export const validateConfig = (config: Config): void => {
         config,
         [
             ...BASE_CONFIG_OPTIONS
+        ],
+        `${ERROR_PREFIX},`
+    );
+
+    validateArrayOfStringsOptions(
+        config,
+        [
+            ...ARRAY_OF_STRINGS_OPTIONS
         ],
         `${ERROR_PREFIX},`
     );

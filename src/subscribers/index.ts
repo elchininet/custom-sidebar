@@ -14,7 +14,7 @@ import {
     ATTRIBUTE,
     ATTRIBUTE_VALUE,
     CUSTOM_ELEMENT,
-    DOMAIN_ENTITY_REGEXP,
+    ELEMENT,
     EVENT,
     JINJA_TEMPLATE_REG,
     JS_TEMPLATE_REG,
@@ -84,10 +84,7 @@ export class Subscribers {
         if (!this._renderer.subscribed) {
             const { entities } = this._renderer.parseTemplate(template);
             if (entities.length > 0) {
-                const containsHaEntities = entities.some((entity: string) => DOMAIN_ENTITY_REGEXP.test(entity));
-                if (containsHaEntities) {
-                    this._renderer.init();
-                }
+                this._renderer.init();
             }
         }
     }
@@ -167,11 +164,14 @@ export class Subscribers {
             .element as Promise<HTMLElement>;
         titlePromise.then((titleElement: HTMLElement) => {
             if (this._config.title) {
-                titleElement.innerHTML = '';
+                const children = [...titleElement.childNodes.values()];
+                const title = children.find((child: ChildNode) => child.nodeType === Node.TEXT_NODE) as ChildNode;
+                const container = document.createElement(ELEMENT.DIV);
+                titleElement.replaceChild(container, title);
                 this._subscribeTemplate(
                     this._config.title,
                     (rendered: string) => {
-                        titleElement.innerHTML = rendered;
+                        container.innerHTML = rendered;
                     }
                 );
             }

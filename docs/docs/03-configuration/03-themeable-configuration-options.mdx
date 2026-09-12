@@ -26,30 +26,33 @@ These options are only useful if you plan to change the appareance of the sideba
 | sidebar_button_color_hover<sup>\*</sup> | String        | no       | Sets the color of the sidebar hamburger menu in a hover state |
 | sidebar_button_background_hover<sup>\*</sup> | String   | no       | Sets the background of the sidebar hamburger menu in a hover state. It could be a color or [a background declaration]. If it is not specified, the `sidebar_button_color_hover` will be used, and if this one is not specified too, the `sidebar_button_color` will be used |
 | sidebar_button_background_hover_opacity<sup>\*</sup>    | Number or String  | no       | Sets the opacity of the background of the sidebar hamburger menu in a hover state. It should be a number between `0` (fully transparent) and `1` (fully opaque). If it is not specified, the default `0.1` will be used |
-| item_background<sup>\*</sup> | String                   | no       | Sets the background of the sidebar items. It could be a color or [a background declaration] |
-| item_background_hover<sup>\*</sup> | String             | no       | Sets the background of the sidebar items in a hover state. It could be a color or [a background declaration] |
+| item_background<sup>\*</sup> | String                     | no       | Sets the background of the sidebar items. It could be a color or [a background declaration] |
+| item_background_hover<sup>\*</sup> | String               | no       | Sets the background of the sidebar items in a hover state. It could be a color or [a background declaration] |
 | item_background_hover_opacity<sup>\*</sup> | Number or String | no | Sets the opacity of the items' background in a hover state. It should be a number between `0` (fully transparent) and `1` (fully opaque) |
-| icon_color<sup>\*</sup> | String                        | no       | Sets the color of the sidebar icons |
-| icon_color_selected<sup>\*</sup> | String               | no       | Sets the icon color of the selected sidebar item |
-| icon_color_hover<sup>\*</sup> | String                  | no       | Sets the icon color of the sidebar items in a hover state |
-| text_color<sup>\*</sup> | String                        | no       | Sets the text color of the sidebar items |
-| text_color_selected<sup>\*</sup> | String               | no       | Sets the text color of the selected sidebar item |
-| text_color_hover<sup>\*</sup> | String                  | no       | Sets the text color of the sidebar items in a hover state |
-| selection_background<sup>\*</sup> | String              | no       | Sets the background of the selected item. It could be a color or [a background declaration]. If it is not specified, the `icon_color_selected` will be used |
-| selection_opacity<sup>\*</sup> | Number or String       | no       | Sets the opacity of the selected item background. It should be a number between `0` (fully transparent) and `1` (fully opaque). If it is not specified, the default `0.12` will be used |
-| info_color<sup>\*</sup> | String                        | no       | Sets the color of the info texts of the sidebar items |
-| info_color_selected<sup>\*</sup> | String               | no       | Sets the color of the info text of the selected sidebar item |
-| info_color_hover<sup>\*</sup> | String                  | no       | Sets the color of the info texts in a hover state |
-| notification_color<sup>\*</sup>  | String               | no       | Sets the color of the sidebar notifications |
-| notification_color_selected<sup>\*</sup>  | String      | no       | Sets the color of the sidebar notification of the selected sidebar item |
-| notification_color_hover<sup>\*</sup>  | String         | no       | Sets the color of the sidebar notification when the item is in hover state |
-| notification_text_color<sup>\*</sup>  | String          | no       | Sets the color of the sidebar notifications texts |
-| notification_text_color_selected<sup>\*</sup>  | String | no       | Sets the color of the sidebar notification texts of the selected sidebar item |
-| notification_text_color_hover<sup>\*</sup>  | String    | no       | Sets the color of the sidebar notifications texts when the item is in hover state |
-| divider_color<sup>\*</sup>       | String               | no       | Sets the color of the sidebar dividers |
+| icon_color<sup>\*</sup> | String                          | no       | Sets the color of the sidebar icons |
+| icon_color_selected<sup>\*</sup> | String                 | no       | Sets the icon color of the selected sidebar item |
+| icon_color_hover<sup>\*</sup> | String                    | no       | Sets the icon color of the sidebar items in a hover state |
+| text_color<sup>\*</sup> | String                          | no       | Sets the text color of the sidebar items |
+| text_color_selected<sup>\*</sup> | String                 | no       | Sets the text color of the selected sidebar item |
+| text_color_hover<sup>\*</sup> | String                    | no       | Sets the text color of the sidebar items in a hover state |
+| selection_background<sup>\*</sup> | String                | no       | Sets the background of the selected item. It could be a color or [a background declaration]. If it is not specified, the `icon_color_selected` will be used |
+| selection_opacity<sup>\*</sup> | Number or String         | no       | Sets the opacity of the selected item background. It should be a number between `0` (fully transparent) and `1` (fully opaque). If it is not specified, the default `0.12` will be used |
+| info_color<sup>\*</sup> | String                          | no       | Sets the color of the info texts of the sidebar items |
+| info_color_selected<sup>\*</sup> | String                 | no       | Sets the color of the info text of the selected sidebar item |
+| info_color_hover<sup>\*</sup> | String                    | no       | Sets the color of the info texts in a hover state |
+| notification_color<sup>\*</sup>  | String                 | no       | Sets the color of the sidebar notifications |
+| notification_color_selected<sup>\*</sup>  | String        | no       | Sets the color of the sidebar notification of the selected sidebar item |
+| notification_color_hover<sup>\*</sup>  | String           | no       | Sets the color of the sidebar notification when the item is in hover state |
+| notification_border_color<sup>\*</sup>  | String          | no       | Sets the border color of the sidebar notifications |
+| notification_border_color_selected<sup>\*</sup>  | String | no       | Sets the border color of the sidebar notification of the selected sidebar item |
+| notification_border_color_hover<sup>\*</sup>  | String    | no       | Sets the border color of the sidebar notification when the item is in hover state |
+| notification_text_color<sup>\*</sup>  | String            | no       | Sets the color of the sidebar notifications texts |
+| notification_text_color_selected<sup>\*</sup>  | String   | no       | Sets the color of the sidebar notification texts of the selected sidebar item |
+| notification_text_color_hover<sup>\*</sup>  | String      | no       | Sets the color of the sidebar notifications texts when the item is in hover state |
+| divider_color<sup>\*</sup>       | String                 | no       | Sets the color of the sidebar dividers |
 for this divider if it is set |
-| scrollbar_thumb_color<sup>\*</sup>| String              | no       | Sets the color of the sidebar scrollbar (This option uses non-baseline CSS styles and it could not work in some browsers) |
-| styles             | String                             | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
+| scrollbar_thumb_color<sup>\*</sup>| String                | no       | Sets the color of the sidebar scrollbar (This option uses non-baseline CSS styles and it could not work in some browsers) |
+| styles             | String                               | no       | Custom styles that will be added to the styles block of the plugin. Useful to override styles |
 
 :::tip
 
@@ -82,6 +85,9 @@ for this divider if it is set |
 | notification_color<sup>\*</sup>  | String | no  | Sets the notification color (it overrides the root `notification_color` option) |
 | notification_color_selected<sup>\*</sup>  | String  | no | Sets the color of the item notification when it is selected (it overrides the root `notification_color_selected` option) |
 | notification_color_hover<sup>\*</sup>  | String | no | Sets the color of the item notification in hover state (it overrides the root `notification_color_hover` option) |
+| notification_border_color<sup>\*</sup>  | String | no  | Sets the notification border color (it overrides the root `notification_border_color` option) |
+| notification_border_color_selected<sup>\*</sup>  | String  | no | Sets the border color of the item notification when it is selected (it overrides the root `notification_border_color_selected` option) |
+| notification_border_color_hover<sup>\*</sup>  | String | no | Sets the border color of the item notification in hover state (it overrides the root `notification_border_color_hover` option) |
 | notification_text_color<sup>\*</sup>  | String  | no       | Sets the color of the notification text (it overrides the root `notification_text_color` option) |
 | notification_text_color_selected<sup>\*</sup>  | String | no | Sets the color of the notification text when it is selected (it overrides the root `notification_text_color_selected` option) |
 | notification_text_color_hover<sup>\*</sup>  | String | no | Sets the color of the notifications text in hover state (it overrides the root `notification_text_color_hover` option) |

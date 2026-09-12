@@ -82,6 +82,19 @@ test.beforeEach(noCacheRoute);
             ]
         },
         screenshot: 'sidebar-notification-text-color-hover.png'
+    },
+    {
+        title: 'should set notification_border_color_hover',
+        json: {
+            notification_border_color_hover: 'red',
+            order: [
+                {
+                    item: 'history',
+                    notification: '5'
+                }
+            ]
+        },
+        screenshot: 'sidebar-notification-border-color-hover.png'
     }
 ].forEach(({ title, json, screenshot }): void => {
 

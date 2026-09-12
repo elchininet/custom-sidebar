@@ -280,7 +280,15 @@ class CustomSidebar {
     }
 
     private _executeDefaultPath(pathname: string) {
-        navigate(pathname, true, 'ignoring default_path property');
+        const currentPathname = location.pathname;
+        const pathsAllowlist = this._config.default_path_allowlist ?? [];
+        const shouldRedirect = !pathsAllowlist.some((path: string): boolean => {
+            const regExp = new RegExp(`^${path.replace('*', '.*?')}$`);
+            return regExp.test(currentPathname);
+        });
+        if (shouldRedirect) {
+            navigate(pathname, true, 'ignoring default_path property');
+        }
     }
 
     private async _processSidebarMode(): Promise<void> {
@@ -455,8 +463,8 @@ class CustomSidebar {
                     STYLES.INFO_COLOR,
                     STYLES.INFO_COLOR_SELECTED,
                     STYLES.INFO_COLOR_HOVER,
-                    STYLES.NOTIFICATION_COLOR_SELECTED_NOTIFICATION_TEXT_COLOR_SELECTED,
-                    STYLES.NOTIFICATION_COLOR_HOVER_NOTIFICATION_TEXT_COLOR_HOVER,
+                    STYLES.NOTIFICATION_COLORS_SELECTED,
+                    STYLES.NOTIFICATION_COLORS_HOVER,
                     STYLES.SIDEBAR_BOTTOM_LIST_EMPTY,
                     this._config.styles || ''
                 ],

@@ -93,6 +93,14 @@ test.beforeEach(noCacheRoute);
         screenshot: 'color-overriding-notification-color.png'
     },
     {
+        title: 'should override the global notification_border_color option',
+        json: getOrderItemWithColorOption(
+            'notification_border_color',
+            { notification: '2' }
+        ),
+        screenshot: 'color-overriding-notification-border-color.png'
+    },
+    {
         title: 'should override the global notification_text_color option',
         json: getOrderItemWithColorOption(
             'notification_text_color',

@@ -245,6 +245,27 @@ test.describe('main options', () => {
             warning: `${NAMESPACE}: ignoring default_path property "https://google.com/jinja" as it doesn't start with "/".`
         },
         {
+            title: 'should throw an error if the default_path_allowlist property is not an array',
+            json: {
+                default_path_allowlist: {
+                    '/config': true
+                }
+            },
+            error: `${ERROR_PREFIX}, "default_path_allowlist" property should be an array`
+        },
+        {
+            title: 'should throw an error if any of the items in the default_path_allowlist property is not a string',
+            json: {
+                default_path_allowlist: [
+                    '/config/*',
+                    [
+                        '/lovelace'
+                    ]
+                ]
+            },
+            error: `${ERROR_PREFIX}, each item of the array "default_path_allowlist" should be a string. Index 1 is not a string.`
+        },
+        {
             title: 'should throw an error if the js_variables property is not an object',
             json: {
                 js_variables: [1, 'two', true]
@@ -1470,6 +1491,27 @@ test.describe('exceptions', () => {
                 ]
             },
             warning: `${NAMESPACE}: ignoring default_path property "http://localhost:8123/jinja" as it doesn't start with "/".`
+        },
+        {
+            title: 'should throw an error if the default_path_allowlist property is not an array',
+            json: {
+                default_path_allowlist: {
+                    '/config': true
+                }
+            },
+            error: `${ERROR_PREFIX}, "default_path_allowlist" property should be an array`
+        },
+        {
+            title: 'should throw an error if any of the items in the default_path_allowlist property is not a string',
+            json: {
+                default_path_allowlist: [
+                    '/config/*',
+                    [
+                        '/lovelace'
+                    ]
+                ]
+            },
+            error: `${ERROR_PREFIX}, each item of the array "default_path_allowlist" should be a string. Index 1 is not a string.`
         },
         {
             title: 'should throw an error if a base config option is found in an exception order item',
