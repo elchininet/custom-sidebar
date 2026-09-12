@@ -187,6 +187,32 @@ test.beforeEach(noCacheRoute);
         screenshot: 'sidebar-notification-text-color-selected.png'
     },
     {
+        title: 'should set notification_border_color',
+        json: {
+            notification_border_color: 'red',
+            order: [
+                {
+                    item: 'lists',
+                    notification: 3
+                }
+            ]
+        },
+        screenshot: 'sidebar-notification-border-color.png'
+    },
+    {
+        title: 'should set notification_border_color_selected',
+        json: {
+            notification_border_color_selected: 'red',
+            order: [
+                {
+                    item: 'overview',
+                    notification: 3
+                }
+            ]
+        },
+        screenshot: 'sidebar-notification-border-color-selected.png'
+    },
+    {
         title: 'If info is set in one item it should add the secondary text',
         json: {
             order: [
@@ -632,6 +658,57 @@ test('should redirect to the default_path on refresh', async ({ page }) => {
     await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
     await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
 
+});
+
+test('should not redirect to the default_path if the page is included in the default_path_allowlist option', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            default_path: '/logbook',
+            default_path_allowlist: [
+                '/config/integrations/dashboard'
+            ]
+        }
+    );
+
+    await page.goto('/config/integrations/dashboard');
+    await waitForMainElements(page);
+    await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
+    await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
+
+    await page.goto('/config/automation/dashboard');
+    await waitForMainElements(page);
+    await expect(page.locator(SELECTORS.HA_LOGBOOK)).toBeVisible();
+    await expect(page).toHaveURL(/.*\/logbook/);
+});
+
+test('should not redirect to the default_path if the page match a pattern included in the default_path_allowlist option', async ({ page }) => {
+
+    await fulfillJson(
+        page,
+        {
+            default_path: '/logbook',
+            default_path_allowlist: [
+                '/config/*/dashboard'
+            ]
+        }
+    );
+
+    await page.goto('/config/integrations/dashboard');
+    await waitForMainElements(page);
+    await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
+    await expect(page).toHaveURL(`${BASE_URL}/config/integrations/dashboard`);
+
+    await page.goto('/config/automation/dashboard');
+    await waitForMainElements(page);
+    await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
+    await expect(page).toHaveURL(`${BASE_URL}/config/automation/dashboard`);
+
+    await page.goto('/config/apps/installed');
+    await waitForMainElements(page);
+    await expect(page.locator(SELECTORS.HA_LOGBOOK)).toBeVisible();
+    await expect(page).toHaveURL(/.*\/logbook/);
 });
 
 test.describe('on_click property', () => {

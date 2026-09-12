@@ -29,6 +29,7 @@ export const REGEXP_TO_STRING = '[object RegExp]';
 export enum ELEMENT {
     ANCHOR = 'a',
     BUTTON = 'button',
+    DIV = 'div',
     SPAN = 'span'
 }
 
@@ -146,6 +147,10 @@ export enum ATTRIBUTE_VALUE {
     ZERO = '0'
 }
 
+export enum CSS_DECLARATION_VALUE {
+    TRANSPARENT = 'transparent'
+}
+
 export enum EVENT {
     CHANGE = 'change',
     CLICK = 'click',
@@ -232,6 +237,9 @@ export enum CUSTOM_SIDEBAR_CSS_VARIABLES {
     NOTIFICATION_COLOR = '--custom-sidebar-notification-color',
     NOTIFICATION_COLOR_SELECTED = '--custom-sidebar-notification-color-selected',
     NOTIFICATION_COLOR_HOVER = '--custom-sidebar-notification-color-hover',
+    NOTIFICATION_BORDER_COLOR = '--custom-sidebar-notification-border-color',
+    NOTIFICATION_BORDER_COLOR_SELECTED = '--custom-sidebar-notification-border-color-selected',
+    NOTIFICATION_BORDER_COLOR_HOVER = '--custom-sidebar-notification-border-color-hover',
     NOTIFICATION_TEXT_COLOR = '--custom-sidebar-notification-text-color',
     NOTIFICATION_TEXT_COLOR_SELECTED = '--custom-sidebar-notification-text-color-selected',
     NOTIFICATION_TEXT_COLOR_HOVER = '--custom-sidebar-notification-text-color-hover',
@@ -256,6 +264,9 @@ export const ITEM_TEMPLATE_COLOR_CONFIG_OPTIONS: ItemColorConfigKeys[] = [
     'notification_color',
     'notification_color_selected',
     'notification_color_hover',
+    'notification_border_color',
+    'notification_border_color_selected',
+    'notification_border_color_hover',
     'notification_text_color',
     'notification_text_color_selected',
     'notification_text_color_hover',
@@ -272,27 +283,30 @@ export const ITEM_STRING_CONFIG_OPTIONS: SidebarStringConfigKeys[] = [
 ];
 
 export const ITEM_OPTIONS_VARIABLES_MAP: [ItemColorConfigKeys, string][] = [
-    ['item_background',                  CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND],
-    ['item_background_hover',            CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER],
-    ['item_background_hover_opacity',    CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER_OPACITY],
-    ['icon_color',                       CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR],
-    ['icon_color_selected',              CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED],
-    ['icon_color_hover',                 CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_HOVER],
-    ['text_color',                       CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR],
-    ['text_color_selected',              CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR_SELECTED],
-    ['text_color_hover',                 CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR_HOVER],
-    ['selection_background',             CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_BACKGROUND],
-    ['selection_opacity',                CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_OPACITY],
-    ['info_color',                       CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR],
-    ['info_color_selected',              CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR_SELECTED],
-    ['info_color_hover',                 CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR_HOVER],
-    ['notification_color',               CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR],
-    ['notification_color_selected',      CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR_SELECTED],
-    ['notification_color_hover',         CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR_HOVER],
-    ['notification_text_color',          CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR],
-    ['notification_text_color_selected', CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_SELECTED],
-    ['notification_text_color_hover',    CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_HOVER],
-    ['divider_color',                    CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR]
+    ['item_background',                    CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND],
+    ['item_background_hover',              CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER],
+    ['item_background_hover_opacity',      CUSTOM_SIDEBAR_CSS_VARIABLES.ITEM_BACKGROUND_HOVER_OPACITY],
+    ['icon_color',                         CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR],
+    ['icon_color_selected',                CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_SELECTED],
+    ['icon_color_hover',                   CUSTOM_SIDEBAR_CSS_VARIABLES.ICON_COLOR_HOVER],
+    ['text_color',                         CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR],
+    ['text_color_selected',                CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR_SELECTED],
+    ['text_color_hover',                   CUSTOM_SIDEBAR_CSS_VARIABLES.TEXT_COLOR_HOVER],
+    ['selection_background',               CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_BACKGROUND],
+    ['selection_opacity',                  CUSTOM_SIDEBAR_CSS_VARIABLES.SELECTION_OPACITY],
+    ['info_color',                         CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR],
+    ['info_color_selected',                CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR_SELECTED],
+    ['info_color_hover',                   CUSTOM_SIDEBAR_CSS_VARIABLES.INFO_COLOR_HOVER],
+    ['notification_color',                 CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR],
+    ['notification_color_selected',        CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR_SELECTED],
+    ['notification_color_hover',           CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_COLOR_HOVER],
+    ['notification_border_color',          CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_BORDER_COLOR],
+    ['notification_border_color_selected', CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_BORDER_COLOR_SELECTED],
+    ['notification_border_color_hover',    CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_BORDER_COLOR_HOVER],
+    ['notification_text_color',            CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR],
+    ['notification_text_color_selected',   CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_SELECTED],
+    ['notification_text_color_hover',      CUSTOM_SIDEBAR_CSS_VARIABLES.NOTIFICATION_TEXT_COLOR_HOVER],
+    ['divider_color',                      CUSTOM_SIDEBAR_CSS_VARIABLES.DIVIDER_COLOR]
 ];
 
 export const SIDEBAR_OPTIONS_VARIABLES_MAP: [SidebarColorConfigKeys, string][] = [

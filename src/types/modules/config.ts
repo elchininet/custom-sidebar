@@ -101,6 +101,9 @@ export interface ItemColorConfig {
     notification_color?: string;
     notification_color_selected?: string;
     notification_color_hover?: string;
+    notification_border_color?: string;
+    notification_border_color_selected?: string;
+    notification_border_color_hover?: string;
     notification_text_color?: string;
     notification_text_color_selected?: string;
     notification_text_color_hover?: string;
@@ -161,6 +164,7 @@ export interface BaseConfig extends SidebarColorConfig {
     sidebar_editable?: boolean | string;
     sidebar_mode?: `${SidebarMode}`;
     default_path?: string;
+    default_path_allowlist?: string[];
     width?: number | string | SidebarWidth;
     styles?: string;
     extend_from?: string | string[];
