@@ -4,11 +4,11 @@ sidebar_position: 4
 
 # Warning about not matching sidebar items
 
-This warning means that you have an item in your configuration that doesn't match any sidebar item.
+This warning means that you have an item in your configuration that doesn't match any sidebar item. This can happen if you have a stale item configuration or if you are trying to match an item using the wrong matcher (e.g. trying to match by `href` without specifying it).
 
 ## Matching by text
 
-By default the matching of the sidebar items is done by text. If you are not using the `exact` property with value `true` the text can be a substring of the text in the sidebar item. You need to avoid having a text that could match more than one item, if you have two items with a very similar text or with the same text, you should match by `href` (consult the `match` property in [Main Configuration Options > Order Items Properties](../configuration/main-configuration-options#order-items-properties)).
+By default the matching of the sidebar items is done by text. If you are not using the `exact` property with value `true` the text can be a case-insensitive substring of the text in the sidebar item. You need to avoid having a text that could match more than one item, if you have two items with a very similar text or with the same text, you should match by `href` (consult the `match` property in [Main Configuration Options > Order Items Properties](../configuration/main-configuration-options#order-items-properties)).
 
 ## Using a language different from English
 
