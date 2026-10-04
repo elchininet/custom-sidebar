@@ -477,9 +477,9 @@ test('if sidebar_mode is set to "hidden" it should not be possible to make the s
         sidebar_mode: 'hidden'
     });
 
-    await page.goto('/profile');
+    await page.goto('/profile/browser');
 
-    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await expect(page).toHaveURL(`${BASE_URL}/profile/browser`);
     await waitForBasicElements(page);
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
@@ -490,7 +490,7 @@ test('if sidebar_mode is set to "hidden" it should not be possible to make the s
 
     await page.reload();
 
-    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await expect(page).toHaveURL(`${BASE_URL}/profile/browser`);
     await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
     await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
@@ -503,9 +503,9 @@ test('if sidebar_mode is set to "narrow" it should not be possible to hide the s
         sidebar_mode: 'narrow'
     });
 
-    await page.goto('/profile');
+    await page.goto('/profile/browser');
 
-    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await expect(page).toHaveURL(`${BASE_URL}/profile/browser`);
     await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
     await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
@@ -515,7 +515,7 @@ test('if sidebar_mode is set to "narrow" it should not be possible to hide the s
 
     await page.reload();
 
-    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await expect(page).toHaveURL(`${BASE_URL}/profile/browser`);
     await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
     await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
@@ -528,9 +528,9 @@ test('if sidebar_mode is set to "extended" it should not be possible to hide the
         sidebar_mode: 'extended'
     });
 
-    await page.goto('/profile');
+    await page.goto('/profile/browser');
 
-    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await expect(page).toHaveURL(`${BASE_URL}/profile/browser`);
     await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
     await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
@@ -540,7 +540,7 @@ test('if sidebar_mode is set to "extended" it should not be possible to hide the
 
     await page.reload();
 
-    await expect(page).toHaveURL(`${BASE_URL}/profile/general`);
+    await expect(page).toHaveURL(`${BASE_URL}/profile/browser`);
     await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
     await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
