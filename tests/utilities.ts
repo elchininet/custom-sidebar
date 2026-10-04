@@ -77,8 +77,8 @@ export const navigateHome = async (page: Page, includeSidebar = true): Promise<v
 };
 
 export const navigateToProfile = async (page: Page): Promise<void> => {
-    await page.goto('/profile');
-    await page.waitForURL(/.*\/profile\/general$/);
+    await page.goto('/profile/preferences');
+    await page.waitForURL(/.*\/profile\/preferences$/);
     await waitForMainElements(page);
     await expect(page.locator(SELECTORS.PROFILE_EDIT_BUTTON)).toBeVisible();
 };

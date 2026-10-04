@@ -86,7 +86,7 @@ export enum SELECTOR {
     BADGE = '.badge',
     CONFIGURATION = '.configuration',
     HA_MENU_BUTTON = '.header .toolbar > ha-menu-button',
-    EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-general$ ha-pick-dashboard-row + ha-row-item > ha-button',
+    EDIT_SIDEBAR_BUTTON = 'ha-panel-profile ha-profile-section-preferences$ ha-pick-dashboard-row + ha-row-item > ha-button',
     SIDEBAR_NOTIFICATIONS_CONTAINER = '.notifications-container',
     SIDEBAR_NOTIFICATIONS_CONTAINER_HOVER = '.notifications-container:hover',
     SIDEBAR_NOTIFICATIONS = '.notifications',
@@ -345,7 +345,7 @@ export const ANALITICS_KEYS: Record<Uppercase<keyof AnalyticsConfig>, keyof Anal
 
 export const ALLOWED_UNITS = ['%', 'em', 'ex', 'px', 'rem', 'vh', 'vmax', 'vmin', 'vw'];
 
-export const PROFILE_GENERAL_PATH_REGEXP = /\/profile(\/general)?$/;
+export const PROFILE_GENERAL_PATH_REGEXP = /\/profile(\/preferences)?$/;
 
 export const JS_TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;
 export const JINJA_TEMPLATE_REG = /\{\{[\s\S]*\}\}|\{%[\s\S]*%\}/;
