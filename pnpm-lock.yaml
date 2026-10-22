@@ -5,10 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  baseline-browser-mapping@>=2.0.0 <2.11.0: ^2.11.0
-  brace-expansion@>=4.0.0 <5.0.9: ^5.0.9
-  browserslist@<=4.28.6: ^4.28.7
-  js-yaml@<3.15.2: ^3.15.2
   uuid@<11.1.1: ^11.1.1
 
 importers:
@@ -1351,7 +1347,7 @@ packages:
     resolution: {integrity: sha512-pJ2sYawQS0R/WI928Gj5GlPhTGzbMelq0+4INtSYNDV9ErKJcX6xjGWkoG/VnB3dpUm00zALaqkrUD77pO5TDQ==}
     hasBin: true
     peerDependencies:
-      browserslist: ^4.28.7
+      browserslist: '>= 4.21.0'
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
