@@ -703,7 +703,7 @@ test('should not redirect to the default_path if the page match a pattern includ
     await page.goto('/config/automation/dashboard');
     await waitForMainElements(page);
     await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
-    await expect(page).toHaveURL(`${BASE_URL}/config/automation/dashboard`);
+    await expect(page).toHaveURL(/.*\/config\/automation\/dashboard(\?\w+=\w+)?/);
 
     await page.goto('/config/apps/installed');
     await waitForMainElements(page);

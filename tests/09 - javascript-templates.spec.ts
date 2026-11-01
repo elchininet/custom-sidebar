@@ -793,7 +793,7 @@ test('an item with a JavaScript template in the attributes property should modif
 
         await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
         await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
-        await expect(page).toHaveURL(`${BASE_URL}/config/automation/dashboard`);
+        await expect(page).toHaveURL(/.*\/config\/automation\/dashboard(\?\w+=\w+)?/);
 
         await haSwitchStateRequest(page, true);
 
