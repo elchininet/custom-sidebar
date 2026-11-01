@@ -70,6 +70,7 @@ export enum SELECTOR {
     HOST_EXPANDED_NOT_MODAL = ':host([expanded]:not([modal]))',
     HOST_EXPANDED_NOT_NAROW = ':host([expanded]:not([narrow]))',
     HOST_HOVER_NOT_DISABLED = ':host(:hover:not([disabled]))',
+    HOVER = '.hover',
     SIDEBAR_LOADER = 'ha-fade-in',
     SIDEBAR_TOP_HA_LIST_NAV = '.panels-list > .wrapper > ha-list-nav',
     SIDEBAR_TOP_ITEMS_CONTAINER = '.panels-list > .wrapper > ha-list-nav > slot[name="main-navigation"]',
@@ -195,9 +196,9 @@ export enum HA_CSS_VARIABLES {
     SIDEBAR_TEXT_COLOR = '--sidebar-text-color',
     SIDEBAR_SELECTED_TEXT_COLOR = '--sidebar-selected-text-color',
     HA_SIDEBAR_WIDTH = '--ha-sidebar-width',
-    MD_RIPPLE_HOVER_COLOR = '--md-ripple-hover-color',
-    MD_RIPPLE_HOVER_OPACITY = '--md-ripple-hover-opacity',
-    MD_SYS_COLOR_ON_SURFACE = '--md-sys-color-on-surface',
+    HA_RIPPLE_COLOR = '--ha-ripple-color',
+    HA_RIPPLE_HOVER_COLOR = '--ha-ripple-hover-color',
+    HA_RIPPLE_HOVER_OPACITY = '--ha-ripple-hover-opacity',
     ACCENT_COLOR = '--accent-color',
     TEXT_ACCENT_COLOR = '--text-accent-color',
     TEXT_PRIMARY_COLOR = '--text-primary-color',
@@ -205,6 +206,7 @@ export enum HA_CSS_VARIABLES {
     DIVIDER_COLOR = '--divider-color',
     DIVIDER_OPACITY = '--dark-divider-opacity',
     SCROLLBAR_THUMB_COLOR = '--scrollbar-thumb-color',
+    SECONDARY_TEXT_COLOR = '--secondary-text-color',
     CURRENT_COLOR = 'currentColor'
 }
 

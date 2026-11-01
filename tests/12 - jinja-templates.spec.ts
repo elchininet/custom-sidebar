@@ -391,7 +391,7 @@ test('if the hide property is a template, item should get hidden when the templa
 
         await expect(page.locator(SELECTORS.HA_SIDEBAR)).toBeVisible();
         await expect(page.locator(SELECTORS.PANEL_CONFIG)).toBeVisible();
-        await expect(page).toHaveURL(`${BASE_URL}/config/automation/dashboard`, { timeout: 30000 });
+        await expect(page).toHaveURL(/.*\/config\/automation\/dashboard(\?\w+=\w+)?/, { timeout: 30000 });
 
         await haSwitchStateRequest(page, true);
 
