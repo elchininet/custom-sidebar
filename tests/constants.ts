@@ -24,7 +24,7 @@ export const SELECTORS = {
     TITLE: '.menu .title',
     SIDEBAR_HA_ICON_BUTTON: '.menu ha-icon-button',
     HA_MENU_BUTTON: '.header ha-menu-button ha-icon-button',
-    SIDEBAR_EDIT_MODAL: 'dialog-edit-sidebar ha-dialog[header-title="Edit sidebar"] .content',
+    SIDEBAR_EDIT_MODAL: 'dialog-edit-sidebar ha-dialog[header-title="Edit sidebar"] ha-items-display-editor',
     PROFILE_EDIT_BUTTON: 'ha-profile-section-preferences .container > ha-card ha-pick-dashboard-row + ha-row-item > ha-button',
     PROFILE_HIDE_SIDEBAR: '.container > ha-card ha-force-narrow-row ha-row-item > ha-switch',
     NOTIFICATIONS: 'ha-list-item-button.notifications',
