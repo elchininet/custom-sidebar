@@ -2,6 +2,7 @@
 sidebar_position: 2
 ---
 
+import InstallThrougMarketplaceExample from '@site/docs/_partials/02-installation/_installation-trough-marketplace.mdx';
 import InstallThroughHacsExample from '@site/docs/_partials/02-installation/_installation-trough-hacs.mdx';
 import InstallationManualExample from '@site/docs/_partials/02-installation/_installation-manual.mdx';
 
@@ -31,9 +32,50 @@ If you have `Home Assistant` `2026.8.0` or greater installed, the minimum compat
 
 :::
 
-You can install the plugin manually or through [HACS], not both. **If you install the plugin using the two installations methods you could have issues or errors**.
+You can install the plugin manually or through [Marketplace] (former [HACS]), not both. **If you install the plugin using the two installations methods you could have issues or errors**. Pick one of the installations method below.
 
-### Installation through HACS (recommended)
+### Installation through Marketplace (recommended)
+
+:::info[Info]
+
+Beginning with Home Assistant `2026.11.0`, [HACS] was intagrated into Home Assistant as the [Marketplace]. Read [the announcement](https://www.home-assistant.io/blog/2026/11/04/release-202611/#welcome-to-the-marketplace).
+
+:::
+
+#### Go to the Marketplace plugin's page
+
+If you have not disabled the [My Home Assistant] integration, just click on [this link](https://my.home-assistant.io/redirect/marketplace_repository/?owner=elchininet&repository=custom-sidebar&category=plugin) to go to the plugin's page, otherwise follow the next steps:
+
+1. Go to `Settings`
+2. Go to `Marketplace`
+3. Search for `custom-sidebar` and click on it
+
+#### Install the plugin
+
+1. On the plugin page, click on the `Install` button
+2. Click on `Install` in the more-info dialog
+3. When the plugin is already installed, add the url of the plugin bundle as an [extra_module_url] in your `configuration.yaml`:
+
+<InstallThrougMarketplaceExample />
+
+4. Restart Home Assistant
+
+:::warning[Important]
+
+1. Do not get creative with the path of the plugin, use the provided one. The [local custom path](https://www.home-assistant.io/integrations/http/#hosting-files) will be there even if you cannot see it in your filesystem. If the previous statetement is not clear enough: Do not use a path using your `config` or `www` directories because it will not work.
+2. Make sure that you add `custom-sidebar-plugin.js` file and not `custom-sidebar.js`
+3. Using Dashboard/lovelace resources in the GUI is not the same as extra_module_url
+4. Do not forget to restart Home Assistant.
+
+:::
+
+### Installation through HACS (deprecated)
+
+:::info[Info]
+
+If you are not already in Home Assistant `2026.11.0`, then the [Marketplace] is not integrated into your Home Assistant version and you would need to install the plugin through [HACS].
+
+:::
 
 #### Go to the HACS plugin's page
 
@@ -86,6 +128,7 @@ It is recommendable that you add the plugin's version at the end of the URL as a
 
 :::
 
+[Marketplace]: https://www.home-assistant.io/integrations/marketplace/
 [HACS]: https://hacs.xyz
 [My Home Assistant]: https://www.home-assistant.io/integrations/my/
 [extra_module_url]: https://www.home-assistant.io/integrations/frontend/#extra_module_url
