@@ -1,2 +1,4 @@
+minimumReleaseAgeExclude:
+  - home-assistant-javascript-templates@8.1.0
 overrides:
   uuid@<11.1.1: ^11.1.1
