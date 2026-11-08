@@ -80,20 +80,10 @@ export class Subscribers {
         return rendered;
     }
 
-    private _checkForJsTemplateSubscriptionStart(template: string): void {
-        if (!this._renderer.subscribed) {
-            const { entities } = this._renderer.parseTemplate(template);
-            if (entities.length > 0) {
-                this._renderer.init();
-            }
-        }
-    }
-
     public createJsTemplateSubscription(
         template: string,
         callback: (result: string) => void
     ): void {
-        this._checkForJsTemplateSubscriptionStart(template);
         this._renderer.trackTemplate(
             template,
             (result: unknown): void => {
