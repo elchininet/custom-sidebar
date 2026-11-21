@@ -877,6 +877,8 @@ test.describe('methods in JavaScript templates', () => {
         expect(sidebarItem).toHaveAttribute('tabIndex', '-1');
 
         await sidebarItem.click();
+        // Waiting one second because the activateItem item has a small delay before being executed
+        await page.waitForTimeout(1000);
 
         expect(sidebarItem).toHaveClass(SELECTED_CLASSNAME);
         expect(sidebarItem).toHaveAttribute('tabIndex', '0');
