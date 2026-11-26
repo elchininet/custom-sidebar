@@ -483,9 +483,9 @@ test('if sidebar_mode is set to "hidden" it should not be possible to make the s
     await waitForBasicElements(page);
 
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
-    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} ha-switch input`)).toBeChecked();
     await page.locator(SELECTORS.PROFILE_HIDE_SIDEBAR).click();
-    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} ha-switch input`)).not.toBeChecked();
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
 
     await page.reload();
@@ -493,7 +493,7 @@ test('if sidebar_mode is set to "hidden" it should not be possible to make the s
     await expect(page).toHaveURL(`${BASE_URL}/profile/browser`);
     await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
-    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} ha-switch input`)).toBeChecked();
 
 });
 
@@ -508,9 +508,9 @@ test('if sidebar_mode is set to "narrow" it should not be possible to hide the s
     await expect(page).toHaveURL(`${BASE_URL}/profile/browser`);
     await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
-    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} ha-switch input`)).not.toBeChecked();
     await page.locator(SELECTORS.PROFILE_HIDE_SIDEBAR).click();
-    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} ha-switch input`)).toBeChecked();
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
 
     await page.reload();
@@ -518,7 +518,7 @@ test('if sidebar_mode is set to "narrow" it should not be possible to hide the s
     await expect(page).toHaveURL(`${BASE_URL}/profile/browser`);
     await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
-    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} ha-switch input`)).not.toBeChecked();
 
 });
 
@@ -533,9 +533,9 @@ test('if sidebar_mode is set to "extended" it should not be possible to hide the
     await expect(page).toHaveURL(`${BASE_URL}/profile/browser`);
     await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
-    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} ha-switch input`)).not.toBeChecked();
     await page.locator(SELECTORS.PROFILE_HIDE_SIDEBAR).click();
-    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).toBeChecked();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} ha-switch input`)).toBeChecked();
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).toHaveAttribute('narrow');
 
     await page.reload();
@@ -543,7 +543,7 @@ test('if sidebar_mode is set to "extended" it should not be possible to hide the
     await expect(page).toHaveURL(`${BASE_URL}/profile/browser`);
     await waitForBasicElements(page);
     await expect(page.locator(SELECTORS.HA_SIDEBAR)).not.toHaveAttribute('narrow');
-    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} input`)).not.toBeChecked();
+    await expect(page.locator(`${SELECTORS.PROFILE_HIDE_SIDEBAR} ha-switch input`)).not.toBeChecked();
 
 });
 

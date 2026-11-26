@@ -27,8 +27,6 @@ export const OBJECT_TO_STRING = '[object Object]';
 export const REGEXP_TO_STRING = '[object RegExp]';
 
 export enum ELEMENT {
-    ANCHOR = 'a',
-    BUTTON = 'button',
     DIV = 'div',
     SPAN = 'span'
 }
