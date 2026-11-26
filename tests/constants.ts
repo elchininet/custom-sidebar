@@ -26,7 +26,7 @@ export const SELECTORS = {
     HA_MENU_BUTTON: '.header ha-menu-button ha-icon-button',
     SIDEBAR_EDIT_MODAL: 'dialog-edit-sidebar ha-dialog[header-title="Edit sidebar"] ha-items-display-editor',
     PROFILE_EDIT_BUTTON: 'ha-profile-section-preferences .container > ha-card ha-pick-dashboard-row + ha-row-item > ha-button',
-    PROFILE_HIDE_SIDEBAR: '.container > ha-card ha-force-narrow-row ha-row-item > ha-switch',
+    PROFILE_HIDE_SIDEBAR: '.container > ha-card ha-force-narrow-row ha-list-item-switch',
     NOTIFICATIONS: 'ha-list-item-button.notifications',
     NOTIFICATIONS_DRAWER: 'notification-drawer',
     DISMISS_NOTIFICATION_ITEM: 'notification-item ha-button[slot="actions"]',

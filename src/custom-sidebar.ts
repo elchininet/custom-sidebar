@@ -34,7 +34,6 @@ import {
     CUSTOM_SIDEBAR_CSS_VARIABLES,
     DEBUG_URL_PARAMETER,
     DOMAIN_ENTITY_REGEXP,
-    ELEMENT,
     EVENT,
     ITEM_OPTIONS_VARIABLES_MAP,
     JINJA_TEMPLATE_REG,
@@ -564,8 +563,7 @@ class CustomSidebar {
     private async _aplyItemRippleStyles(): Promise<void> {
         const sidebarItemsContainer = (await this._sidebar.selector.$.query(CUSTOM_ELEMENT.ITEM).all) as NodeListOf<HTMLElement>;
         Array.from(sidebarItemsContainer).forEach((item: HTMLElement): void => {
-            const innerElement = item.shadowRoot!.querySelector<HTMLAnchorElement | HTMLButtonElement>(`${ELEMENT.ANCHOR}, ${ELEMENT.BUTTON}`)!;
-            const surface = innerElement
+            const surface = item.shadowRoot!
                 .querySelector(CUSTOM_ELEMENT.HA_RIPPLE)!
                 .shadowRoot!
                 .querySelector(SELECTOR.SURFACE)!;
